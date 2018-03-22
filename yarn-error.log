@@ -25,6 +25,7 @@ npm manifest:
       "cjs": "cjs-to-es6"
     },
     "dependencies": {
+      "babel-plugin-wildcard": "^4.0.0",
       "bcryptjs": "^2.4.3",
       "body-parser": "^1.18.2",
       "cookie-parser": "^1.4.3",
@@ -996,6 +997,10 @@ Lockfile:
   babel-plugin-undefined-to-void@^1.1.6:
     version "1.1.6"
     resolved "https://registry.yarnpkg.com/babel-plugin-undefined-to-void/-/babel-plugin-undefined-to-void-1.1.6.tgz#7f578ef8b78dfae6003385d8417a61eda06e2f81"
+  
+  babel-plugin-wildcard@^4.0.0:
+    version "4.0.0"
+    resolved "https://registry.yarnpkg.com/babel-plugin-wildcard/-/babel-plugin-wildcard-4.0.0.tgz#89a25e815602f915e595f4da9b7584581bbac2d5"
   
   babel-polyfill@^6.26.0:
     version "6.26.0"
