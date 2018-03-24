@@ -35,8 +35,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/auth', auth);
-// app.use("/common", passport.authenticate("jwt", { session: false }), common);
-app.use('/api', api);
+app.use('/api', passport.authenticate('jwt', { session: false }), api);
+// app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

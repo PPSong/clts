@@ -3,18 +3,20 @@ import passportJWT from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
 import jwt from 'jsonwebtoken';
 import bCrypt from 'bcryptjs';
+import debug from 'debug';
 
 import { User } from './models/Model';
 
+const ppLog = debug('ppLog');
 const jwtSecret = 'jwtSecret';
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
 const getPayload = (user) => {
-  const { id, email } = user.toJSON();
+  const { id, username } = user.toJSON();
   const payload = {
     id,
-    email,
+    username,
   };
   const r = {
     ...payload,
@@ -28,18 +30,18 @@ passport.use(
   'local-signup',
   new LocalStrategy(
     {
-      usernameField: 'email',
+      usernameField: 'username',
       passwordField: 'password',
     },
-    async (email, password, done) => {
+    async (username, password, done) => {
       try {
-        let user = await User.findOne({ where: { email } });
+        let user = await User.findOne({ where: { username } });
         if (user) {
-          return done(null, false, { message: 'That email is already taken' });
+          return done(null, false, { message: 'That username is already taken' });
         }
 
         user = await User.create({
-          email,
+          username,
           password: bCrypt.hashSync(password, 8),
         });
 
@@ -58,14 +60,15 @@ passport.use(
   'local-signin',
   new LocalStrategy(
     {
-      usernameField: 'email',
+      usernameField: 'username',
       passwordField: 'password',
+      session: false,
     },
-    async (email, password, done) => {
+    async (username, password, done) => {
       try {
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ where: { username } });
         if (!user) {
-          return done(null, false, { message: 'Incorrect email.' });
+          return done(null, false, { message: 'Incorrect username .' });
         }
         if (bCrypt.compareSync(password, user.password) === true) {
           return done(null, getPayload(user));

@@ -7,7 +7,7 @@ export default class BaseTable {
     throw new Error('getTable should be overrided.');
   }
 
-  getEditableFields() {
+  getEditableFields(r) {
     throw new Error('getEditableFields should be overrided.');
   }
 
@@ -27,7 +27,7 @@ export default class BaseTable {
     });
 
     if (r) {
-      this.getEditableFields().forEach((f) => {
+      this.getEditableFields(r).forEach((f) => {
         r[f] = editFields[f];
       });
 
@@ -68,6 +68,9 @@ export default class BaseTable {
     const { keyword } = queryObj;
 
     const option = this.getQueryOption(keyword);
+    if (!option) {
+      throw new Error('无此权限!');
+    }
     option.limit = perPage;
     option.offset = perPage * curPage;
 

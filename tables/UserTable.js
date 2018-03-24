@@ -1,12 +1,12 @@
 import debug from 'debug';
 import BaseTable from './BaseTable';
-import { PP, JS } from '../models/Model';
+import { User, JS } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
-export default class PPTable extends BaseTable {
+export default class UserTable extends BaseTable {
   getTable() {
-    return PP;
+    return User;
   }
 
   getEditableFields(r) {

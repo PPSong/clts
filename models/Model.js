@@ -46,7 +46,7 @@ export const sequelize = new Sequelize('cltp', 'root', 'tcltcl', {
   operatorsAliases,
 });
 
-const JS = {
+export const JS = {
   ADMIN: '系统管理员',
   PPJL: '品牌经理',
   KFJL: '客服经理',
@@ -58,7 +58,7 @@ const JS = {
   AZG: '安装工',
 };
 
-const QY = {
+export const QY = {
   EAST: '东区',
   SOUTH: '南区',
   WEST: '西区',

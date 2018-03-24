@@ -1,7 +1,9 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import passport from 'passport';
+import debug from 'debug';
 
+const ppLog = debug('ppLog');
 const router = express.Router();
 
 router.post('/signup', (req, res, next) => {
@@ -18,6 +20,7 @@ router.post('/signup', (req, res, next) => {
 
 router.post('/signin', (req, res, next) => {
   passport.authenticate('local-signin', { session: false }, (err, user, info) => {
+    ppLog(err, user, info);
     if (err) {
       next(err);
     } else if (user) {
