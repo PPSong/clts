@@ -1,10 +1,11 @@
 import express from 'express';
+import bCrypt from 'bcryptjs';
 import debug from 'debug';
 
 /* eslint-disable */
 import * as tables from '../tables';
 /* eslint-enable */
-import { PP, Op } from '../models/Model';
+import { sequelize, JS, User, PP } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
@@ -38,6 +39,114 @@ router.put('/:table/:id', async (req, res, next) => {
     const r = await new Table(req.user).edit(req.params.id, req.body);
     res.json(r);
   } catch (err) {
+    ppLog(err);
+    next(err);
+  }
+});
+
+// 新建PPJL
+router.post('/createPPJL', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (user.JS !== JS.ADMIN) {
+      throw new Error('没有权限!');
+    }
+
+    transaction = await sequelize.transaction();
+
+    const { username, password, PPId } = req.body;
+
+    // 检查操作记录权限
+
+    // 新建用户
+    const tmpUser = await User.create(
+      {
+        username,
+        password: bCrypt.hashSync(password, 8),
+        JS: JS.PPJL,
+      },
+      { transaction },
+    );
+
+    const tmpPP = await PP.findOne({
+      where: {
+        id: PPId,
+      },
+      transaction,
+    });
+
+    await tmpPP.setPPJLs([tmpUser], { transaction });
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback transaction if any errors were encountered
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// 新建KFJL
+router.post('/createKFJL', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (user.JS !== JS.ADMIN && user.JS !== JS.PPJL) {
+      throw new Error('没有权限!');
+    }
+
+    transaction = await sequelize.transaction();
+
+    const { username, password, PPId } = req.body;
+
+    // 检查操作记录权限
+    if (user.JS === JS.PPJL) {
+      // 如果PP不在PPJL权限范围, 则报错
+      const allowPPIds = await user.getPPJLPPs({}, { transaction }).map(item => item.toJSON().id);
+
+      if (!allowPPIds.includes(parseInt(PPId))) {
+        throw new Error('记录不在权限范围!');
+      }
+    }
+
+    // 新建用户
+    const tmpUser = await User.create(
+      {
+        username,
+        password: bCrypt.hashSync(password, 8),
+        JS: JS.KFJL,
+      },
+      { transaction },
+    );
+
+    const tmpPP = await PP.findOne({
+      where: {
+        id: PPId,
+      },
+      transaction,
+    });
+
+    await tmpPP.setKFJLs([tmpUser], { transaction });
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback transaction if any errors were encountered
+    await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }

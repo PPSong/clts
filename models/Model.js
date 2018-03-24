@@ -109,19 +109,6 @@ export const User = sequelize.define(
         },
       },
     },
-    PPId: {
-      type: Sequelize.INTEGER,
-    },
-    QY: {
-      type: Sequelize.STRING,
-      validate: {
-        enumCheck(val) {
-          if (!Object.values(QY).includes(val)) {
-            throw new Error('非法区域名称!');
-          }
-        },
-      },
-    },
     username: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -142,12 +129,6 @@ export const User = sequelize.define(
     },
     note: {
       type: Sequelize.STRING,
-    },
-    GYSId: {
-      type: Sequelize.INTEGER,
-    },
-    AZGSId: {
-      type: Sequelize.INTEGER,
     },
   },
   {
@@ -170,6 +151,180 @@ export const User = sequelize.define(
 // 品牌
 export const PP = getBasicTable('PP');
 User.belongsTo(PP, { foreignKey: 'PPId' });
+
+// 品牌经理
+export const UserPPJL = sequelize.define(
+  'UserPPJL',
+  {
+    PPJLUserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(PP, { through: 'UserPPJL', as: 'PPJLPPs', foreignKey: 'PPJLUserId' });
+PP.belongsToMany(User, { through: 'UserPPJL', as: 'PPJLs', foreignKey: 'PPId' });
+
+// 客服经理
+export const UserKFJL = sequelize.define(
+  'UserKFJL',
+  {
+    KFJLUserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(PP, { through: 'UserKFJL', as: 'KFJLPPs', foreignKey: 'KFJLUserId' });
+PP.belongsToMany(User, { through: 'UserKFJL', as: 'KFJLs', foreignKey: 'PPId' });
+
+// 柜长
+export const UserGZ = sequelize.define(
+  'UserGZ',
+  {
+    GZUserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(PP, { through: 'UserGZ', as: 'GZPPs', foreignKey: 'GZUserId' });
+PP.belongsToMany(User, { through: 'UserGZ', as: 'GZs', foreignKey: 'PPId' });
+
+// 柜台BA
+export const UserGTBA = sequelize.define(
+  'UserGTBA',
+  {
+    GTBAUserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(PP, { through: 'UserGTBA', as: 'GTBAPPs', foreignKey: 'GTBAUserId' });
+PP.belongsToMany(User, { through: 'UserGTBA', as: 'GTBAs', foreignKey: 'PPId' });
+
+// 供应商
+export const GYS = getBasicTable('GYS');
+
+// 供应商管理员
+export const UserGYSGLY = sequelize.define(
+  'UserGYSGLY',
+  {
+    GYSGLYUserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(GYS, { through: 'UserGYSGLY', as: 'GYSGLYGYSs', foreignKey: 'GYSGLYUserId' });
+GYS.belongsToMany(User, { through: 'UserGYSGLY', as: 'GYSGLYs', foreignKey: 'GYSId' });
+
+// 装货员
+export const UserZHY = sequelize.define(
+  'UserZHY',
+  {
+    ZHYUserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(GYS, { through: 'UserZHY', as: 'ZHYGYSs', foreignKey: 'ZHYUserId' });
+GYS.belongsToMany(User, { through: 'UserZHY', as: 'ZHYs', foreignKey: 'GYSId' });
+
+// 安装公司
+export const AZGS = getBasicTable('AZGS');
+
+// 安装公司管理员
+export const UserAZGSGLY = sequelize.define(
+  'UserAZGSGLY',
+  {
+    AZGSGLYUserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(AZGS, { through: 'UserAZGSGLY', as: 'AZGSGLYAZGS', foreignKey: 'AZGSGLYUserId' });
+AZGS.belongsToMany(User, { through: 'UserAZGSGLY', as: 'AZGSGLY', foreignKey: 'AZGSId' });
+
+// 安装工
+export const UserAZG = sequelize.define(
+  'UserAZG',
+  {
+    AZGUserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(AZGS, { through: 'UserAZG', as: 'AZG', foreignKey: 'AZGSId' });
+AZGS.belongsToMany(User, { through: 'UserAZG', as: 'AZGAZGS', foreignKey: 'AZGUserId' });
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 
@@ -200,7 +355,14 @@ export const init = async () => {
 
     await PP.bulkCreate(initData('品牌'));
 
-    await createUser(1, 20);
+    // 新建Admin
+    await User.create({
+      username: 'admin',
+      password: bCrypt.hashSync('1', 8),
+      JS: JS.ADMIN,
+    });
+
+    // await createUser(1, 20);
   } catch (err) {
     ppLog('init err:', err);
   }
