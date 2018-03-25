@@ -11,39 +11,6 @@ const ppLog = debug('ppLog');
 
 const router = express.Router();
 
-router.get('/:table', async (req, res, next) => {
-  try {
-    const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).getList(req.query);
-    res.json(r);
-  } catch (err) {
-    ppLog(err);
-    next(err);
-  }
-});
-
-router.get('/:table/:id', async (req, res, next) => {
-  try {
-    const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).findOne(req.params.id);
-    res.json(r);
-  } catch (err) {
-    ppLog(err);
-    next(err);
-  }
-});
-
-router.put('/:table/:id', async (req, res, next) => {
-  try {
-    const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).edit(req.params.id, req.body);
-    res.json(r);
-  } catch (err) {
-    ppLog(err);
-    next(err);
-  }
-});
-
 // 新建PPJL
 router.post('/createPPJL', async (req, res, next) => {
   let transaction;
@@ -147,6 +114,62 @@ router.post('/createKFJL', async (req, res, next) => {
   } catch (err) {
     // Rollback transaction if any errors were encountered
     await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// 常规RESTFUL API
+router.post('/:table', async (req, res, next) => {
+  try {
+    const Table = tables[`${req.params.table}Table`];
+    const r = await new Table(req.user).create(req.body);
+    res.json(r);
+  } catch (err) {
+    ppLog(err);
+    next(err);
+  }
+});
+
+router.get('/:table', async (req, res, next) => {
+  try {
+    const Table = tables[`${req.params.table}Table`];
+    const r = await new Table(req.user).getList(req.query);
+    res.json(r);
+  } catch (err) {
+    ppLog(err);
+    next(err);
+  }
+});
+
+router.get('/:table/:id', async (req, res, next) => {
+  try {
+    const Table = tables[`${req.params.table}Table`];
+    const r = await new Table(req.user).findOne(req.params.id);
+    res.json(r);
+  } catch (err) {
+    ppLog(err);
+    next(err);
+  }
+});
+
+router.put('/:table/:id', async (req, res, next) => {
+  try {
+    const Table = tables[`${req.params.table}Table`];
+    const r = await new Table(req.user).edit(req.params.id, req.body);
+    res.json(r);
+  } catch (err) {
+    ppLog(err);
+    next(err);
+  }
+});
+
+router.delete('/:table/:id', async (req, res, next) => {
+  try {
+    const Table = tables[`${req.params.table}Table`];
+    const r = await new Table(req.user).delete(req.params.id, req.body);
+    res.json(r);
+  } catch (err) {
     ppLog(err);
     next(err);
   }

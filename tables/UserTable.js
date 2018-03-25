@@ -1,6 +1,6 @@
 import debug from 'debug';
 import BaseTable from './BaseTable';
-import { User, JS } from '../models/Model';
+import { PP, JS, User } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
@@ -9,53 +9,88 @@ export default class UserTable extends BaseTable {
     return User;
   }
 
-  getEditableFields(r) {
-    // todo: get from modal schema
-    return ['name'];
+  checkCreateRight() {
+    if (![JS.ADMIN].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkEditRight() {
+    if (![JS.ADMIN].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkDeleteRight() {
+    if (![JS.ADMIN].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkSearchRight() {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
   }
 
   getLikeSearchFields() {
+    // todo: get from schema
     return ['id', 'name'];
   }
 
-  getQueryOption(keyword) {
+  async getQueryOption(keyword, id = null) {
     const option = {};
+    let PPIds;
     // 根据用户操作记录范围加入where
-    const { PPId } = this.user;
-
     switch (this.user.JS) {
       case JS.ADMIN:
         break;
-      case JS.AZG:
-        return false;
-      case JS.AZGGLY:
-        return false;
-      case JS.GTBA:
+      case JS.PPJL:
+        PPIds = await this.user.getPPJLPPs().map(item => item.id);
         option.where = {
-          id: PPId,
+          id: {
+            $in: PPIds,
+          },
         };
-        break;
-      case JS.GYSGLY:
-        return false;
-      case JS.GZ:
-        option.where = {
-          id: PPId,
-        };
+        if (id) {
+          option.where.id.$eq = id;
+        }
         break;
       case JS.KFJL:
+        PPIds = await this.user.getKFJLPPs().map(item => item.id);
         option.where = {
-          id: PPId,
+          id: {
+            $in: PPIds,
+          },
         };
+        if (id) {
+          option.where.id.$eq = id;
+        }
         break;
-      case JS.PPJL:
+      case JS.GZ:
+        PPIds = await this.user.getGZPPs().map(item => item.id);
         option.where = {
-          id: PPId,
+          id: {
+            $in: PPIds,
+          },
         };
+        if (id) {
+          option.where.id.$eq = id;
+        }
         break;
-      case JS.ZHY:
-        return false;
+      case JS.GTBA:
+        PPIds = await this.user.getGTBAPPs().map(item => item.id);
+        option.where = {
+          id: {
+            $in: PPIds,
+          },
+        };
+        if (id) {
+          option.where.id.$eq = id;
+        }
+        break;
       default:
-        break;
+        throw new Error('无此权限!');
     }
     // 把模糊搜索条件加入where
     if (keyword) {
