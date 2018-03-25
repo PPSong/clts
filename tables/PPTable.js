@@ -34,7 +34,6 @@ export default class PPTable extends BaseTable {
   }
 
   getLikeSearchFields() {
-    // todo: get from schema
     return ['id', 'name'];
   }
 

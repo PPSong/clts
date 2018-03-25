@@ -1,6 +1,7 @@
 module.exports = {
   env: {
-    node: true
+    node: true,
+    mocha: true,
   },
   extends: "airbnb-base",
   parser: "babel-eslint",

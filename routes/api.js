@@ -5,9 +5,12 @@ import debug from 'debug';
 /* eslint-disable */
 import * as tables from '../tables';
 /* eslint-enable */
-import { sequelize, JS, User, PP } from '../models/Model';
+import { sequelize, JS, User, PP, GT, GYS } from '../models/Model';
 
-const ppLog = debug('ppLog');
+// const ppLog = debug('ppLog');
+const ppLog = (obj) => {
+  console.log(obj);
+};
 
 const router = express.Router();
 
@@ -104,6 +107,124 @@ router.post('/createKFJL', async (req, res, next) => {
     });
 
     await tmpPP.setKFJLs([tmpUser], { transaction });
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback transaction if any errors were encountered
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// 新建GT, GZ, GTBA
+router.post('/createGT_GZ_GTBA', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (user.JS !== JS.KFJL) {
+      throw new Error('没有权限!');
+    }
+
+    transaction = await sequelize.transaction();
+
+    const {
+      GTName, GZUsername, GZPassword, GTBAUsername, GTBAPassword,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 新建GZUser
+    const tmpGZUser = await User.create(
+      {
+        username: GZUsername,
+        password: bCrypt.hashSync(GZPassword, 8),
+        JS: JS.GZ,
+      },
+      { transaction },
+    );
+
+    // 新建GTBAUser
+    const tmpGTBAUser = await User.create(
+      {
+        username: GTBAUsername,
+        password: bCrypt.hashSync(GTBAPassword, 8),
+        JS: JS.GZ,
+      },
+      { transaction },
+    );
+
+    // 新建GT
+    const tmpGT = await GT.create(
+      {
+        name: GTName,
+        GZUserId: tmpGZUser.id,
+        GTBAUserId: tmpGTBAUser.id,
+      },
+      { transaction },
+    );
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback transaction if any errors were encountered
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// 新建GYS, GYSGLY
+router.post('/createGYS_GYSGLY', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (user.JS !== JS.KFJL) {
+      throw new Error('没有权限!');
+    }
+
+    transaction = await sequelize.transaction();
+
+    const {
+      GYSName, GYSGLYUsername, GYSGLYPassword, isSC, isKC,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 新建GYSGLY
+    const tmpGYSGLYUser = await User.create(
+      {
+        username: GYSGLYUsername,
+        password: bCrypt.hashSync(GYSGLYPassword, 8),
+        JS: JS.GYSGLY,
+      },
+      { transaction },
+    );
+
+    // 新建GYS
+    const tmpGYS = await GYS.create(
+      {
+        name: GYSName,
+        isSC,
+        isKC,
+      },
+      { transaction },
+    );
+
+    await tmpGYS.setGYSGLYs([tmpGYSGLYUser], { transaction });
 
     await transaction.commit();
 

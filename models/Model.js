@@ -65,7 +65,7 @@ export const QY = {
   NORTH: '北区',
 };
 
-const getBasicTable = (str, editRole = [JS.ADMIN, JS.PPJL]) =>
+const getBasicTable = str =>
   sequelize.define(
     str,
     {
@@ -78,8 +78,6 @@ const getBasicTable = (str, editRole = [JS.ADMIN, JS.PPJL]) =>
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
-        // Edit
-        editRole,
       },
     },
     {
@@ -135,22 +133,12 @@ export const User = sequelize.define(
     freezeTableName: true,
     paranoid: true,
     version: true,
-    validate: {
-      check1() {
-        ppLog('1');
-        // throw new Error('Require either both latitude and longitude or neither1');
-      },
-      check2() {
-        ppLog('2');
-        // throw new Error('Require either both latitude and longitude or neither2');
-      },
-    },
   },
 );
 
 // 品牌
 export const PP = getBasicTable('PP');
-User.belongsTo(PP, { foreignKey: 'PPId' });
+// User.belongsTo(PP, { foreignKey: 'PPId' });
 
 // 品牌经理
 export const UserPPJL = sequelize.define(
@@ -237,7 +225,35 @@ User.belongsToMany(PP, { through: 'UserGTBA', as: 'GTBAPPs', foreignKey: 'GTBAUs
 PP.belongsToMany(User, { through: 'UserGTBA', as: 'GTBAs', foreignKey: 'PPId' });
 
 // 供应商
-export const GYS = getBasicTable('GYS');
+// export const GYS = getBasicTable('GYS');
+export const GYS = sequelize.define(
+  'GYS',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    isSC: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+    },
+    isKC: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
 
 // 供应商管理员
 export const UserGYSGLY = sequelize.define(
@@ -302,7 +318,11 @@ export const UserAZGSGLY = sequelize.define(
   },
 );
 
-User.belongsToMany(AZGS, { through: 'UserAZGSGLY', as: 'AZGSGLYAZGS', foreignKey: 'AZGSGLYUserId' });
+User.belongsToMany(AZGS, {
+  through: 'UserAZGSGLY',
+  as: 'AZGSGLYAZGS',
+  foreignKey: 'AZGSGLYUserId',
+});
 AZGS.belongsToMany(User, { through: 'UserAZGSGLY', as: 'AZGSGLY', foreignKey: 'AZGSId' });
 
 // 安装工
@@ -325,6 +345,39 @@ export const UserAZG = sequelize.define(
 
 User.belongsToMany(AZGS, { through: 'UserAZG', as: 'AZG', foreignKey: 'AZGSId' });
 AZGS.belongsToMany(User, { through: 'UserAZG', as: 'AZGAZGS', foreignKey: 'AZGUserId' });
+
+// 柜台
+export const GT = sequelize.define(
+  'GT',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'name',
+    },
+    GZUserId: {
+      type: Sequelize.INTEGER,
+      unique: 'GZUserId',
+    },
+    GTBAUserId: {
+      type: Sequelize.INTEGER,
+      unique: 'GTBAUserId',
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+GT.belongsTo(User, { as: 'GZ', foreignKey: 'GZUserId' });
+GT.belongsTo(User, { as: 'GTBA', foreignKey: 'GTBAUserId' });
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 

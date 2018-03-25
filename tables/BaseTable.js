@@ -23,81 +23,33 @@ export default class BaseTable {
     throw new Error('checkDeleteRight should be overrided.');
   }
 
+  checkRestoreRight() {
+    throw new Error('checkRestoreRight should be overrided.');
+  }
+
   checkSearchRight() {
-    // 默认可以被任何登录用户查询
+    throw new Error('checkDeleteRight should be overrided.');
   }
 
-  getCreateFields() {
-    // 默认可以创建所有列
-    return 'ALL';
-  }
-
-  filterCreateFields(createFields) {
-    if (this.getCreateFields === 'ALL') {
-      const filteredCreateFields = {
-        ...createFields,
-      };
-      delete filteredCreateFields.id;
-      return filteredCreateFields;
-    }
-
-    const filteredCreateFields = {};
-
-    this.getCreateFields().forEach((item) => {
-      filteredCreateFields[item] = createFields[item];
-    });
-
-    return filteredCreateFields;
-  }
-
-  getEditFields() {
-    // 默认可以编辑所有列, 除了id
-    return 'ALL';
-  }
-
-  filterEditFields(editFields) {
-    if (this.getEditFields === 'ALL') {
-      const filteredEditFields = {
-        ...editFields,
-      };
-      delete filteredEditFields.id;
-      return filteredEditFields;
-    }
-
-    const filteredEditFields = {};
-
-    this.getEditFields().forEach((item) => {
-      filteredEditFields[item] = editFields[item];
-    });
-
-    return filteredEditFields;
-  }
-
-  getEditShowFields() {
-    // 默认编辑时可以显示所有列
-    return 'ALL';
-  }
-
-  getListField() {
-    // 默认list所有列
-    return 'ALL';
-  }
-
-  getListDetailField() {
-    // 默认list所有列
-    return 'ALL';
+  filterFields(fields) {
+    const filteredFields = {
+      ...fields,
+    };
+    // 防止指定id
+    delete filteredFields.id;
+    return filteredFields;
   }
 
   getQueryOption() {
     throw new Error('getQueryOption should be overrided.');
   }
 
-  async create(createFields) {
+  async create(fields) {
     this.checkCreateRight();
 
-    const filteredCreateFields = this.filterCreateFields(createFields);
+    const filteredFields = this.filterCreateFields(fields);
 
-    const r = await this.getTable().create(filteredCreateFields);
+    const r = await this.getTable().create(filteredFields);
 
     if (!r) {
       throw new Error('创建失败!');
@@ -131,26 +83,40 @@ export default class BaseTable {
     };
   }
 
-  async edit(id, editFields) {
-    this.checkEditRight();
+  async restore(id) {
+    this.checkRestoreRight();
 
-    const r = await this.getTable().findOne({
-      where: {
-        id,
-      },
-    });
+    const r = await this.getTable().findOne({ where: { id }, paranoid: false });
+    if (r && r.deletedAt) {
+      r.setDataValue('deletedAt', null);
+      await r.save();
 
-    const filteredEditFields = this.filterEditFields(editFields);
-
-    if (!r) {
-      throw new Error('无此记录!');
+      return {
+        code: 1,
+        msg: 'ok',
+      };
     }
 
-    this.getEditableFields(r).forEach((f) => {
-      r[f] = filteredEditFields[f];
-    });
+    return {
+      code: -1,
+      data: '没找到需要恢复的记录!',
+    };
+  }
 
-    await r.save();
+  async edit(id, fields) {
+    // todo: 考虑用乐观锁
+    this.checkEditRight();
+
+    const filteredFields = this.filterFields(fields);
+    const option = await this.getQueryOption(null, id);
+    const r = await this.getTable().update(filteredFields, option);
+
+    ppLog(r);
+
+    if (!r[0]) {
+      throw new Error('更新记录失败!');
+    }
+
     return {
       code: 1,
       data: 'ok',
@@ -159,6 +125,7 @@ export default class BaseTable {
 
   async findOne(id) {
     this.checkSearchRight();
+
     const option = await this.getQueryOption(null, id);
     const r = await this.getTable().findOne(option);
 
@@ -174,6 +141,7 @@ export default class BaseTable {
 
   async getList(queryObj) {
     this.checkSearchRight();
+
     const curPage = parseInt(queryObj.curPage) || 0;
     const perPage = parseInt(queryObj.perPage) || 10;
     const { keyword } = queryObj;

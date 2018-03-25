@@ -1,0 +1,43 @@
+admin 创建 PP1, PP2
+admin 创建 PPJL1 给 PP1
+PPJL1 创建 KFJL1 给 PP1
+KFJL1 创建 GT1, GZ1, GTBA1
+
+KFJL1 创建 GYS1, GYSGLY1, isSC: true, isKC: true
+KFJL1 创建 GYS2, GYSGLY2, isSC: true, isKC: true
+KFJL1 创建 GYS3, GYSGLY3, isSC: true, isKC: true
+
+KFJL1 创建 GYS2, GYSGLY2
+KFJL1 创建 AZGS1, AZGSGLY1
+KFJL1 创建 DW1(GT1, DW1, DPId: null)
+
+KFJL1 创建 WL3_1(GYS1, WL3_1, level: 3)
+KFJL1 创建 WL3_2(GYS2, WL3_2, level: 3)
+KFJL1 创建 WL3_3(GYS3, WL3_3, level: 3)
+
+KFJL1 创建 WL2_1(GYS1, WL2_1, level: 2)
+KFJL1 创建 WL2_2(GYS2, WL2_2, level: 2)
+KFJL1 创建 WL2_3(GYS3, WL2_3, level: 2)
+
+KFJL1 创建 WL1_1(GYS1, WL1_1, level: 1)
+KFJL1 创建 WL1_2(GYS2, WL1_2, level: 1)
+KFJL1 创建 DP1(GYS1, DP1)
+KFJL1 配置 DW1(GT1, DW1, DPId: DP1)
+
+KFJL1 创建 YJZH1(YJZH1, WL1_1)
+KFJL1 创建 YJZH2(YJZH2, WL1_2)
+
+KFJL1 创建 EJZH1(EJZH1, WL2_1)
+KFJL1 创建 EJZH2(EJZH2, WL2_2)
+KFJL1 创建 EJZH3(EJZH3, WL2_3)
+
+KFJL1 配置 YJZH1[EJZH1 2个, EJZH2 2个]
+KFJL1 配置 YJZH2[EJZH2 2个, EJZH3 2个]
+
+KFJL1 配置 EJZH1[WL3_1 2个, WL3_2 2个]
+KFJL1 配置 EJZH2[WL3_2 2个, WL3_3 2个]
+KFJL1 配置 EJZH3[WL3_1 2个, WL3_3 2个]
+
+KFJL1 配置 GT1[YJZH1, YJZH2]
+
+?? 生成订单 DD1 {生成 订单柜台, 订单柜台物料, 订单柜台灯片}
