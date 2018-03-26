@@ -31,6 +31,10 @@ export default class BaseTable {
     throw new Error('checkDeleteRight should be overrided.');
   }
 
+  checkUserAccess() {
+    throw new Error('checkUserAccess should be overrided.');
+  }
+
   filterFields(fields) {
     const filteredFields = {
       ...fields,
@@ -49,7 +53,11 @@ export default class BaseTable {
 
     const filteredFields = this.filterCreateFields(fields);
 
-    const r = await this.getTable().create(filteredFields);
+    const newRecord = await this.getTable().build(filteredFields);
+
+    this.checkUserAccess(newRecord);
+
+    const r = await newRecord.save();
 
     if (!r) {
       throw new Error('创建失败!');
@@ -64,11 +72,15 @@ export default class BaseTable {
   async delete(id) {
     this.checkDeleteRight();
 
-    const r = await this.getTable().destroy({
+    const record = await this.getTable().findOne({
       where: {
         id,
       },
     });
+
+    this.checkUserAccess(record);
+
+    const r = await record.destroy();
 
     if (!r) {
       return {
@@ -86,10 +98,13 @@ export default class BaseTable {
   async restore(id) {
     this.checkRestoreRight();
 
-    const r = await this.getTable().findOne({ where: { id }, paranoid: false });
-    if (r && r.deletedAt) {
-      r.setDataValue('deletedAt', null);
-      await r.save();
+    const record = await this.getTable().findOne({ where: { id }, paranoid: false });
+
+    this.checkUserAccess(record);
+
+    if (record && record.deletedAt) {
+      record.setDataValue('deletedAt', null);
+      await record.save();
 
       return {
         code: 1,
@@ -108,10 +123,17 @@ export default class BaseTable {
     this.checkEditRight();
 
     const filteredFields = this.filterFields(fields);
-    const option = await this.getQueryOption(null, id);
-    const r = await this.getTable().update(filteredFields, option);
 
-    ppLog(r);
+    const record = await this.getTable().findOne({ where: { id }, paranoid: false });
+
+    // 查看update前是否在用户权限范围
+    this.checkUserAccess(record);
+
+    const r = await record.update(filteredFields);
+
+    // 查看update后是否在用户权限范围
+    // todo: check r还是record是更新后的值
+    this.checkUserAccess(record);
 
     if (!r[0]) {
       throw new Error('更新记录失败!');
@@ -126,16 +148,14 @@ export default class BaseTable {
   async findOne(id) {
     this.checkSearchRight();
 
-    const option = await this.getQueryOption(null, id);
-    const r = await this.getTable().findOne(option);
+    const record = await this.getTable().findOne({ where: { id }, paranoid: false });
 
-    if (!r) {
-      throw new Error('无此记录!');
-    }
+    // 查看update前是否在用户权限范围
+    this.checkUserAccess(record);
 
     return {
       code: 1,
-      data: r.toJSON(),
+      data: record.toJSON(),
     };
   }
 
