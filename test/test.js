@@ -2,7 +2,7 @@ import { assert } from 'chai';
 import axios from 'axios';
 import debug from 'debug';
 
-import { init, sequelize, UserPPJL, PP, GT, GYS } from '../models/Model';
+import { init, sequelize, UserPPJL, PP, GT, GYS, AZGS } from '../models/Model';
 
 process.env.NODE_ENV = 'test';
 const server = require('../app');
@@ -11,18 +11,26 @@ const ppLog = debug('ppLog');
 const baseUrl = 'http://localhost:3001';
 const api = `${baseUrl}/api`;
 let adminToken;
+let PPJLToken1;
+let KFJLToken1;
+
+// 公用变量
+const PPJLUsername1 = 'PPJL1';
+const KFJLUsername1 = 'KFJL1';
+const PPId1 = 1;
+const GT1 = 'GT1';
+const GZUsername1 = 'GZ1';
+const GTBAUsername1 = 'GTBA1';
+const GYS1 = 'GYS1';
+const GYSGLYUsername1 = 'GYSGLYUsername1';
+const GYS2 = 'GYS2';
+const GYSGLYUsername2 = 'GYSGLYUsername2';
+const GYS3 = 'GYS3';
+const GYSGLYUsername3 = 'GYSGLYUsername3';
+const AZGS1 = 'AZGS1';
+const AZGSGLYUsername1 = 'AZGSGLYUsername1';
 
 describe('测试案例', () => {
-  // 公用变量
-  const PPJLUsername1 = 'PPJL1';
-  const KFJLUsername1 = 'KFJL1';
-  const PPId1 = 1;
-  const GT1 = 'GT1';
-  const GZUsername1 = 'GZ1';
-  const GTBAUsername1 = 'GTBA1';
-  const GYS1 = 'GYS1';
-  const GYSGLYUsername1 = 'GYSGLYUsername1';
-
   before(async () => {
     await init();
     // 获得admin token
@@ -121,8 +129,8 @@ describe('测试案例', () => {
     });
 
     it('客服经理创建供应商_GYSGLY成功', async () => {
-      const GYSName = GYS1;
-      const GYSGLYUsername = GYSGLYUsername1;
+      let GYSName = GYS1;
+      let GYSGLYUsername = GYSGLYUsername1;
 
       // 获得KFJL token
       let r = await axios.post(`${baseUrl}/auth/signin`, {
@@ -145,11 +153,73 @@ describe('测试案例', () => {
         },
       );
 
+      GYSName = GYS2;
+      GYSGLYUsername = GYSGLYUsername2;
+      r = await axios.post(
+        `${api}/createGYS_GYSGLY`,
+        {
+          GYSName,
+          GYSGLYUsername,
+          GYSGLYPassword: '1',
+          isSC: true,
+          isKC: true,
+        },
+        {
+          headers: { Authorization: `bearer ${tmpToken}` },
+        },
+      );
+
+      GYSName = GYS3;
+      GYSGLYUsername = GYSGLYUsername3;
+      r = await axios.post(
+        `${api}/createGYS_GYSGLY`,
+        {
+          GYSName,
+          GYSGLYUsername,
+          GYSGLYPassword: '1',
+          isSC: true,
+          isKC: true,
+        },
+        {
+          headers: { Authorization: `bearer ${tmpToken}` },
+        },
+      );
+
       // 检查是否有供应商GYS1, 供应商管理员是GYSGLY1
       const tmpGYS = await GYS.findOne({ where: { name: GYSName } });
       const tmpGYSGLY = await tmpGYS.getGYSGLYs().map(item => item.username);
 
       assert.equal(tmpGYSGLY.includes(GYSGLYUsername), true);
+    });
+
+    it('客服经理创建安装公司_AZGSGLY成功', async () => {
+      const AZGSName = AZGS1;
+      const AZGSGLYUsername = AZGSGLYUsername1;
+
+      // 获得KFJL token
+      let r = await axios.post(`${baseUrl}/auth/signin`, {
+        username: KFJLUsername1,
+        password: '1',
+      });
+      const tmpToken = r.data.token;
+
+      r = await axios.post(
+        `${api}/createAZGS_AZGSGLY`,
+        {
+          AZGSName,
+          AZGSGLYUsername,
+          AZGSGLYPassword: '1',
+        },
+        {
+          headers: { Authorization: `bearer ${tmpToken}` },
+        },
+      );
+
+      // 检查是否有安装公司AZGS1, 安装公司管理员是AZGSGLY1
+      const tmpAZGS = await AZGS.findOne({ where: { name: AZGSName } });
+      const tmpAZGSGLY = await tmpAZGS.getAZGSGLYs().map(item => item.username);
+
+      assert.equal(tmpAZGSGLY.includes(AZGSGLYUsername), true);
     });
   });
 });

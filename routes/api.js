@@ -5,7 +5,7 @@ import debug from 'debug';
 /* eslint-disable */
 import * as tables from '../tables';
 /* eslint-enable */
-import { sequelize, JS, User, PP, GT, GYS } from '../models/Model';
+import { sequelize, JS, User, PP, GT, GYS, AZGS } from '../models/Model';
 
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
@@ -165,6 +165,7 @@ router.post('/createGT_GZ_GTBA', async (req, res, next) => {
     const tmpGT = await GT.create(
       {
         name: GTName,
+        PPId: user.PPId,
         GZUserId: tmpGZUser.id,
         GTBAUserId: tmpGTBAUser.id,
       },
@@ -225,6 +226,57 @@ router.post('/createGYS_GYSGLY', async (req, res, next) => {
     );
 
     await tmpGYS.setGYSGLYs([tmpGYSGLYUser], { transaction });
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback transaction if any errors were encountered
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// 新建AZGS, AZGSGLY
+router.post('/createAZGS_AZGSGLY', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (user.JS !== JS.KFJL) {
+      throw new Error('没有权限!');
+    }
+
+    transaction = await sequelize.transaction();
+
+    const { AZGSName, AZGSGLYUsername, AZGSGLYPassword } = req.body;
+
+    // 检查操作记录权限
+
+    // 新建AZGSGLY
+    const tmpAZGSGLYUser = await User.create(
+      {
+        username: AZGSGLYUsername,
+        password: bCrypt.hashSync(AZGSGLYPassword, 8),
+        JS: JS.AZGSGLY,
+      },
+      { transaction },
+    );
+
+    // 新建AZGS
+    const tmpAZGS = await AZGS.create(
+      {
+        name: AZGSName,
+      },
+      { transaction },
+    );
+
+    await tmpAZGS.setAZGSGLYs([tmpAZGSGLYUser], { transaction });
 
     await transaction.commit();
 

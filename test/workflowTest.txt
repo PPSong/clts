@@ -7,7 +7,6 @@ KFJL1 创建 GYS1, GYSGLY1, isSC: true, isKC: true
 KFJL1 创建 GYS2, GYSGLY2, isSC: true, isKC: true
 KFJL1 创建 GYS3, GYSGLY3, isSC: true, isKC: true
 
-KFJL1 创建 GYS2, GYSGLY2
 KFJL1 创建 AZGS1, AZGSGLY1
 KFJL1 创建 DW1(GT1, DW1, DPId: null)
 

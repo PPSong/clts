@@ -53,7 +53,7 @@ export const JS = {
   GZ: '柜长',
   GTBA: '柜台BA',
   GYSGLY: '供应商管理员',
-  AZGGLY: '安装工管理员',
+  AZGSGLY: '安装工管理员',
   ZHY: '装货员',
   AZG: '安装工',
 };
@@ -323,28 +323,34 @@ User.belongsToMany(AZGS, {
   as: 'AZGSGLYAZGS',
   foreignKey: 'AZGSGLYUserId',
 });
-AZGS.belongsToMany(User, { through: 'UserAZGSGLY', as: 'AZGSGLY', foreignKey: 'AZGSId' });
+
+User.belongsToMany(AZGS, {
+  through: 'UserAZGSGLY',
+  as: 'AZGSGLYAZGSs',
+  foreignKey: 'AZGSGLYUserId',
+});
+AZGS.belongsToMany(User, { through: 'UserAZGSGLY', as: 'AZGSGLYs', foreignKey: 'AZGSId' });
 
 // 安装工
-export const UserAZG = sequelize.define(
-  'UserAZG',
-  {
-    AZGUserId: {
-      type: Sequelize.INTEGER,
-      unique: true,
-    },
-    AZGSId: {
-      type: Sequelize.INTEGER,
-    },
-  },
-  {
-    freezeTableName: true,
-    version: true,
-  },
-);
+// export const UserAZG = sequelize.define(
+//   'UserAZG',
+//   {
+//     AZGUserId: {
+//       type: Sequelize.INTEGER,
+//       unique: true,
+//     },
+//     AZGSId: {
+//       type: Sequelize.INTEGER,
+//     },
+//   },
+//   {
+//     freezeTableName: true,
+//     version: true,
+//   },
+// );
 
-User.belongsToMany(AZGS, { through: 'UserAZG', as: 'AZG', foreignKey: 'AZGSId' });
-AZGS.belongsToMany(User, { through: 'UserAZG', as: 'AZGAZGS', foreignKey: 'AZGUserId' });
+// User.belongsToMany(AZGS, { through: 'UserAZG', as: 'AZG', foreignKey: 'AZGSId' });
+// AZGS.belongsToMany(User, { through: 'UserAZG', as: 'AZGAZGS', foreignKey: 'AZGUserId' });
 
 // 柜台
 export const GT = sequelize.define(
@@ -359,6 +365,9 @@ export const GT = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
       unique: 'name',
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
     },
     GZUserId: {
       type: Sequelize.INTEGER,
@@ -378,6 +387,69 @@ export const GT = sequelize.define(
 
 GT.belongsTo(User, { as: 'GZ', foreignKey: 'GZUserId' });
 GT.belongsTo(User, { as: 'GTBA', foreignKey: 'GTBAUserId' });
+GT.belongsTo(PP, { foreignKey: 'PPId' });
+
+// 灯片
+export const DP = sequelize.define(
+  'DP',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'name_GYSId',
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+      unique: 'name_GYSId',
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DP.belongsTo(GYS, { as: 'DP', foreignKey: 'GYSId' });
+
+// 灯位
+export const DW = sequelize.define(
+  'DW',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'name_GTId',
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      unique: 'name_GTId',
+    },
+    DPId: {
+      type: Sequelize.INTEGER,
+      unique: 'GZUserId',
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DW.belongsTo(GT, { as: 'GTDW', foreignKey: 'GTId' });
+DW.belongsTo(DP, { as: 'DPDW', foreignKey: 'DPId' });
+
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 

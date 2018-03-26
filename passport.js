@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import bCrypt from 'bcryptjs';
 import debug from 'debug';
 
-import { User } from './models/Model';
+import { User, JS } from './models/Model';
 
 const ppLog = debug('ppLog');
 const jwtSecret = 'jwtSecret';
@@ -90,9 +90,21 @@ passport.use(new JWTStrategy(
     try {
       const user = await User.findOne({ where: { id: jwtPayload.id } });
       if (user) {
-        // todo: add access range
-        // const PPs = await user.getPPs();
-        // user.PPs = PPs.map(item => item.id);
+        // 目前一个用户只属于一个品牌, 数据库结构设计的是多对多, 为以后扩展做好了准备
+        let PPIds;
+        switch (user.JS) {
+          case JS.PPJL:
+            PPIds = await user.getPPJLPPs();
+            user.PPId = PPIds[0].id;
+            break;
+          case JS.KFJL:
+            PPIds = await user.getKFJLPPs();
+            user.PPId = PPIds[0].id;
+            break;
+          default:
+            break;
+        }
+
         return done(null, user);
       }
       return done(null, false, { message: '此用户已不存在!' });
