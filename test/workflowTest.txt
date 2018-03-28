@@ -1,3 +1,6 @@
+区域只需要加到柜台, 方便对应柜台搜索
+柜长: 柜台 = 1 : n
+===
 admin 创建 PP1, PP2
 admin 创建 PPJL1 给 PP1
 PPJL1 创建 KFJL1 给 PP1

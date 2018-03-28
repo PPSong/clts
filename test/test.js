@@ -2,7 +2,19 @@ import { assert } from 'chai';
 import axios from 'axios';
 import debug from 'debug';
 
-import { init, sequelize, UserPPJL, PP, GT, GYS, AZGS } from '../models/Model';
+import {
+  init,
+  sequelize,
+  QY,
+  CS,
+  UserPPJL,
+  PP,
+  GT,
+  GYS,
+  AZGS,
+  // Student,
+  // Course,
+} from '../models/Model';
 
 process.env.NODE_ENV = 'test';
 const server = require('../app');
@@ -39,6 +51,11 @@ describe('测试案例', () => {
       password: '1',
     });
     adminToken = r.data.token;
+    // const s1 = await Student.create({ name: 's1' });
+    // const c1 = await Course.create({ name: 'c1' });
+    // const c2 = await Course.create({ name: 'c2' });
+    // await s1.addCourse(c1);
+    // await s1.addCourse(c2);
   });
 
   describe('test1', async () => {
@@ -220,6 +237,72 @@ describe('测试案例', () => {
       const tmpAZGSGLY = await tmpAZGS.getAZGSGLYs().map(item => item.username);
 
       assert.equal(tmpAZGSGLY.includes(AZGSGLYUsername), true);
+    });
+
+    it('KFJL新建柜台_GTBA成功', async () => {
+      const name = 'GT1';
+      const code = 'GT1Code';
+
+      // 获得KFJL token
+      const r = await axios.post(`${baseUrl}/auth/signin`, {
+        username: KFJLUsername1,
+        password: '1',
+      });
+      const tmpToken = r.data.token;
+
+      const record = await axios.post(
+        `${api}/createGT_GTBA`,
+        {
+          name,
+          code,
+          QY: QY.EAST,
+          CS: CS[0],
+        },
+        {
+          headers: { Authorization: `bearer ${tmpToken}` },
+        },
+      );
+
+      // 检查是否有创建的柜台
+      const tmpGT = await GT.findOne({ where: { name } });
+      assert.notEqual(tmpGT, null);
+
+      // 检查柜台GTBA是否是正确的用户
+      const tmpGTBA = await tmpGT.getGTBA();
+      assert.equal(tmpGTBA.username, code);
+    });
+
+    it('KFJL设置柜台图片成功', async () => {
+      const name = 'GT1';
+      const code = 'GT1Code';
+
+      // 获得KFJL token
+      const r = await axios.post(`${baseUrl}/auth/signin`, {
+        username: KFJLUsername1,
+        password: '1',
+      });
+      const tmpToken = r.data.token;
+
+      const record = await axios.post(
+        `${api}/createGT_GTBA`,
+        {
+          name,
+          code,
+          QY: QY.EAST,
+          CS: CS[0],
+        },
+        {
+          headers: { Authorization: `bearer ${tmpToken}` },
+        },
+      );
+
+      // 检查是否有创建的柜台
+      const tmpGT = await GT.findOne({ where: { name } });
+      assert.notEqual(tmpGT, null);
+
+      // 检查柜台GTBA是否是正确的用户
+      const tmpGTBA = await tmpGT.getGTBA();
+      assert.equal(tmpGTBA.username, code);
     });
   });
 });

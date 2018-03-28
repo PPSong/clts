@@ -65,6 +65,8 @@ export const QY = {
   NORTH: '北区',
 };
 
+export const CS = ['北京', '上海', '广州', '深圳'];
+
 const getBasicTable = str =>
   sequelize.define(
     str,
@@ -79,6 +81,14 @@ const getBasicTable = str =>
         allowNull: false,
         unique: true,
       },
+      createdAt: {
+        type: Sequelize.DATE(3),
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3)'),
+      },
+      updatedAt: {
+        type: Sequelize.DATE(3),
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)'),
+      },
     },
     {
       paranoid: true,
@@ -86,6 +96,27 @@ const getBasicTable = str =>
       freezeTableName: true,
     },
   );
+
+// const StudentCourse = sequelize.define(
+//   'StudentCourse',
+//   {
+//     id: {
+//       type: Sequelize.INTEGER,
+//       primaryKey: true,
+//       autoIncrement: true,
+//     },
+//   },
+//   {
+//     paranoid: true,
+//     version: true,
+//     freezeTableName: true,
+//   },
+// );
+
+// export const Student = getBasicTable('Student');
+// export const Course = getBasicTable('Course');
+// Student.belongsToMany(Course, { through: 'StudentCourse' });
+// Course.belongsToMany(Student, { through: 'StudentCourse' });
 
 // 用户
 export const User = sequelize.define(
@@ -376,6 +407,24 @@ export const GT = sequelize.define(
     GTBAUserId: {
       type: Sequelize.INTEGER,
       unique: 'GTBAUserId',
+      allowNull: false,
+    },
+    CS: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(CS).includes(val)) {
+            throw new Error('非法城市名称!');
+          }
+        },
+      },
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+    },
+    note: {
+      type: Sequelize.TEXT,
     },
   },
   {
@@ -450,13 +499,12 @@ export const DW = sequelize.define(
 DW.belongsTo(GT, { as: 'GTDW', foreignKey: 'GTId' });
 DW.belongsTo(DP, { as: 'DPDW', foreignKey: 'DPId' });
 
-
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 
 const initData = (str, num = 200) =>
   Array(num)
     .fill(0)
-    .map((_, i) => ({ name: `${str}_${i}` }));
+    .map((_, i) => ({ name: `${str}${i + 1}` }));
 
 const createUser = async (js, num) => {
   const ppLength = await PP.count();
@@ -478,7 +526,28 @@ export const init = async () => {
     await sequelize.drop();
     await sequelize.sync({ force: true });
 
-    await PP.bulkCreate(initData('品牌'));
+    // 新建品牌
+    await PP.bulkCreate(initData('PP', 2));
+
+    // 新建供应商
+    await GYS.create({
+      name: 'GYS1',
+      isSC: true,
+      isKC: true,
+    });
+    await GYS.create({
+      name: 'GYS2',
+      isSC: true,
+      isKC: false,
+    });
+    await GYS.create({
+      name: 'GYS3',
+      isSC: false,
+      isKC: true,
+    });
+
+    // 新建安装公司
+    await AZGS.bulkCreate(initData('AZGS', 2));
 
     // 新建Admin
     await User.create({
@@ -486,6 +555,64 @@ export const init = async () => {
       password: bCrypt.hashSync('1', 8),
       JS: JS.ADMIN,
     });
+
+    // 新建品牌经理
+    let tmpPPJL = await User.create({
+      username: 'PPJL1',
+      password: bCrypt.hashSync('1', 8),
+      JS: JS.PPJL,
+    });
+
+    let tmpPP = await PP.findOne({
+      where: {
+        name: 'PP1',
+      },
+    });
+
+    tmpPP.setPPJLs([tmpPPJL]);
+
+    tmpPPJL = await User.create({
+      username: 'PPJL2',
+      password: bCrypt.hashSync('1', 8),
+      JS: JS.PPJL,
+    });
+
+    tmpPP = await PP.findOne({
+      where: {
+        name: 'PP2',
+      },
+    });
+
+    tmpPP.setPPJLs([tmpPPJL]);
+
+    // 新建客服经理
+    let tmpKFJL = await User.create({
+      username: 'KFJL1',
+      password: bCrypt.hashSync('1', 8),
+      JS: JS.KFJL,
+    });
+
+    tmpPP = await PP.findOne({
+      where: {
+        name: 'PP1',
+      },
+    });
+
+    tmpPP.setKFJLs([tmpKFJL]);
+
+    tmpKFJL = await User.create({
+      username: 'KFJL2',
+      password: bCrypt.hashSync('1', 8),
+      JS: JS.KFJL,
+    });
+
+    tmpPP = await PP.findOne({
+      where: {
+        name: 'PP2',
+      },
+    });
+
+    tmpPP.setKFJLs([tmpPPJL]);
 
     // await createUser(1, 20);
   } catch (err) {

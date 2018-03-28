@@ -122,8 +122,8 @@ router.post('/createKFJL', async (req, res, next) => {
   }
 });
 
-// 新建GT, GZ, GTBA
-router.post('/createGT_GZ_GTBA', async (req, res, next) => {
+// 新建GT, GTBA
+router.post('/createGT_GTBA', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -136,27 +136,19 @@ router.post('/createGT_GZ_GTBA', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     const {
-      GTName, GZUsername, GZPassword, GTBAUsername, GTBAPassword,
+      name, code, QY, CS,
     } = req.body;
 
-    // 检查操作记录权限
+    const { PPId } = user;
 
-    // 新建GZUser
-    const tmpGZUser = await User.create(
-      {
-        username: GZUsername,
-        password: bCrypt.hashSync(GZPassword, 8),
-        JS: JS.GZ,
-      },
-      { transaction },
-    );
+    // 检查操作记录权限
 
     // 新建GTBAUser
     const tmpGTBAUser = await User.create(
       {
-        username: GTBAUsername,
-        password: bCrypt.hashSync(GTBAPassword, 8),
-        JS: JS.GZ,
+        username: code,
+        password: bCrypt.hashSync('123456', 8),
+        JS: JS.GTBA,
       },
       { transaction },
     );
@@ -164,13 +156,59 @@ router.post('/createGT_GZ_GTBA', async (req, res, next) => {
     // 新建GT
     const tmpGT = await GT.create(
       {
-        name: GTName,
-        PPId: user.PPId,
-        GZUserId: tmpGZUser.id,
+        name,
+        code,
+        PPId,
+        QY,
         GTBAUserId: tmpGTBAUser.id,
+        CS,
       },
       { transaction },
     );
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback transaction if any errors were encountered
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+router.post('/setGT_IMAGE', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (user.JS !== JS.KFJL) {
+      throw new Error('没有权限!');
+    }
+
+    transaction = await sequelize.transaction();
+
+    const { GTId, imageUrl } = req.body;
+
+    // 检查操作记录权限
+    const tmpGT = await GT.findOne({
+      where: {
+        id: GTId,
+      },
+      transaction,
+    });
+
+    if (!(tmpGT && tmpGT.PPId === user.PPId)) {
+      throw new Error('没有操作权限!');
+    }
+
+    // 设置image
+    tmpGT.imageUrl = imageUrl;
+    await tmpGT.save({ transaction });
 
     await transaction.commit();
 
