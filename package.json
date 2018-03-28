@@ -6,7 +6,9 @@
     "babel-node": "DEBUG=ppLog babel-node",
     "start": "nodemon --exec yarn run babel-node -- ./bin/www",
     "build": "babel src -d dist",
-    "cjs": "cjs-to-es6"
+    "cjs": "cjs-to-es6",
+    "initData": "nodemon --exec yarn run babel-node -- ./tools/initData.js",
+    "genData": "yarn run babel-node -- ./tools/initData.js"
   },
   "dependencies": {
     "babel-plugin-wildcard": "^4.0.0",

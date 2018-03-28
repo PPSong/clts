@@ -53,7 +53,7 @@ export const JS = {
   GZ: '柜长',
   GTBA: '柜台BA',
   GYSGLY: '供应商管理员',
-  AZGSGLY: '安装工管理员',
+  AZGSGLY: '安装公司管理员',
   ZHY: '装货员',
   AZG: '安装工',
 };
@@ -67,8 +67,25 @@ export const QY = {
 
 export const CS = ['北京', '上海', '广州', '深圳'];
 
-const getBasicTable = str =>
+const ppDefine = (name, obj, option) =>
   sequelize.define(
+    name,
+    {
+      ...obj,
+      createdAt: {
+        type: Sequelize.DATE(3),
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3)'),
+      },
+      updatedAt: {
+        type: Sequelize.DATE(3),
+        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)'),
+      },
+    },
+    option,
+  );
+
+const getBasicTable = str =>
+  ppDefine(
     str,
     {
       id: {
@@ -81,14 +98,6 @@ const getBasicTable = str =>
         allowNull: false,
         unique: true,
       },
-      createdAt: {
-        type: Sequelize.DATE(3),
-        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3)'),
-      },
-      updatedAt: {
-        type: Sequelize.DATE(3),
-        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)'),
-      },
     },
     {
       paranoid: true,
@@ -97,7 +106,7 @@ const getBasicTable = str =>
     },
   );
 
-// const StudentCourse = sequelize.define(
+// const StudentCourse = ppDefine(
 //   'StudentCourse',
 //   {
 //     id: {
@@ -119,7 +128,7 @@ const getBasicTable = str =>
 // Course.belongsToMany(Student, { through: 'StudentCourse' });
 
 // 用户
-export const User = sequelize.define(
+export const User = ppDefine(
   'User',
   {
     id: {
@@ -172,7 +181,7 @@ export const PP = getBasicTable('PP');
 // User.belongsTo(PP, { foreignKey: 'PPId' });
 
 // 品牌经理
-export const UserPPJL = sequelize.define(
+export const UserPPJL = ppDefine(
   'UserPPJL',
   {
     PPJLUserId: {
@@ -193,7 +202,7 @@ User.belongsToMany(PP, { through: 'UserPPJL', as: 'PPJLPPs', foreignKey: 'PPJLUs
 PP.belongsToMany(User, { through: 'UserPPJL', as: 'PPJLs', foreignKey: 'PPId' });
 
 // 客服经理
-export const UserKFJL = sequelize.define(
+export const UserKFJL = ppDefine(
   'UserKFJL',
   {
     KFJLUserId: {
@@ -214,7 +223,7 @@ User.belongsToMany(PP, { through: 'UserKFJL', as: 'KFJLPPs', foreignKey: 'KFJLUs
 PP.belongsToMany(User, { through: 'UserKFJL', as: 'KFJLs', foreignKey: 'PPId' });
 
 // 柜长
-export const UserGZ = sequelize.define(
+export const UserGZ = ppDefine(
   'UserGZ',
   {
     GZUserId: {
@@ -235,7 +244,7 @@ User.belongsToMany(PP, { through: 'UserGZ', as: 'GZPPs', foreignKey: 'GZUserId' 
 PP.belongsToMany(User, { through: 'UserGZ', as: 'GZs', foreignKey: 'PPId' });
 
 // 柜台BA
-export const UserGTBA = sequelize.define(
+export const UserGTBA = ppDefine(
   'UserGTBA',
   {
     GTBAUserId: {
@@ -257,7 +266,7 @@ PP.belongsToMany(User, { through: 'UserGTBA', as: 'GTBAs', foreignKey: 'PPId' })
 
 // 供应商
 // export const GYS = getBasicTable('GYS');
-export const GYS = sequelize.define(
+export const GYS = ppDefine(
   'GYS',
   {
     id: {
@@ -287,7 +296,7 @@ export const GYS = sequelize.define(
 );
 
 // 供应商管理员
-export const UserGYSGLY = sequelize.define(
+export const UserGYSGLY = ppDefine(
   'UserGYSGLY',
   {
     GYSGLYUserId: {
@@ -308,7 +317,7 @@ User.belongsToMany(GYS, { through: 'UserGYSGLY', as: 'GYSGLYGYSs', foreignKey: '
 GYS.belongsToMany(User, { through: 'UserGYSGLY', as: 'GYSGLYs', foreignKey: 'GYSId' });
 
 // 装货员
-export const UserZHY = sequelize.define(
+export const UserZHY = ppDefine(
   'UserZHY',
   {
     ZHYUserId: {
@@ -332,7 +341,7 @@ GYS.belongsToMany(User, { through: 'UserZHY', as: 'ZHYs', foreignKey: 'GYSId' })
 export const AZGS = getBasicTable('AZGS');
 
 // 安装公司管理员
-export const UserAZGSGLY = sequelize.define(
+export const UserAZGSGLY = ppDefine(
   'UserAZGSGLY',
   {
     AZGSGLYUserId: {
@@ -354,37 +363,31 @@ User.belongsToMany(AZGS, {
   as: 'AZGSGLYAZGS',
   foreignKey: 'AZGSGLYUserId',
 });
-
-User.belongsToMany(AZGS, {
-  through: 'UserAZGSGLY',
-  as: 'AZGSGLYAZGSs',
-  foreignKey: 'AZGSGLYUserId',
-});
 AZGS.belongsToMany(User, { through: 'UserAZGSGLY', as: 'AZGSGLYs', foreignKey: 'AZGSId' });
 
 // 安装工
-// export const UserAZG = sequelize.define(
-//   'UserAZG',
-//   {
-//     AZGUserId: {
-//       type: Sequelize.INTEGER,
-//       unique: true,
-//     },
-//     AZGSId: {
-//       type: Sequelize.INTEGER,
-//     },
-//   },
-//   {
-//     freezeTableName: true,
-//     version: true,
-//   },
-// );
+export const UserAZG = ppDefine(
+  'UserAZG',
+  {
+    AZGUserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
 
-// User.belongsToMany(AZGS, { through: 'UserAZG', as: 'AZG', foreignKey: 'AZGSId' });
-// AZGS.belongsToMany(User, { through: 'UserAZG', as: 'AZGAZGS', foreignKey: 'AZGUserId' });
+User.belongsToMany(AZGS, { through: 'UserAZG', as: 'AZGAZGSs', foreignKey: 'AZGUserId' });
+AZGS.belongsToMany(User, { through: 'UserAZG', as: 'AZGs', foreignKey: 'AZGSId' });
 
 // 柜台
-export const GT = sequelize.define(
+export const GT = ppDefine(
   'GT',
   {
     id: {
@@ -439,7 +442,7 @@ GT.belongsTo(User, { as: 'GTBA', foreignKey: 'GTBAUserId' });
 GT.belongsTo(PP, { foreignKey: 'PPId' });
 
 // 灯片
-export const DP = sequelize.define(
+export const DP = ppDefine(
   'DP',
   {
     id: {
@@ -467,7 +470,7 @@ export const DP = sequelize.define(
 DP.belongsTo(GYS, { as: 'DP', foreignKey: 'GYSId' });
 
 // 灯位
-export const DW = sequelize.define(
+export const DW = ppDefine(
   'DW',
   {
     id: {
@@ -526,93 +529,93 @@ export const init = async () => {
     await sequelize.drop();
     await sequelize.sync({ force: true });
 
-    // 新建品牌
-    await PP.bulkCreate(initData('PP', 2));
+    // // 新建品牌
+    // await PP.bulkCreate(initData('PP', 2));
 
-    // 新建供应商
-    await GYS.create({
-      name: 'GYS1',
-      isSC: true,
-      isKC: true,
-    });
-    await GYS.create({
-      name: 'GYS2',
-      isSC: true,
-      isKC: false,
-    });
-    await GYS.create({
-      name: 'GYS3',
-      isSC: false,
-      isKC: true,
-    });
+    // // 新建供应商
+    // await GYS.create({
+    //   name: 'GYS1',
+    //   isSC: true,
+    //   isKC: true,
+    // });
+    // await GYS.create({
+    //   name: 'GYS2',
+    //   isSC: true,
+    //   isKC: false,
+    // });
+    // await GYS.create({
+    //   name: 'GYS3',
+    //   isSC: false,
+    //   isKC: true,
+    // });
 
-    // 新建安装公司
-    await AZGS.bulkCreate(initData('AZGS', 2));
+    // // 新建安装公司
+    // await AZGS.bulkCreate(initData('AZGS', 2));
 
-    // 新建Admin
-    await User.create({
-      username: 'admin',
-      password: bCrypt.hashSync('1', 8),
-      JS: JS.ADMIN,
-    });
+    // // 新建Admin
+    // await User.create({
+    //   username: 'admin',
+    //   password: bCrypt.hashSync('1', 8),
+    //   JS: JS.ADMIN,
+    // });
 
-    // 新建品牌经理
-    let tmpPPJL = await User.create({
-      username: 'PPJL1',
-      password: bCrypt.hashSync('1', 8),
-      JS: JS.PPJL,
-    });
+    // // 新建品牌经理
+    // let tmpPPJL = await User.create({
+    //   username: 'PPJL1',
+    //   password: bCrypt.hashSync('1', 8),
+    //   JS: JS.PPJL,
+    // });
 
-    let tmpPP = await PP.findOne({
-      where: {
-        name: 'PP1',
-      },
-    });
+    // let tmpPP = await PP.findOne({
+    //   where: {
+    //     name: 'PP1',
+    //   },
+    // });
 
-    tmpPP.setPPJLs([tmpPPJL]);
+    // tmpPP.setPPJLs([tmpPPJL]);
 
-    tmpPPJL = await User.create({
-      username: 'PPJL2',
-      password: bCrypt.hashSync('1', 8),
-      JS: JS.PPJL,
-    });
+    // tmpPPJL = await User.create({
+    //   username: 'PPJL2',
+    //   password: bCrypt.hashSync('1', 8),
+    //   JS: JS.PPJL,
+    // });
 
-    tmpPP = await PP.findOne({
-      where: {
-        name: 'PP2',
-      },
-    });
+    // tmpPP = await PP.findOne({
+    //   where: {
+    //     name: 'PP2',
+    //   },
+    // });
 
-    tmpPP.setPPJLs([tmpPPJL]);
+    // tmpPP.setPPJLs([tmpPPJL]);
 
-    // 新建客服经理
-    let tmpKFJL = await User.create({
-      username: 'KFJL1',
-      password: bCrypt.hashSync('1', 8),
-      JS: JS.KFJL,
-    });
+    // // 新建客服经理
+    // let tmpKFJL = await User.create({
+    //   username: 'KFJL1',
+    //   password: bCrypt.hashSync('1', 8),
+    //   JS: JS.KFJL,
+    // });
 
-    tmpPP = await PP.findOne({
-      where: {
-        name: 'PP1',
-      },
-    });
+    // tmpPP = await PP.findOne({
+    //   where: {
+    //     name: 'PP1',
+    //   },
+    // });
 
-    tmpPP.setKFJLs([tmpKFJL]);
+    // tmpPP.setKFJLs([tmpKFJL]);
 
-    tmpKFJL = await User.create({
-      username: 'KFJL2',
-      password: bCrypt.hashSync('1', 8),
-      JS: JS.KFJL,
-    });
+    // tmpKFJL = await User.create({
+    //   username: 'KFJL2',
+    //   password: bCrypt.hashSync('1', 8),
+    //   JS: JS.KFJL,
+    // });
 
-    tmpPP = await PP.findOne({
-      where: {
-        name: 'PP2',
-      },
-    });
+    // tmpPP = await PP.findOne({
+    //   where: {
+    //     name: 'PP2',
+    //   },
+    // });
 
-    tmpPP.setKFJLs([tmpPPJL]);
+    // tmpPP.setKFJLs([tmpPPJL]);
 
     // await createUser(1, 20);
   } catch (err) {

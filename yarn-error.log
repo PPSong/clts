@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run babel-node ./bin/www
+  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run babel-node ./tools/initData.js
 
 PATH: 
   /Users/penn/Desktop/clts/node_modules/.bin:/Users/penn/.config/yarn/link/node_modules/.bin:/Users/penn/Desktop/clts/node_modules/.bin:/Users/penn/.config/yarn/link/node_modules/.bin:/usr/local/Cellar/node/9.6.1/libexec/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/Cellar/node/9.6.1/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/Cellar/node/9.6.1/bin/node_modules/npm/bin/node-gyp-bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools
@@ -22,7 +22,8 @@ npm manifest:
       "babel-node": "DEBUG=ppLog babel-node",
       "start": "nodemon --exec yarn run babel-node -- ./bin/www",
       "build": "babel src -d dist",
-      "cjs": "cjs-to-es6"
+      "cjs": "cjs-to-es6",
+      "initData": "nodemon --exec yarn run babel-node -- ./tools/initData.js"
     },
     "dependencies": {
       "babel-plugin-wildcard": "^4.0.0",
@@ -4248,7 +4249,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c DEBUG=ppLog babel-node ./bin/www
+  Arguments: -c DEBUG=ppLog babel-node ./tools/initData.js
   Directory: /Users/penn/Desktop/clts
   Output:
   
