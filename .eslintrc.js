@@ -16,6 +16,7 @@ module.exports = {
     "no-unused-vars": "warn",
     "no-plusplus": "off",
     "no-await-in-loop": "warn",
-    "consistent-return": "warn"
+    "consistent-return": "warn",
+    "camelcase": "warn",
   }
 };

@@ -30,7 +30,6 @@ const getToken = async (username, password) => {
     username,
     password,
   });
-  console.log(r.data.token);
   return r.data.token;
 };
 
@@ -73,16 +72,14 @@ describe('测试案例', () => {
     AZGSGLYToken = await getToken('AZGSGLY1', '1');
     ZHYToken = await getToken('ZHY1', '1');
     AZGToken = await getToken('AZG1', '1');
-    // adminToken = r.data.token;
-    // const s1 = await Student.create({ name: 's1' });
-    // const c1 = await Course.create({ name: 'c1' });
-    // const c2 = await Course.create({ name: 'c2' });
-    // await s1.addCourse(c1);
-    // await s1.addCourse(c2);
   });
 
   describe('test', async () => {
     it('small test', async () => {
+      assert.equal(1, 1);
+    });
+
+    it('admin 创建 PP', async () => {
       assert.equal(1, 1);
     });
   });

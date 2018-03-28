@@ -400,12 +400,27 @@ export const GT = ppDefine(
       allowNull: false,
       unique: 'name',
     },
+    code: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'code',
+    },
     PPId: {
       type: Sequelize.INTEGER,
     },
+    QY: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(QY).includes(val)) {
+            throw new Error('非法区域名称!');
+          }
+        },
+      },
+    },
     GZUserId: {
       type: Sequelize.INTEGER,
-      unique: 'GZUserId',
     },
     GTBAUserId: {
       type: Sequelize.INTEGER,
@@ -453,11 +468,14 @@ export const DP = ppDefine(
     name: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: 'name_GYSId',
+      unique: 'name_PPId',
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+      unique: 'name_PPId',
     },
     GYSId: {
       type: Sequelize.INTEGER,
-      unique: 'name_GYSId',
     },
   },
   {
@@ -489,7 +507,6 @@ export const DW = ppDefine(
     },
     DPId: {
       type: Sequelize.INTEGER,
-      unique: 'GZUserId',
     },
   },
   {
@@ -501,6 +518,384 @@ export const DW = ppDefine(
 
 DW.belongsTo(GT, { as: 'GTDW', foreignKey: 'GTId' });
 DW.belongsTo(DP, { as: 'DPDW', foreignKey: 'DPId' });
+
+// FG
+export const FG = ppDefine(
+  'FG',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+    note: {
+      type: Sequelize.TEXT,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// Tester
+export const Tester = ppDefine(
+  'Tester',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// FGTester
+export const FGTester = ppDefine(
+  'FGTester',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    FGId: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    TesterId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+FG.belongsToMany(Tester, { through: 'FGTester', as: 'Testers', foreignKey: 'FGId' });
+Tester.belongsToMany(FG, { through: 'FGTester', as: 'FGs', foreignKey: 'TesterId' });
+
+// WL
+export const WL = ppDefine(
+  'WL',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+    code: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'code_PPId',
+    },
+    level: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!(val >= 1 && val <= 3)) {
+            throw new Error('非法level!');
+          }
+        },
+      },
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// EJZH
+export const EJZH = ppDefine(
+  'EJZH',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+    WLId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// EJZH_FGTester
+export const EJZH_FGTester = ppDefine(
+  'EJZH_FGTester',
+  {
+    EJZHId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    FGTesterId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    number: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+EJZH.belongsToMany(FGTester, { through: 'EJZH_FGTester', as: 'FGTesters', foreignKey: 'EJZHId' });
+FGTester.belongsToMany(EJZH, { through: 'EJZH_FGTester', as: 'EJZHs', foreignKey: 'FGTesterId' });
+
+// EJZH_SJWL
+export const EJZH_WL = ppDefine(
+  'EJZH_SJWL',
+  {
+    EJZHId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    WLId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    number: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+EJZH.belongsToMany(WL, { through: 'EJZH_SJWL', as: 'WLs', foreignKey: 'EJZHId' });
+WL.belongsToMany(EJZH, { through: 'EJZH_SJWL', as: 'EJZHs', foreignKey: 'WLId' });
+
+// YJZH
+export const YJZH = ppDefine(
+  'YJZH',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+    WLId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// YJZH_EJZH
+export const YJZH_EJZH = ppDefine(
+  'YJZH_EJZH',
+  {
+    YJZHId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    EJZHId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    number: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+YJZH.belongsToMany(EJZH, { through: 'YJZH_EJZH', as: 'EJZHs', foreignKey: 'YJZHId' });
+EJZH.belongsToMany(YJZH, { through: 'YJZH_EJZH', as: 'YJZHs', foreignKey: 'EJZHId' });
+
+// GT_YJZH
+export const GT_YJZH = ppDefine(
+  'GT_YJZH',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'GTId_YJZHId_tag',
+    },
+    YJZHId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'GTId_YJZHId_tag',
+    },
+    tag: {
+      type: Sequelize.STRING,
+      unique: 'GTId_YJZHId_tag',
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+GT.belongsToMany(YJZH, {
+  through: { model: GT_YJZH, unique: false },
+  as: 'YJZHs',
+  foreignKey: 'GTId',
+});
+YJZH.belongsToMany(GT, {
+  through: { model: GT_YJZH, unique: false },
+  as: 'GTs',
+  foreignKey: 'YJZHId',
+});
+
+// YJZHXGT
+export const YJZHXGT = ppDefine(
+  'YJZHXGT',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    YJZHId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+YJZHXGT.belongsTo(YJZH, { as: 'XGT', foreignKey: 'YJZHId' });
+
+// EJZHXGT
+export const EJZHXGT = ppDefine(
+  'EJZHXGT',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    EJZHId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+EJZHXGT.belongsTo(EJZH, { as: 'XGT', foreignKey: 'EJZHId' });
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 

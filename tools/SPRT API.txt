@@ -1,0 +1,365 @@
+admin 创建 PP1
+post.newPP
+{
+    name,
+}
+
+admin 创建 PPJL1(PPId: PP1)
+post.createPPJL
+{
+    PPId,
+    username,
+    password,
+}
+
+PPJL1 创建 KFJL1(PPId: PP1)
+post.createKFJL
+{
+    PPId,
+    username,
+    password,
+}
+
+KFJL1 创建 GT1, GTBA1
+post.createGT_GTBA
+{
+    name:
+    code: (GTBA1的username默认为code, 密码默认: '123456'),
+    PPId, ? 这个可以由KFJL推导出
+    QY,
+    SF, ? 只要城市就好了
+    CS,
+}
+
+KFJL1 编辑 柜台图
+post.setGT_IMAGE
+{
+    GTId,
+    imageUrl,
+}
+
+admin 创建 GZ1
+post.newGZ
+{
+    username,
+    password,
+}
+
+admin 配置 GZ1 负责柜台
+post.setGZ_GTs
+{
+    GZUserId,
+    GTIds,
+}
+
+KFJL1 创建 GYS1
+post.newGYS
+{
+    name,
+    isSC,
+    isKC,
+}
+
+KFJL1 创建 GYSGLY1(GYSId: GYS1)
+post.createGYSGLY
+{
+    username,
+    password,
+    GYSId,
+}
+
+KFJL1 创建 AZGS1
+post.newAZGS
+{
+    name,
+}
+
+KFJL1 创建 AZGSGLY1(AZGSId: AZGS1)
+post.createAZGSGLY
+{
+    username,
+    password,
+    AZGSId,
+}
+
+KFJL1 创建 DW1(GTId: GT1)
+post.newDW
+{
+    name,
+    GTId,
+}
+
+KFJL1 创建 DP1
+post.newDW
+{
+    name,
+    PPId,
+    GYSId,
+}
+
+KFJL1 编辑 灯片图
+post.setDP_IMAGE
+{
+    DPId,
+    imageUrl,
+}
+
+KFJL1 更新 DW1(DPId: DP1)
+post.setDP_DWs
+{
+    DPId,
+    DWIds,
+}
+
+KFJL1 创建 WL3_1(GYSId: GYS1, level: 3, 图片1)
+post.newWL
+{
+    name,
+    code,
+    level,
+    GYSId,
+}
+
+KFJL1 编辑 物料图
+post.setWL_IMAGE
+{
+    WLId,
+    imageUrl,
+}
+
+KFJL1 创建 FG, Tester, FGTester
+post.importFG_Tester_FGTester
+{
+    FGs: [{
+        name,
+        note,
+        Tester: [{
+            name
+        }]
+    }]
+}
+
+KFJL1 创建 EJZH1(WLId: WL2_1, 图片1) //组合相关图？
+post.newEJZH
+{
+    name,
+    WLId,
+}
+
+KFJL1 配置 EJZH1 展示项目
+post.setEJZH_FGTester
+{
+    EJZHId,
+    FGTesterIds: [
+        {
+            id,
+            number,
+        }
+    ]
+}
+
+KFJL1 配置 EJZH1 三级物料
+post.setEJZH_SJWL
+{
+    EJZHId,
+    SJWLIds: [
+        {
+            id,
+            number,
+        }
+    ]
+}
+
+KFJL1 创建 YJZH1(WLId: WL1_1, 图片1) //组合相关图？
+post.newYJZH
+{
+    name,
+    WLId,
+}
+
+KFJL1 编辑 YJZH图
+post.setYJZH_IMAGE
+{
+    YJZHId,
+    imageUrl,
+}
+
+KFJL1 编辑 YJZH 相关图
+post.setYJZH_RELATED_IMAGES
+{
+    YJZHId,
+    imageUrls,
+}
+
+KFJL1 配置 YJZH1([EJZHId: EJZH1, 2个])
+post.setYJZH_EJZH
+{
+    YJZHId,
+    EJZHIds: [
+        {
+            id,
+            number,
+        }
+    ]
+}
+
+KFJL1 编辑 EJZH图
+post.setEJZH_IMAGE
+{
+    EJZHId,
+    imageUrl,
+}
+
+KFJL1 编辑 EJZH 相关图
+post.setEJZH_RELATED_IMAGES
+{
+    EJZHId,
+    imageUrls,
+}
+
+KFJL1 配置 GT1([YJZHId: YJZH1, BZ:靠墙], [YJZHId: YJZH1, BZ:靠走廊],)
+post.setGT_YJZH
+{
+    GTId,
+    YJZHIds: [
+        {
+            id,
+            note,
+        }
+    ]
+}
+
+PPJL1 查负责柜台列表
+get.listGT
+{
+    keyword
+}
+
+PPJL1 查某个柜台DW当前配置陈列
+post.calGT_DW
+{
+    GTId,
+}
+
+PPJL1 查某个柜台YJZH当前配置陈列
+post.calGT_YJZH
+{
+    GTId,
+}
+
+PPJL1 查某个柜台EJZH当前配置陈列
+post.calGT_EJZH
+{
+    YJZHId,
+}
+
+PPJL1 查某个柜台SJWL_ZSXM当前配置陈列
+post.calGT_SJWL_ZSXM
+{
+    EJZHId,
+}
+
+KFJL1 创建 DD1(PPId: PP1)
+post.newDD
+{
+    name,
+}
+
+KFJL1 创建 {GT1配置:[订单柜台, 订单柜台物料, 订单柜台灯片]}
+KFJL1 更新 EJZH1([WLId: WL3_1, 2个], [WLId: WL3_2, 1个])
+KFJL1 更新 YJZH1([EJZHId: EJZH1, 2个], [EJZHId: EJZH2, 2个])
+KFJL1 更新 GT1([YJZHId: YJZH1, BZ:靠墙], [YJZHId: YJZH1, BZ:靠走廊], [YJZHId: YJZH2, BZ:''])
+KFJL1 查询 {更新后的GT1配置: [订单柜台, 订单柜台物料, 订单柜台灯片]}
+KFJL1 导出 {更新后的GT1配置: [订单柜台, 订单柜台物料, 订单柜台灯片]}
+
+PPJL1 查询 {更新后的GT1配置: [订单柜台, 订单柜台物料, 订单柜台灯片]}
+PPJL1 更新 AZLX([订单柜台物料Id: [1, 2, 3], AZGSId: null], [订单柜台物料Id: [4, 5, 6], AZGSId: AZGS1])
+PPJL1 更新 DDSPSJ //审批操作
+PPJL1 查询 {真灯片, 道具}
+
+GYSGLY1 创建 ZHY1(GYSId: GYS1)
+GYSGLY1 更新 YJRKSJ([订单物料Id: [1, 2, 3], 2018-01-01], [订单柜台物料Id: [4, 5, 6], 2018-04-01])
+GYSGLY1 更新 YJCKSJ([订单物料Id: [1, 2, 3], 2018-01-01], [订单柜台物料Id: [4, 5, 6], 2018-04-01])
+
+AZGSGLY1 创建 AZY1(AZGSId: AZGS1)
+AZGSGLY1 创建 AZY2(AZGSId: AZGS1)
+AZGSGLY1 更新 DDYJAZSJ([订单柜台物料Id: [1, 2, 3], 2018-01-01], [订单柜台物料Id: [4, 5, 6], 2018-01-01])
+AZGSGLY1 更新 DDAZY([订单柜台物料Id: [1, 2, 3], AZY1], [订单柜台物料Id: [4, 5, 6], AZY2])
+
+ZHY1 更新 ZT(真灯片Id: [1, 2], 已入库)
+ZHY1 更新 ZT(道具Id: [1, 2], 已入库)
+ZHY1 更新 ZT(真灯片Id: [1, 2], 已装箱)
+ZHY1 更新 ZT(道具Id: [1, 2], 已装箱)
+ZHY1 更新 ZT(真灯片Id: [1, 2], 已发送)
+ZHY1 更新 ZT(道具Id: [1, 2], 已发送)
+ZHY1 创建 KDD1
+ZHY1 创建 KDX1(KDDId: KDD1)
+
+AZY1 更新 ZT(真灯片Id: [1], 已收货)
+GTBA1 更新 ZT(真灯片Id: [2], 已收货)
+AZY1 更新 ZT(道具Id: [1], 已收货)
+GTBA1 更新 ZT(道具Id: [2], 已收货)
+AZY1 更新 ZT(真灯片Id: [1], 已安装)
+GTBA1 更新 ZT(真灯片Id: [2], 已安装)
+AZY1 更新 ZT(道具Id: [1], 已安装)
+GTBA1 更新 ZT(道具Id: [2], 已安装)
+AZY1 更新 ZT(真灯片Id: [1], 已验收)
+GTBA1 更新 ZT(真灯片Id: [2], 已验收)
+AZY1 更新 ZT(道具Id: [1], 已验收)
+GTBA1 更新 ZT(道具Id: [2], 已验收)
+
+AZY1 更新 {道具局部图片}
+AZY1 更新 {[订单柜台]全景图}
+AZY1 更新 {灯片局部图片}
+
+GTBA1 创建 [DJBH1, DJBH2]{道具补货}
+GTBA1 创建 [DPBH1, DPBH1]{灯片补货}
+
+KFJL1 更新 BHSPSJ(道具补货Id: KFDJBH1, 2018-01-01) //审批
+KFJL1 更新 BHSPSJ(灯片补货Id: KFDPBH1, 2018-04-01) //审批
+PPJL1 更新 BHSPSJ(道具补货Id: PPDJBH1, 2018-01-01) //审批
+PPJL1 更新 BHSPSJ(灯片补货Id: PPDPBH1, 2018-04-01) //审批
+
+GYSGLY1 更新 DJRKSJ(道具补货Id: KFDJBH1, 2018-04-01)
+GYSGLY1 更新 DJCKSJ(道具补货Id: KFDJBH1, 2018-04-01)
+GYSGLY1 更新 DPRKSJ(灯片补货Id: KFDJBH1, 2018-04-01)
+GYSGLY1 更新 DPCKSJ(灯片补货Id: KFDJBH1, 2018-04-01)
+GYSGLY1 更新 DJPHFS([道具补货Id: KFDJBH1, FHGYSId: GYS1], [道具补货Id:KFDJBH2, 生产])
+GYSGLY1 更新 DJHBDDSJ(道具补货Id: [KFDJBH1, KFDJBH2], 2018-01-01)
+GYSGLY1 更新 DPPHFS([灯片补货Id: KFDJBH1, FHGYSId: GYS1], [灯片补货Id:KFDJBH2, 生产])
+GYSGLY1 更新 DPHBDDSJ(灯片补货Id: [KFDJBH1, KFDJBH2], 2018-01-01)
+
+AZGSGLY1 更新 DDYJAZSJ(订单柜台物料Id: [4], 2018-01-01)
+AZGSGLY1 更新 AZY(订单柜台物料Id: [4], AZY1)
+
+ZHY1 更新 ZT(真灯片Id: 3, 已入库)
+ZHY1 更新 ZT(道具Id: 3, 已入库)
+ZHY1 更新 ZT(真灯片Id: 3, 已装箱)
+ZHY1 更新 ZT(道具Id: 3, 已装箱)
+ZHY1 更新 ZT(真灯片Id: 3, 已发送)
+ZHY1 更新 ZT(道具Id: 3, 已发送)
+ZHY1 创建 KDD2
+ZHY1 创建 KDX2(KDDId: KDD2)
+
+AZY1 更新 ZT(真灯片Id: 3, 已收货)
+AZY1 更新 ZT(道具Id: 3, 已收货)
+AZY1 更新 ZT(真灯片Id: 3, 已安装)
+AZY1 更新 ZT(道具Id: 3, 已安装)
+AZY1 更新 ZT(真灯片Id: 3, 已验收)
+AZY1 更新 ZT(道具Id: 3, 已验收)
+
+AZY1 更新 {道具局部图片}
+AZY1 更新 {[订单柜台]全景图}
+AZY1 更新 {灯片局部图片}
+
+
+
+
+
+
+
+
+
+
+
+
