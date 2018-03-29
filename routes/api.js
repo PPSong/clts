@@ -180,6 +180,7 @@ router.post('/createGT_GTBA', async (req, res, next) => {
   }
 });
 
+// 编辑 柜台图
 router.post('/setGT_IMAGE', async (req, res, next) => {
   let transaction;
   const { user } = req;
@@ -223,6 +224,152 @@ router.post('/setGT_IMAGE', async (req, res, next) => {
     next(err);
   }
 });
+
+// 配置 GZ 负责柜台
+router.post('/setGZ_GTs', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.ADMIN].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { GZUserId, GTIds } = req.body;
+
+    // 检查操作记录权限
+    // 检查userId角色是柜长
+    const tmpGZ = User.findOne({
+      where: {
+        id: GZUserId,
+        JS: JS.GZ,
+      },
+      transaction,
+    });
+
+    if (!tmpGZ) {
+      throw new Error('记录操作不合法!');
+    }
+
+    // 检查柜台都存在, 没有被软删除
+    const tmpGTs = GT.findAll({
+      where: {
+        id: {
+          $in: GTIds,
+        },
+        deletedAt: {
+          $ne: null,
+        },
+      },
+      transaction,
+      paranoid: false,
+    });
+
+    if (tmpGTs.length > 0) {
+      throw new Error('记录操作不合法!');
+    }
+    // end 检查操作记录权限
+
+    // 设置GTIds
+    await sequelize.query('UPDATE GT set GZUserId = :GZUserId WHERE id in (:GTIds)', {
+      replacements: {
+        GZUserId,
+        GTIds: GTIds.join(','),
+      },
+      type: sequelize.QueryTypes.BULKUPDATE,
+      transaction,
+    });
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback transaction if any errors were encountered
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// 创建 GYS
+// router.post('/GYS', async (req, res, next) => {
+//   let transaction;
+//   const { user } = req;
+
+//   try {
+//     // 检查api调用权限
+//     if (![JS.KFJL].includes(user.JS)) {
+//       throw new Error('没有权限!');
+//     }
+//     // end 检查api调用权限
+
+//     transaction = await sequelize.transaction();
+
+//     const { name, isSC, isKC } = req.body;
+
+//     // 检查操作记录权限
+//     // 检查userId角色是柜长
+//     const tmpGZ = User.findOne({
+//       where: {
+//         id: GZUserId,
+//         JS: JS.GZ,
+//       },
+//       transaction,
+//     });
+
+//     if (!tmpGZ) {
+//       throw new Error('记录操作不合法!');
+//     }
+
+//     // 检查柜台都存在, 没有被软删除
+//     const tmpGTs = GT.findAll({
+//       where: {
+//         id: {
+//           $in: GTIds,
+//         },
+//         deletedAt: {
+//           $ne: null,
+//         },
+//       },
+//       transaction,
+//       paranoid: false,
+//     });
+
+//     if (tmpGTs.length > 0) {
+//       throw new Error('记录操作不合法!');
+//     }
+//     // end 检查操作记录权限
+
+//     // 设置GTIds
+//     await sequelize.query('UPDATE GT set GZUserId = :GZUserId WHERE id in (:GTIds)', {
+//       replacements: {
+//         GZUserId,
+//         GTIds: GTIds.join(','),
+//       },
+//       type: sequelize.QueryTypes.BULKUPDATE,
+//       transaction,
+//     });
+
+//     await transaction.commit();
+
+//     res.json({
+//       code: 1,
+//       data: 'ok',
+//     });
+//   } catch (err) {
+//     // Rollback transaction if any errors were encountered
+//     await (transaction && transaction.rollback());
+//     ppLog(err);
+//     next(err);
+//   }
+// });
 
 // 新建GYS, GYSGLY
 router.post('/createGYS_GYSGLY', async (req, res, next) => {
@@ -343,6 +490,7 @@ router.post('/:table', async (req, res, next) => {
 });
 
 router.get('/:table', async (req, res, next) => {
+  console.log('pptest3');
   try {
     const Table = tables[`${req.params.table}Table`];
     const r = await new Table(req.user).getList(req.query);

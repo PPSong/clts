@@ -31,7 +31,7 @@ export default class BaseTable {
     throw new Error('checkDeleteRight should be overrided.');
   }
 
-  checkUserAccess() {
+  async checkUserAccess() {
     throw new Error('checkUserAccess should be overrided.');
   }
 
@@ -51,11 +51,11 @@ export default class BaseTable {
   async create(fields) {
     this.checkCreateRight();
 
-    const filteredFields = this.filterCreateFields(fields);
+    const filteredFields = this.filterFields(fields);
 
     const newRecord = await this.getTable().build(filteredFields);
 
-    this.checkUserAccess(newRecord);
+    await this.checkUserAccess(newRecord);
 
     const r = await newRecord.save();
 
@@ -78,7 +78,7 @@ export default class BaseTable {
       },
     });
 
-    this.checkUserAccess(record);
+    await this.checkUserAccess(record);
 
     const r = await record.destroy();
 
@@ -100,7 +100,7 @@ export default class BaseTable {
 
     const record = await this.getTable().findOne({ where: { id }, paranoid: false });
 
-    this.checkUserAccess(record);
+    await this.checkUserAccess(record);
 
     if (record && record.deletedAt) {
       record.setDataValue('deletedAt', null);
@@ -127,13 +127,13 @@ export default class BaseTable {
     const record = await this.getTable().findOne({ where: { id }, paranoid: false });
 
     // 查看update前是否在用户权限范围
-    this.checkUserAccess(record);
+    await this.checkUserAccess(record);
 
     const r = await record.update(filteredFields);
 
     // 查看update后是否在用户权限范围
     // todo: check r还是record是更新后的值
-    this.checkUserAccess(record);
+    await this.checkUserAccess(record);
 
     if (!r[0]) {
       throw new Error('更新记录失败!');
@@ -151,7 +151,7 @@ export default class BaseTable {
     const record = await this.getTable().findOne({ where: { id }, paranoid: false });
 
     // 查看update前是否在用户权限范围
-    this.checkUserAccess(record);
+    await this.checkUserAccess(record);
 
     return {
       code: 1,

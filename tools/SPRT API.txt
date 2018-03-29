@@ -39,10 +39,11 @@ post.setGT_IMAGE
 }
 
 admin 创建 GZ1
-post.newGZ
+post.newUser
 {
     username,
     password,
+    JS: '柜长'
 }
 
 admin 配置 GZ1 负责柜台

@@ -28,7 +28,13 @@ export default class PPTable extends BaseTable {
   }
 
   checkSearchRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  async checkUserAccess(redord) {
+    if (![JS.ADMIN].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }

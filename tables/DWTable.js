@@ -1,6 +1,6 @@
 import debug from 'debug';
 import BaseTable from './BaseTable';
-import { DW, JS } from '../models/Model';
+import { DW, JS, GT } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
@@ -10,26 +10,47 @@ export default class DWTable extends BaseTable {
   }
 
   checkCreateRight() {
-    if (![JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkEditRight() {
-    if (![JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkDeleteRight() {
-    if (![JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkSearchRight() {
-    if (![JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
+    }
+  }
+
+  async checkUserAccess(record) {
+    switch (this.user.JS) {
+      case JS.ADMIN:
+        break;
+      case JS.PPJL:
+      case JS.KFJL:
+        const { GTId } = record;
+        const tmpGT = await GT.findOne({
+          where: {
+            id: GTId,
+          },
+        });
+        if (tmpGT.PPId !== this.user.PPId) {
+          throw new Error('无此权限!');
+        }
+        break;
+      default:
+        throw new Error('无此权限!');
     }
   }
 
@@ -38,19 +59,40 @@ export default class DWTable extends BaseTable {
   }
 
   async getQueryOption(keyword, id = null) {
-    const option = {};
+    const option = {
+      where: {},
+      include: [
+        {
+          model: GT,
+          as: 'GT',
+          where: {},
+        },
+      ],
+    };
     let PPIds;
     // 根据用户操作记录范围加入where
     switch (this.user.JS) {
-      case JS.KFJL:
-        PPIds = await this.user.getKFJLPPs().map(item => item.id);
-        option.where = {
-          id: {
-            $in: PPIds,
-          },
+      case JS.ADMIN:
+        if (id) {
+          option.where.id = { $eq: id };
+        }
+        break;
+      case JS.PPJL:
+        PPIds = await this.user.getPPJLPPs().map(item => item.id);
+        option.include[0].where.PPId = {
+          $in: PPIds,
         };
         if (id) {
-          option.where.id.$eq = id;
+          option.where.id = { $eq: id };
+        }
+        break;
+      case JS.KFJL:
+        PPIds = await this.user.getKFJLPPs().map(item => item.id);
+        option.include[0].where.PPId = {
+          $in: PPIds,
+        };
+        if (id) {
+          option.where.id = { $eq: id };
         }
         break;
       default:

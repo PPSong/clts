@@ -74,14 +74,14 @@ const ppDefine = (name, obj, option) =>
       ...obj,
       createdAt: {
         type: Sequelize.DATE(3),
-        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3)'),
       },
       updatedAt: {
         type: Sequelize.DATE(3),
-        defaultValue: sequelize.literal('CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)'),
       },
     },
-    option,
+    {
+      ...option,
+    },
   );
 
 const getBasicTable = str =>
@@ -106,26 +106,26 @@ const getBasicTable = str =>
     },
   );
 
-// const StudentCourse = ppDefine(
-//   'StudentCourse',
-//   {
-//     id: {
-//       type: Sequelize.INTEGER,
-//       primaryKey: true,
-//       autoIncrement: true,
-//     },
-//   },
-//   {
-//     paranoid: true,
-//     version: true,
-//     freezeTableName: true,
-//   },
-// );
+export const StudentCourse = ppDefine(
+  'StudentCourse',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+  },
+  {
+    paranoid: true,
+    version: true,
+    freezeTableName: true,
+  },
+);
 
-// export const Student = getBasicTable('Student');
-// export const Course = getBasicTable('Course');
-// Student.belongsToMany(Course, { through: 'StudentCourse' });
-// Course.belongsToMany(Student, { through: 'StudentCourse' });
+export const Student = getBasicTable('Student');
+export const Course = getBasicTable('Course');
+Student.belongsToMany(Course, { through: 'StudentCourse', as: 'Courses', foreignKey: 'studentId' });
+Course.belongsToMany(Student, { through: 'StudentCourse', as: 'Students', foreignKey: 'courseId' });
 
 // 用户
 export const User = ppDefine(
@@ -516,8 +516,8 @@ export const DW = ppDefine(
   },
 );
 
-DW.belongsTo(GT, { as: 'GTDW', foreignKey: 'GTId' });
-DW.belongsTo(DP, { as: 'DPDW', foreignKey: 'DPId' });
+DW.belongsTo(GT, { as: 'GT', foreignKey: 'GTId' });
+DW.belongsTo(DP, { as: 'DP', foreignKey: 'DPId' });
 
 // FG
 export const FG = ppDefine(

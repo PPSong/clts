@@ -1,4 +1,5 @@
 import bCrypt from 'bcryptjs';
+import moment from 'moment';
 
 const fs = require('fs');
 
@@ -13,6 +14,7 @@ const lineReader = require('readline').createInterface({
 let status = 0;
 let scriptStr = '';
 let values = [];
+const curTime = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
 
 lineReader.on('line', (sourceline) => {
   const line = sourceline.trim();
@@ -62,7 +64,8 @@ lineReader.on('line', (sourceline) => {
   if (status === 1) {
     console.log('fields名');
     const fields = line.split('\t').map(item => item.trim());
-    const fieldsArrStr = fields.join(',');
+    let fieldsArrStr = fields.join(',');
+    fieldsArrStr = `${fieldsArrStr}, createdAt, updatedAt`;
     let fieldsStr = `(${fieldsArrStr})\n`;
     fieldsStr += 'VALUES\n';
     scriptStr += fieldsStr;
@@ -83,7 +86,9 @@ lineReader.on('line', (sourceline) => {
       }
       return `'${item.trim()}'`;
     });
-    const dataArrStr = `(${dataArr.join(',')})`;
+    let dataArrStr = `${dataArr.join(',')}`;
+    // 加入createdAt, updatedAt
+    dataArrStr = `(${dataArrStr}, '${curTime}', '${curTime}')`;
     values.push(dataArrStr);
   }
 });

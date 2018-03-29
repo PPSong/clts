@@ -2,19 +2,24 @@ import { assert } from 'chai';
 import axios from 'axios';
 import debug from 'debug';
 import fs from 'fs';
+import _ from 'lodash';
 
 import {
   init,
   sequelize,
   QY,
   CS,
+  JS,
   UserPPJL,
+  UserKFJL,
   PP,
   GT,
   GYS,
   AZGS,
-  // Student,
-  // Course,
+  User,
+  Student,
+  Course,
+  StudentCourse,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -31,6 +36,120 @@ const getToken = async (username, password) => {
     password,
   });
   return r.data.token;
+};
+
+const post = async (path, body, token) => {
+  const r = await axios.post(`${api}/${path}`, body, {
+    headers: { Authorization: `bearer ${token}` },
+  });
+
+  return r;
+};
+
+const get = async (path, params, token) => {
+  const r = await axios.get(`${api}/${path}`, {
+    params,
+    headers: { Authorization: `bearer ${token}` },
+  });
+
+  return r;
+};
+
+const setCourses = async (studentId, courseIds) => {
+  let transaction;
+
+  try {
+    transaction = await sequelize.transaction();
+
+    // 确认studentId有效
+    const student = await Student.findOne({
+      where: {
+        id: studentId,
+      },
+      transaction,
+    });
+
+    if (!student) {
+      throw new Error('没有找到主记录!');
+    }
+
+    // 确认courseIds有效
+    const courses = await Course.findAll({
+      where: {
+        id: {
+          $in: courseIds,
+        },
+        deletedAt: {
+          $ne: null,
+        },
+      },
+      transaction,
+      paranoid: false,
+    });
+
+    if (courses.length > 0) {
+      throw new Error('附属记录状态不对!');
+    }
+
+    // 取得当前集合, 包括软删除的
+    const curCourses = await StudentCourse.findAll({
+      where: {
+        studentId,
+      },
+      transaction,
+      paranoid: false,
+    });
+
+    const curCourseIds = curCourses.map(item => item.courseId);
+
+    const targetCourseIds = courseIds;
+
+    const needToRemove = _.difference(curCourseIds, targetCourseIds);
+    const needToAdd = _.difference(targetCourseIds, curCourseIds);
+    const needToUpdate = _.intersection(curCourseIds, targetCourseIds);
+
+    // 删除不需要的 needToRemove
+    await StudentCourse.destroy({
+      where: {
+        id: {
+          $in: needToRemove,
+        },
+      },
+      transaction,
+    });
+
+    console.log(curCourseIds, targetCourseIds, needToRemove, needToAdd, needToUpdate);
+    // 编辑已经存在的 needToUpdate
+    if (needToUpdate.length > 0) {
+      await sequelize.query(
+        'UPDATE StudentCourse set deletedAt = null WHERE id in (:needToUpdate)',
+        {
+          replacements: {
+            needToUpdate: needToUpdate.join(','),
+          },
+          type: sequelize.QueryTypes.BULKUPDATE,
+          transaction,
+        },
+      );
+    }
+
+    // 添加没有的 needToAdd
+    const needToAddCourses = await Course.findAll({
+      where: {
+        id: {
+          $in: needToAdd,
+        },
+      },
+      transaction,
+    });
+    await student.addCourses(needToAddCourses, { transaction });
+
+    await transaction.commit();
+  } catch (err) {
+    console.log(err);
+    await (transaction && transaction.rollback());
+    throw new Error(err);
+  }
 };
 
 process.env.NODE_ENV = 'test';
@@ -79,8 +198,158 @@ describe('测试案例', () => {
       assert.equal(1, 1);
     });
 
-    it('admin 创建 PP', async () => {
+    it('temp test', async () => {
+      const r = await get(
+        'DW',
+        {
+          keyword: 'DW',
+        },
+        PPJLToken,
+      );
+
+      console.log('pptest6');
+      console.log(r.data);
       assert.equal(1, 1);
+    });
+
+    it('admin 创建 PP', async () => {
+      const name = 'T_PP1';
+      await post(
+        'PP',
+        {
+          name,
+        },
+        adminToken,
+      );
+
+      const r = await PP.findOne({ where: { name } });
+
+      assert.notEqual(r, null);
+    });
+
+    it('admin 创建 PPJL', async () => {
+      const PPId = 3;
+      const username = 'T_PPJL';
+      const password = '1';
+      await post(
+        'createPPJL',
+        {
+          PPId,
+          username,
+          password,
+        },
+        adminToken,
+      );
+
+      const user = await User.findOne({ where: { username } });
+      assert.notEqual(user, null);
+
+      const r = await UserPPJL.findOne({ where: { PPId } });
+      assert.notEqual(r.PPJLUserId, user.Id);
+    });
+
+    it('admin 创建 KFJL', async () => {
+      const PPId = 3;
+      const username = 'T_KFJL';
+      const password = '1';
+      await post(
+        'createKFJL',
+        {
+          PPId,
+          username,
+          password,
+        },
+        adminToken,
+      );
+
+      const user = await User.findOne({ where: { username } });
+      assert.notEqual(user, null);
+
+      const r = await UserKFJL.findOne({ where: { PPId } });
+      assert.notEqual(r.KFJLUserId, user.Id);
+    });
+
+    it('KFJL 创建 GT, GTBA', async () => {
+      const name = 'T_GT';
+      const code = 'T_GTCode';
+      const tmpQY = QY.EAST;
+      const tmpCS = '上海';
+      await post(
+        'createGT_GTBA',
+        {
+          name,
+          code,
+          QY: tmpQY,
+          CS: tmpCS,
+        },
+        KFJLToken,
+      );
+
+      const tmpGT = await GT.findOne({ where: { name } });
+      assert.notEqual(tmpGT, null);
+
+      const tmpGTBA = await tmpGT.getGTBA();
+      assert.equal(tmpGTBA.username, code);
+    });
+
+    it('KFJL 编辑 柜台图', async () => {
+      const name = 'T_GT';
+      const tmpGT = await GT.findOne({
+        where: {
+          name,
+        },
+      });
+      const GTId = tmpGT.id;
+      const imageUrl = 'T_imageUrl';
+      await post(
+        'setGT_IMAGE',
+        {
+          GTId,
+          imageUrl,
+        },
+        KFJLToken,
+      );
+
+      const tmpGT2 = await GT.findOne({ where: { name } });
+      assert.equal(tmpGT2.imageUrl, imageUrl);
+    });
+
+    it('admin 创建 GZ', async () => {
+      const username = 'T_GZ';
+      const password = '1';
+      await post(
+        'User',
+        {
+          username,
+          password,
+          JS: '柜长',
+        },
+        adminToken,
+      );
+
+      const tmpUser = await User.findOne({ where: { username } });
+      assert.equal(tmpUser.JS, JS.GZ);
+    });
+
+    it('admin 配置 GZ 负责柜台', async () => {
+      const username = 'T_GZ';
+      const name = 'T_GT';
+      const GZUser = await User.findOne({ where: { username } });
+      const GZUserId = GZUser.id;
+      const tmpGT = await GT.findOne({ where: { name } });
+      const GTId = tmpGT.id;
+      const GTIds = [GTId];
+      await post(
+        'setGZ_GTs',
+        {
+          GZUserId,
+          GTIds,
+        },
+        adminToken,
+      );
+
+      const tmpGT2 = await GT.findOne({ where: { name } });
+      assert.equal(tmpGT2.GZUserId, GZUserId);
     });
   });
 

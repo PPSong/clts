@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run babel-node ./tools/initData.js
+  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js genData
 
 PATH: 
-  /Users/penn/Desktop/clts/node_modules/.bin:/Users/penn/.config/yarn/link/node_modules/.bin:/Users/penn/Desktop/clts/node_modules/.bin:/Users/penn/.config/yarn/link/node_modules/.bin:/usr/local/Cellar/node/9.6.1/libexec/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/Cellar/node/9.6.1/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/Cellar/node/9.6.1/bin/node_modules/npm/bin/node-gyp-bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools
 
 Yarn version: 
   1.5.1
@@ -23,7 +23,8 @@ npm manifest:
       "start": "nodemon --exec yarn run babel-node -- ./bin/www",
       "build": "babel src -d dist",
       "cjs": "cjs-to-es6",
-      "initData": "nodemon --exec yarn run babel-node -- ./tools/initData.js"
+      "initData": "nodemon --exec yarn run babel-node -- ./tools/initData.js",
+      "genData": "yarn run babel-node -- ./tools/initData.js"
     },
     "dependencies": {
       "babel-plugin-wildcard": "^4.0.0",
@@ -34,6 +35,7 @@ npm manifest:
       "debug": "^3.1.0",
       "express": "^4.16.3",
       "jsonwebtoken": "^8.2.0",
+      "moment": "^2.21.0",
       "morgan": "^1.9.0",
       "mysql2": "^1.5.2",
       "passport": "^0.4.0",
@@ -2875,7 +2877,7 @@ Lockfile:
     dependencies:
       moment ">= 2.9.0"
   
-  "moment@>= 2.9.0", moment@^2.20.0:
+  "moment@>= 2.9.0", moment@^2.20.0, moment@^2.21.0:
     version "2.21.0"
     resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
   
@@ -4249,7 +4251,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c DEBUG=ppLog babel-node ./tools/initData.js
+  Arguments: -c yarn run babel-node -- ./tools/initData.js
   Directory: /Users/penn/Desktop/clts
   Output:
   

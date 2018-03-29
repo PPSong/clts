@@ -1,29 +1,28 @@
 import debug from 'debug';
-import bCrypt from 'bcryptjs';
 import BaseTable from './BaseTable';
-import { PP, JS, User } from '../models/Model';
+import { PP, JS } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
-export default class UserTable extends BaseTable {
+export default class GYSTable extends BaseTable {
   getTable() {
-    return User;
+    return PP;
   }
 
   checkCreateRight() {
-    if (![JS.ADMIN].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkEditRight() {
-    if (![JS.ADMIN].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkDeleteRight() {
-    if (![JS.ADMIN].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -34,57 +33,13 @@ export default class UserTable extends BaseTable {
     }
   }
 
-  async checkUserAccess(record) {
-    switch (record.JS) {
-      case JS.ADMIN:
-        throw new Error('无此权限!');
-      case JS.PPJL:
-        if (![JS.ADMIN].includes(this.user.JS)) {
-          throw new Error('无此权限!');
-        }
-        break;
-      case JS.KFJL:
-        if (![JS.ADMIN, JS.PPJL].includes(this.user.JS)) {
-          throw new Error('无此权限!');
-        }
-        break;
-      case JS.GZ:
-        if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
-          throw new Error('无此权限!');
-        }
-        break;
-      case JS.GTBA:
-        if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
-          throw new Error('无此权限!');
-        }
-        break;
-      case JS.GYSGLY:
-        if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
-          throw new Error('无此权限!');
-        }
-        break;
-      case JS.AZGSGLY:
-        if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
-          throw new Error('无此权限!');
-        }
-        break;
-      case JS.ZHY:
-        if (![JS.ADMIN, JS.GYSGLY].includes(this.user.JS)) {
-          throw new Error('无此权限!');
-        }
-        break;
-      case JS.AZG:
-        if (![JS.ADMIN, JS.AZGSGLY].includes(this.user.JS)) {
-          throw new Error('无此权限!');
-        }
-        break;
-      default:
-        throw new Error('无此权限!');
+  async checkUserAccess(redord) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+      throw new Error('无此权限!');
     }
   }
 
   getLikeSearchFields() {
-    // todo: get from schema
     return ['id', 'name'];
   }
 
@@ -152,16 +107,5 @@ export default class UserTable extends BaseTable {
       };
     }
     return option;
-  }
-
-  // override 为了对password进行处理
-  filterFields(fields) {
-    const filteredFields = {
-      ...fields,
-    };
-    // 防止指定id
-    delete filteredFields.id;
-    filteredFields.password = bCrypt.hashSync(filteredFields.password, 8);
-    return filteredFields;
   }
 }
