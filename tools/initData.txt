@@ -73,18 +73,18 @@ id	JS	username	password
 44	安装工	AZG5	password(1)				
 45	安装工	AZG6	password(1)				
 							
-[UserPPJL]							
-PPJLUserId	PPId						
+[PPJL_PP]							
+UserId	PPId						
 2	1						
 3	2						
 							
-[UserKFJL]							
-KFJLUserId	PPId						
+[KFJL_PP]							
+UserId	PPId						
 4	1						
 5	2						
 							
-[UserAZGSGLY]							
-AZGSGLYUserId	AZGSId						
+[GLY_AZGS]							
+UserId	AZGSId						
 28	1						
 29	2						
 30	3						
@@ -92,8 +92,8 @@ AZGSGLYUserId	AZGSId
 32	5						
 33	6						
 							
-[UserGYSGLY]							
-GYSGLYUserId	GYSId						
+[GLY_GYS]							
+UserId	GYSId						
 22	1						
 23	2						
 24	3						
@@ -101,19 +101,8 @@ GYSGLYUserId	GYSId
 26	5						
 27	6						
 							
-[UserGTBA]							
-GTBAUserId	PPId						
-14	1						
-15	1						
-16	1						
-17	1						
-18	1						
-19	1						
-20	2						
-21	2						
-							
-[UserGZ]							
-GZUserId	PPId						
+[GZ_PP]							
+UserId	PPId						
 6	1						
 7	1						
 8	1						
@@ -123,8 +112,8 @@ GZUserId	PPId
 12	2						
 13	2						
 							
-[UserZHY]							
-ZHYUserId	GYSId						
+[ZHY_GYS]							
+UserId	GYSId						
 34	1						
 35	1						
 36	2						
@@ -132,8 +121,8 @@ ZHYUserId	GYSId
 38	3						
 39	3						
 							
-[UserAZG]							
-AZGUserId	AZGSId						
+[AZG_AZGS]							
+UserId	AZGSId						
 40	1						
 41	1						
 42	1						
@@ -194,7 +183,7 @@ id	name	PPId
 5	Tester5	2					
 6	Tester6	2					
 							
-[FGTester]							
+[FG_Tester]							
 id	FGId	TesterId	PPId				
 1	1	1	1				
 2	1	2	1				
@@ -307,16 +296,15 @@ YJZHId	EJZHId	number
 4	4	1					
 							
 [GT_YJZH]							
-id	GTId	YJZHId	tag				
-1	1	1	GT_YJZH1				
-2	1	1	GT_YJZH2				
-3	2	1	GT_YJZH3				
-4	3	2	GT_YJZH4				
-5	4	1	GT_YJZH5				
-6	5	2	GT_YJZH6				
-7	6	1	GT_YJZH7				
-8	7	3	GT_YJZH8				
-9	8	4	GT_YJZH9				
+GTId	YJZHId	number					
+1	1	2					
+2	1	3					
+3	2	3					
+4	1	2					
+5	2	1					
+6	1	1					
+7	3	2					
+8	4	3					
 							
 [YJZHXGT]							
 id	imageUrl	YJZHId					

@@ -322,7 +322,7 @@ export const GLY_GYS = sequelize.define(
 );
 
 User.belongsToMany(GYS, { through: 'GLY_GYS', as: 'GLYGYSs' });
-GYS.belongsToMany(User, { through: 'GLY_GYS', as: 'GLYs' });
+GYS.belongsToMany(User, { through: 'GLY_GYS', as: 'GLYs', foreignKey: 'GYSId' });
 
 // 装货员
 export const ZHY_GYS = sequelize.define(
@@ -343,7 +343,7 @@ export const ZHY_GYS = sequelize.define(
 );
 
 User.belongsToMany(GYS, { through: 'ZHY_GYS', as: 'ZHYGYSs' });
-GYS.belongsToMany(User, { through: 'ZHY_GYS', as: 'ZHYs' });
+GYS.belongsToMany(User, { through: 'ZHY_GYS', as: 'ZHYs', foreignKey: 'GYSId' });
 
 // 安装公司
 export const AZGS = getBasicTable('AZGS');
@@ -366,12 +366,8 @@ export const GLY_AZGS = sequelize.define(
   },
 );
 
-User.belongsToMany(AZGS, {
-  through: 'GLY_AZGS',
-  as: 'GLYAZGSs',
-  foreignKey: 'UserId',
-});
-AZGS.belongsToMany(User, { through: 'GLY_AZGS', as: 'GLYs' });
+User.belongsToMany(AZGS, { through: 'GLY_AZGS', as: 'GLYAZGSs' });
+AZGS.belongsToMany(User, { through: 'GLY_AZGS', as: 'GLYs', foreignKey: 'AZGSId' });
 
 // 安装工
 export const AZG_AZGS = sequelize.define(
@@ -392,7 +388,7 @@ export const AZG_AZGS = sequelize.define(
 );
 
 User.belongsToMany(AZGS, { through: 'AZG_AZGS', as: 'AZGAZGSs' });
-AZGS.belongsToMany(User, { through: 'AZG_AZGS', as: 'AZGs' });
+AZGS.belongsToMany(User, { through: 'AZG_AZGS', as: 'AZGs', foreignKey: 'AZGSId' });
 
 // 灯片
 export const DP = sequelize.define(
