@@ -67,25 +67,8 @@ export const QY = {
 
 export const CS = ['北京', '上海', '广州', '深圳'];
 
-const ppDefine = (name, obj, option) =>
-  sequelize.define(
-    name,
-    {
-      ...obj,
-      createdAt: {
-        type: Sequelize.DATE(3),
-      },
-      updatedAt: {
-        type: Sequelize.DATE(3),
-      },
-    },
-    {
-      ...option,
-    },
-  );
-
 const getBasicTable = str =>
-  ppDefine(
+  sequelize.define(
     str,
     {
       id: {
@@ -98,37 +81,18 @@ const getBasicTable = str =>
         allowNull: false,
         unique: true,
       },
+      disabledAt: {
+        type: Sequelize.DATE,
+      },
     },
     {
-      paranoid: true,
       version: true,
       freezeTableName: true,
     },
   );
 
-export const StudentCourse = ppDefine(
-  'StudentCourse',
-  {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-  },
-  {
-    paranoid: true,
-    version: true,
-    freezeTableName: true,
-  },
-);
-
-export const Student = getBasicTable('Student');
-export const Course = getBasicTable('Course');
-Student.belongsToMany(Course, { through: 'StudentCourse', as: 'Courses', foreignKey: 'studentId' });
-Course.belongsToMany(Student, { through: 'StudentCourse', as: 'Students', foreignKey: 'courseId' });
-
 // 用户
-export const User = ppDefine(
+export const User = sequelize.define(
   'User',
   {
     id: {
@@ -171,20 +135,18 @@ export const User = ppDefine(
   },
   {
     freezeTableName: true,
-    paranoid: true,
     version: true,
   },
 );
 
 // 品牌
 export const PP = getBasicTable('PP');
-// User.belongsTo(PP, { foreignKey: 'PPId' });
 
 // 品牌经理
-export const UserPPJL = ppDefine(
-  'UserPPJL',
+export const PPJL_PP = sequelize.define(
+  'PPJL_PP',
   {
-    PPJLUserId: {
+    UserId: {
       type: Sequelize.INTEGER,
       unique: true,
     },
@@ -198,14 +160,14 @@ export const UserPPJL = ppDefine(
   },
 );
 
-User.belongsToMany(PP, { through: 'UserPPJL', as: 'PPJLPPs', foreignKey: 'PPJLUserId' });
-PP.belongsToMany(User, { through: 'UserPPJL', as: 'PPJLs', foreignKey: 'PPId' });
+User.belongsToMany(PP, { through: 'PPJL_PP', as: 'PPJLPPs' });
+PP.belongsToMany(User, { through: 'PPJL_PP', as: 'PPJLs' });
 
 // 客服经理
-export const UserKFJL = ppDefine(
-  'UserKFJL',
+export const KFJL_PP = sequelize.define(
+  'KFJL_PP',
   {
-    KFJLUserId: {
+    UserId: {
       type: Sequelize.INTEGER,
       unique: true,
     },
@@ -219,14 +181,14 @@ export const UserKFJL = ppDefine(
   },
 );
 
-User.belongsToMany(PP, { through: 'UserKFJL', as: 'KFJLPPs', foreignKey: 'KFJLUserId' });
-PP.belongsToMany(User, { through: 'UserKFJL', as: 'KFJLs', foreignKey: 'PPId' });
+User.belongsToMany(PP, { through: 'KFJL_PP', as: 'KFJLPPs' });
+PP.belongsToMany(User, { through: 'KFJL_PP', as: 'KFJLs' });
 
 // 柜长
-export const UserGZ = ppDefine(
-  'UserGZ',
+export const GZ_PP = sequelize.define(
+  'GZ_PP',
   {
-    GZUserId: {
+    UserId: {
       type: Sequelize.INTEGER,
       unique: true,
     },
@@ -240,154 +202,11 @@ export const UserGZ = ppDefine(
   },
 );
 
-User.belongsToMany(PP, { through: 'UserGZ', as: 'GZPPs', foreignKey: 'GZUserId' });
-PP.belongsToMany(User, { through: 'UserGZ', as: 'GZs', foreignKey: 'PPId' });
-
-// 柜台BA
-export const UserGTBA = ppDefine(
-  'UserGTBA',
-  {
-    GTBAUserId: {
-      type: Sequelize.INTEGER,
-      unique: true,
-    },
-    PPId: {
-      type: Sequelize.INTEGER,
-    },
-  },
-  {
-    freezeTableName: true,
-    version: true,
-  },
-);
-
-User.belongsToMany(PP, { through: 'UserGTBA', as: 'GTBAPPs', foreignKey: 'GTBAUserId' });
-PP.belongsToMany(User, { through: 'UserGTBA', as: 'GTBAs', foreignKey: 'PPId' });
-
-// 供应商
-// export const GYS = getBasicTable('GYS');
-export const GYS = ppDefine(
-  'GYS',
-  {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    name: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    isSC: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false,
-    },
-    isKC: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false,
-    },
-  },
-  {
-    paranoid: true,
-    version: true,
-    freezeTableName: true,
-  },
-);
-
-// 供应商管理员
-export const UserGYSGLY = ppDefine(
-  'UserGYSGLY',
-  {
-    GYSGLYUserId: {
-      type: Sequelize.INTEGER,
-      unique: true,
-    },
-    GYSId: {
-      type: Sequelize.INTEGER,
-    },
-  },
-  {
-    freezeTableName: true,
-    version: true,
-  },
-);
-
-User.belongsToMany(GYS, { through: 'UserGYSGLY', as: 'GYSGLYGYSs', foreignKey: 'GYSGLYUserId' });
-GYS.belongsToMany(User, { through: 'UserGYSGLY', as: 'GYSGLYs', foreignKey: 'GYSId' });
-
-// 装货员
-export const UserZHY = ppDefine(
-  'UserZHY',
-  {
-    ZHYUserId: {
-      type: Sequelize.INTEGER,
-      unique: true,
-    },
-    GYSId: {
-      type: Sequelize.INTEGER,
-    },
-  },
-  {
-    freezeTableName: true,
-    version: true,
-  },
-);
-
-User.belongsToMany(GYS, { through: 'UserZHY', as: 'ZHYGYSs', foreignKey: 'ZHYUserId' });
-GYS.belongsToMany(User, { through: 'UserZHY', as: 'ZHYs', foreignKey: 'GYSId' });
-
-// 安装公司
-export const AZGS = getBasicTable('AZGS');
-
-// 安装公司管理员
-export const UserAZGSGLY = ppDefine(
-  'UserAZGSGLY',
-  {
-    AZGSGLYUserId: {
-      type: Sequelize.INTEGER,
-      unique: true,
-    },
-    AZGSId: {
-      type: Sequelize.INTEGER,
-    },
-  },
-  {
-    freezeTableName: true,
-    version: true,
-  },
-);
-
-User.belongsToMany(AZGS, {
-  through: 'UserAZGSGLY',
-  as: 'AZGSGLYAZGS',
-  foreignKey: 'AZGSGLYUserId',
-});
-AZGS.belongsToMany(User, { through: 'UserAZGSGLY', as: 'AZGSGLYs', foreignKey: 'AZGSId' });
-
-// 安装工
-export const UserAZG = ppDefine(
-  'UserAZG',
-  {
-    AZGUserId: {
-      type: Sequelize.INTEGER,
-      unique: true,
-    },
-    AZGSId: {
-      type: Sequelize.INTEGER,
-    },
-  },
-  {
-    freezeTableName: true,
-    version: true,
-  },
-);
-
-User.belongsToMany(AZGS, { through: 'UserAZG', as: 'AZGAZGSs', foreignKey: 'AZGUserId' });
-AZGS.belongsToMany(User, { through: 'UserAZG', as: 'AZGs', foreignKey: 'AZGSId' });
+User.belongsToMany(PP, { through: 'GZ_PP', as: 'GZPPs' });
+PP.belongsToMany(User, { through: 'GZ_PP', as: 'GZs' });
 
 // 柜台
-export const GT = ppDefine(
+export const GT = sequelize.define(
   'GT',
   {
     id: {
@@ -446,7 +265,6 @@ export const GT = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
@@ -454,10 +272,130 @@ export const GT = ppDefine(
 
 GT.belongsTo(User, { as: 'GZ', foreignKey: 'GZUserId' });
 GT.belongsTo(User, { as: 'GTBA', foreignKey: 'GTBAUserId' });
-GT.belongsTo(PP, { foreignKey: 'PPId' });
+GT.belongsTo(PP);
+
+// 供应商
+export const GYS = sequelize.define(
+  'GYS',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    isSC: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+    },
+    isKC: {
+      type: Sequelize.BOOLEAN,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// 供应商管理员
+export const GLY_GYS = sequelize.define(
+  'GLY_GYS',
+  {
+    UserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(GYS, { through: 'GLY_GYS', as: 'GLYGYSs' });
+GYS.belongsToMany(User, { through: 'GLY_GYS', as: 'GLYs' });
+
+// 装货员
+export const ZHY_GYS = sequelize.define(
+  'ZHY_GYS',
+  {
+    UserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(GYS, { through: 'ZHY_GYS', as: 'ZHYGYSs' });
+GYS.belongsToMany(User, { through: 'ZHY_GYS', as: 'ZHYs' });
+
+// 安装公司
+export const AZGS = getBasicTable('AZGS');
+
+// 安装公司管理员
+export const GLY_AZGS = sequelize.define(
+  'GLY_AZGS',
+  {
+    UserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(AZGS, {
+  through: 'GLY_AZGS',
+  as: 'GLYAZGSs',
+  foreignKey: 'UserId',
+});
+AZGS.belongsToMany(User, { through: 'GLY_AZGS', as: 'GLYs' });
+
+// 安装工
+export const AZG_AZGS = sequelize.define(
+  'AZG_AZGS',
+  {
+    UserId: {
+      type: Sequelize.INTEGER,
+      unique: true,
+    },
+    AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    freezeTableName: true,
+    version: true,
+  },
+);
+
+User.belongsToMany(AZGS, { through: 'AZG_AZGS', as: 'AZGAZGSs' });
+AZGS.belongsToMany(User, { through: 'AZG_AZGS', as: 'AZGs' });
 
 // 灯片
-export const DP = ppDefine(
+export const DP = sequelize.define(
   'DP',
   {
     id: {
@@ -479,16 +417,16 @@ export const DP = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
-DP.belongsTo(GYS, { as: 'DP', foreignKey: 'GYSId' });
+DP.belongsTo(GYS);
+DP.belongsTo(PP);
 
 // 灯位
-export const DW = ppDefine(
+export const DW = sequelize.define(
   'DW',
   {
     id: {
@@ -510,17 +448,16 @@ export const DW = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
-DW.belongsTo(GT, { as: 'GT', foreignKey: 'GTId' });
-DW.belongsTo(DP, { as: 'DP', foreignKey: 'DPId' });
+DW.belongsTo(GT);
+DW.belongsTo(DP);
 
 // FG
-export const FG = ppDefine(
+export const FG = sequelize.define(
   'FG',
   {
     id: {
@@ -543,14 +480,15 @@ export const FG = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
+FG.belongsTo(PP);
+
 // Tester
-export const Tester = ppDefine(
+export const Tester = sequelize.define(
   'Tester',
   {
     id: {
@@ -570,15 +508,16 @@ export const Tester = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
+Tester.belongsTo(PP);
+
 // FGTester
-export const FGTester = ppDefine(
-  'FGTester',
+export const FG_Tester = sequelize.define(
+  'FG_Tester',
   {
     id: {
       type: Sequelize.INTEGER,
@@ -599,17 +538,17 @@ export const FGTester = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
-FG.belongsToMany(Tester, { through: 'FGTester', as: 'Testers', foreignKey: 'FGId' });
-Tester.belongsToMany(FG, { through: 'FGTester', as: 'FGs', foreignKey: 'TesterId' });
+FG.belongsToMany(Tester, { through: 'FG_Tester' });
+Tester.belongsToMany(FG, { through: 'FG_Tester' });
+FG_Tester.belongsTo(PP);
 
 // WL
-export const WL = ppDefine(
+export const WL = sequelize.define(
   'WL',
   {
     id: {
@@ -652,14 +591,16 @@ export const WL = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
+WL.belongsTo(PP);
+WL.belongsTo(GYS);
+
 // EJZH
-export const EJZH = ppDefine(
+export const EJZH = sequelize.define(
   'EJZH',
   {
     id: {
@@ -683,14 +624,16 @@ export const EJZH = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
+EJZH.belongsTo(WL, { as: 'EJWL' });
+EJZH.belongsTo(PP);
+
 // EJZH_FGTester
-export const EJZH_FGTester = ppDefine(
+export const EJZH_FGTester = sequelize.define(
   'EJZH_FGTester',
   {
     EJZHId: {
@@ -707,17 +650,16 @@ export const EJZH_FGTester = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
-EJZH.belongsToMany(FGTester, { through: 'EJZH_FGTester', as: 'FGTesters', foreignKey: 'EJZHId' });
-FGTester.belongsToMany(EJZH, { through: 'EJZH_FGTester', as: 'EJZHs', foreignKey: 'FGTesterId' });
+EJZH.belongsToMany(FG_Tester, { through: 'EJZH_FGTester', as: 'FGTesters', foreignKey: 'EJZHId' });
+FG_Tester.belongsToMany(EJZH, { through: 'EJZH_FGTester', as: 'EJZHs', foreignKey: 'FGTesterId' });
 
 // EJZH_SJWL
-export const EJZH_WL = ppDefine(
+export const EJZH_SJWL = sequelize.define(
   'EJZH_SJWL',
   {
     EJZHId: {
@@ -734,17 +676,16 @@ export const EJZH_WL = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
-EJZH.belongsToMany(WL, { through: 'EJZH_SJWL', as: 'WLs', foreignKey: 'EJZHId' });
+EJZH.belongsToMany(WL, { through: 'EJZH_SJWL', as: 'SJWLs', foreignKey: 'EJZHId' });
 WL.belongsToMany(EJZH, { through: 'EJZH_SJWL', as: 'EJZHs', foreignKey: 'WLId' });
 
 // YJZH
-export const YJZH = ppDefine(
+export const YJZH = sequelize.define(
   'YJZH',
   {
     id: {
@@ -768,14 +709,16 @@ export const YJZH = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
+YJZH.belongsTo(WL, { as: 'YJWL' });
+YJZH.belongsTo(PP);
+
 // YJZH_EJZH
-export const YJZH_EJZH = ppDefine(
+export const YJZH_EJZH = sequelize.define(
   'YJZH_EJZH',
   {
     YJZHId: {
@@ -792,7 +735,6 @@ export const YJZH_EJZH = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
@@ -802,49 +744,33 @@ YJZH.belongsToMany(EJZH, { through: 'YJZH_EJZH', as: 'EJZHs', foreignKey: 'YJZHI
 EJZH.belongsToMany(YJZH, { through: 'YJZH_EJZH', as: 'YJZHs', foreignKey: 'EJZHId' });
 
 // GT_YJZH
-export const GT_YJZH = ppDefine(
+export const GT_YJZH = sequelize.define(
   'GT_YJZH',
   {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
     GTId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: 'GTId_YJZHId_tag',
     },
     YJZHId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: 'GTId_YJZHId_tag',
     },
-    tag: {
-      type: Sequelize.STRING,
-      unique: 'GTId_YJZHId_tag',
+    number: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
-GT.belongsToMany(YJZH, {
-  through: { model: GT_YJZH, unique: false },
-  as: 'YJZHs',
-  foreignKey: 'GTId',
-});
-YJZH.belongsToMany(GT, {
-  through: { model: GT_YJZH, unique: false },
-  as: 'GTs',
-  foreignKey: 'YJZHId',
-});
+GT.belongsToMany(YJZH, { through: 'GT_YJZH' });
+YJZH.belongsToMany(GT, { through: 'GT_YJZH' });
 
 // YJZHXGT
-export const YJZHXGT = ppDefine(
+export const YJZHXGT = sequelize.define(
   'YJZHXGT',
   {
     id: {
@@ -862,16 +788,16 @@ export const YJZHXGT = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
-YJZHXGT.belongsTo(YJZH, { as: 'XGT', foreignKey: 'YJZHId' });
+YJZHXGT.belongsTo(YJZH);
+YJZH.hasMany(YJZHXGT);
 
 // EJZHXGT
-export const EJZHXGT = ppDefine(
+export const EJZHXGT = sequelize.define(
   'EJZHXGT',
   {
     id: {
@@ -889,13 +815,13 @@ export const EJZHXGT = ppDefine(
     },
   },
   {
-    paranoid: true,
     version: true,
     freezeTableName: true,
   },
 );
 
-EJZHXGT.belongsTo(EJZH, { as: 'XGT', foreignKey: 'EJZHId' });
+EJZHXGT.belongsTo(EJZH);
+EJZH.hasMany(EJZHXGT);
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 
