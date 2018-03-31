@@ -15,20 +15,38 @@ export default class PPTable extends BaseTable {
     }
   }
 
-  checkEditRight() {
-    if (![JS.ADMIN].includes(this.user.JS)) {
-      throw new Error('无此权限!');
-    }
-  }
-
   checkDeleteRight() {
     if (![JS.ADMIN].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
-  checkSearchRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+  checkEditRight() {
+    if (![JS.ADMIN].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkListRight() {
+    if (![JS.ADMIN].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkDisableRight() {
+    if (![JS.ADMIN].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkEnableRight() {
+    if (![JS.ADMIN].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkFindOneRight() {
+    if (![JS.ADMIN].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -45,58 +63,9 @@ export default class PPTable extends BaseTable {
 
   async getQueryOption(keyword, id = null) {
     const option = {};
-    let PPIds;
     // 根据用户操作记录范围加入where
-    switch (this.user.JS) {
-      case JS.ADMIN:
-        break;
-      case JS.PPJL:
-        PPIds = await this.user.getPPJLPPs().map(item => item.id);
-        option.where = {
-          id: {
-            $in: PPIds,
-          },
-        };
-        if (id) {
-          option.where.id.$eq = id;
-        }
-        break;
-      case JS.KFJL:
-        PPIds = await this.user.getKFJLPPs().map(item => item.id);
-        option.where = {
-          id: {
-            $in: PPIds,
-          },
-        };
-        if (id) {
-          option.where.id.$eq = id;
-        }
-        break;
-      case JS.GZ:
-        PPIds = await this.user.getGZPPs().map(item => item.id);
-        option.where = {
-          id: {
-            $in: PPIds,
-          },
-        };
-        if (id) {
-          option.where.id.$eq = id;
-        }
-        break;
-      case JS.GTBA:
-        PPIds = await this.user.getGTBAPPs().map(item => item.id);
-        option.where = {
-          id: {
-            $in: PPIds,
-          },
-        };
-        if (id) {
-          option.where.id.$eq = id;
-        }
-        break;
-      default:
-        throw new Error('无此权限!');
-    }
+    // end 根据用户操作记录范围加入where
+
     // 把模糊搜索条件加入where
     if (keyword) {
       const fields = this.getLikeSearchFields();
@@ -106,6 +75,8 @@ export default class PPTable extends BaseTable {
         $or: likeArr,
       };
     }
+    // end 把模糊搜索条件加入where
+
     return option;
   }
 }

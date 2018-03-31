@@ -92,6 +92,8 @@ passport.use(new JWTStrategy(
       if (user) {
         // 目前一个用户只属于一个品牌, 数据库结构设计的是多对多, 为以后扩展做好了准备
         let PPIds;
+        let GYSIds;
+        let AZGSIds;
         switch (user.JS) {
           case JS.PPJL:
             PPIds = await user.getPPJLPPs();
@@ -100,6 +102,14 @@ passport.use(new JWTStrategy(
           case JS.KFJL:
             PPIds = await user.getKFJLPPs();
             user.PPId = PPIds[0].id;
+            break;
+          case JS.GYSGLY:
+            GYSIds = await user.getGYSs();
+            user.GYSId = GYSIds[0].id;
+            break;
+          case JS.AZGSGLY:
+            AZGSIds = await user.getAZGSs();
+            user.AZGSId = AZGSIds[0].id;
             break;
           default:
             break;

@@ -11,30 +11,52 @@ export default class UserTable extends BaseTable {
   }
 
   checkCreateRight() {
-    if (![JS.ADMIN].includes(this.user.JS)) {
-      throw new Error('无此权限!');
-    }
-  }
-
-  checkEditRight() {
+    // 除了admin, 其他人创建用户都应该用专用api, 这样才能控制创建的人在其负责范围内
     if (![JS.ADMIN].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkDeleteRight() {
-    if (![JS.ADMIN].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
-  checkSearchRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+  checkEditRight() {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkListRight() {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkDisableRight() {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkEnableRight() {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkFindOneRight() {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(record) {
+    let tmpPP;
+    let tmpGYSId;
+    let tmpAZGSId;
     switch (record.JS) {
       case JS.ADMIN:
         throw new Error('无此权限!');
@@ -44,39 +66,76 @@ export default class UserTable extends BaseTable {
         }
         break;
       case JS.KFJL:
-        if (![JS.ADMIN, JS.PPJL].includes(this.user.JS)) {
+        if (![JS.PPJL].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
+
+        const tmpPPs = await record.getKFJLPPs();
+        if (this.user.PPId !== tmpPPs[0].id) {
+          throw new Error('无此权限!');
+        }
+
         break;
       case JS.GZ:
-        if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+        if (![JS.KFJL].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
+
+        const tmpGTs = await record.getGTs();
+        // 程序上控制柜长只能管理一个品牌下的柜台, 所以只需要取一条记录
+        tmpPP = await tmpGTs[0].getPP();
+        if (this.user.PPId !== tmpPP.id) {
+          throw new Error('无此权限!');
+        }
+
         break;
       case JS.GTBA:
-        if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+        if (![JS.KFJL].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
+
+        const tmpGT = await record.getGT();
+        tmpPP = await tmpGT.getPP();
+        if (this.user.PPId !== tmpPP.id) {
+          throw new Error('无此权限!');
+        }
+
         break;
       case JS.GYSGLY:
-        if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+        if (![JS.KFJL].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
         break;
       case JS.AZGSGLY:
-        if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+        if (![JS.KFJL].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
         break;
       case JS.ZHY:
-        if (![JS.ADMIN, JS.GYSGLY].includes(this.user.JS)) {
+        if (![JS.GYSGLY].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
+
+        const tmpGYSs = await record.getGYSs();
+        // 程序上控制装货员只能属于一个供应商, 所以只需要取一条记录
+        tmpGYSId = await tmpGYSs[0].id;
+        if (this.user.GYSId !== tmpGYSId) {
+          throw new Error('无此权限!');
+        }
+
         break;
       case JS.AZG:
-        if (![JS.ADMIN, JS.AZGSGLY].includes(this.user.JS)) {
+        if (![JS.AZGSGLY].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
+
+        const tmpAZGSs = await record.getAZGSs();
+        // 程序上控制安装工只能属于一个安装公司, 所以只需要取一条记录
+        tmpAZGSId = await tmpAZGSs[0].id;
+        if (this.user.AZGSId !== tmpAZGSId) {
+          throw new Error('无此权限!');
+        }
+
         break;
       default:
         throw new Error('无此权限!');

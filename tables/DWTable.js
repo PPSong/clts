@@ -10,33 +10,49 @@ export default class DWTable extends BaseTable {
   }
 
   checkCreateRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
-      throw new Error('无此权限!');
-    }
-  }
-
-  checkEditRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkDeleteRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
-  checkSearchRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+  checkEditRight() {
+    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkListRight() {
+    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkDisableRight() {
+    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkEnableRight() {
+    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+      throw new Error('无此权限!');
+    }
+  }
+
+  checkFindOneRight() {
+    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(record) {
     switch (this.user.JS) {
-      case JS.ADMIN:
-        break;
       case JS.PPJL:
       case JS.KFJL:
         const { GTId } = record;
@@ -58,7 +74,7 @@ export default class DWTable extends BaseTable {
     return ['id', 'name'];
   }
 
-  async getQueryOption(keyword, id = null) {
+  async getQueryOption(keyword) {
     const option = {
       where: {},
       include: [
@@ -72,32 +88,23 @@ export default class DWTable extends BaseTable {
     let PPIds;
     // 根据用户操作记录范围加入where
     switch (this.user.JS) {
-      case JS.ADMIN:
-        if (id) {
-          option.where.id = { $eq: id };
-        }
-        break;
       case JS.PPJL:
         PPIds = await this.user.getPPJLPPs().map(item => item.id);
         option.include[0].where.PPId = {
           $in: PPIds,
         };
-        if (id) {
-          option.where.id = { $eq: id };
-        }
         break;
       case JS.KFJL:
         PPIds = await this.user.getKFJLPPs().map(item => item.id);
         option.include[0].where.PPId = {
           $in: PPIds,
         };
-        if (id) {
-          option.where.id = { $eq: id };
-        }
         break;
       default:
         throw new Error('无此权限!');
     }
+    // end 根据用户操作记录范围加入where
+
     // 把模糊搜索条件加入where
     if (keyword) {
       const fields = this.getLikeSearchFields();
@@ -107,6 +114,8 @@ export default class DWTable extends BaseTable {
         $or: likeArr,
       };
     }
+    // end 把模糊搜索条件加入where
+
     return option;
   }
 }

@@ -272,6 +272,7 @@ export const GT = sequelize.define(
 
 GT.belongsTo(User, { as: 'GZ', foreignKey: 'GZUserId' });
 GT.belongsTo(User, { as: 'GTBA', foreignKey: 'GTBAUserId' });
+User.hasOne(GT, { as: 'GTBA', foreignKey: 'GTBAUserId' });
 GT.belongsTo(PP);
 
 // 供应商
