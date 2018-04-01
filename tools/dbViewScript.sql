@@ -14,6 +14,28 @@ LEFT JOIN
 ON
 	a.id = b.GTId
 );
+
+DROP VIEW IF EXISTS V_GT_YJZH_List ;
+CREATE VIEW V_GT_YJZH_List
+AS
+(
+SELECT
+	a.GTId,
+    b.name GTName,
+    a.YJZHId,
+    c.name YJZHName,
+    a.YJZHTotal
+FROM
+	V_GT_YJZH AS a
+LEFT JOIN
+	GT AS b
+ON
+	a.GTId = b.id
+LEFT JOIN
+	YJZH AS c
+ON
+	a.YJZHId = c.id
+);
     
 -- 柜台_二级组合
 DROP VIEW IF EXISTS V_GT_EJZH;
@@ -40,6 +62,28 @@ GROUP BY
 	aa.GTId,
 	aa.EJZHId;
     
+DROP VIEW IF EXISTS V_GT_EJZH_List ;
+CREATE VIEW V_GT_EJZH_List
+AS
+(
+SELECT
+	a.GTId,
+    b.name GTName,
+    a.EJZHId,
+    c.name EJZHName,
+    a.EJZHTotal
+FROM
+	V_GT_EJZH AS a
+LEFT JOIN
+	GT AS b
+ON
+	a.GTId = b.id
+LEFT JOIN
+	EJZH AS c
+ON
+	a.EJZHId = c.id
+);    
+    
 -- 柜台_一级物料
 DROP VIEW IF EXISTS V_GT_YJWL;
 CREATE VIEW V_GT_YJWL
@@ -65,6 +109,26 @@ GROUP BY
 	aa.GTId,
     aa.WLId;
 
+DROP VIEW IF EXISTS V_GT_YJWL_List;
+CREATE VIEW V_GT_YJWL_List
+AS
+SELECT
+	a.GTId,
+    b.name GTName,
+    a.WLId,
+    c.name WLName,
+	a.WLTotal
+FROM
+	V_GT_YJWL AS a
+LEFT JOIN
+	GT AS b
+ON
+	a.GTId = b.id
+LEFT JOIN
+	WL AS c
+ON
+	a.WLId = c.id;
+
 -- 柜台_二级物料
 DROP VIEW IF EXISTS V_GT_EJWL;
 CREATE VIEW V_GT_EJWL
@@ -88,6 +152,26 @@ FROM
 GROUP BY
 	aa.GTId,
     aa.WLId;
+    
+DROP VIEW IF EXISTS V_GT_EJWL_List;
+CREATE VIEW V_GT_EJWL_List
+AS
+SELECT
+	a.GTId,
+    b.name GTName,
+    a.WLId,
+    c.name WLName,
+	a.WLTotal
+FROM
+	V_GT_EJWL AS a
+LEFT JOIN
+	GT AS b
+ON
+	a.GTId = b.id
+LEFT JOIN
+	WL AS c
+ON
+	a.WLId = c.id;
 
 -- 柜台_三级物料
 DROP VIEW IF EXISTS V_GT_SJWL;
@@ -114,6 +198,26 @@ GROUP BY
 	aa.GTId,
     aa.WLId;
 
+DROP VIEW IF EXISTS V_GT_SJWL_List;
+CREATE VIEW V_GT_SJWL_List
+AS
+SELECT
+	a.GTId,
+    b.name GTName,
+    a.WLId,
+    c.name WLName,
+	a.WLTotal
+FROM
+	V_GT_SJWL AS a
+LEFT JOIN
+	GT AS b
+ON
+	a.GTId = b.id
+LEFT JOIN
+	WL AS c
+ON
+	a.WLId = c.id;
+
 -- 柜台_FGTester
 DROP VIEW IF EXISTS V_GT_FGTester;
 CREATE VIEW V_GT_FGTester
@@ -138,5 +242,37 @@ FROM
 GROUP BY
 	aa.GTId,
     aa.FGTesterId;
+        
+        
+DROP VIEW IF EXISTS V_GT_FGTester_List;
+CREATE VIEW V_GT_FGTester_List
+AS    
+SELECT
+	a.GTId,
+    e.name GTName,
+    c.id FGId,
+    c.name FGName,
+    d.id TesterId,
+    d.name TesterName,
+    CONCAT(c.name, '_', d.name) FGTesterName,
+    a.FGTesterTotal
+FROM 
+	V_GT_FGTester AS a
+LEFT JOIN
+	FG_Tester AS b
+ON
+	a.FGTesterId = b.id
+LEFT JOIN
+	FG AS c
+ON
+	b.FGId = c.id
+LEFT JOIN
+	Tester AS d
+ON
+	b.TesterId = d.id
+LEFT JOIN
+	GT AS e
+ON
+	a.GTId = e.id;
     
-SELECT * FROM V_GT_FGTester
+SELECT * FROM V_GT_SJWL_List
