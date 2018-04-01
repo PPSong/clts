@@ -794,7 +794,6 @@ export const EJZH = sequelize.define(
 );
 
 EJZH.belongsTo(WL, {
-  as: 'EJWL',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
@@ -913,7 +912,6 @@ export const YJZH = sequelize.define(
 );
 
 YJZH.belongsTo(WL, {
-  as: 'YJWL',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });

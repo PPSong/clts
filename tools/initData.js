@@ -41,7 +41,7 @@ lineReader.on('line', (sourceline) => {
     values = [];
 
     if (r[1] === 'end') {
-      fs.writeFile(`${__dirname}/initDataScript.txt`, scriptStr, (err) => {
+      fs.writeFile(`${__dirname}/initDataScript.sql`, scriptStr, (err) => {
         if (err) {
           return console.log(err);
         }

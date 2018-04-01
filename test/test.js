@@ -81,7 +81,7 @@ let AZGToken;
 
 describe('测试案例', () => {
   before(async () => {
-    const data = await readFile(`${__dirname}/../tools/initDataScript.txt`);
+    const data = await readFile(`${__dirname}/../tools/initDataScript.sql`);
 
     const scriptArr = data.split(';');
 
