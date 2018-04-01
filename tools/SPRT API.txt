@@ -38,49 +38,36 @@ post.setGT_IMAGE
     imageUrl,
 }
 
-admin 创建 GZ1
-post.newUser
+KFJL 创建 GZ1
+post.createGZ
 {
     username,
     password,
-    JS: '柜长'
 }
 
-admin 配置 GZ1 负责柜台
+KFJL 配置 GZ1 负责柜台
 post.setGZ_GTs
 {
     GZUserId,
     GTIds,
 }
 
-KFJL1 创建 GYS1
-post.newGYS
+KFJL 创建 GYSGLY和GYS
+post.createGYSAndGLY
 {
-    name,
-    isSC,
+    name, 
+    GLYUsername, 
+    GLYPassword, 
+    isSC, 
     isKC,
 }
 
-KFJL1 创建 GYSGLY1(GYSId: GYS1)
-post.createGYSGLY
+KFJL 创建 AZGSGLY和AZGS
+post.createAZGSAndGLY
 {
-    username,
-    password,
-    GYSId,
-}
-
-KFJL1 创建 AZGS1
-post.newAZGS
-{
-    name,
-}
-
-KFJL1 创建 AZGSGLY1(AZGSId: AZGS1)
-post.createAZGSGLY
-{
-    username,
-    password,
-    AZGSId,
+    name, 
+    GLYUsername, 
+    GLYPassword, 
 }
 
 KFJL1 创建 DW1(GTId: GT1)

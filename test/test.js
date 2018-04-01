@@ -10,16 +10,15 @@ import {
   QY,
   CS,
   JS,
-  UserPPJL,
-  UserKFJL,
+  PPJL_PP,
+  KFJL_PP,
   PP,
   GT,
   GYS,
   AZGS,
   User,
-  Student,
-  Course,
-  StudentCourse,
+  DW,
+  DP,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -110,8 +109,6 @@ describe('测试案例', () => {
         PPJLToken,
       );
 
-      console.log('pptest6');
-      console.log(r.data);
       assert.equal(1, 1);
     });
 
@@ -147,11 +144,12 @@ describe('测试案例', () => {
       const user = await User.findOne({ where: { username } });
       assert.notEqual(user, null);
 
-      const r = await UserPPJL.findOne({ where: { PPId } });
-      assert.notEqual(r.PPJLUserId, user.Id);
+      const r = await PPJL_PP.findOne({ where: { PPId } });
+      assert.notEqual(r.UserId, user.Id);
     });
 
-    it('admin 创建 KFJL', async () => {
+    it('PPJL 创建 KFJL', async () => {
+      const tmpPPJLToken = await getToken('T_PPJL', '1');
       const PPId = 3;
       const username = 'T_KFJL';
       const password = '1';
@@ -162,14 +160,14 @@ describe('测试案例', () => {
           username,
           password,
         },
-        adminToken,
+        tmpPPJLToken,
       );
 
       const user = await User.findOne({ where: { username } });
       assert.notEqual(user, null);
 
-      const r = await UserKFJL.findOne({ where: { PPId } });
-      assert.notEqual(r.KFJLUserId, user.Id);
+      const r = await KFJL_PP.findOne({ where: { PPId } });
+      assert.notEqual(r.UserId, user.Id);
     });
 
     it('KFJL 创建 GT, GTBA', async () => {
@@ -217,24 +215,25 @@ describe('测试案例', () => {
       assert.equal(tmpGT2.imageUrl, imageUrl);
     });
 
-    it('admin 创建 GZ', async () => {
+    it('KFJL 创建 GZ', async () => {
       const username = 'T_GZ';
       const password = '1';
       await post(
-        'User',
+        'createGZ',
         {
           username,
           password,
-          JS: '柜长',
         },
-        adminToken,
+        KFJLToken,
       );
 
       const tmpUser = await User.findOne({ where: { username } });
       assert.equal(tmpUser.JS, JS.GZ);
+      const PPIds = await tmpUser.getGZPPs();
+      assert.equal(PPIds[0].id, 1);
     });
 
-    it('admin 配置 GZ 负责柜台', async () => {
+    it('KFJL 配置 GZ 负责柜台', async () => {
       const username = 'T_GZ';
       const name = 'T_GT';
       const GZUser = await User.findOne({ where: { username } });
@@ -248,259 +247,96 @@ describe('测试案例', () => {
           GZUserId,
           GTIds,
         },
-        adminToken,
+        KFJLToken,
       );
 
       const tmpGT2 = await GT.findOne({ where: { name } });
       assert.equal(tmpGT2.GZUserId, GZUserId);
     });
+
+    it('KFJL 创建 GYSGLY和GYS', async () => {
+      const name = 'T_GYS';
+      const username = 'T_GYSGLY';
+      const password = '1';
+      const isSC = true;
+      const isKC = true;
+      await post(
+        'createGYSAndGLY',
+        {
+          name,
+          username,
+          password,
+          isSC,
+          isKC,
+        },
+        KFJLToken,
+      );
+
+      const tmpGYS = await GYS.findOne({ where: { name } });
+      assert.notEqual(tmpGYS, null);
+
+      const tmpGLYs = await tmpGYS.getGLYs();
+      assert.equal(tmpGLYs[0].username, username);
+    });
+
+    it('KFJL 创建 AZGSGLY和AZGS', async () => {
+      const name = 'T_AZGS';
+      const username = 'T_AZGSGLY';
+      const password = '1';
+      await post(
+        'createAZGSAndGLY',
+        {
+          name,
+          username,
+          password,
+        },
+        KFJLToken,
+      );
+
+      const tmpAZGS = await AZGS.findOne({ where: { name } });
+      assert.notEqual(tmpAZGS, null);
+
+      const tmpAZGSs = await tmpAZGS.getGLYs();
+      assert.equal(tmpAZGSs[0].username, username);
+    });
+
+    it('KFJL 创建 DW', async () => {
+      const name = 'T_DW';
+      const GTId = 1;
+
+      await post(
+        'DW',
+        {
+          name,
+          GTId,
+        },
+        KFJLToken,
+      );
+
+      const tmpDW = await DW.findOne({ where: { name } });
+      assert.notEqual(tmpDW, null);
+      assert.equal(tmpDW.GTId, GTId);
+    });
+
+    it('KFJL 创建 DP', async () => {
+      const name = 'T_DP';
+      const PPId = 1;
+      const GYSId = 1;
+
+      await post(
+        'DP',
+        {
+          name,
+          PPId,
+          GYSId,
+        },
+        KFJLToken,
+      );
+
+      const tmpDP = await DP.findOne({ where: { name } });
+      assert.notEqual(tmpDP, null);
+      assert.equal(tmpDP.PPId, PPId);
+      assert.equal(tmpDP.GYSId, GYSId);
+    });
   });
-
-  // describe('test1', async () => {
-  //   it('admin创建PPJL成功', async () => {
-  //     const PPJLUsername = PPJLUsername1;
-  //     const PPId = PPId1;
-  //     const r = await axios.post(
-  //       `${api}/createPPJL`,
-  //       {
-  //         username: PPJLUsername,
-  //         password: '1',
-  //         PPId,
-  //       },
-  //       {
-  //         headers: { Authorization: `bearer ${adminToken}` },
-  //       },
-  //     );
-
-  //     // 检查是否品牌1有username: PPJL1的品牌经理
-  //     const tmpPP = await PP.findOne({ where: { id: PPId } });
-  //     const tmpPPJLs = await tmpPP.getPPJLs();
-  //     const tmpPPJLsName = tmpPPJLs.map(item => item.username);
-  //     assert.equal(tmpPPJLsName.includes(PPJLUsername), true);
-  //   });
-
-  //   it('品牌经理创建KFJL成功', async () => {
-  //     const PPJLUsername = PPJLUsername1;
-  //     const PPId = PPId1;
-  //     // 获得PPJL token
-  //     let r = await axios.post(`${baseUrl}/auth/signin`, {
-  //       username: PPJLUsername,
-  //       password: '1',
-  //     });
-  //     const tmpToken = r.data.token;
-
-  //     const KFJLUsername = KFJLUsername1;
-  //     r = await axios.post(
-  //       `${api}/createKFJL`,
-  //       {
-  //         username: KFJLUsername,
-  //         password: '1',
-  //         PPId,
-  //       },
-  //       {
-  //         headers: { Authorization: `bearer ${tmpToken}` },
-  //       },
-  //     );
-
-  //     // 检查是否品牌1有username: KFJL1的客服经理
-  //     const tmpPP = await PP.findOne({ where: { id: PPId } });
-  //     const tmpKFJLs = await tmpPP.getKFJLs();
-  //     const tmpKFJLsName = tmpKFJLs.map(item => item.username);
-  //     assert.equal(tmpKFJLsName.includes(KFJLUsername), true);
-  //   });
-
-  //   it('客服经理创建柜台_GZ_GTBA成功', async () => {
-  //     const GTName = GT1;
-  //     const GZUsername = GZUsername1;
-  //     const GTBAUsername = GTBAUsername1;
-  //     // 获得KFJL token
-  //     let r = await axios.post(`${baseUrl}/auth/signin`, {
-  //       username: KFJLUsername1,
-  //       password: '1',
-  //     });
-  //     const tmpToken = r.data.token;
-
-  //     r = await axios.post(
-  //       `${api}/createGT_GZ_GTBA`,
-  //       {
-  //         GTName,
-  //         GZUsername,
-  //         GZPassword: '1',
-  //         GTBAUsername,
-  //         GTBAPassword: '1',
-  //       },
-  //       {
-  //         headers: { Authorization: `bearer ${tmpToken}` },
-  //       },
-  //     );
-
-  //     // 检查是否有柜台GT1, 柜长是GZ1, 柜台BA是GTBA1
-  //     const tmpGT = await GT.findOne({ where: { name: GTName } });
-  //     const tmpGZ = await tmpGT.getGZ();
-  //     const tmpGTBA = await tmpGT.getGTBA();
-
-  //     assert.equal(tmpGZ.username, GZUsername1);
-  //     assert.equal(tmpGTBA.username, GTBAUsername1);
-  //   });
-
-  //   it('客服经理创建供应商_GYSGLY成功', async () => {
-  //     let GYSName = GYS1;
-  //     let GYSGLYUsername = GYSGLYUsername1;
-
-  //     // 获得KFJL token
-  //     let r = await axios.post(`${baseUrl}/auth/signin`, {
-  //       username: KFJLUsername1,
-  //       password: '1',
-  //     });
-  //     const tmpToken = r.data.token;
-
-  //     r = await axios.post(
-  //       `${api}/createGYS_GYSGLY`,
-  //       {
-  //         GYSName,
-  //         GYSGLYUsername,
-  //         GYSGLYPassword: '1',
-  //         isSC: true,
-  //         isKC: true,
-  //       },
-  //       {
-  //         headers: { Authorization: `bearer ${tmpToken}` },
-  //       },
-  //     );
-
-  //     GYSName = GYS2;
-  //     GYSGLYUsername = GYSGLYUsername2;
-  //     r = await axios.post(
-  //       `${api}/createGYS_GYSGLY`,
-  //       {
-  //         GYSName,
-  //         GYSGLYUsername,
-  //         GYSGLYPassword: '1',
-  //         isSC: true,
-  //         isKC: true,
-  //       },
-  //       {
-  //         headers: { Authorization: `bearer ${tmpToken}` },
-  //       },
-  //     );
-
-  //     GYSName = GYS3;
-  //     GYSGLYUsername = GYSGLYUsername3;
-  //     r = await axios.post(
-  //       `${api}/createGYS_GYSGLY`,
-  //       {
-  //         GYSName,
-  //         GYSGLYUsername,
-  //         GYSGLYPassword: '1',
-  //         isSC: true,
-  //         isKC: true,
-  //       },
-  //       {
-  //         headers: { Authorization: `bearer ${tmpToken}` },
-  //       },
-  //     );
-
-  //     // 检查是否有供应商GYS1, 供应商管理员是GYSGLY1
-  //     const tmpGYS = await GYS.findOne({ where: { name: GYSName } });
-  //     const tmpGYSGLY = await tmpGYS.getGYSGLYs().map(item => item.username);
-
-  //     assert.equal(tmpGYSGLY.includes(GYSGLYUsername), true);
-  //   });
-
-  //   it('客服经理创建安装公司_AZGSGLY成功', async () => {
-  //     const AZGSName = AZGS1;
-  //     const AZGSGLYUsername = AZGSGLYUsername1;
-
-  //     // 获得KFJL token
-  //     let r = await axios.post(`${baseUrl}/auth/signin`, {
-  //       username: KFJLUsername1,
-  //       password: '1',
-  //     });
-  //     const tmpToken = r.data.token;
-
-  //     r = await axios.post(
-  //       `${api}/createAZGS_AZGSGLY`,
-  //       {
-  //         AZGSName,
-  //         AZGSGLYUsername,
-  //         AZGSGLYPassword: '1',
-  //       },
-  //       {
-  //         headers: { Authorization: `bearer ${tmpToken}` },
-  //       },
-  //     );
-
-  //     // 检查是否有安装公司AZGS1, 安装公司管理员是AZGSGLY1
-  //     const tmpAZGS = await AZGS.findOne({ where: { name: AZGSName } });
-  //     const tmpAZGSGLY = await tmpAZGS.getAZGSGLYs().map(item => item.username);
-
-  //     assert.equal(tmpAZGSGLY.includes(AZGSGLYUsername), true);
-  //   });
-
-  //   it('KFJL新建柜台_GTBA成功', async () => {
-  //     const name = 'GT1';
-  //     const code = 'GT1Code';
-
-  //     // 获得KFJL token
-  //     const r = await axios.post(`${baseUrl}/auth/signin`, {
-  //       username: KFJLUsername1,
-  //       password: '1',
-  //     });
-  //     const tmpToken = r.data.token;
-
-  //     const record = await axios.post(
-  //       `${api}/createGT_GTBA`,
-  //       {
-  //         name,
-  //         code,
-  //         QY: QY.EAST,
-  //         CS: CS[0],
-  //       },
-  //       {
-  //         headers: { Authorization: `bearer ${tmpToken}` },
-  //       },
-  //     );
-
-  //     // 检查是否有创建的柜台
-  //     const tmpGT = await GT.findOne({ where: { name } });
-  //     assert.notEqual(tmpGT, null);
-
-  //     // 检查柜台GTBA是否是正确的用户
-  //     const tmpGTBA = await tmpGT.getGTBA();
-  //     assert.equal(tmpGTBA.username, code);
-  //   });
-
-  //   it('KFJL设置柜台图片成功', async () => {
-  //     const name = 'GT1';
-  //     const code = 'GT1Code';
-
-  //     // 获得KFJL token
-  //     const r = await axios.post(`${baseUrl}/auth/signin`, {
-  //       username: KFJLUsername1,
-  //       password: '1',
-  //     });
-  //     const tmpToken = r.data.token;
-
-  //     const record = await axios.post(
-  //       `${api}/createGT_GTBA`,
-  //       {
-  //         name,
-  //         code,
-  //         QY: QY.EAST,
-  //         CS: CS[0],
-  //       },
-  //       {
-  //         headers: { Authorization: `bearer ${tmpToken}` },
-  //       },
-  //     );
-
-  //     // 检查是否有创建的柜台
-  //     const tmpGT = await GT.findOne({ where: { name } });
-  //     assert.notEqual(tmpGT, null);
-
-  //     // 检查柜台GTBA是否是正确的用户
-  //     const tmpGTBA = await tmpGT.getGTBA();
-  //     assert.equal(tmpGTBA.username, code);
-  //   });
-  // });
 });

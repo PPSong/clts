@@ -9,12 +9,12 @@ import { sequelize, JS, User, PP, GT, GYS, AZGS } from '../models/Model';
 
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
-  console.log(obj);
+  console.log('pptest', obj);
 };
 
 const router = express.Router();
 
-// 新建PPJL
+// 新建PPJL [ADMIN]
 router.post('/createPPJL', async (req, res, next) => {
   let transaction;
   const { user } = req;
@@ -24,12 +24,13 @@ router.post('/createPPJL', async (req, res, next) => {
     if (user.JS !== JS.ADMIN) {
       throw new Error('没有权限!');
     }
-
+    // end 检查api调用权限
     transaction = await sequelize.transaction();
 
     const { username, password, PPId } = req.body;
 
     // 检查操作记录权限
+    // end 检查操作记录权限
 
     // 新建用户
     const tmpUser = await User.create(
@@ -49,6 +50,7 @@ router.post('/createPPJL', async (req, res, next) => {
     });
 
     await tmpPP.setPPJLs([tmpUser], { transaction });
+    // end 新建用户
 
     await transaction.commit();
 
@@ -57,14 +59,14 @@ router.post('/createPPJL', async (req, res, next) => {
       data: 'ok',
     });
   } catch (err) {
-    // Rollback transaction if any errors were encountered
+    // Rollback
     await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
-// 新建KFJL
+// 新建KFJL [ADMIN, PPJL]
 router.post('/createKFJL', async (req, res, next) => {
   let transaction;
   const { user } = req;
@@ -74,6 +76,7 @@ router.post('/createKFJL', async (req, res, next) => {
     if (user.JS !== JS.ADMIN && user.JS !== JS.PPJL) {
       throw new Error('没有权限!');
     }
+    // end 检查api调用权限
 
     transaction = await sequelize.transaction();
 
@@ -88,6 +91,7 @@ router.post('/createKFJL', async (req, res, next) => {
         throw new Error('记录不在权限范围!');
       }
     }
+    // end 检查操作记录权限
 
     // 新建用户
     const tmpUser = await User.create(
@@ -107,6 +111,7 @@ router.post('/createKFJL', async (req, res, next) => {
     });
 
     await tmpPP.setKFJLs([tmpUser], { transaction });
+    // end 新建用户
 
     await transaction.commit();
 
@@ -115,14 +120,14 @@ router.post('/createKFJL', async (req, res, next) => {
       data: 'ok',
     });
   } catch (err) {
-    // Rollback transaction if any errors were encountered
+    // Rollback
     await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
-// 新建GT, GTBA
+// 新建GT, GTBA [KFJL]
 router.post('/createGT_GTBA', async (req, res, next) => {
   let transaction;
   const { user } = req;
@@ -132,6 +137,7 @@ router.post('/createGT_GTBA', async (req, res, next) => {
     if (user.JS !== JS.KFJL) {
       throw new Error('没有权限!');
     }
+    // end 检查api调用权限
 
     transaction = await sequelize.transaction();
 
@@ -142,6 +148,7 @@ router.post('/createGT_GTBA', async (req, res, next) => {
     const { PPId } = user;
 
     // 检查操作记录权限
+    // end 检查操作记录权限
 
     // 新建GTBAUser
     const tmpGTBAUser = await User.create(
@@ -152,6 +159,7 @@ router.post('/createGT_GTBA', async (req, res, next) => {
       },
       { transaction },
     );
+    // end 新建GTBAUser
 
     // 新建GT
     const tmpGT = await GT.create(
@@ -165,6 +173,7 @@ router.post('/createGT_GTBA', async (req, res, next) => {
       },
       { transaction },
     );
+    // end 新建GT
 
     await transaction.commit();
 
@@ -173,14 +182,14 @@ router.post('/createGT_GTBA', async (req, res, next) => {
       data: 'ok',
     });
   } catch (err) {
-    // Rollback transaction if any errors were encountered
+    // Rollback
     await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
-// 编辑 柜台图
+// 编辑 柜台图 [KFJL]
 router.post('/setGT_IMAGE', async (req, res, next) => {
   let transaction;
   const { user } = req;
@@ -190,6 +199,7 @@ router.post('/setGT_IMAGE', async (req, res, next) => {
     if (user.JS !== JS.KFJL) {
       throw new Error('没有权限!');
     }
+    // end 检查api调用权限
 
     transaction = await sequelize.transaction();
 
@@ -206,10 +216,12 @@ router.post('/setGT_IMAGE', async (req, res, next) => {
     if (!(tmpGT && tmpGT.PPId === user.PPId)) {
       throw new Error('没有操作权限!');
     }
+    // end 检查操作记录权限
 
     // 设置image
     tmpGT.imageUrl = imageUrl;
     await tmpGT.save({ transaction });
+    // end 设置image
 
     await transaction.commit();
 
@@ -218,21 +230,69 @@ router.post('/setGT_IMAGE', async (req, res, next) => {
       data: 'ok',
     });
   } catch (err) {
-    // Rollback transaction if any errors were encountered
+    // Rollback
     await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
-// 配置 GZ 负责柜台
+// 创建 GZ [KFJL]
+router.post('/createGZ', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (user.JS !== JS.KFJL) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { username, password } = req.body;
+
+    // 检查操作记录权限
+    // end 检查操作记录权限
+
+    // 创建GZ用户
+    const tmpGZUser = await User.create(
+      {
+        username,
+        password: bCrypt.hashSync(password, 8),
+        JS: JS.GZ,
+      },
+      { transaction },
+    );
+    // end 创建GZ用户
+
+    // 设定GZ给自己所属PP
+    await tmpGZUser.setGZPPs([user.PPId], { transaction });
+    // end 设定GZ给自己所属PP
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// 配置 GZ 负责柜台 [KFJL]
 router.post('/setGZ_GTs', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
   try {
     // 检查api调用权限
-    if (![JS.ADMIN].includes(user.JS)) {
+    if (![JS.KFJL].includes(user.JS)) {
       throw new Error('没有权限!');
     }
     // end 检查api调用权限
@@ -242,11 +302,12 @@ router.post('/setGZ_GTs', async (req, res, next) => {
     const { GZUserId, GTIds } = req.body;
 
     // 检查操作记录权限
-    // 检查userId角色是柜长
-    const tmpGZ = User.findOne({
+    // 检查userId角色是柜长, 品牌和操作者一致, 没有被disabled
+    const tmpGZ = await User.findOne({
       where: {
         id: GZUserId,
         JS: JS.GZ,
+        disabledAt: null,
       },
       transaction,
     });
@@ -255,18 +316,23 @@ router.post('/setGZ_GTs', async (req, res, next) => {
       throw new Error('记录操作不合法!');
     }
 
-    // 检查柜台都存在, 没有被软删除
+    const PPIds = await tmpGZ.getGZPPs({ transaction });
+    if (PPIds[0].id !== user.PPId) {
+      throw new Error('记录操作不合法!');
+    }
+    // end 检查userId角色是柜长, 品牌和操作者一致
+
+    // 检查柜台都有效, 没有被disabled
     const tmpGTs = GT.findAll({
       where: {
         id: {
           $in: GTIds,
         },
-        deletedAt: {
+        disabledAt: {
           $ne: null,
         },
       },
       transaction,
-      paranoid: false,
     });
 
     if (tmpGTs.length > 0) {
@@ -275,14 +341,8 @@ router.post('/setGZ_GTs', async (req, res, next) => {
     // end 检查操作记录权限
 
     // 设置GTIds
-    await sequelize.query('UPDATE GT set GZUserId = :GZUserId WHERE id in (:GTIds)', {
-      replacements: {
-        GZUserId,
-        GTIds: GTIds.join(','),
-      },
-      type: sequelize.QueryTypes.BULKUPDATE,
-      transaction,
-    });
+    await tmpGZ.setGTs(GTIds, { transaction });
+    // end 设置GTIds
 
     await transaction.commit();
 
@@ -291,88 +351,15 @@ router.post('/setGZ_GTs', async (req, res, next) => {
       data: 'ok',
     });
   } catch (err) {
-    // Rollback transaction if any errors were encountered
+    // Rollback
     await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
-// 创建 GYS
-// router.post('/GYS', async (req, res, next) => {
-//   let transaction;
-//   const { user } = req;
-
-//   try {
-//     // 检查api调用权限
-//     if (![JS.KFJL].includes(user.JS)) {
-//       throw new Error('没有权限!');
-//     }
-//     // end 检查api调用权限
-
-//     transaction = await sequelize.transaction();
-
-//     const { name, isSC, isKC } = req.body;
-
-//     // 检查操作记录权限
-//     // 检查userId角色是柜长
-//     const tmpGZ = User.findOne({
-//       where: {
-//         id: GZUserId,
-//         JS: JS.GZ,
-//       },
-//       transaction,
-//     });
-
-//     if (!tmpGZ) {
-//       throw new Error('记录操作不合法!');
-//     }
-
-//     // 检查柜台都存在, 没有被软删除
-//     const tmpGTs = GT.findAll({
-//       where: {
-//         id: {
-//           $in: GTIds,
-//         },
-//         deletedAt: {
-//           $ne: null,
-//         },
-//       },
-//       transaction,
-//       paranoid: false,
-//     });
-
-//     if (tmpGTs.length > 0) {
-//       throw new Error('记录操作不合法!');
-//     }
-//     // end 检查操作记录权限
-
-//     // 设置GTIds
-//     await sequelize.query('UPDATE GT set GZUserId = :GZUserId WHERE id in (:GTIds)', {
-//       replacements: {
-//         GZUserId,
-//         GTIds: GTIds.join(','),
-//       },
-//       type: sequelize.QueryTypes.BULKUPDATE,
-//       transaction,
-//     });
-
-//     await transaction.commit();
-
-//     res.json({
-//       code: 1,
-//       data: 'ok',
-//     });
-//   } catch (err) {
-//     // Rollback transaction if any errors were encountered
-//     await (transaction && transaction.rollback());
-//     ppLog(err);
-//     next(err);
-//   }
-// });
-
-// 新建GYS, GYSGLY
-router.post('/createGYS_GYSGLY', async (req, res, next) => {
+// 新建GYS, GLY
+router.post('/createGYSAndGLY', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -381,36 +368,40 @@ router.post('/createGYS_GYSGLY', async (req, res, next) => {
     if (user.JS !== JS.KFJL) {
       throw new Error('没有权限!');
     }
+    // end 检查api调用权限
 
     transaction = await sequelize.transaction();
 
     const {
-      GYSName, GYSGLYUsername, GYSGLYPassword, isSC, isKC,
+      name, username, password, isSC, isKC,
     } = req.body;
 
     // 检查操作记录权限
+    // end 检查操作记录权限
 
     // 新建GYSGLY
     const tmpGYSGLYUser = await User.create(
       {
-        username: GYSGLYUsername,
-        password: bCrypt.hashSync(GYSGLYPassword, 8),
+        username,
+        password: bCrypt.hashSync(password, 8),
         JS: JS.GYSGLY,
       },
       { transaction },
     );
+    // end 新建GYSGLY
 
     // 新建GYS
     const tmpGYS = await GYS.create(
       {
-        name: GYSName,
+        name,
         isSC,
         isKC,
       },
       { transaction },
     );
+    // end 新建GYS
 
-    await tmpGYS.setGYSGLYs([tmpGYSGLYUser], { transaction });
+    await tmpGYS.setGLYs([tmpGYSGLYUser], { transaction });
 
     await transaction.commit();
 
@@ -419,15 +410,15 @@ router.post('/createGYS_GYSGLY', async (req, res, next) => {
       data: 'ok',
     });
   } catch (err) {
-    // Rollback transaction if any errors were encountered
+    // Rollback
     await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
-// 新建AZGS, AZGSGLY
-router.post('/createAZGS_AZGSGLY', async (req, res, next) => {
+// 新建AZGS, GLY
+router.post('/createAZGSAndGLY', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -436,32 +427,38 @@ router.post('/createAZGS_AZGSGLY', async (req, res, next) => {
     if (user.JS !== JS.KFJL) {
       throw new Error('没有权限!');
     }
+    // end 检查api调用权限
 
     transaction = await sequelize.transaction();
 
-    const { AZGSName, AZGSGLYUsername, AZGSGLYPassword } = req.body;
+    const {
+      name, username, password,
+    } = req.body;
 
     // 检查操作记录权限
+    // end 检查操作记录权限
 
     // 新建AZGSGLY
     const tmpAZGSGLYUser = await User.create(
       {
-        username: AZGSGLYUsername,
-        password: bCrypt.hashSync(AZGSGLYPassword, 8),
+        username,
+        password: bCrypt.hashSync(password, 8),
         JS: JS.AZGSGLY,
       },
       { transaction },
     );
+    // end 新建AZGSGLY
 
     // 新建AZGS
     const tmpAZGS = await AZGS.create(
       {
-        name: AZGSName,
+        name,
       },
       { transaction },
     );
+    // end 新建AZGS
 
-    await tmpAZGS.setAZGSGLYs([tmpAZGSGLYUser], { transaction });
+    await tmpAZGS.setGLYs([tmpAZGSGLYUser], { transaction });
 
     await transaction.commit();
 
@@ -470,7 +467,7 @@ router.post('/createAZGS_AZGSGLY', async (req, res, next) => {
       data: 'ok',
     });
   } catch (err) {
-    // Rollback transaction if any errors were encountered
+    // Rollback
     await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
@@ -490,7 +487,6 @@ router.post('/:table', async (req, res, next) => {
 });
 
 router.get('/:table', async (req, res, next) => {
-  console.log('pptest3');
   try {
     const Table = tables[`${req.params.table}Table`];
     const r = await new Table(req.user).getList(req.query);

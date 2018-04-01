@@ -132,6 +132,9 @@ export const User = sequelize.define(
     note: {
       type: Sequelize.STRING,
     },
+    disabledAt: {
+      type: Sequelize.DATE,
+    },
   },
   {
     freezeTableName: true,
@@ -263,6 +266,9 @@ export const GT = sequelize.define(
     note: {
       type: Sequelize.TEXT,
     },
+    disabledAt: {
+      type: Sequelize.DATE,
+    },
   },
   {
     version: true,
@@ -271,6 +277,7 @@ export const GT = sequelize.define(
 );
 
 GT.belongsTo(User, { as: 'GZ', foreignKey: 'GZUserId' });
+User.hasMany(GT, { as: 'GTs', foreignKey: 'GZUserId' });
 GT.belongsTo(User, { as: 'GTBA', foreignKey: 'GTBAUserId' });
 User.hasOne(GT, { as: 'GTBA', foreignKey: 'GTBAUserId' });
 GT.belongsTo(PP);
@@ -296,6 +303,9 @@ export const GYS = sequelize.define(
     isKC: {
       type: Sequelize.BOOLEAN,
       allowNull: false,
+    },
+    disabledAt: {
+      type: Sequelize.DATE,
     },
   },
   {
@@ -412,6 +422,9 @@ export const DP = sequelize.define(
     GYSId: {
       type: Sequelize.INTEGER,
     },
+    disabledAt: {
+      type: Sequelize.DATE,
+    },
   },
   {
     version: true,
@@ -442,6 +455,9 @@ export const DW = sequelize.define(
     },
     DPId: {
       type: Sequelize.INTEGER,
+    },
+    disabledAt: {
+      type: Sequelize.DATE,
     },
   },
   {
@@ -475,6 +491,9 @@ export const FG = sequelize.define(
     note: {
       type: Sequelize.TEXT,
     },
+    disabledAt: {
+      type: Sequelize.DATE,
+    },
   },
   {
     version: true,
@@ -502,6 +521,9 @@ export const Tester = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
       unique: 'name_PPId',
+    },
+    disabledAt: {
+      type: Sequelize.DATE,
     },
   },
   {
@@ -532,6 +554,9 @@ export const FG_Tester = sequelize.define(
     PPId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+    },
+    disabledAt: {
+      type: Sequelize.DATE,
     },
   },
   {
@@ -586,6 +611,9 @@ export const WL = sequelize.define(
     imageUrl: {
       type: Sequelize.STRING,
     },
+    disabledAt: {
+      type: Sequelize.DATE,
+    },
   },
   {
     version: true,
@@ -618,6 +646,9 @@ export const EJZH = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
       unique: 'name_PPId',
+    },
+    disabledAt: {
+      type: Sequelize.DATE,
     },
   },
   {
@@ -703,6 +734,9 @@ export const YJZH = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
       unique: 'name_PPId',
+    },
+    disabledAt: {
+      type: Sequelize.DATE,
     },
   },
   {
