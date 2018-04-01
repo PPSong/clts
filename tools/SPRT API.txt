@@ -86,32 +86,31 @@ post.newDW
 }
 
 KFJL1 编辑 灯片图
-post.setDP_IMAGE
+post.DP/:id
 {
-    DPId,
     imageUrl,
 }
 
 KFJL1 更新 DW1(DPId: DP1)
 post.setDP_DWs
 {
-    DPId,
+    id,
     DWIds,
 }
 
 KFJL1 创建 WL3_1(GYSId: GYS1, level: 3, 图片1)
 post.newWL
 {
-    name,
-    code,
-    level,
-    GYSId,
+     name,
+     code,
+     level,
+     PPId,
+     GYSId,
 }
 
 KFJL1 编辑 物料图
-post.setWL_IMAGE
+post.update/:id
 {
-    WLId,
     imageUrl,
 }
 

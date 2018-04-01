@@ -5,7 +5,7 @@ import debug from 'debug';
 /* eslint-disable */
 import * as tables from '../tables';
 /* eslint-enable */
-import { sequelize, JS, User, PP, GT, GYS, AZGS } from '../models/Model';
+import { sequelize, JS, User, PP, GT, GYS, AZGS, DP, DW, WL } from '../models/Model';
 
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
@@ -431,9 +431,7 @@ router.post('/createAZGSAndGLY', async (req, res, next) => {
 
     transaction = await sequelize.transaction();
 
-    const {
-      name, username, password,
-    } = req.body;
+    const { name, username, password } = req.body;
 
     // 检查操作记录权限
     // end 检查操作记录权限
@@ -459,6 +457,78 @@ router.post('/createAZGSAndGLY', async (req, res, next) => {
     // end 新建AZGS
 
     await tmpAZGS.setGLYs([tmpAZGSGLYUser], { transaction });
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// 配置 DP_DWs [KFJL]
+router.post('/setDP_DWs', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.KFJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { id, DWIds } = req.body;
+
+    // 检查操作记录权限
+    // 检查DP的PP, DWs所属的GT的PP与操作者同一品牌, 而且都是enable状态
+    const tmpDP = await DP.findOne({
+      where: {
+        id,
+        PPId: user.PPId,
+        disabledAt: null,
+      },
+    });
+
+    if (!tmpDP) {
+      throw new Error('记录操作不合法!');
+    }
+
+    const tmpDWs = await DW.findAll({
+      where: {
+        id: {
+          $in: DWIds,
+        },
+        disabledAt: null,
+      },
+      include: [
+        {
+          model: GT,
+          as: 'GT',
+          where: {
+            PPId: user.PPId,
+          },
+        },
+      ],
+      transaction,
+    });
+
+    if (tmpDWs.length !== DWIds.length) {
+      throw new Error('记录操作不合法!');
+    }
+    // end 检查操作记录权限
+
+    // 设置DP_DWs
+    await tmpDP.setDWs(DWIds, { transaction });
+    // end 设置GTIds
 
     await transaction.commit();
 

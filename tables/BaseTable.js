@@ -44,12 +44,20 @@ export default class BaseTable {
     throw new Error('checkUserAccess should be overrided.');
   }
 
+  getLikeSearchFields() {
+    throw new Error('getLikeSearchFields should be overrided.');
+  }
+
   async getQueryOption() {
     throw new Error('getQueryOption should be overrided.');
   }
 
-  getLikeSearchFields() {
-    throw new Error('getLikeSearchFields should be overrided.');
+  filterEditFields(fields) {
+    // 默认不过滤, 如需过滤可以override这个方法
+    const filteredFields = {
+      ...fields,
+    };
+    return filteredFields;
   }
 
   async create(fields) {
@@ -106,14 +114,16 @@ export default class BaseTable {
     // 查看update前是否在用户权限范围
     await this.checkUserAccess(record);
     // end 查看update前是否在用户权限范围
-    const r = await record.update(fields);
+
+    const filteredFields = this.filterEditFields(fields);
+
+    const r = await record.update(filteredFields);
 
     // 查看update后是否在用户权限范围
-    // todo: check r还是record是更新后的值
-    await this.checkUserAccess(record);
+    await this.checkUserAccess(r);
     // end 查看update后是否在用户权限范围
 
-    if (!r[0]) {
+    if (!r) {
       throw new Error('更新记录失败!');
     }
 

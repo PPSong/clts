@@ -19,6 +19,7 @@ import {
   User,
   DW,
   DP,
+  WL,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -39,6 +40,14 @@ const getToken = async (username, password) => {
 
 const post = async (path, body, token) => {
   const r = await axios.post(`${api}/${path}`, body, {
+    headers: { Authorization: `bearer ${token}` },
+  });
+
+  return r;
+};
+
+const put = async (path, body, token) => {
+  const r = await axios.put(`${api}/${path}`, body, {
     headers: { Authorization: `bearer ${token}` },
   });
 
@@ -337,6 +346,110 @@ describe('测试案例', () => {
       assert.notEqual(tmpDP, null);
       assert.equal(tmpDP.PPId, PPId);
       assert.equal(tmpDP.GYSId, GYSId);
+    });
+
+    it('KFJL 编辑 DP图', async () => {
+      const tmpDP = await DP.findOne({
+        where: {
+          name: 'T_DP',
+        },
+      });
+      const { id } = tmpDP;
+      const imageUrl = 'T_imageUrl';
+
+      await put(
+        `DP/${id}`,
+        {
+          imageUrl,
+          PPId: 3,
+        },
+        KFJLToken,
+      );
+
+      await tmpDP.reload();
+      assert.equal(tmpDP.imageUrl, 'T_imageUrl');
+      assert.equal(tmpDP.PPId, 1);
+    });
+
+    it('KFJL 配置 DP_DWs', async () => {
+      const tmpDP = await DP.findOne({
+        where: {
+          name: 'T_DP',
+        },
+      });
+      const { id } = tmpDP;
+      const DWIds = [11];
+
+      await post(
+        'setDP_DWs',
+        {
+          id,
+          DWIds,
+        },
+        KFJLToken,
+      );
+
+      const tmpDWs = await DW.findAll({
+        where: {
+          id: {
+            $in: DWIds,
+          },
+        },
+      });
+
+      const tmpDW_DP = tmpDWs.map(item => item.DPId);
+      assert.deepEqual(tmpDW_DP, [id]);
+    });
+
+    it('KFJL 创建 WL', async () => {
+      const name = 'T_WL3';
+      const code = 'T_WL3Code';
+      const level = 3;
+      const GYSId = 1;
+      const PPId = 1;
+
+      await post(
+        'WL',
+        {
+          name,
+          code,
+          level,
+          PPId,
+          GYSId,
+        },
+        KFJLToken,
+      );
+
+      const tmpWL = await WL.findOne({
+        where: {
+          name,
+        },
+      });
+
+      assert.equal(tmpWL.code, code);
+      assert.equal(tmpWL.level, level);
+      assert.equal(tmpWL.GYSId, GYSId);
+    });
+
+    it('KFJL 编辑 WL图', async () => {
+      const imageUrl = 'T_WL3_imageUrl';
+      const tmpWL = await WL.findOne({
+        where: {
+          name: 'T_WL3',
+        },
+      });
+
+      await put(
+        `WL/${tmpWL.id}`,
+        {
+          imageUrl,
+        },
+        KFJLToken,
+      );
+
+      await tmpWL.reload();
+
+      assert.equal(tmpWL.imageUrl, imageUrl);
     });
   });
 });

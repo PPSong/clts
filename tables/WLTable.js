@@ -1,13 +1,13 @@
 import debug from 'debug';
 import _ from 'lodash';
 import BaseTable from './BaseTable';
-import { DP, JS, PP, GYS } from '../models/Model';
+import { WL, JS, PP, GYS } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
-export default class DPTable extends BaseTable {
+export default class WLTable extends BaseTable {
   getTable() {
-    return DP;
+    return WL;
   }
 
   checkCreateRight() {

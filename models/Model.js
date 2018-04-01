@@ -163,8 +163,18 @@ export const PPJL_PP = sequelize.define(
   },
 );
 
-User.belongsToMany(PP, { through: 'PPJL_PP', as: 'PPJLPPs' });
-PP.belongsToMany(User, { through: 'PPJL_PP', as: 'PPJLs' });
+User.belongsToMany(PP, {
+  through: 'PPJL_PP',
+  as: 'PPJLPPs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+PP.belongsToMany(User, {
+  through: 'PPJL_PP',
+  as: 'PPJLs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // 客服经理
 export const KFJL_PP = sequelize.define(
@@ -184,8 +194,18 @@ export const KFJL_PP = sequelize.define(
   },
 );
 
-User.belongsToMany(PP, { through: 'KFJL_PP', as: 'KFJLPPs' });
-PP.belongsToMany(User, { through: 'KFJL_PP', as: 'KFJLs' });
+User.belongsToMany(PP, {
+  through: 'KFJL_PP',
+  as: 'KFJLPPs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+PP.belongsToMany(User, {
+  through: 'KFJL_PP',
+  as: 'KFJLs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // 柜长
 export const GZ_PP = sequelize.define(
@@ -205,8 +225,18 @@ export const GZ_PP = sequelize.define(
   },
 );
 
-User.belongsToMany(PP, { through: 'GZ_PP', as: 'GZPPs' });
-PP.belongsToMany(User, { through: 'GZ_PP', as: 'GZs' });
+User.belongsToMany(PP, {
+  through: 'GZ_PP',
+  as: 'GZPPs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+PP.belongsToMany(User, {
+  through: 'GZ_PP',
+  as: 'GZs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // 柜台
 export const GT = sequelize.define(
@@ -276,11 +306,34 @@ export const GT = sequelize.define(
   },
 );
 
-GT.belongsTo(User, { as: 'GZ', foreignKey: 'GZUserId' });
-User.hasMany(GT, { as: 'GTs', foreignKey: 'GZUserId' });
-GT.belongsTo(User, { as: 'GTBA', foreignKey: 'GTBAUserId' });
-User.hasOne(GT, { as: 'GTBA', foreignKey: 'GTBAUserId' });
-GT.belongsTo(PP);
+GT.belongsTo(User, {
+  as: 'GZ',
+  foreignKey: 'GZUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+User.hasMany(GT, {
+  as: 'GTs',
+  foreignKey: 'GZUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GT.belongsTo(User, {
+  as: 'GTBA',
+  foreignKey: 'GTBAUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+User.hasOne(GT, {
+  as: 'GTBA',
+  foreignKey: 'GTBAUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GT.belongsTo(PP, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // 供应商
 export const GYS = sequelize.define(
@@ -332,8 +385,19 @@ export const GLY_GYS = sequelize.define(
   },
 );
 
-User.belongsToMany(GYS, { through: 'GLY_GYS', as: 'GLYGYSs' });
-GYS.belongsToMany(User, { through: 'GLY_GYS', as: 'GLYs', foreignKey: 'GYSId' });
+User.belongsToMany(GYS, {
+  through: 'GLY_GYS',
+  as: 'GLYGYSs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GYS.belongsToMany(User, {
+  through: 'GLY_GYS',
+  as: 'GLYs',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // 装货员
 export const ZHY_GYS = sequelize.define(
@@ -353,8 +417,19 @@ export const ZHY_GYS = sequelize.define(
   },
 );
 
-User.belongsToMany(GYS, { through: 'ZHY_GYS', as: 'ZHYGYSs' });
-GYS.belongsToMany(User, { through: 'ZHY_GYS', as: 'ZHYs', foreignKey: 'GYSId' });
+User.belongsToMany(GYS, {
+  through: 'ZHY_GYS',
+  as: 'ZHYGYSs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GYS.belongsToMany(User, {
+  through: 'ZHY_GYS',
+  as: 'ZHYs',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // 安装公司
 export const AZGS = getBasicTable('AZGS');
@@ -377,8 +452,19 @@ export const GLY_AZGS = sequelize.define(
   },
 );
 
-User.belongsToMany(AZGS, { through: 'GLY_AZGS', as: 'GLYAZGSs' });
-AZGS.belongsToMany(User, { through: 'GLY_AZGS', as: 'GLYs', foreignKey: 'AZGSId' });
+User.belongsToMany(AZGS, {
+  through: 'GLY_AZGS',
+  as: 'GLYAZGSs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+AZGS.belongsToMany(User, {
+  through: 'GLY_AZGS',
+  as: 'GLYs',
+  foreignKey: 'AZGSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // 安装工
 export const AZG_AZGS = sequelize.define(
@@ -398,8 +484,19 @@ export const AZG_AZGS = sequelize.define(
   },
 );
 
-User.belongsToMany(AZGS, { through: 'AZG_AZGS', as: 'AZGAZGSs' });
-AZGS.belongsToMany(User, { through: 'AZG_AZGS', as: 'AZGs', foreignKey: 'AZGSId' });
+User.belongsToMany(AZGS, {
+  through: 'AZG_AZGS',
+  as: 'AZGAZGSs',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+AZGS.belongsToMany(User, {
+  through: 'AZG_AZGS',
+  as: 'AZGs',
+  foreignKey: 'AZGSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // 灯片
 export const DP = sequelize.define(
@@ -422,6 +519,9 @@ export const DP = sequelize.define(
     GYSId: {
       type: Sequelize.INTEGER,
     },
+    imageUrl: {
+      type: Sequelize.STRING,
+    },
     disabledAt: {
       type: Sequelize.DATE,
     },
@@ -432,8 +532,14 @@ export const DP = sequelize.define(
   },
 );
 
-DP.belongsTo(GYS);
-DP.belongsTo(PP);
+DP.belongsTo(GYS, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DP.belongsTo(PP, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // 灯位
 export const DW = sequelize.define(
@@ -466,8 +572,18 @@ export const DW = sequelize.define(
   },
 );
 
-DW.belongsTo(GT);
-DW.belongsTo(DP);
+DW.belongsTo(GT, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DW.belongsTo(DP, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DP.hasMany(DW, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // FG
 export const FG = sequelize.define(
@@ -532,7 +648,10 @@ export const Tester = sequelize.define(
   },
 );
 
-Tester.belongsTo(PP);
+Tester.belongsTo(PP, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // FGTester
 export const FG_Tester = sequelize.define(
@@ -565,9 +684,20 @@ export const FG_Tester = sequelize.define(
   },
 );
 
-FG.belongsToMany(Tester, { through: 'FG_Tester' });
-Tester.belongsToMany(FG, { through: 'FG_Tester' });
-FG_Tester.belongsTo(PP);
+FG.belongsToMany(Tester, {
+  through: 'FG_Tester',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+Tester.belongsToMany(FG, {
+  through: 'FG_Tester',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+FG_Tester.belongsTo(PP, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // WL
 export const WL = sequelize.define(
@@ -621,8 +751,14 @@ export const WL = sequelize.define(
   },
 );
 
-WL.belongsTo(PP);
-WL.belongsTo(GYS);
+WL.belongsTo(PP, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WL.belongsTo(GYS, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // EJZH
 export const EJZH = sequelize.define(
@@ -657,8 +793,15 @@ export const EJZH = sequelize.define(
   },
 );
 
-EJZH.belongsTo(WL, { as: 'EJWL' });
-EJZH.belongsTo(PP);
+EJZH.belongsTo(WL, {
+  as: 'EJWL',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+EJZH.belongsTo(PP, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // EJZH_FGTester
 export const EJZH_FGTester = sequelize.define(
@@ -683,8 +826,20 @@ export const EJZH_FGTester = sequelize.define(
   },
 );
 
-EJZH.belongsToMany(FG_Tester, { through: 'EJZH_FGTester', as: 'FGTesters', foreignKey: 'EJZHId' });
-FG_Tester.belongsToMany(EJZH, { through: 'EJZH_FGTester', as: 'EJZHs', foreignKey: 'FGTesterId' });
+EJZH.belongsToMany(FG_Tester, {
+  through: 'EJZH_FGTester',
+  as: 'FGTesters',
+  foreignKey: 'EJZHId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+FG_Tester.belongsToMany(EJZH, {
+  through: 'EJZH_FGTester',
+  as: 'EJZHs',
+  foreignKey: 'FGTesterId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // EJZH_SJWL
 export const EJZH_SJWL = sequelize.define(
@@ -709,8 +864,20 @@ export const EJZH_SJWL = sequelize.define(
   },
 );
 
-EJZH.belongsToMany(WL, { through: 'EJZH_SJWL', as: 'SJWLs', foreignKey: 'EJZHId' });
-WL.belongsToMany(EJZH, { through: 'EJZH_SJWL', as: 'EJZHs', foreignKey: 'WLId' });
+EJZH.belongsToMany(WL, {
+  through: 'EJZH_SJWL',
+  as: 'SJWLs',
+  foreignKey: 'EJZHId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WL.belongsToMany(EJZH, {
+  through: 'EJZH_SJWL',
+  as: 'EJZHs',
+  foreignKey: 'WLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // YJZH
 export const YJZH = sequelize.define(
@@ -745,8 +912,15 @@ export const YJZH = sequelize.define(
   },
 );
 
-YJZH.belongsTo(WL, { as: 'YJWL' });
-YJZH.belongsTo(PP);
+YJZH.belongsTo(WL, {
+  as: 'YJWL',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+YJZH.belongsTo(PP, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // YJZH_EJZH
 export const YJZH_EJZH = sequelize.define(
@@ -824,8 +998,14 @@ export const YJZHXGT = sequelize.define(
   },
 );
 
-YJZHXGT.belongsTo(YJZH);
-YJZH.hasMany(YJZHXGT);
+YJZHXGT.belongsTo(YJZH, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+YJZH.hasMany(YJZHXGT, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // EJZHXGT
 export const EJZHXGT = sequelize.define(
@@ -851,8 +1031,14 @@ export const EJZHXGT = sequelize.define(
   },
 );
 
-EJZHXGT.belongsTo(EJZH);
-EJZH.hasMany(EJZHXGT);
+EJZHXGT.belongsTo(EJZH, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+EJZH.hasMany(EJZHXGT, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 
