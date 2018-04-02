@@ -106,38 +106,47 @@ post.newWL
      level,
      PPId,
      GYSId,
+     imageUrl,
+     note,
 }
 
-KFJL1 编辑 物料图
+KFJL1 编辑 物料
 post.update/:id
 {
     imageUrl,
+    note,
 }
 
 KFJL1 创建 FG, Tester, FGTester
-post.importFG_Tester_FGTester
+post.createFG_Tester_FGTester
 {
-    FGs: [{
-        name,
-        note,
-        Tester: [{
-            name
-        }]
-    }]
+    PPId,
+    FG: {
+            name,
+            note,
+            Tester: [
+                name
+            ]
+        }
 }
 
 KFJL1 创建 EJZH1(WLId: WL2_1, 图片1) //组合相关图？
-post.newEJZH
+post.createEJZH
 {
+    PPId,
     name,
     WLId,
-}
-
-KFJL1 配置 EJZH1 展示项目
-post.setEJZH_FGTester
-{
-    EJZHId,
+    imageUrl,
+    XGTs: [
+        imageUrl
+    ],
     FGTesterIds: [
+        {
+            id,
+            number,
+        }
+    ],
+    SJWLIds: [
         {
             id,
             number,
@@ -145,10 +154,20 @@ post.setEJZH_FGTester
     ]
 }
 
-KFJL1 配置 EJZH1 三级物料
-post.setEJZH_SJWL
+KFJL 编辑 EJZH
+post.editEJZH
 {
-    EJZHId,
+    id,
+    imageUrl,
+    XGTs: [
+        imageUrl
+    ],
+    FGTesterIds: [
+        {
+            id,
+            number,
+        }
+    ],
     SJWLIds: [
         {
             id,
@@ -158,30 +177,15 @@ post.setEJZH_SJWL
 }
 
 KFJL1 创建 YJZH1(WLId: WL1_1, 图片1) //组合相关图？
-post.newYJZH
+post.createYJZH
 {
+    PPId,
     name,
     WLId,
-}
-
-KFJL1 编辑 YJZH图
-post.setYJZH_IMAGE
-{
-    YJZHId,
     imageUrl,
-}
-
-KFJL1 编辑 YJZH 相关图
-post.setYJZH_RELATED_IMAGES
-{
-    YJZHId,
-    imageUrls,
-}
-
-KFJL1 配置 YJZH1([EJZHId: EJZH1, 2个])
-post.setYJZH_EJZH
-{
-    YJZHId,
+    XGTs: [
+        imageUrl
+    ],
     EJZHIds: [
         {
             id,
@@ -190,30 +194,29 @@ post.setYJZH_EJZH
     ]
 }
 
-KFJL1 编辑 EJZH图
-post.setEJZH_IMAGE
+post.editYJZH
 {
-    EJZHId,
+    id,
     imageUrl,
-}
-
-KFJL1 编辑 EJZH 相关图
-post.setEJZH_RELATED_IMAGES
-{
-    EJZHId,
-    imageUrls,
-}
-
-KFJL1 配置 GT1([YJZHId: YJZH1, BZ:靠墙], [YJZHId: YJZH1, BZ:靠走廊],)
-post.setGT_YJZH
-{
-    GTId,
-    YJZHIds: [
+    XGTs: [
+        imageUrl
+    ],
+    EJZHIds: [
         {
             id,
-            note,
+            number,
         }
     ]
+}
+
+KFJL1 配置 YJZH_GT
+post.setYJZH_GT
+{
+    YJZHId,
+    GTIds: [{
+        GTId,
+        number
+    }]
 }
 
 PPJL1 查负责柜台列表
