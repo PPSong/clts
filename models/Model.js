@@ -741,6 +741,9 @@ export const WL = sequelize.define(
     imageUrl: {
       type: Sequelize.STRING,
     },
+    note: {
+      type: Sequelize.TEXT,
+    },
     disabledAt: {
       type: Sequelize.DATE,
     },
@@ -782,6 +785,10 @@ export const EJZH = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
       unique: 'name_PPId',
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     disabledAt: {
       type: Sequelize.DATE,
@@ -900,6 +907,10 @@ export const YJZH = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
       unique: 'name_PPId',
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
     },
     disabledAt: {
       type: Sequelize.DATE,
