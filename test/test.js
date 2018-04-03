@@ -20,6 +20,8 @@ import {
   DW,
   DP,
   WL,
+  FG,
+  FGTester,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -433,6 +435,8 @@ describe('测试案例', () => {
 
     it('KFJL 编辑 WL图', async () => {
       const imageUrl = 'T_WL3_imageUrl';
+      const note = 'T_note';
+      const code = 'T_Code';
       const tmpWL = await WL.findOne({
         where: {
           name: 'T_WL3',
@@ -443,6 +447,8 @@ describe('测试案例', () => {
         `WL/${tmpWL.id}`,
         {
           imageUrl,
+          note,
+          code,
         },
         KFJLToken,
       );
@@ -450,6 +456,36 @@ describe('测试案例', () => {
       await tmpWL.reload();
 
       assert.equal(tmpWL.imageUrl, imageUrl);
+      assert.equal(tmpWL.note, note);
+      assert.notEqual(tmpWL.code, code);
+    });
+
+    it('KFJL 创建 FG, Tester, FGTester', async () => {
+      const PPId = 1;
+      const FGPayload = {
+        name: 'T_FG',
+        note: 'T_note',
+        Testers: ['Tester1', 'T_Tester1', 'T_Tester2'],
+      };
+
+      await post(
+        'createFG_Tester_FGTester',
+        {
+          PPId,
+          FG: FGPayload,
+        },
+        KFJLToken,
+      );
+
+      const tmpFG = await FG.findOne({
+        where: {
+          name: FGPayload.name,
+        },
+      });
+
+      const Testers = await tmpFG.getTesters();
+      const TesterNames = Testers.map(item => item.name);
+      assert.deepEqual(TesterNames, FGPayload.Testers);
     });
   });
 });

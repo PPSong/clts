@@ -124,7 +124,7 @@ post.createFG_Tester_FGTester
     FG: {
             name,
             note,
-            Tester: [
+            Testers: [
                 name
             ]
         }

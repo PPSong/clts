@@ -5,7 +5,7 @@ import debug from 'debug';
 /* eslint-disable */
 import * as tables from '../tables';
 /* eslint-enable */
-import { sequelize, JS, User, PP, GT, GYS, AZGS, DP, DW, WL } from '../models/Model';
+import { sequelize, JS, User, PP, GT, GYS, AZGS, DP, DW, WL, FG, Tester } from '../models/Model';
 
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
@@ -529,6 +529,145 @@ router.post('/setDP_DWs', async (req, res, next) => {
     // 设置DP_DWs
     await tmpDP.setDWs(DWIds, { transaction });
     // end 设置GTIds
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// KFJL 创建 FG, Tester, FGTester
+router.post('/createFG_Tester_FGTester', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.KFJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { PPId, FG: FGPayload } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查PPId与操作者同一品牌, 而且都是enable状态
+    const tmpPP = await PP.findOne({
+      where: {
+        id: PPId,
+        disabledAt: null,
+      },
+      transaction,
+    });
+
+    if (!tmpPP) {
+      throw new Error('没有对应记录!');
+    }
+
+    if (user.JS === JS.KFJL) {
+      if (tmpPP.id !== user.PPId) {
+        throw new Error('没有权限!');
+      }
+    }
+    // end 检查PPId与操作者同一品牌, 而且都是enable状态
+
+    // 检查FG如果在对应PP中已存在是enable状态
+    const tmpFG = await FG.findOne({
+      where: {
+        PPId,
+        name: FG.name,
+      },
+      transaction,
+    });
+
+    if (tmpFG) {
+      if (tmpFG.disabledAt != null) {
+        throw new Error('记录状态不正确!');
+      }
+    }
+    // end 检查FG如果在对应PP中已存在是enable状态
+
+    // 检查Testers如果在对应PPId已存在是enable状态
+    const { Testers } = FGPayload;
+    for (let i = 0; i < Testers.length; i++) {
+      const tmpTester = await Tester.findOne({
+        where: {
+          PPId,
+          name: Testers[i].name,
+        },
+        transaction,
+      });
+
+      if (tmpTester) {
+        if (tmpTester.disabledAt != null) {
+          throw new Error('记录状态不正确!');
+        }
+      }
+    }
+    // end 检查Testers如果在对应PPId已存在是enable状态
+
+    // end 检查操作记录权限
+
+    // 如不存在则创建FG
+    let tmpFG2 = await FG.findOne({
+      where: {
+        PPId,
+        name: FG.name,
+      },
+      transaction,
+    });
+
+    if (!tmpFG2) {
+      tmpFG2 = await FG.create(
+        {
+          name: FGPayload.name,
+          PPId,
+          note: FGPayload.note,
+        },
+        { transaction },
+      );
+    }
+    // end 如不存在则创建FG
+
+    // 如不存在则创建Tester
+    const TesterIds = [];
+    for (let i = 0; i < Testers.length; i++) {
+      let tmpTester = await Tester.findOne({
+        where: {
+          PPId,
+          name: Testers[i],
+        },
+        transaction,
+      });
+
+      if (!tmpTester) {
+        tmpTester = await Tester.create(
+          {
+            name: Testers[i],
+            PPId,
+          },
+          { transaction },
+        );
+      }
+
+      TesterIds.push(tmpTester.id);
+    }
+    // end 如不存在则创建Tester
+
+    // 把Testers配置到FG上
+    await tmpFG2.setTesters(TesterIds, { through: { PPId }, transaction });
+    // end 把Testers配置到FG上
 
     await transaction.commit();
 

@@ -123,7 +123,7 @@ export default class WLTable extends BaseTable {
     const filteredFields = {
       ...fields,
     };
-    const allowKeys = ['name', 'imageUrl'];
+    const allowKeys = ['imageUrl', 'note'];
     const curKeys = Object.keys(filteredFields);
     const needToDeleteKeys = _.difference(curKeys, allowKeys);
     needToDeleteKeys.forEach((key) => {
