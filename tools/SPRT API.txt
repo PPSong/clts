@@ -158,17 +158,18 @@ KFJL 编辑 EJZH
 post.editEJZH
 {
     id,
+    WLId,
     imageUrl,
     XGTs: [
         imageUrl
     ],
-    FGTesterIds: [
+    FGTesters: [
         {
             id,
             number,
         }
     ],
-    SJWLIds: [
+    SJWLs: [
         {
             id,
             number,
@@ -186,7 +187,7 @@ post.createYJZH
     XGTs: [
         imageUrl
     ],
-    EJZHIds: [
+    EJZHs: [
         {
             id,
             number,
@@ -197,11 +198,12 @@ post.createYJZH
 post.editYJZH
 {
     id,
+    WLId,
     imageUrl,
     XGTs: [
         imageUrl
     ],
-    EJZHIds: [
+    EJZHs: [
         {
             id,
             number,

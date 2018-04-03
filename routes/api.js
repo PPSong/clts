@@ -21,6 +21,7 @@ import {
   FG_Tester,
   EJZH,
   EJZHXGT,
+  YJZH,
   YJZHXGT,
 } from '../models/Model';
 
@@ -753,7 +754,7 @@ router.post('/createEJZH', async (req, res, next) => {
     if (!tmpWLId) {
       throw new Error('没有对应记录!');
     }
-    // end 检查WLId与操作者同一品牌, 而且都是enable状态
+    // end 检查WLId与操作者同一品牌, 而且都是enable状态, 而且是二级
 
     // 检查FGTesterIds与操作者同一品牌, 而且都是enable状态
     const FGTesterIds = FGTesters.map(item => item.id);
@@ -803,7 +804,7 @@ router.post('/createEJZH', async (req, res, next) => {
       { transaction },
     );
 
-    // 创建EJWLXGTs
+    // 创建EJZHXGTs
     for (let i = 0; i < XGTs.length; i++) {
       const tmpXGT = await EJZHXGT.create(
         {
@@ -815,23 +816,428 @@ router.post('/createEJZH', async (req, res, next) => {
         },
       );
     }
-    // end 配置EJWL XGTs
+    // end 创建EJZHXGTs
 
-    // 配置EJWL FGTesters
+    // 配置EJZH FGTesters
     for (let i = 0; i < FGTesters.length; i++) {
       const tmpFGTester = FGTesters[i];
       tmpEJZH.addFGTester(tmpFGTester.id, { through: { number: tmpFGTester.number } });
     }
-    // end 配置EJWL FGTesters
+    // end 配置EJZH FGTesters
 
-    // 配置EJWL SJWLs
+    // 配置EJZH SJWLs
     for (let i = 0; i < SJWLs.length; i++) {
       const tmpSJWL = SJWLs[i];
       tmpEJZH.addSJWL(tmpSJWL.id, { through: { number: tmpSJWL.number } });
     }
-    // end 配置EJWL SJWLs
+    // end 配置EJZH SJWLs
 
     // end 创建EJZH
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// KFJL 编辑 EJZH
+router.post('/editEJZH', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.KFJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const {
+      id, WLId, imageUrl, XGTs, FGTesters, SJWLs,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查编辑的EJZH与操作者同一品牌, 而且都是enable状态
+    const tmpEJZH = await EJZH.findOne({
+      where: {
+        id,
+        disabledAt: null,
+      },
+      transaction,
+    });
+
+    if (!tmpEJZH) {
+      throw new Error('没有对应记录!');
+    }
+
+    if (user.JS === JS.KFJL) {
+      if (tmpEJZH.PPId !== user.PPId) {
+        throw new Error('没有权限!');
+      }
+    }
+    // end 检查编辑的EJZH与操作者同一品牌, 而且都是enable状态
+
+    // 检查WLId与EJZH同一品牌, 而且都是enable状态, 而且是二级
+    const tmpWLId = await WL.findOne({
+      where: {
+        id: WLId,
+        PPId: tmpEJZH.PPId,
+        level: 2,
+        disabledAt: null,
+      },
+      transaction,
+    });
+
+    if (!tmpWLId) {
+      throw new Error('没有对应记录!');
+    }
+    // end 检查WLId与EJZH同一品牌, 而且都是enable状态, 而且是二级
+
+    // 检查FGTesterIds与EJZH同一品牌, 而且都是enable状态
+    const FGTesterIds = FGTesters.map(item => item.id);
+    for (let i = 0; i < FGTesterIds.length; i++) {
+      const tmpFGTester = await FG_Tester.findOne({
+        where: {
+          id: FGTesterIds[i],
+          PPId: tmpEJZH.PPId,
+          disabledAt: null,
+        },
+        transaction,
+      });
+
+      if (!tmpFGTester) {
+        throw new Error('没有对应记录!');
+      }
+    }
+    // end 检查FGTesterIds与EJZH同一品牌, 而且都是enable状态
+
+    // 检查SJWLIds与EJZH同一品牌, 而且都是enable状态, 而且都是三级
+    const SJWLIds = SJWLs.map(item => item.id);
+    for (let i = 0; i < SJWLIds.length; i++) {
+      const tmpSJWL = await WL.findOne({
+        where: {
+          id: SJWLIds[i],
+          PPId: tmpEJZH.PPId,
+          level: 3,
+          disabledAt: null,
+        },
+        transaction,
+      });
+
+      if (!tmpSJWL) {
+        throw new Error('没有对应记录!');
+      }
+    }
+    // end 检查SJWLIds与EJZH同一品牌, 而且都是enable状态, 而且都是三级
+
+    // 编辑EJZH
+    await tmpEJZH.update(
+      {
+        WLId,
+        imageUrl,
+      },
+      { transaction },
+    );
+
+    // 重置 EJZHXGTs
+    await EJZHXGT.destroy({
+      where: {
+        EJZHId: tmpEJZH.id,
+      },
+      transaction,
+    });
+    for (let i = 0; i < XGTs.length; i++) {
+      const tmpXGT = await EJZHXGT.create(
+        {
+          EJZHId: tmpEJZH.id,
+          imageUrl: XGTs[i],
+        },
+        {
+          transaction,
+        },
+      );
+    }
+    // end 重置 EJZHXGTs
+
+    // 重置 FGTesters
+    await tmpEJZH.setFGTesters(null, { transaction });
+    for (let i = 0; i < FGTesters.length; i++) {
+      const tmpFGTester = FGTesters[i];
+      await tmpEJZH.addFGTester(tmpFGTester.id, {
+        through: { number: tmpFGTester.number },
+        transaction,
+      });
+    }
+    // end 重置 FGTesters
+
+    // 配置EJZH SJWLs
+    await tmpEJZH.setSJWLs(null, { transaction });
+    for (let i = 0; i < SJWLs.length; i++) {
+      const tmpSJWL = SJWLs[i];
+      await tmpEJZH.addSJWL(tmpSJWL.id, { through: { number: tmpSJWL.number }, transaction });
+    }
+    // end 配置EJZH SJWLs
+
+    // end 创建EJZH
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// KFJL 创建 YJZH
+router.post('/createYJZH', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.KFJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const {
+      PPId, name, WLId, imageUrl, XGTs, EJZHs,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查PPId与操作者同一品牌, 而且都是enable状态
+    const tmpPP = await PP.findOne({
+      where: {
+        id: PPId,
+        disabledAt: null,
+      },
+      transaction,
+    });
+
+    if (!tmpPP) {
+      throw new Error('没有对应记录!');
+    }
+
+    if (user.JS === JS.KFJL) {
+      if (tmpPP.id !== user.PPId) {
+        throw new Error('没有权限!');
+      }
+    }
+    // end 检查PPId与操作者同一品牌, 而且都是enable状态
+
+    // 检查WLId与操作者同一品牌, 而且都是enable状态, 而且是一级
+    const tmpWLId = await WL.findOne({
+      where: {
+        id: WLId,
+        level: 1,
+        disabledAt: null,
+      },
+      transaction,
+    });
+
+    if (!tmpWLId) {
+      throw new Error('没有对应记录!');
+    }
+    // end 检查WLId与操作者同一品牌, 而且都是enable状态, 而且是一级d
+
+    // 检查EJZHs与操作者同一品牌, 而且都是enable状态
+    const EJZHIds = EJZHs.map(item => item.id);
+    for (let i = 0; i < EJZHIds.length; i++) {
+      const tmpEJZH = await EJZH.findOne({
+        where: {
+          id: EJZHIds[i],
+          PPId,
+          disabledAt: null,
+        },
+        transaction,
+      });
+
+      if (!tmpEJZH) {
+        throw new Error('没有对应记录!');
+      }
+    }
+    // end 检查EJZHIds与操作者同一品牌, 而且都是enable状态
+
+    // 创建YJZH
+    const tmpYJZH = await YJZH.create(
+      {
+        name,
+        WLId,
+        PPId,
+        imageUrl,
+      },
+      { transaction },
+    );
+
+    // 创建YJZHXGTs
+    for (let i = 0; i < XGTs.length; i++) {
+      const tmpXGT = await YJZHXGT.create(
+        {
+          YJZHId: tmpYJZH.id,
+          imageUrl: XGTs[i],
+        },
+        {
+          transaction,
+        },
+      );
+    }
+    // end 创建YJZHXGTs
+
+    // 配置YJZH EJZHs
+    for (let i = 0; i < EJZHs.length; i++) {
+      const tmpEJZH = EJZHs[i];
+      tmpYJZH.addEJZH(tmpEJZH.id, { through: { number: tmpEJZH.number } });
+    }
+    // end 配置YJZH EJZHs
+
+    // end 创建EJZH
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// KFJL 编辑 YJZH
+router.post('/editYJZH', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.KFJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const {
+      id, WLId, imageUrl, XGTs, EJZHs,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查编辑的YJZH与操作者同一品牌, 而且都是enable状态
+    const tmpYJZH = await YJZH.findOne({
+      where: {
+        id,
+        disabledAt: null,
+      },
+      transaction,
+    });
+
+    if (!tmpYJZH) {
+      throw new Error('没有对应记录!');
+    }
+
+    if (user.JS === JS.KFJL) {
+      if (tmpYJZH.PPId !== user.PPId) {
+        throw new Error('没有权限!');
+      }
+    }
+    // end 检查编辑的YJZH与操作者同一品牌, 而且都是enable状态
+
+    // 检查WLId与YJZH同一品牌, 而且都是enable状态, 而且是一级
+    const tmpWLId = await WL.findOne({
+      where: {
+        id: WLId,
+        PPId: tmpYJZH.PPId,
+        level: 1,
+        disabledAt: null,
+      },
+      transaction,
+    });
+
+    if (!tmpWLId) {
+      throw new Error('没有对应记录!');
+    }
+    // end 检查WLId与YJZH同一品牌, 而且都是enable状态, 而且是一级
+
+    // 检查EJZHIds与YJZH同一品牌, 而且都是enable状态
+    const EJZHIds = EJZHs.map(item => item.id);
+    for (let i = 0; i < EJZHIds.length; i++) {
+      const tmpEJZH = await EJZH.findOne({
+        where: {
+          id: EJZHIds[i],
+          PPId: tmpYJZH.PPId,
+          disabledAt: null,
+        },
+        transaction,
+      });
+
+      if (!tmpEJZH) {
+        throw new Error('没有对应记录!');
+      }
+    }
+    // end 检查EJZHIds与YJZH同一品牌, 而且都是enable状态
+
+    // 编辑 EJZH
+    await tmpYJZH.update(
+      {
+        WLId,
+        imageUrl,
+      },
+      { transaction },
+    );
+
+    // 重置 YJZHXGTs
+    await YJZHXGT.destroy({
+      where: {
+        YJZHId: tmpYJZH.id,
+      },
+      transaction,
+    });
+    for (let i = 0; i < XGTs.length; i++) {
+      const tmpXGT = await YJZHXGT.create(
+        {
+          YJZHId: tmpYJZH.id,
+          imageUrl: XGTs[i],
+        },
+        {
+          transaction,
+        },
+      );
+    }
+    // end 重置 EJZHXGTs
+
+    // 配置YJZH EJZHs
+    await tmpYJZH.setEJZHs(null, { transaction });
+    for (let i = 0; i < EJZHs.length; i++) {
+      const tmpEJZH = EJZHs[i];
+      await tmpYJZH.addEJZH(tmpEJZH.id, { through: { number: tmpEJZH.number }, transaction });
+    }
+    // end 配置YJZH EJZHs
+
+    // end 编辑 EJZH
 
     await transaction.commit();
 

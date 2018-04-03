@@ -20,5 +20,6 @@ module.exports = {
     camelcase: 'warn',
     'no-case-declarations': 'off',
     'no-await-in-loop': 'off',
+    'prefer-destructuring': 'off',
   },
 };

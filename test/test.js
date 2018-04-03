@@ -554,12 +554,194 @@ describe('测试案例', () => {
       assert.deepEqual(tmpFGTesterObjs, FGTesters);
 
       const tmpSJWLs = await tmpEJZH.getSJWLs();
-      const tmpSJWLIds = tmpSJWLs.map(item => item.id);
       const tmpSJWLObjs = tmpSJWLs.map(item => ({
         id: item.EJZH_SJWL.WLId,
         number: item.EJZH_SJWL.number,
       }));
       assert.deepEqual(tmpSJWLObjs, SJWLs);
+    });
+
+    it('KFJL 编辑 EJZH', async () => {
+      const name = 'T_EJZH';
+      const tmpEJZH0 = await EJZH.findOne({
+        where: {
+          name,
+        },
+      });
+      const id = tmpEJZH0.id;
+      const WLId = 8;
+      const imageUrl = 'T_imageUrl2';
+      const XGTs = ['T_XGT2', 'T_XGT2'];
+      const FGTesters = [
+        {
+          id: 3,
+          number: 3,
+        },
+        {
+          id: 4,
+          number: 2,
+        },
+      ];
+      const SJWLs = [
+        {
+          id: 15,
+          number: 3,
+        },
+        {
+          id: 16,
+          number: 2,
+        },
+      ];
+
+      await post(
+        'editEJZH',
+        {
+          id,
+          WLId,
+          imageUrl,
+          XGTs,
+          FGTesters,
+          SJWLs,
+        },
+        KFJLToken,
+      );
+
+      const tmpEJZH = await EJZH.findOne({
+        where: {
+          name: 'T_EJZH',
+        },
+      });
+
+      assert.equal(tmpEJZH.name, name);
+      assert.equal(tmpEJZH.WLId, WLId);
+      assert.equal(tmpEJZH.imageUrl, imageUrl);
+
+      const tmpXGTs = await tmpEJZH.getEJZHXGTs();
+      const tmpXGTImageUrls = tmpXGTs.map(item => item.imageUrl);
+      assert.deepEqual(tmpXGTImageUrls, XGTs);
+
+      const tmpFGTesters = await tmpEJZH.getFGTesters();
+      const tmpFGTesterObjs = tmpFGTesters.map(item => ({
+        id: item.EJZH_FGTester.FGTesterId,
+        number: item.EJZH_FGTester.number,
+      }));
+      assert.deepEqual(tmpFGTesterObjs, FGTesters);
+
+      const tmpSJWLs = await tmpEJZH.getSJWLs();
+      const tmpSJWLObjs = tmpSJWLs.map(item => ({
+        id: item.EJZH_SJWL.WLId,
+        number: item.EJZH_SJWL.number,
+      }));
+      assert.deepEqual(tmpSJWLObjs, SJWLs);
+    });
+
+    it('KFJL 创建 YJZH', async () => {
+      const PPId = 1;
+      const name = 'T_YJZH';
+      const WLId = 1;
+      const imageUrl = 'T_imageUrl';
+      const XGTs = ['T_XGT1', 'T_XGT1'];
+      const EJZHs = [
+        {
+          id: 1,
+          number: 2,
+        },
+        {
+          id: 2,
+          number: 3,
+        },
+      ];
+
+      await post(
+        'createYJZH',
+        {
+          PPId,
+          name,
+          WLId,
+          imageUrl,
+          XGTs,
+          EJZHs,
+        },
+        KFJLToken,
+      );
+
+      const tmpYJZH = await YJZH.findOne({
+        where: {
+          name: 'T_YJZH',
+        },
+      });
+
+      assert.equal(tmpYJZH.PPId, PPId);
+      assert.equal(tmpYJZH.name, name);
+      assert.equal(tmpYJZH.WLId, WLId);
+      assert.equal(tmpYJZH.imageUrl, imageUrl);
+
+      const tmpXGTs = await tmpYJZH.getYJZHXGTs();
+      const tmpXGTImageUrls = tmpXGTs.map(item => item.imageUrl);
+      assert.deepEqual(tmpXGTImageUrls, XGTs);
+
+      const tmpEJZHs = await tmpYJZH.getEJZHs();
+      const tmpEJZHObjs = tmpEJZHs.map(item => ({
+        id: item.YJZH_EJZH.EJZHId,
+        number: item.YJZH_EJZH.number,
+      }));
+      assert.deepEqual(tmpEJZHObjs, EJZHs);
+    });
+
+    it('KFJL 编辑 YJZH', async () => {
+      const name = 'T_YJZH';
+      const tmpYJZH0 = await YJZH.findOne({
+        where: {
+          name,
+        },
+      });
+      const id = tmpYJZH0.id;
+      const WLId = 2;
+      const imageUrl = 'T_imageUrl2';
+      const XGTs = ['T_XGT2', 'T_XGT2'];
+      const EJZHs = [
+        {
+          id: 2,
+          number: 3,
+        },
+        {
+          id: 3,
+          number: 2,
+        },
+      ];
+
+      await post(
+        'editYJZH',
+        {
+          id,
+          WLId,
+          imageUrl,
+          XGTs,
+          EJZHs,
+        },
+        KFJLToken,
+      );
+
+      const tmpYJZH = await YJZH.findOne({
+        where: {
+          name: 'T_YJZH',
+        },
+      });
+
+      assert.equal(tmpYJZH.name, name);
+      assert.equal(tmpYJZH.WLId, WLId);
+      assert.equal(tmpYJZH.imageUrl, imageUrl);
+
+      const tmpXGTs = await tmpYJZH.getYJZHXGTs();
+      const tmpXGTImageUrls = tmpXGTs.map(item => item.imageUrl);
+      assert.deepEqual(tmpXGTImageUrls, XGTs);
+
+      const tmpEJZHs = await tmpYJZH.getEJZHs();
+      const tmpEJZHObjs = tmpEJZHs.map(item => ({
+        id: item.YJZH_EJZH.EJZHId,
+        number: item.YJZH_EJZH.number,
+      }));
+      assert.deepEqual(tmpEJZHObjs, EJZHs);
     });
   });
 });
