@@ -184,6 +184,7 @@ describe('测试案例', () => {
     });
 
     it('KFJL 创建 GT, GTBA', async () => {
+      const PPId = 1;
       const name = 'T_GT';
       const code = 'T_GTCode';
       const tmpQY = QY.EAST;
@@ -191,6 +192,7 @@ describe('测试案例', () => {
       await post(
         'createGT_GTBA',
         {
+          PPId,
           name,
           code,
           QY: tmpQY,
@@ -213,12 +215,12 @@ describe('测试案例', () => {
           name,
         },
       });
-      const GTId = tmpGT.id;
+      const id = tmpGT.id;
       const imageUrl = 'T_imageUrl';
       await post(
         'setGT_IMAGE',
         {
-          GTId,
+          id,
           imageUrl,
         },
         KFJLToken,
@@ -229,11 +231,13 @@ describe('测试案例', () => {
     });
 
     it('KFJL 创建 GZ', async () => {
+      const PPId = 1;
       const username = 'T_GZ';
       const password = '1';
       await post(
         'createGZ',
         {
+          PPId,
           username,
           password,
         },

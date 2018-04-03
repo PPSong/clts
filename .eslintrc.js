@@ -21,5 +21,6 @@ module.exports = {
     'no-case-declarations': 'off',
     'no-await-in-loop': 'off',
     'prefer-destructuring': 'off',
+    'func-names': 'off',
   },
 };

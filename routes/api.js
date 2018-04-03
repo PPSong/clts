@@ -27,7 +27,7 @@ import {
 
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
-  console.log('pptest', obj);
+  console.log('ppLog', obj);
 };
 
 const router = express.Router();
@@ -84,14 +84,14 @@ router.post('/createPPJL', async (req, res, next) => {
   }
 });
 
-// 新建KFJL [ADMIN, PPJL]
+// 新建KFJL [PPJL]
 router.post('/createKFJL', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
   try {
     // 检查api调用权限
-    if (user.JS !== JS.ADMIN && user.JS !== JS.PPJL) {
+    if (user.JS !== JS.PPJL) {
       throw new Error('没有权限!');
     }
     // end 检查api调用权限
@@ -101,14 +101,7 @@ router.post('/createKFJL', async (req, res, next) => {
     const { username, password, PPId } = req.body;
 
     // 检查操作记录权限
-    if (user.JS === JS.PPJL) {
-      // 如果PP不在PPJL权限范围, 则报错
-      const allowPPIds = await user.getPPJLPPs({}, { transaction }).map(item => item.toJSON().id);
-
-      if (!allowPPIds.includes(parseInt(PPId))) {
-        throw new Error('记录不在权限范围!');
-      }
-    }
+    await user.checkPPId(PPId, transaction);
     // end 检查操作记录权限
 
     // 新建用户
@@ -125,9 +118,7 @@ router.post('/createKFJL', async (req, res, next) => {
       where: {
         id: PPId,
       },
-      transaction,
     });
-
     await tmpPP.setKFJLs([tmpUser], { transaction });
     // end 新建用户
 
@@ -160,12 +151,11 @@ router.post('/createGT_GTBA', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     const {
-      name, code, QY, CS,
+      PPId, name, code, QY, CS,
     } = req.body;
 
-    const { PPId } = user;
-
     // 检查操作记录权限
+    await user.checkPPId(PPId, transaction);
     // end 检查操作记录权限
 
     // 新建GTBAUser
@@ -207,7 +197,7 @@ router.post('/createGT_GTBA', async (req, res, next) => {
   }
 });
 
-// 编辑 柜台图 [KFJL]
+// 编辑柜台图 [KFJL]
 router.post('/setGT_IMAGE', async (req, res, next) => {
   let transaction;
   const { user } = req;
@@ -221,24 +211,26 @@ router.post('/setGT_IMAGE', async (req, res, next) => {
 
     transaction = await sequelize.transaction();
 
-    const { GTId, imageUrl } = req.body;
+    const { id, imageUrl } = req.body;
 
     // 检查操作记录权限
-    const tmpGT = await GT.findOne({
-      where: {
-        id: GTId,
-      },
-      transaction,
-    });
-
-    if (!(tmpGT && tmpGT.PPId === user.PPId)) {
-      throw new Error('没有操作权限!');
-    }
+    await user.checkGTId(id, transaction);
     // end 检查操作记录权限
 
     // 设置image
-    tmpGT.imageUrl = imageUrl;
-    await tmpGT.save({ transaction });
+    const tmpGT = await GT.findOne({
+      where: {
+        id,
+      },
+      transaction,
+    });
+    await tmpGT.update(
+      {
+        imageUrl,
+      },
+      { transaction },
+    );
+
     // end 设置image
 
     await transaction.commit();
@@ -269,9 +261,10 @@ router.post('/createGZ', async (req, res, next) => {
 
     transaction = await sequelize.transaction();
 
-    const { username, password } = req.body;
+    const { PPId, username, password } = req.body;
 
     // 检查操作记录权限
+    await user.checkPPId(PPId, transaction);
     // end 检查操作记录权限
 
     // 创建GZ用户
@@ -285,9 +278,9 @@ router.post('/createGZ', async (req, res, next) => {
     );
     // end 创建GZ用户
 
-    // 设定GZ给自己所属PP
-    await tmpGZUser.setGZPPs([user.PPId], { transaction });
-    // end 设定GZ给自己所属PP
+    // 设定GZ的PP
+    await tmpGZUser.setGZPPs([PPId], { transaction });
+    // end 设定GZ的PP
 
     await transaction.commit();
 
@@ -320,12 +313,17 @@ router.post('/setGZ_GTs', async (req, res, next) => {
     const { GZUserId, GTIds } = req.body;
 
     // 检查操作记录权限
-    // 检查userId角色是柜长, 品牌和操作者一致, 没有被disabled
+    await user.checkGZUserId(GZUserId, transaction);
+    for (let i = 0; i < GTIds.length; i++) {
+      await user.checkGTId(GTIds[i], transaction);
+    }
+    // end 检查操作记录权限
+
+    // 检查userId角色是柜长
     const tmpGZ = await User.findOne({
       where: {
         id: GZUserId,
         JS: JS.GZ,
-        disabledAt: null,
       },
       transaction,
     });
@@ -333,30 +331,7 @@ router.post('/setGZ_GTs', async (req, res, next) => {
     if (!tmpGZ) {
       throw new Error('记录操作不合法!');
     }
-
-    const PPIds = await tmpGZ.getGZPPs({ transaction });
-    if (PPIds[0].id !== user.PPId) {
-      throw new Error('记录操作不合法!');
-    }
-    // end 检查userId角色是柜长, 品牌和操作者一致
-
-    // 检查柜台都有效, 没有被disabled
-    const tmpGTs = GT.findAll({
-      where: {
-        id: {
-          $in: GTIds,
-        },
-        disabledAt: {
-          $ne: null,
-        },
-      },
-      transaction,
-    });
-
-    if (tmpGTs.length > 0) {
-      throw new Error('记录操作不合法!');
-    }
-    // end 检查操作记录权限
+    // end 检查userId角色是柜长
 
     // 设置GTIds
     await tmpGZ.setGTs(GTIds, { transaction });

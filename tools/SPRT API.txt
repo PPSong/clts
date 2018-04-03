@@ -23,6 +23,7 @@ post.createKFJL
 KFJL1 创建 GT1, GTBA1
 post.createGT_GTBA
 {
+    PPId,
     name:
     code: (GTBA1的username默认为code, 密码默认: '123456'),
     PPId, ? 这个可以由KFJL推导出
@@ -34,13 +35,14 @@ post.createGT_GTBA
 KFJL1 编辑 柜台图
 post.setGT_IMAGE
 {
-    GTId,
+    id,
     imageUrl,
 }
 
 KFJL 创建 GZ1
 post.createGZ
 {
+    PPId,
     username,
     password,
 }

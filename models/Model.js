@@ -1,5 +1,6 @@
 import Sequelize from 'sequelize';
 import bCrypt from 'bcryptjs';
+import _ from 'lodash';
 import debug from 'debug';
 
 const ppLog = debug('ppLog');
@@ -141,6 +142,129 @@ export const User = sequelize.define(
     version: true,
   },
 );
+
+// 检查PP本身是否合法, 并且是否在用户权限范围
+User.prototype.checkPPId = async function (id, transaction) {
+  let tmpPPs;
+  let tmpPPIds;
+
+  const tmpPP = await PP.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpPP) {
+    throw new Error('记录不合法!');
+  }
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(id)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(id)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+};
+
+User.prototype.checkGTId = async function (id, transaction) {
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpGT = await GT.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpGT) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpPPId = tmpGT.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+};
+
+User.prototype.checkGZUserId = async function (id, transaction) {
+  let tmpPPs;
+  let tmpPPIds;
+  let tmpGZPPs = [];
+  let tmpGZPPIds = [];
+  const tmpGZ = await User.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpGZ) {
+    throw new Error('记录不合法!');
+  }
+
+  tmpGZPPs = await tmpGZ.getGZPPs({ transaction });
+  tmpGZPPIds = tmpGZPPs.map(item => item.id);
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (_.difference(tmpGZPPIds, tmpPPIds).length > 0) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (_.difference(tmpGZPPIds, tmpPPIds).length > 0) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+};
 
 // 品牌
 export const PP = getBasicTable('PP');
