@@ -140,13 +140,13 @@ post.createEJZH
     XGTs: [
         imageUrl
     ],
-    FGTesterIds: [
+    FGTesters: [
         {
             id,
             number,
         }
     ],
-    SJWLIds: [
+    SJWLs: [
         {
             id,
             number,

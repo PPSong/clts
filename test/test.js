@@ -22,6 +22,8 @@ import {
   WL,
   FG,
   FGTester,
+  EJZH,
+  YJZH,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -486,6 +488,78 @@ describe('测试案例', () => {
       const Testers = await tmpFG.getTesters();
       const TesterNames = Testers.map(item => item.name);
       assert.deepEqual(TesterNames, FGPayload.Testers);
+    });
+
+    it('KFJL 创建 EJZH', async () => {
+      const PPId = 1;
+      const name = 'T_EJZH';
+      const WLId = 7;
+      const imageUrl = 'T_imageUrl';
+      const XGTs = ['T_XGT1', 'T_XGT1'];
+      const FGTesters = [
+        {
+          id: 1,
+          number: 2,
+        },
+        {
+          id: 2,
+          number: 3,
+        },
+      ];
+      const SJWLs = [
+        {
+          id: 13,
+          number: 2,
+        },
+        {
+          id: 14,
+          number: 3,
+        },
+      ];
+
+      await post(
+        'createEJZH',
+        {
+          PPId,
+          name,
+          WLId,
+          imageUrl,
+          XGTs,
+          FGTesters,
+          SJWLs,
+        },
+        KFJLToken,
+      );
+
+      const tmpEJZH = await EJZH.findOne({
+        where: {
+          name: 'T_EJZH',
+        },
+      });
+
+      assert.equal(tmpEJZH.PPId, PPId);
+      assert.equal(tmpEJZH.name, name);
+      assert.equal(tmpEJZH.WLId, WLId);
+      assert.equal(tmpEJZH.imageUrl, imageUrl);
+
+      const tmpXGTs = await tmpEJZH.getEJZHXGTs();
+      const tmpXGTImageUrls = tmpXGTs.map(item => item.imageUrl);
+      assert.deepEqual(tmpXGTImageUrls, XGTs);
+
+      const tmpFGTesters = await tmpEJZH.getFGTesters();
+      const tmpFGTesterObjs = tmpFGTesters.map(item => ({
+        id: item.EJZH_FGTester.FGTesterId,
+        number: item.EJZH_FGTester.number,
+      }));
+      assert.deepEqual(tmpFGTesterObjs, FGTesters);
+
+      const tmpSJWLs = await tmpEJZH.getSJWLs();
+      const tmpSJWLIds = tmpSJWLs.map(item => item.id);
+      const tmpSJWLObjs = tmpSJWLs.map(item => ({
+        id: item.EJZH_SJWL.WLId,
+        number: item.EJZH_SJWL.number,
+      }));
+      assert.deepEqual(tmpSJWLObjs, SJWLs);
     });
   });
 });
