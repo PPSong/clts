@@ -145,6 +145,10 @@ export const User = sequelize.define(
 
 // 检查PP本身是否合法, 并且是否在用户权限范围
 User.prototype.checkPPId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
   let tmpPPs;
   let tmpPPIds;
 
@@ -180,9 +184,15 @@ User.prototype.checkPPId = async function (id, transaction) {
     default:
       throw new Error('没有权限!');
   }
+
+  return tmpPP;
 };
 
 User.prototype.checkGTId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
   let tmpPPs;
   let tmpPPIds;
   const tmpGT = await GT.findOne({
@@ -220,9 +230,15 @@ User.prototype.checkGTId = async function (id, transaction) {
     default:
       throw new Error('没有权限!');
   }
+
+  return tmpGT;
 };
 
 User.prototype.checkGZUserId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
   let tmpPPs;
   let tmpPPIds;
   let tmpGZPPs = [];
@@ -230,6 +246,7 @@ User.prototype.checkGZUserId = async function (id, transaction) {
   const tmpGZ = await User.findOne({
     where: {
       id,
+      JS: JS.GZ,
       disabledAt: null,
     },
     transaction,
@@ -264,9 +281,15 @@ User.prototype.checkGZUserId = async function (id, transaction) {
     default:
       throw new Error('没有权限!');
   }
+
+  return tmpGZ;
 };
 
 User.prototype.checkDPId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
   let tmpPPs;
   let tmpPPIds;
   const tmpDP = await DP.findOne({
@@ -304,9 +327,15 @@ User.prototype.checkDPId = async function (id, transaction) {
     default:
       throw new Error('没有权限!');
   }
+
+  return tmpDP;
 };
 
 User.prototype.checkDWId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
   let tmpPPs;
   let tmpPPIds;
   const tmpDW = await DW.findOne({
@@ -345,9 +374,15 @@ User.prototype.checkDWId = async function (id, transaction) {
     default:
       throw new Error('没有权限!');
   }
+
+  return tmpDW;
 };
 
 User.prototype.checkGYSId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
   let tmpGYSs;
   let tmpGYSIds;
 
@@ -385,9 +420,15 @@ User.prototype.checkGYSId = async function (id, transaction) {
     default:
       throw new Error('没有权限!');
   }
+
+  return tmpGYS;
 };
 
 User.prototype.checkAZGSId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
   let tmpAZGSs;
   let tmpAZGSIds;
 
@@ -425,6 +466,284 @@ User.prototype.checkAZGSId = async function (id, transaction) {
     default:
       throw new Error('没有权限!');
   }
+
+  return tmpAZGS;
+};
+
+User.prototype.checkFGId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpFG = await FG.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpFG) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpPPId = tmpFG.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpFG;
+};
+
+User.prototype.checkTesterId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpTester = await Tester.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpTester) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpPPId = tmpTester.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpTester;
+};
+
+User.prototype.checkFGTesterId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpFGTester = await FG_Tester.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpFGTester) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpPPId = tmpFGTester.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpFGTester;
+};
+
+User.prototype.checkWLId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpWL = await WL.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpWL) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpPPId = tmpWL.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpWL;
+};
+
+User.prototype.checkEJZHId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpEJZH = await EJZH.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpEJZH) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpPPId = tmpEJZH.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpEJZH;
+};
+
+User.prototype.checkYJZHId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpYJZH = await YJZH.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpYJZH) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpPPId = tmpYJZH.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpYJZH;
 };
 
 // 品牌

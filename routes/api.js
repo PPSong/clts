@@ -101,7 +101,7 @@ router.post('/createKFJL', async (req, res, next) => {
     const { username, password, PPId } = req.body;
 
     // 检查操作记录权限
-    await user.checkPPId(PPId, transaction);
+    const tmpPP = await user.checkPPId(PPId, transaction);
     // end 检查操作记录权限
 
     // 新建用户
@@ -114,11 +114,6 @@ router.post('/createKFJL', async (req, res, next) => {
       { transaction },
     );
 
-    const tmpPP = await PP.findOne({
-      where: {
-        id: PPId,
-      },
-    });
     await tmpPP.setKFJLs([tmpUser], { transaction });
     // end 新建用户
 
@@ -214,16 +209,10 @@ router.post('/setGT_IMAGE', async (req, res, next) => {
     const { id, imageUrl } = req.body;
 
     // 检查操作记录权限
-    await user.checkGTId(id, transaction);
+    const tmpGT = await user.checkGTId(id, transaction);
     // end 检查操作记录权限
 
     // 设置image
-    const tmpGT = await GT.findOne({
-      where: {
-        id,
-      },
-      transaction,
-    });
     await tmpGT.update(
       {
         imageUrl,
@@ -313,25 +302,11 @@ router.post('/setGZ_GTs', async (req, res, next) => {
     const { GZUserId, GTIds } = req.body;
 
     // 检查操作记录权限
-    await user.checkGZUserId(GZUserId, transaction);
+    const tmpGZ = await user.checkGZUserId(GZUserId, transaction);
     for (let i = 0; i < GTIds.length; i++) {
       await user.checkGTId(GTIds[i], transaction);
     }
     // end 检查操作记录权限
-
-    // 检查userId角色是柜长
-    const tmpGZ = await User.findOne({
-      where: {
-        id: GZUserId,
-        JS: JS.GZ,
-      },
-      transaction,
-    });
-
-    if (!tmpGZ) {
-      throw new Error('记录操作不合法!');
-    }
-    // end 检查userId角色是柜长
 
     // 设置GTIds
     await tmpGZ.setGTs(GTIds, { transaction });
@@ -528,26 +503,7 @@ router.post('/createFG_Tester_FGTester', async (req, res, next) => {
     const { PPId, FG: FGPayload } = req.body;
 
     // 检查操作记录权限
-
-    // 检查PPId与操作者同一品牌, 而且都是enable状态
-    const tmpPP = await PP.findOne({
-      where: {
-        id: PPId,
-        disabledAt: null,
-      },
-      transaction,
-    });
-
-    if (!tmpPP) {
-      throw new Error('没有对应记录!');
-    }
-
-    if (user.JS === JS.KFJL) {
-      if (tmpPP.id !== user.PPId) {
-        throw new Error('没有权限!');
-      }
-    }
-    // end 检查PPId与操作者同一品牌, 而且都是enable状态
+    await user.checkPPId(PPId, transaction);
 
     // 检查FG如果在对应PP中已存在是enable状态
     const tmpFG = await FG.findOne({
@@ -669,78 +625,31 @@ router.post('/createEJZH', async (req, res, next) => {
     } = req.body;
 
     // 检查操作记录权限
-
-    // 检查PPId与操作者同一品牌, 而且都是enable状态
-    const tmpPP = await PP.findOne({
-      where: {
-        id: PPId,
-        disabledAt: null,
-      },
-      transaction,
-    });
-
-    if (!tmpPP) {
+    await user.checkPPId(PPId, transaction);
+    const tmpWL = await user.checkWLId(WLId, transaction);
+    // 检查WL是二级
+    if (tmpWL.level !== 2) {
       throw new Error('没有对应记录!');
     }
+    // end 检查WL是二级
 
-    if (user.JS === JS.KFJL) {
-      if (tmpPP.id !== user.PPId) {
-        throw new Error('没有权限!');
-      }
-    }
-    // end 检查PPId与操作者同一品牌, 而且都是enable状态
-
-    // 检查WLId与操作者同一品牌, 而且都是enable状态, 而且是二级
-    const tmpWLId = await WL.findOne({
-      where: {
-        id: WLId,
-        level: 2,
-        disabledAt: null,
-      },
-      transaction,
-    });
-
-    if (!tmpWLId) {
-      throw new Error('没有对应记录!');
-    }
-    // end 检查WLId与操作者同一品牌, 而且都是enable状态, 而且是二级
-
-    // 检查FGTesterIds与操作者同一品牌, 而且都是enable状态
+    // 检查FGTesterIds
     const FGTesterIds = FGTesters.map(item => item.id);
     for (let i = 0; i < FGTesterIds.length; i++) {
-      const tmpFGTester = await FG_Tester.findOne({
-        where: {
-          id: FGTesterIds[i],
-          PPId,
-          disabledAt: null,
-        },
-        transaction,
-      });
-
-      if (!tmpFGTester) {
-        throw new Error('没有对应记录!');
-      }
+      await user.checkFGTesterId(FGTesterIds[i], transaction);
     }
-    // end 检查FGTesterIds与操作者同一品牌, 而且都是enable状态
+    // end 检查FGTesterIds
 
-    // 检查SJWLIds与操作者同一品牌, 而且都是enable状态, 而且都是三级
+    // 检查SJWLIds
     const SJWLIds = SJWLs.map(item => item.id);
     for (let i = 0; i < SJWLIds.length; i++) {
-      const tmpSJWL = await WL.findOne({
-        where: {
-          id: SJWLIds[i],
-          PPId,
-          level: 3,
-          disabledAt: null,
-        },
-        transaction,
-      });
+      const tmpSJWL = await user.checkWLId(SJWLIds[i], transaction);
 
-      if (!tmpSJWL) {
+      if (tmpSJWL.level !== 3) {
         throw new Error('没有对应记录!');
       }
     }
-    // end 检查SJWLIds与操作者同一品牌, 而且都是enable状态
+    // end 检查SJWLIds
 
     // 创建EJZH
     const tmpEJZH = await EJZH.create(
@@ -816,79 +725,28 @@ router.post('/editEJZH', async (req, res, next) => {
     } = req.body;
 
     // 检查操作记录权限
-
-    // 检查编辑的EJZH与操作者同一品牌, 而且都是enable状态
-    const tmpEJZH = await EJZH.findOne({
-      where: {
-        id,
-        disabledAt: null,
-      },
-      transaction,
-    });
-
-    if (!tmpEJZH) {
+    const tmpEJZH = await user.checkEJZHId(id, transaction);
+    const tmpWL = await user.checkWLId(WLId, transaction);
+    if (tmpWL.level !== 2) {
       throw new Error('没有对应记录!');
     }
 
-    if (user.JS === JS.KFJL) {
-      if (tmpEJZH.PPId !== user.PPId) {
-        throw new Error('没有权限!');
-      }
-    }
-    // end 检查编辑的EJZH与操作者同一品牌, 而且都是enable状态
-
-    // 检查WLId与EJZH同一品牌, 而且都是enable状态, 而且是二级
-    const tmpWLId = await WL.findOne({
-      where: {
-        id: WLId,
-        PPId: tmpEJZH.PPId,
-        level: 2,
-        disabledAt: null,
-      },
-      transaction,
-    });
-
-    if (!tmpWLId) {
-      throw new Error('没有对应记录!');
-    }
-    // end 检查WLId与EJZH同一品牌, 而且都是enable状态, 而且是二级
-
-    // 检查FGTesterIds与EJZH同一品牌, 而且都是enable状态
+    // FGTesterIds
     const FGTesterIds = FGTesters.map(item => item.id);
     for (let i = 0; i < FGTesterIds.length; i++) {
-      const tmpFGTester = await FG_Tester.findOne({
-        where: {
-          id: FGTesterIds[i],
-          PPId: tmpEJZH.PPId,
-          disabledAt: null,
-        },
-        transaction,
-      });
-
-      if (!tmpFGTester) {
-        throw new Error('没有对应记录!');
-      }
+      await user.checkFGTesterId(FGTesterIds[i], transaction);
     }
-    // end 检查FGTesterIds与EJZH同一品牌, 而且都是enable状态
+    // end FGTesterIds
 
-    // 检查SJWLIds与EJZH同一品牌, 而且都是enable状态, 而且都是三级
+    // SJWLIds
     const SJWLIds = SJWLs.map(item => item.id);
     for (let i = 0; i < SJWLIds.length; i++) {
-      const tmpSJWL = await WL.findOne({
-        where: {
-          id: SJWLIds[i],
-          PPId: tmpEJZH.PPId,
-          level: 3,
-          disabledAt: null,
-        },
-        transaction,
-      });
-
-      if (!tmpSJWL) {
+      const tmpSJWL = await user.checkWLId(SJWLIds[i], transaction);
+      if (tmpSJWL.level !== 3) {
         throw new Error('没有对应记录!');
       }
     }
-    // end 检查SJWLIds与EJZH同一品牌, 而且都是enable状态, 而且都是三级
+    // end SJWLIds
 
     // 编辑EJZH
     await tmpEJZH.update(
@@ -973,59 +831,16 @@ router.post('/createYJZH', async (req, res, next) => {
     } = req.body;
 
     // 检查操作记录权限
-
-    // 检查PPId与操作者同一品牌, 而且都是enable状态
-    const tmpPP = await PP.findOne({
-      where: {
-        id: PPId,
-        disabledAt: null,
-      },
-      transaction,
-    });
-
-    if (!tmpPP) {
+    const tmpPP = await user.checkPPId(PPId, transaction);
+    const tmpWL = await user.checkWLId(WLId, transaction);
+    if (tmpWL.level !== 1) {
       throw new Error('没有对应记录!');
     }
 
-    if (user.JS === JS.KFJL) {
-      if (tmpPP.id !== user.PPId) {
-        throw new Error('没有权限!');
-      }
-    }
-    // end 检查PPId与操作者同一品牌, 而且都是enable状态
-
-    // 检查WLId与操作者同一品牌, 而且都是enable状态, 而且是一级
-    const tmpWLId = await WL.findOne({
-      where: {
-        id: WLId,
-        level: 1,
-        disabledAt: null,
-      },
-      transaction,
-    });
-
-    if (!tmpWLId) {
-      throw new Error('没有对应记录!');
-    }
-    // end 检查WLId与操作者同一品牌, 而且都是enable状态, 而且是一级d
-
-    // 检查EJZHs与操作者同一品牌, 而且都是enable状态
     const EJZHIds = EJZHs.map(item => item.id);
     for (let i = 0; i < EJZHIds.length; i++) {
-      const tmpEJZH = await EJZH.findOne({
-        where: {
-          id: EJZHIds[i],
-          PPId,
-          disabledAt: null,
-        },
-        transaction,
-      });
-
-      if (!tmpEJZH) {
-        throw new Error('没有对应记录!');
-      }
+      await user.checkEJZHId(EJZHIds[i], transaction);
     }
-    // end 检查EJZHIds与操作者同一品牌, 而且都是enable状态
 
     // 创建YJZH
     const tmpYJZH = await YJZH.create(
@@ -1094,58 +909,16 @@ router.post('/editYJZH', async (req, res, next) => {
     } = req.body;
 
     // 检查操作记录权限
-
-    // 检查编辑的YJZH与操作者同一品牌, 而且都是enable状态
-    const tmpYJZH = await YJZH.findOne({
-      where: {
-        id,
-        disabledAt: null,
-      },
-      transaction,
-    });
-
-    if (!tmpYJZH) {
+    const tmpYJZH = await user.checkYJZHId(id, transaction);
+    const tmpWL = await user.checkWLId(WLId, transaction);
+    if (tmpWL.level !== 1) {
       throw new Error('没有对应记录!');
     }
-
-    if (user.JS === JS.KFJL) {
-      if (tmpYJZH.PPId !== user.PPId) {
-        throw new Error('没有权限!');
-      }
-    }
-    // end 检查编辑的YJZH与操作者同一品牌, 而且都是enable状态
-
-    // 检查WLId与YJZH同一品牌, 而且都是enable状态, 而且是一级
-    const tmpWLId = await WL.findOne({
-      where: {
-        id: WLId,
-        PPId: tmpYJZH.PPId,
-        level: 1,
-        disabledAt: null,
-      },
-      transaction,
-    });
-
-    if (!tmpWLId) {
-      throw new Error('没有对应记录!');
-    }
-    // end 检查WLId与YJZH同一品牌, 而且都是enable状态, 而且是一级
 
     // 检查EJZHIds与YJZH同一品牌, 而且都是enable状态
     const EJZHIds = EJZHs.map(item => item.id);
     for (let i = 0; i < EJZHIds.length; i++) {
-      const tmpEJZH = await EJZH.findOne({
-        where: {
-          id: EJZHIds[i],
-          PPId: tmpYJZH.PPId,
-          disabledAt: null,
-        },
-        transaction,
-      });
-
-      if (!tmpEJZH) {
-        throw new Error('没有对应记录!');
-      }
+      await user.checkEJZHId(EJZHIds[i], transaction);
     }
     // end 检查EJZHIds与YJZH同一品牌, 而且都是enable状态
 
