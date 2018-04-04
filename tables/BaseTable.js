@@ -40,7 +40,7 @@ export default class BaseTable {
     throw new Error('checkFindOneRight should be overrided.');
   }
 
-  async checkUserAccess() {
+  async checkUserAccess(record, transaction) {
     throw new Error('checkUserAccess should be overrided.');
   }
 
@@ -48,7 +48,7 @@ export default class BaseTable {
     throw new Error('getLikeSearchFields should be overrided.');
   }
 
-  async getQueryOption() {
+  async getQueryOption(keyword, transaction) {
     throw new Error('getQueryOption should be overrided.');
   }
 
@@ -60,14 +60,14 @@ export default class BaseTable {
     return filteredFields;
   }
 
-  async create(fields) {
+  async create(fields, transaction) {
     this.checkCreateRight();
 
     const newRecord = await this.getTable().build(fields);
 
-    await this.checkUserAccess(newRecord);
+    await this.checkUserAccess(newRecord, transaction);
 
-    const r = await newRecord.save();
+    const r = await newRecord.save({ transaction });
 
     if (!r) {
       throw new Error('创建失败!');
@@ -79,18 +79,19 @@ export default class BaseTable {
     };
   }
 
-  async delete(id) {
+  async delete(id, transaction) {
     this.checkDeleteRight();
 
     const record = await this.getTable().findOne({
       where: {
         id,
       },
+      transaction,
     });
 
-    await this.checkUserAccess(record);
+    await this.checkUserAccess(record, transaction);
 
-    const r = await record.destroy();
+    const r = await record.destroy({ transaction });
 
     if (!r) {
       return {
@@ -105,22 +106,27 @@ export default class BaseTable {
     };
   }
 
-  async edit(id, fields) {
+  async edit(id, fields, transaction) {
     // todo: 考虑用乐观锁
     this.checkEditRight();
 
-    const record = await this.getTable().findOne({ where: { id } });
+    const record = await this.getTable().findOne({
+      where: {
+        id,
+      },
+      transaction,
+    });
 
     // 查看update前是否在用户权限范围
-    await this.checkUserAccess(record);
+    await this.checkUserAccess(record, transaction);
     // end 查看update前是否在用户权限范围
 
     const filteredFields = this.filterEditFields(fields);
 
-    const r = await record.update(filteredFields);
+    const r = await record.update(filteredFields, { transaction });
 
     // 查看update后是否在用户权限范围
-    await this.checkUserAccess(r);
+    await this.checkUserAccess(r, transaction);
     // end 查看update后是否在用户权限范围
 
     if (!r) {
@@ -133,14 +139,14 @@ export default class BaseTable {
     };
   }
 
-  async getList(queryObj) {
+  async getList(queryObj, transaction) {
     this.checkListRight();
 
     const curPage = parseInt(queryObj.curPage) || 0;
     const perPage = parseInt(queryObj.perPage) || 10;
     const { keyword } = queryObj;
 
-    const option = await this.getQueryOption(keyword);
+    const option = await this.getQueryOption(keyword, transaction);
 
     option.limit = perPage;
     option.offset = perPage * curPage;
@@ -153,23 +159,26 @@ export default class BaseTable {
     };
   }
 
-  async disable(id) {
+  async disable(id, transaction) {
     // todo: 考虑用乐观锁
     this.checkDisableRight();
 
-    const record = await this.getTable().findOne({ where: { id, disabledAt: null } });
+    const record = await this.getTable().findOne({ where: { id, disabledAt: null }, transaction });
 
     if (!record) {
       throw new Error('没有找到对应记录!');
     }
 
     // 查看disable前是否在用户权限范围
-    await this.checkUserAccess(record);
+    await this.checkUserAccess(record, transaction);
     // end 查看disable前是否在用户权限范围
 
-    const r = await record.update({
-      disabledAt: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
-    });
+    const r = await record.update(
+      {
+        disabledAt: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+      },
+      { transaction },
+    );
 
     if (!r[0]) {
       throw new Error('更新记录失败!');
@@ -181,23 +190,29 @@ export default class BaseTable {
     };
   }
 
-  async enable(id) {
+  async enable(id, transaction) {
     // todo: 考虑用乐观锁
     this.checkEnableRight();
 
-    const record = await this.getTable().findOne({ where: { id, disabledAt: { $ne: null } } });
+    const record = await this.getTable().findOne({
+      where: { id, disabledAt: { $ne: null } },
+      transaction,
+    });
 
     if (!record) {
       throw new Error('没有找到对应记录!');
     }
 
     // 查看enable前是否在用户权限范围
-    await this.checkUserAccess(record);
+    await this.checkUserAccess(record, transaction);
     // end 查看enable前是否在用户权限范围
 
-    const r = await record.update({
-      disabledAt: null,
-    });
+    const r = await record.update(
+      {
+        disabledAt: null,
+      },
+      { transaction },
+    );
 
     if (!r[0]) {
       throw new Error('更新记录失败!');
@@ -209,17 +224,17 @@ export default class BaseTable {
     };
   }
 
-  async findOne(id) {
+  async findOne(id, transaction) {
     this.checkFindOneRight();
 
-    const record = await this.getTable().findOne({ where: { id } });
+    const record = await this.getTable().findOne({ where: { id }, transaction });
 
     if (!record) {
       throw new Error('没有找到对应记录!');
     }
 
     // 查看否在用户权限范围
-    await this.checkUserAccess(record);
+    await this.checkUserAccess(record, transaction);
 
     return {
       code: 1,

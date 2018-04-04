@@ -468,6 +468,7 @@ router.post('/setDP_DWs', async (req, res, next) => {
       where: {
         id,
       },
+      transaction,
     });
     await tmpDP.setDWs(DWIds, { transaction });
     // end 设置GTIds
@@ -679,14 +680,17 @@ router.post('/createEJZH', async (req, res, next) => {
     // 配置EJZH FGTesters
     for (let i = 0; i < FGTesters.length; i++) {
       const tmpFGTester = FGTesters[i];
-      tmpEJZH.addFGTester(tmpFGTester.id, { through: { number: tmpFGTester.number } });
+      await tmpEJZH.addFGTester(tmpFGTester.id, {
+        through: { number: tmpFGTester.number },
+        transaction,
+      });
     }
     // end 配置EJZH FGTesters
 
     // 配置EJZH SJWLs
     for (let i = 0; i < SJWLs.length; i++) {
       const tmpSJWL = SJWLs[i];
-      tmpEJZH.addSJWL(tmpSJWL.id, { through: { number: tmpSJWL.number } });
+      await tmpEJZH.addSJWL(tmpSJWL.id, { through: { number: tmpSJWL.number }, transaction });
     }
     // end 配置EJZH SJWLs
 
@@ -870,7 +874,7 @@ router.post('/createYJZH', async (req, res, next) => {
     // 配置YJZH EJZHs
     for (let i = 0; i < EJZHs.length; i++) {
       const tmpEJZH = EJZHs[i];
-      tmpYJZH.addEJZH(tmpEJZH.id, { through: { number: tmpEJZH.number } });
+      await tmpYJZH.addEJZH(tmpEJZH.id, { through: { number: tmpEJZH.number }, transaction });
     }
     // end 配置YJZH EJZHs
 
@@ -977,55 +981,85 @@ router.post('/editYJZH', async (req, res, next) => {
 
 // 常规RESTFUL API
 router.post('/:table', async (req, res, next) => {
+  let transaction;
+
   try {
+    transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).create(req.body);
+    const r = await new Table(req.user).create(req.body, transaction);
+    await transaction.commit();
     res.json(r);
   } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
 router.get('/:table', async (req, res, next) => {
+  let transaction;
+
   try {
+    transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).getList(req.query);
+    const r = await new Table(req.user).getList(req.query, transaction);
+    await transaction.commit();
     res.json(r);
   } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
 router.get('/:table/:id', async (req, res, next) => {
+  let transaction;
+
   try {
+    transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).findOne(req.params.id);
+    const r = await new Table(req.user).findOne(req.params.id, transaction);
+    await transaction.commit();
     res.json(r);
   } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
 router.put('/:table/:id', async (req, res, next) => {
+  let transaction;
+
   try {
+    transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).edit(req.params.id, req.body);
+    const r = await new Table(req.user).edit(req.params.id, req.body, transaction);
+    await transaction.commit();
     res.json(r);
   } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }
 });
 
 router.delete('/:table/:id', async (req, res, next) => {
+  let transaction;
+
   try {
+    transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).delete(req.params.id, req.body);
+    const r = await new Table(req.user).delete(req.params.id, req.body, transaction);
+    await transaction.commit();
     res.json(r);
   } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }

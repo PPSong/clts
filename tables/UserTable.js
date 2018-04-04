@@ -53,7 +53,7 @@ export default class UserTable extends BaseTable {
     }
   }
 
-  async checkUserAccess(record) {
+  async checkUserAccess(record, transaction) {
     let tmpPP;
     let tmpGYSId;
     let tmpAZGSId;
@@ -70,9 +70,9 @@ export default class UserTable extends BaseTable {
           throw new Error('无此权限!');
         }
 
-        const tmpPPs = await record.getKFJLPPs();
+        const tmpPPs = await record.getKFJLPPs({ transaction });
         for (let i = 0; i < tmpPPs.length; i++) {
-          await this.user.checkPPId(tmpPPs[i].id);
+          await this.user.checkPPId(tmpPPs[i].id, transaction);
         }
         break;
       case JS.GZ:
@@ -80,9 +80,9 @@ export default class UserTable extends BaseTable {
           throw new Error('无此权限!');
         }
 
-        const tmpGTs = await record.getGTs();
+        const tmpGTs = await record.getGTs({ transaction });
         for (let i = 0; i < tmpGTs.length; i++) {
-          await this.user.checkGTId(tmpGTs[i].id);
+          await this.user.checkGTId(tmpGTs[i].id, transaction);
         }
         break;
       case JS.GTBA:
@@ -90,7 +90,7 @@ export default class UserTable extends BaseTable {
           throw new Error('无此权限!');
         }
 
-        const tmpGT = await record.getGT();
+        const tmpGT = await record.getGT({ transaction });
         await this.user.checkGTId(tmpGT.id);
         break;
       case JS.GYSGLY:
@@ -108,7 +108,7 @@ export default class UserTable extends BaseTable {
           throw new Error('无此权限!');
         }
 
-        const tmpGYSs = await record.getGYSs();
+        const tmpGYSs = await record.getGYSs({ transaction });
         // 程序上控制装货员只能属于一个供应商, 所以只需要取一条记录
         tmpGYSId = await tmpGYSs[0].id;
         if (this.user.GYSId !== tmpGYSId) {
@@ -121,7 +121,7 @@ export default class UserTable extends BaseTable {
           throw new Error('无此权限!');
         }
 
-        const tmpAZGSs = await record.getAZGSs();
+        const tmpAZGSs = await record.getAZGSs({ transaction });
         // 程序上控制安装工只能属于一个安装公司, 所以只需要取一条记录
         tmpAZGSId = await tmpAZGSs[0].id;
         if (this.user.AZGSId !== tmpAZGSId) {
@@ -139,56 +139,46 @@ export default class UserTable extends BaseTable {
     return ['id', 'name'];
   }
 
-  async getQueryOption(keyword, id = null) {
-    const option = {};
+  async getQueryOption(keyword, transaction) {
+    const option = {
+      transaction,
+    };
     let PPIds;
     // 根据用户操作记录范围加入where
     switch (this.user.JS) {
       case JS.ADMIN:
         break;
       case JS.PPJL:
-        PPIds = await this.user.getPPJLPPs().map(item => item.id);
+        PPIds = await this.user.getPPJLPPs({ transaction }).map(item => item.id);
         option.where = {
           id: {
             $in: PPIds,
           },
         };
-        if (id) {
-          option.where.id.$eq = id;
-        }
         break;
       case JS.KFJL:
-        PPIds = await this.user.getKFJLPPs().map(item => item.id);
+        PPIds = await this.user.getKFJLPPs({ transaction }).map(item => item.id);
         option.where = {
           id: {
             $in: PPIds,
           },
         };
-        if (id) {
-          option.where.id.$eq = id;
-        }
         break;
       case JS.GZ:
-        PPIds = await this.user.getGZPPs().map(item => item.id);
+        PPIds = await this.user.getGZPPs({ transaction }).map(item => item.id);
         option.where = {
           id: {
             $in: PPIds,
           },
         };
-        if (id) {
-          option.where.id.$eq = id;
-        }
         break;
       case JS.GTBA:
-        PPIds = await this.user.getGTBAPPs().map(item => item.id);
+        PPIds = await this.user.getGTBAPPs({ transaction }).map(item => item.id);
         option.where = {
           id: {
             $in: PPIds,
           },
         };
-        if (id) {
-          option.where.id.$eq = id;
-        }
         break;
       default:
         throw new Error('无此权限!');

@@ -52,11 +52,11 @@ export default class DPTable extends BaseTable {
     }
   }
 
-  async checkUserAccess(record) {
+  async checkUserAccess(record, transaction) {
     switch (this.user.JS) {
       case JS.PPJL:
       case JS.KFJL:
-        await this.user.checkPPId(record.PPId);
+        await this.user.checkPPId(record.PPId, transaction);
         break;
       default:
         throw new Error('无此权限!');
@@ -67,9 +67,10 @@ export default class DPTable extends BaseTable {
     return ['id', 'name'];
   }
 
-  async getQueryOption(keyword) {
+  async getQueryOption(keyword, transaction) {
     const option = {
       where: {},
+      transaction,
       include: [
         {
           model: PP,
@@ -87,13 +88,13 @@ export default class DPTable extends BaseTable {
     // 根据用户操作记录范围加入where
     switch (this.user.JS) {
       case JS.PPJL:
-        PPIds = await this.user.getPPJLPPs().map(item => item.id);
+        PPIds = await this.user.getPPJLPPs({ transaction }).map(item => item.id);
         option.include[0].where.PPId = {
           $in: PPIds,
         };
         break;
       case JS.KFJL:
-        PPIds = await this.user.getKFJLPPs().map(item => item.id);
+        PPIds = await this.user.getKFJLPPs({ transaction }).map(item => item.id);
         option.include[0].where.PPId = {
           $in: PPIds,
         };

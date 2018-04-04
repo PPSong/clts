@@ -51,7 +51,7 @@ export default class GYSTable extends BaseTable {
     }
   }
 
-  async checkUserAccess(redord) {
+  async checkUserAccess(redord, transaction) {
     if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
@@ -61,8 +61,10 @@ export default class GYSTable extends BaseTable {
     return ['id', 'name'];
   }
 
-  async getQueryOption(keyword, id = null) {
-    const option = {};
+  async getQueryOption(keyword, transaction) {
+    const option = {
+      transaction,
+    };
     // 根据用户操作记录范围加入where
     // end 根据用户操作记录范围加入where
 
