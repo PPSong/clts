@@ -925,6 +925,7 @@ router.post('/editYJZH', async (req, res, next) => {
       await user.checkEJZHId(EJZHIds[i], transaction);
     }
     // end 检查EJZHIds与YJZH同一品牌, 而且都是enable状态
+    // end 检查操作记录权限
 
     // 编辑 EJZH
     await tmpYJZH.update(
@@ -964,6 +965,53 @@ router.post('/editYJZH', async (req, res, next) => {
     // end 配置YJZH EJZHs
 
     // end 编辑 EJZH
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// KFJL 配置YJZH_GTs
+router.post('/setYJZH_GTs', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.KFJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const {
+      id, GTs,
+    } = req.body;
+
+    // 检查操作记录权限
+    const tmpYJZH = await user.checkYJZHId(id, transaction);
+    for (let i = 0; i < GTs.lengths; i++) {
+      await user.checkGTId(GTs[i].id);
+    }
+    // end 检查操作记录权限
+
+    // 配置YJZH_GTs
+    await tmpYJZH.setGTs(null, { transaction });
+    for (let i = 0; i < GTs.length; i++) {
+      const tmpGT = GTs[i];
+      await tmpYJZH.addGT(tmpGT.id, { through: { number: tmpGT.number }, transaction });
+    }
+    // end 配置YJZH_GTs
 
     await transaction.commit();
 

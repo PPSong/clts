@@ -213,12 +213,12 @@ post.editYJZH
     ]
 }
 
-KFJL1 配置 YJZH_GT
-post.setYJZH_GT
+KFJL1 配置 YJZH_GTs
+post.setYJZH_GTs
 {
-    YJZHId,
-    GTIds: [{
-        GTId,
+    id,
+    GTs: [{
+        id,
         number
     }]
 }

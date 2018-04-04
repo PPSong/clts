@@ -747,5 +747,41 @@ describe('测试案例', () => {
       }));
       assert.deepEqual(tmpEJZHObjs, EJZHs);
     });
+
+    it('KFJL 配置 YJZH_GTs', async () => {
+      const YJZHName = 'T_YJZH';
+      const GTName = 'T_GT';
+      const tmpYJZH0 = await YJZH.findOne({
+        where: {
+          name: YJZHName,
+        },
+      });
+      const id = tmpYJZH0.id;
+      const tmpGT0 = await GT.findOne({
+        where: {
+          name: GTName,
+        },
+      });
+      const GTs = [{ id: tmpGT0.id, number: 3 }];
+
+      await post(
+        'setYJZH_GTs',
+        {
+          id,
+          GTs,
+        },
+        KFJLToken,
+      );
+
+      const tmpYJZH = await YJZH.findOne({
+        where: {
+          name: 'T_YJZH',
+        },
+      });
+
+      const tmpGTs = await tmpYJZH.getGTs();
+      const tmpGTObjs = tmpGTs.map(item => ({ id: item.id, number: item.GT_YJZH.number }));
+      assert.deepEqual(tmpGTObjs, GTs);
+    });
   });
 });
