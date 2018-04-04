@@ -71,10 +71,9 @@ export default class UserTable extends BaseTable {
         }
 
         const tmpPPs = await record.getKFJLPPs();
-        if (this.user.PPId !== tmpPPs[0].id) {
-          throw new Error('无此权限!');
+        for (let i = 0; i < tmpPPs.length; i++) {
+          await this.user.checkPPId(tmpPPs[i].id);
         }
-
         break;
       case JS.GZ:
         if (![JS.KFJL].includes(this.user.JS)) {
@@ -82,12 +81,9 @@ export default class UserTable extends BaseTable {
         }
 
         const tmpGTs = await record.getGTs();
-        // 程序上控制柜长只能管理一个品牌下的柜台, 所以只需要取一条记录
-        tmpPP = await tmpGTs[0].getPP();
-        if (this.user.PPId !== tmpPP.id) {
-          throw new Error('无此权限!');
+        for (let i = 0; i < tmpGTs.length; i++) {
+          await this.user.checkGTId(tmpGTs[i].id);
         }
-
         break;
       case JS.GTBA:
         if (![JS.KFJL].includes(this.user.JS)) {
@@ -95,11 +91,7 @@ export default class UserTable extends BaseTable {
         }
 
         const tmpGT = await record.getGT();
-        tmpPP = await tmpGT.getPP();
-        if (this.user.PPId !== tmpPP.id) {
-          throw new Error('无此权限!');
-        }
-
+        await this.user.checkGTId(tmpGT.id);
         break;
       case JS.GYSGLY:
         if (![JS.KFJL].includes(this.user.JS)) {

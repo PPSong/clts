@@ -55,15 +55,7 @@ export default class DWTable extends BaseTable {
     switch (this.user.JS) {
       case JS.PPJL:
       case JS.KFJL:
-        const { GTId } = record;
-        const tmpGT = await GT.findOne({
-          where: {
-            id: GTId,
-          },
-        });
-        if (tmpGT.PPId !== this.user.PPId) {
-          throw new Error('无此权限!');
-        }
+        await this.user.checkGTId(record.GTId);
         break;
       default:
         throw new Error('无此权限!');

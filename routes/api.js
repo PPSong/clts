@@ -482,44 +482,18 @@ router.post('/setDP_DWs', async (req, res, next) => {
     const { id, DWIds } = req.body;
 
     // 检查操作记录权限
-    // 检查DP的PP, DWs所属的GT的PP与操作者同一品牌, 而且都是enable状态
-    const tmpDP = await DP.findOne({
-      where: {
-        id,
-        PPId: user.PPId,
-        disabledAt: null,
-      },
-    });
-
-    if (!tmpDP) {
-      throw new Error('记录操作不合法!');
-    }
-
-    const tmpDWs = await DW.findAll({
-      where: {
-        id: {
-          $in: DWIds,
-        },
-        disabledAt: null,
-      },
-      include: [
-        {
-          model: GT,
-          as: 'GT',
-          where: {
-            PPId: user.PPId,
-          },
-        },
-      ],
-      transaction,
-    });
-
-    if (tmpDWs.length !== DWIds.length) {
-      throw new Error('记录操作不合法!');
+    await user.checkDPId(id, transaction);
+    for (let i = 0; i < DWIds.length; i++) {
+      await user.checkDWId(DWIds[i], transaction);
     }
     // end 检查操作记录权限
 
     // 设置DP_DWs
+    const tmpDP = await DP.findOne({
+      where: {
+        id,
+      },
+    });
     await tmpDP.setDWs(DWIds, { transaction });
     // end 设置GTIds
 

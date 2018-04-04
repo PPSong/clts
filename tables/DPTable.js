@@ -56,9 +56,7 @@ export default class DPTable extends BaseTable {
     switch (this.user.JS) {
       case JS.PPJL:
       case JS.KFJL:
-        if (record.PPId !== this.user.PPId) {
-          throw new Error('无此权限!');
-        }
+        await this.user.checkPPId(record.PPId);
         break;
       default:
         throw new Error('无此权限!');
