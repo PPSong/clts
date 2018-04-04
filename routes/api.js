@@ -8,6 +8,7 @@ import * as tables from '../tables';
 import {
   sequelize,
   JS,
+  DDStatus,
   User,
   PP,
   GT,
@@ -23,6 +24,7 @@ import {
   EJZHXGT,
   YJZH,
   YJZHXGT,
+  DD,
 } from '../models/Model';
 
 // const ppLog = debug('ppLog');
@@ -1012,6 +1014,50 @@ router.post('/setYJZH_GTs', async (req, res, next) => {
       await tmpYJZH.addGT(tmpGT.id, { through: { number: tmpGT.number }, transaction });
     }
     // end 配置YJZH_GTs
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// KFJL 生成订单
+router.post('/createDD', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.KFJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const {
+      PPId, name,
+    } = req.body;
+
+    // 检查操作记录权限
+    const tmpPP = await user.checkPPId(PPId, transaction);
+    // end 检查操作记录权限
+
+    // 创建DD
+    const tmpDD = await DD.create({
+      name,
+      status: DDStatus.needToApprove,
+      PPId,
+    });
+    // end 创建DD
 
     await transaction.commit();
 

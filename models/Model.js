@@ -66,6 +66,8 @@ export const QY = {
   NORTH: '北区',
 };
 
+export const DDStatus = ['待审批', '已审批'];
+
 export const CS = ['北京', '上海', '广州', '深圳'];
 
 const getBasicTable = str =>
@@ -1649,6 +1651,201 @@ EJZHXGT.belongsTo(EJZH, {
   onUpdate: 'RESTRICT',
 });
 EJZH.hasMany(EJZHXGT, {
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// DD
+export const DD = sequelize.define(
+  'DD',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(DDStatus).includes(val)) {
+            throw new Error('非法订单状态名称!');
+          }
+        },
+      },
+    },
+    PPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'name_PPId',
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// DD_GT_WLSnapshot
+export const DD_GT_WLSnapshot = sequelize.define(
+  'DD_GT_WLSnapshot',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_WLId',
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_WLId',
+    },
+    WLId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_WLId',
+    },
+    number: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DD_GT_WLSnapshot.belongsTo(DD, {
+  as: 'DD',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_WLSnapshot.belongsTo(GT, {
+  as: 'GT',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_WLSnapshot.belongsTo(WL, {
+  as: 'WL',
+  foreignKey: 'WLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// DD_DW_WLSnapshot
+export const DD_DW_DPSnapshot = sequelize.define(
+  'DD_DW_WLSnapshot',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_DWId_WLId',
+    },
+    DWId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_DWId_WLId',
+    },
+    DPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_DWId_WLId',
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DD_DW_DPSnapshot.belongsTo(DD, {
+  as: 'DD',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_DW_DPSnapshot.belongsTo(DW, {
+  as: 'DW',
+  foreignKey: 'DWId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_DW_DPSnapshot.belongsTo(DP, {
+  as: 'DP',
+  foreignKey: 'DPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// DD_GT_FGTesterSnapshot
+export const DD_GT_FGTesterSnapshot = sequelize.define(
+  'DD_GT_FGTesterSnapshot',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_FGTesterId',
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_FGTesterId',
+    },
+    FGTesterId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_FGTesterId',
+    },
+    number: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DD_GT_FGTesterSnapshot.belongsTo(DD, {
+  as: 'DD',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_FGTesterSnapshot.belongsTo(GT, {
+  as: 'GT',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_FGTesterSnapshot.belongsTo(FG_Tester, {
+  as: 'FGTester',
+  foreignKey: 'FGTesterId',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
