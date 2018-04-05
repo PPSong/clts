@@ -294,8 +294,6 @@ ORDER BY
 	a.GTId,
     a.WLId;
 
-SELECT * FROM V_GT_WL_List;
-
 DROP VIEW IF EXISTS V_GT_WL_List;
 CREATE VIEW V_GT_WL_List
 AS    
@@ -314,5 +312,39 @@ WHERE
 ORDER BY
 	a.GTId,
     a.WLId;
-
-SELECT * FROM V_GT_WL_List;
+    
+-- 柜台_灯位_灯片
+DROP VIEW IF EXISTS V_DW_DP;
+CREATE VIEW V_DW_DP
+AS
+SELECT
+    a.id DWId,
+    b.id DPId
+FROM
+	DW a
+LEFT JOIN
+	DP b
+ON
+	a.DPId = b.id
+ORDER BY
+	a.id,
+    b.id;
+    
+DROP VIEW IF EXISTS V_DW_DP_List;
+CREATE VIEW V_DW_DP_List
+AS
+SELECT
+    a.DWId,
+    b.name DWName,
+    a.DPId,
+    c.name DPName
+FROM
+	V_DW_DP a
+LEFT JOIN
+	DW b
+ON
+	a.DWId = b.id
+LEFT JOIN
+	DP c
+ON
+	a.DPId = c.id;

@@ -1,6 +1,7 @@
 import Sequelize from 'sequelize';
 import bCrypt from 'bcryptjs';
 import _ from 'lodash';
+import fs from 'fs';
 import debug from 'debug';
 
 const ppLog = debug('ppLog');
@@ -44,6 +45,9 @@ const operatorsAliases = {
 };
 export const sequelize = new Sequelize('cltp', 'root', 'tcltcl', {
   dialect: 'mysql',
+  dialectOptions: {
+    multipleStatements: true,
+  },
   operatorsAliases,
 });
 
@@ -66,7 +70,10 @@ export const QY = {
   NORTH: '北区',
 };
 
-export const DDStatus = ['待审批', '已审批'];
+export const DDStatus = {
+  DSP: '待审批',
+  YSP: '已审批',
+};
 
 export const CS = ['北京', '上海', '广州', '深圳'];
 
@@ -1746,9 +1753,9 @@ DD_GT_WLSnapshot.belongsTo(WL, {
   onUpdate: 'RESTRICT',
 });
 
-// DD_DW_WLSnapshot
+// DD_DW_DPSnapshot
 export const DD_DW_DPSnapshot = sequelize.define(
-  'DD_DW_WLSnapshot',
+  'DD_DW_DPSnapshot',
   {
     id: {
       type: Sequelize.INTEGER,
@@ -1844,6 +1851,227 @@ DD_GT_FGTesterSnapshot.belongsTo(GT, {
   onUpdate: 'RESTRICT',
 });
 DD_GT_FGTesterSnapshot.belongsTo(FG_Tester, {
+  as: 'FGTester',
+  foreignKey: 'FGTesterId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// DD_GT_WL
+export const DD_GT_WL = sequelize.define(
+  'DD_GT_WL',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_WLId',
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_WLId',
+    },
+    WLId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_WLId',
+    },
+    number: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+    YJRKDate: {
+      type: Sequelize.DATE,
+    },
+    YJZXDate: {
+      type: Sequelize.DATE,
+    },
+    AZGUserId: {
+      type: Sequelize.INTEGER,
+    },
+    YJAZDate: {
+      type: Sequelize.DATE,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DD_GT_WL.belongsTo(DD, {
+  as: 'DD',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_WL.belongsTo(GT, {
+  as: 'GT',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_WL.belongsTo(WL, {
+  as: 'WL',
+  foreignKey: 'WLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_WL.belongsTo(AZGS, {
+  as: 'AZGS',
+  foreignKey: 'AZGSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_WL.belongsTo(User, {
+  as: 'AZG',
+  foreignKey: 'AZGUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_WL.belongsTo(GYS, {
+  as: 'GYS',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// DD_DW_DP
+export const DD_DW_DP = sequelize.define(
+  'DD_DW_DP',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_DWId_DPId',
+    },
+    DWId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_DWId_DPId',
+    },
+    DPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_DWId_DPId',
+    },
+    AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+    YJRKDate: {
+      type: Sequelize.DATE,
+    },
+    YJZXDate: {
+      type: Sequelize.DATE,
+    },
+    AZGUserId: {
+      type: Sequelize.INTEGER,
+    },
+    YJAZDate: {
+      type: Sequelize.DATE,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DD_DW_DP.belongsTo(DD, {
+  as: 'DD',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_DW_DP.belongsTo(DW, {
+  as: 'DW',
+  foreignKey: 'DWId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_DW_DP.belongsTo(DP, {
+  as: 'DP',
+  foreignKey: 'DPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_DW_DP.belongsTo(AZGS, {
+  as: 'AZGS',
+  foreignKey: 'AZGSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_DW_DP.belongsTo(User, {
+  as: 'AZG',
+  foreignKey: 'AZGUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// DD_GT_FGTester
+export const DD_GT_FGTester = sequelize.define(
+  'DD_GT_FGTester',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_FGTesterId',
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_FGTesterId',
+    },
+    FGTesterId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId_FGTesterId',
+    },
+    number: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DD_GT_FGTester.belongsTo(DD, {
+  as: 'DD',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_FGTester.belongsTo(GT, {
+  as: 'GT',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_FGTester.belongsTo(FG_Tester, {
   as: 'FGTester',
   foreignKey: 'FGTesterId',
   onDelete: 'RESTRICT',

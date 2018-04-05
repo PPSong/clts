@@ -1,4 +1,6 @@
 import { assert } from 'chai';
+import Sequelize from 'sequelize';
+import mysql from 'mysql2';
 import axios from 'axios';
 import debug from 'debug';
 import fs from 'fs';
@@ -24,6 +26,7 @@ import {
   FGTester,
   EJZH,
   YJZH,
+  DD,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -85,6 +88,16 @@ let AZGToken;
 
 describe('测试案例', () => {
   before(async () => {
+    const con = mysql.createConnection({
+      host: 'localhost',
+      user: 'root',
+      password: 'tcltcl',
+    });
+
+    await con.connect();
+    await con.query('DROP DATABASE cltp');
+    await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
+
     const data = await readFile(`${__dirname}/../tools/initDataScript.sql`);
 
     const scriptArr = data.split(';');
@@ -96,6 +109,22 @@ describe('测试案例', () => {
         const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
       }
     }
+
+    // 创建View
+    const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`);
+
+    await sequelize.query(viewSql, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // end 创建View
+
+    // 创建Procedure
+    const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
+
+    await sequelize.query(procedureSql, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // end 创建创建Procedure
 
     adminToken = await getToken('admin', '1');
     PPJLToken = await getToken('PPJL1', '1');
@@ -782,6 +811,29 @@ describe('测试案例', () => {
       const tmpGTs = await tmpYJZH.getGTs();
       const tmpGTObjs = tmpGTs.map(item => ({ id: item.id, number: item.GT_YJZH.number }));
       assert.deepEqual(tmpGTObjs, GTs);
+    });
+
+    it('KFJL创建DD', async () => {
+      const PPId = 1;
+      const name = 'T_DD';
+
+      await post(
+        'createDD',
+        {
+          PPId,
+          name,
+        },
+        KFJLToken,
+      );
+
+      const tmpDD = await DD.findOne({
+        where: {
+          name,
+        },
+      });
+
+      assert.notEqual(tmpDD, null);
+      // todo: 检查相关snapshot
     });
   });
 });

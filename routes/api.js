@@ -1051,12 +1051,15 @@ router.post('/createDD', async (req, res, next) => {
     const tmpPP = await user.checkPPId(PPId, transaction);
     // end 检查操作记录权限
 
-    // 创建DD
-    const tmpDD = await DD.create({
-      name,
-      status: DDStatus.needToApprove,
-      PPId,
+    // 创建DD和相关Snapshot
+    const r = await sequelize.query('call genDD(:PPId, :name, :status)', {
+      transaction,
+      replacements: { PPId, name, status: DDStatus.DSP },
     });
+    const result = r[0];
+    if (!result.code) {
+      throw Error(result.msg);
+    }
     // end 创建DD
 
     await transaction.commit();
