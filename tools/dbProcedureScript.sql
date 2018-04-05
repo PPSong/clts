@@ -11,7 +11,7 @@ BEGIN
       GET DIAGNOSTICS CONDITION 1
         code = RETURNED_SQLSTATE, msg = MESSAGE_TEXT;
         SELECT 
-			0 code,
+			0 result,
             CONCAT(code, ':' ,msg) msg;
     END;
     
@@ -71,22 +71,23 @@ BEGIN
 	FROM 
 		V_DW_DP
     WHERE
-		DPId != NULL;
+		DPId IS NOT NULL;
     
 	INSERT
     INTO
 		DD_GT_FGTesterSnapshot
-        (DDId, GTId, FGTesterId, createdAt, updatedAt)
+        (DDId, GTId, FGTesterId, number, createdAt, updatedAt)
     SELECT
 		v_DDId,
         GTId, 
-        FGTesterId, 
+        FGTesterId,
+        FGTesterTotal number,
         v_now, 
         v_now
 	FROM 
 		V_GT_FGTester
 	WHERE
-		FGTesterId != NULL;
+		FGTesterId IS NOT NULL;
     
     INSERT
     INTO
@@ -102,10 +103,10 @@ BEGIN
 	FROM 
 		V_GT_WL
 	WHERE
-		WLId != NULL;
+		WLId IS NOT NULL;
     
     SELECT 
-		1 code,
+		1 result,
         'ok' msg;
     
     COMMIT;
