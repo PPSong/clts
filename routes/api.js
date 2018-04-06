@@ -1052,9 +1052,9 @@ router.post('/createDD', async (req, res, next) => {
     // end 检查操作记录权限
 
     // 创建DD和相关Snapshot
-    const r = await sequelize.query('call genDD(:PPId, :name, :status)', {
+    const r = await sequelize.query('call genDD(:PPId, :name)', {
       transaction,
-      replacements: { PPId, name, status: DDStatus.DSP },
+      replacements: { PPId, name },
     });
     const result = r[0];
     if (!result.code) {
