@@ -239,10 +239,10 @@ CREATE PROCEDURE genDD(IN v_PPId INT, IN v_name CHAR(255) CHARSET utf8)
 BEGIN
 	DECLARE code CHAR(5) DEFAULT '00000';
     DECLARE msg TEXT;
-    -- todo: 用status变量
-    DECLARE v_init_status CHAR(255) CHARSET utf8 DEFAULT '待审批';
-    -- todo: 用status变量
-    DECLARE v_end_status CHAR(255) CHARSET utf8 DEFAULT '已审批';
+    -- _DDStatus.DSP_由调用的js代码做变量替换
+    DECLARE v_init_status CHAR(255) CHARSET utf8 DEFAULT '_DDStatus.DSP_';
+    -- _DDStatus.DSP_由调用的js代码做变量替换
+    DECLARE v_end_status CHAR(255) CHARSET utf8 DEFAULT '_DDStatus.YSP_';
 	DECLARE v_unApprovedDDCount INT DEFAULT 0;
     DECLARE v_DDId INT DEFAULT 0;
 	DECLARE v_lastDDId INT DEFAULT 0;
@@ -310,8 +310,8 @@ CREATE PROCEDURE reGenDD(IN v_DDId INT)
 BEGIN
 	DECLARE code CHAR(5) DEFAULT '00000';
     DECLARE msg TEXT;
-    -- todo: 用status变量
-    DECLARE v_end_status CHAR(255) CHARSET utf8 DEFAULT '已审批';
+    -- _DDStatus.YSP_由调用的js代码做变量替换
+    DECLARE v_end_status CHAR(255) CHARSET utf8 DEFAULT '_DDStatus.YSP_';
     DECLARE v_PPId INT DEFAULT 0;
 	DECLARE v_lastDDId INT DEFAULT 0;
     DECLARE v_status CHAR(255) CHARSET utf8;
@@ -341,7 +341,6 @@ BEGIN
 	WHERE
 		a.id = v_DDId;
     
-	-- todo: 用status变量
 	IF v_status = v_end_status THEN
 		CALL throwError('不能重新生成已审批的订单');
     END IF;

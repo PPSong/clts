@@ -12,6 +12,7 @@ import {
   QY,
   CS,
   JS,
+  DDStatus,
   PPJL_PP,
   KFJL_PP,
   PP,
@@ -70,6 +71,8 @@ const get = async (path, params, token) => {
   return r;
 };
 
+const replaceAll = (str, target, replacement) => str.replace(new RegExp(target, 'g'), replacement);
+
 process.env.NODE_ENV = 'test';
 const server = require('../app');
 
@@ -111,8 +114,7 @@ describe('测试案例', () => {
     }
 
     // 创建View
-    const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`);
-
+    const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
     await sequelize.query(viewSql, {
       type: sequelize.QueryTypes.SELECT,
     });
@@ -120,8 +122,9 @@ describe('测试案例', () => {
 
     // 创建Procedure
     const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
-
-    await sequelize.query(procedureSql, {
+    const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
+    const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
+    await sequelize.query(procedureSql2, {
       type: sequelize.QueryTypes.SELECT,
     });
     // end 创建创建Procedure
