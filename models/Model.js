@@ -2078,6 +2078,28 @@ DD_GT_FGTester.belongsTo(FG_Tester, {
   onUpdate: 'RESTRICT',
 });
 
+// DD_GTFX
+export const DD_GTFX = sequelize.define(
+  'DD_GTFX',
+  {
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DD.belongsToMany(GT, { through: 'DD_GTFX', as: 'FXGTs', foreignKey: 'DDId' });
+GT.belongsToMany(DD, { through: 'DD_GTFX', as: 'FXDDs', foreignKey: 'GTId' });
+
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 
 const initData = (str, num = 200) =>
