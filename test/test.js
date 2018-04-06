@@ -833,7 +833,48 @@ describe('测试案例', () => {
       });
 
       assert.notEqual(tmpDD, null);
-      // todo: 检查相关snapshot
+      // todo: 检查相关snapshot和DD_GT_WL DD_DW_DP
+    });
+
+    it('KFJL重置DD_GTFXs', async () => {
+      const id = 1;
+      const GTIds = [1, 2];
+
+      await post(
+        'setDD_GTFXs',
+        {
+          id,
+          GTIds,
+        },
+        KFJLToken,
+      );
+
+      const tmpDD = await DD.findOne({
+        where: {
+          id,
+        },
+      });
+
+      const tmpGTs = await tmpDD.getFXGTs();
+      const tmpGTIds = tmpGTs.map(item => item.id);
+
+      assert.deepEqual(tmpGTIds, GTIds);
+      // todo: 检查相关snapshot和DD_GT_WL DD_DW_DP
+    });
+
+    it('KFJL重新生成DD', async () => {
+      const DDId = 1;
+
+      await post(
+        'reCreateDD',
+        {
+          DDId,
+        },
+        KFJLToken,
+      );
+
+      assert.equal(1, 1);
+      // todo: 检查相关snapshot和DD_GT_WL DD_DW_DP
     });
   });
 });

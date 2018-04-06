@@ -996,9 +996,7 @@ router.post('/setYJZH_GTs', async (req, res, next) => {
 
     transaction = await sequelize.transaction();
 
-    const {
-      id, GTs,
-    } = req.body;
+    const { id, GTs } = req.body;
 
     // 检查操作记录权限
     const tmpYJZH = await user.checkYJZHId(id, transaction);
@@ -1043,9 +1041,7 @@ router.post('/createDD', async (req, res, next) => {
 
     transaction = await sequelize.transaction();
 
-    const {
-      PPId, name,
-    } = req.body;
+    const { PPId, name } = req.body;
 
     // 检查操作记录权限
     const tmpPP = await user.checkPPId(PPId, transaction);
@@ -1057,10 +1053,96 @@ router.post('/createDD', async (req, res, next) => {
       replacements: { PPId, name },
     });
     const result = r[0];
-    if (!result.code) {
+    if (result.code <= 0) {
       throw Error(result.msg);
     }
     // end 创建DD
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// KFJL 重新生成订单
+router.post('/reCreateDD', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.KFJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { DDId } = req.body;
+
+    // 检查操作记录权限
+    const tmpDD = await user.checkDDId(DDId, transaction);
+    // end 检查操作记录权限
+
+    // 重置DD和相关Snapshot
+    const r = await sequelize.query('call reGenDD(:DDId)', {
+      transaction,
+      replacements: { DDId },
+    });
+    const result = r[0];
+    if (result.code <= 0) {
+      throw Error(result.msg);
+    }
+    // end 重置DD和相关Snapshot
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// KFJL 设置DD_GTFXs
+router.post('/setDD_GTFXs', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.KFJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { id, GTIds } = req.body;
+
+    // 检查操作记录权限
+    const tmpDD = await user.checkDDId(id, transaction);
+    for (let i = 0; i < GTIds.lengths; i++) {
+      await user.checkGTId(GTIds[i].id);
+    }
+    // end 检查操作记录权限
+
+    // setDD_GTFXs
+    await tmpDD.setFXGTs(GTIds, { transaction });
+    // end setDD_GTFXs
 
     await transaction.commit();
 

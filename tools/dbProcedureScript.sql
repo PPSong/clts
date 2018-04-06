@@ -239,20 +239,24 @@ CREATE PROCEDURE genDD(IN v_PPId INT, IN v_name CHAR(255) CHARSET utf8)
 BEGIN
 	DECLARE code CHAR(5) DEFAULT '00000';
     DECLARE msg TEXT;
+    -- todo: 用status变量
+    DECLARE v_init_status CHAR(255) CHARSET utf8 DEFAULT '待审批';
+    -- todo: 用status变量
+    DECLARE v_end_status CHAR(255) CHARSET utf8 DEFAULT '已审批';
 	DECLARE v_unApprovedDDCount INT DEFAULT 0;
     DECLARE v_DDId INT DEFAULT 0;
 	DECLARE v_lastDDId INT DEFAULT 0;
     DECLARE v_now DATETIME(3) DEFAULT NOW();
     
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING
     BEGIN
-		ROLLBACK;
-        
 		GET DIAGNOSTICS CONDITION 1
 		code = RETURNED_SQLSTATE, msg = MESSAGE_TEXT;
 		SELECT 
 			0 code,
 			CONCAT(code, ':' ,msg) msg;
+		
+        ROLLBACK;
     END;
     
     START TRANSACTION;
@@ -265,7 +269,7 @@ BEGIN
 	WHERE
 		a.PPId = v_PPId
 	AND
-		a.status != '已审批';
+		a.status != v_end_status;
         
 	IF v_unApprovedDDCount > 0 THEN
 		CALL throwError('该品牌还有未审批通过的DD, 不能新建DD');
@@ -276,8 +280,7 @@ BEGIN
 		DD
 		(name, status, PPId, createdAt, updatedAt)
 	VALUES
-		-- todo: 用status变量
-		(v_name, '待审批', v_PPId, v_now, v_now); 
+		(v_name, v_init_status, v_PPId, v_now, v_now); 
 		
 	-- 取得新插入记录id
 	SET v_DDId = LAST_INSERT_ID();
@@ -290,7 +293,7 @@ BEGIN
 	WHERE
 		a.PPId = v_PPId
 	AND
-		a.status = '已审批';
+		a.status = v_end_status;
     
     CALL genDDRelatedData(v_DDId, v_lastDDId, v_now);
     
@@ -307,40 +310,46 @@ CREATE PROCEDURE reGenDD(IN v_DDId INT)
 BEGIN
 	DECLARE code CHAR(5) DEFAULT '00000';
     DECLARE msg TEXT;
+    -- todo: 用status变量
+    DECLARE v_end_status CHAR(255) CHARSET utf8 DEFAULT '已审批';
+    DECLARE v_PPId INT DEFAULT 0;
 	DECLARE v_lastDDId INT DEFAULT 0;
-    DECLARE v_statue CHAR(255);
+    DECLARE v_status CHAR(255) CHARSET utf8;
     DECLARE v_now DATETIME(3) DEFAULT NOW();
     
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION, SQLWARNING
     BEGIN
-		ROLLBACK;
-        
 		GET DIAGNOSTICS CONDITION 1
 		code = RETURNED_SQLSTATE, msg = MESSAGE_TEXT;
+        
 		SELECT 
 			0 code,
 			CONCAT(code, ':' ,msg) msg;
+            
+		ROLLBACK;
     END;
     
     START TRANSACTION;
     
 	-- 如果此订单状态是'已审批'则报错
     SELECT
-		status INTO v_statue
+		a.PPId, a.status 
+	INTO
+		v_PPId, v_status
 	FROM
 		DD a
 	WHERE
 		a.id = v_DDId;
-        
+    
 	-- todo: 用status变量
-	IF v_statue = '已审批' THEN
+	IF v_status = v_end_status THEN
 		CALL throwError('不能重新生成已审批的订单');
     END IF;
 
 	UPDATE
 		DD
 	SET
-		updateAt = v_now
+		updatedAt = v_now
 	WHERE
 		id = v_DDId;
     
@@ -352,10 +361,10 @@ BEGIN
 	WHERE
 		a.PPId = v_PPId
 	AND
-		a.status = '已审批';
+		a.status = v_end_status;
     
     CALL clearSnapShotAndDDRelatedData(v_DDId);
-    CALL genDDRelatedData(v_DDId, v_lastDDId);
+    CALL genDDRelatedData(v_DDId, v_lastDDId, v_now);
     
 	SELECT 
 		1 code,

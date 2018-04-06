@@ -243,6 +243,51 @@ User.prototype.checkGTId = async function (id, transaction) {
   return tmpGT;
 };
 
+User.prototype.checkDDId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpDD = await DD.findOne({
+    where: {
+      id,
+    },
+    transaction,
+  });
+
+  if (!tmpDD) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpPPId = tmpDD.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpDD;
+};
+
 User.prototype.checkGZUserId = async function (id, transaction) {
   if (!transaction) {
     throw new Error('transaction不能为空!');
