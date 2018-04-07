@@ -10,6 +10,7 @@ import {
   init,
   sequelize,
   QY,
+  GYSType,
   CS,
   JS,
   DDStatus,
@@ -28,6 +29,8 @@ import {
   EJZH,
   YJZH,
   DD,
+  DD_GT_WL,
+  DD_DW_DP,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -307,16 +310,14 @@ describe('测试案例', () => {
       const name = 'T_GYS';
       const username = 'T_GYSGLY';
       const password = '1';
-      const isSC = true;
-      const isKC = true;
+      const type = GYSType.SC;
       await post(
         'createGYSAndGLY',
         {
           name,
           username,
           password,
-          isSC,
-          isKC,
+          type,
         },
         KFJLToken,
       );
@@ -880,6 +881,54 @@ describe('测试案例', () => {
       // todo: 检查相关snapshot和DD_GT_WL DD_DW_DP
     });
 
+    it('PPJL 批量设置订单柜台物料的安装公司', async () => {
+      const id = 1;
+      const DD_GT_WLIds = [128, 129];
+
+      await post(
+        'setDDGTWLs_AZGS',
+        {
+          id,
+          DD_GT_WLIds,
+        },
+        PPJLToken,
+      );
+
+      const tmpDD_GT_WLs = await DD_GT_WL.findAll({
+        where: {
+          id: {
+            $in: DD_GT_WLIds,
+          },
+        },
+      });
+
+      assert.deepEqual([id, id], tmpDD_GT_WLs.map(item => item.AZGSId));
+    });
+
+    it('PPJL 批量设置订单灯位灯片的安装公司', async () => {
+      const id = 1;
+      const DD_DW_DPIds = [16, 17];
+
+      await post(
+        'setDDDWDPs_AZGS',
+        {
+          id,
+          DD_DW_DPIds,
+        },
+        PPJLToken,
+      );
+
+      const tmpDD_DW_DPs = await DD_DW_DP.findAll({
+        where: {
+          id: {
+            $in: DD_DW_DPIds,
+          },
+        },
+      });
+
+      assert.deepEqual([id, id], tmpDD_DW_DPs.map(item => item.AZGSId));
+    });
+
     it('PPJL审批通过DD', async () => {
       const id = 1;
 
@@ -898,7 +947,54 @@ describe('测试案例', () => {
       });
 
       assert.equal(DDStatus.YSP, tmpDD.status);
-      // todo: 检查相关snapshot和DD_GT_WL DD_DW_DP
+    });
+
+    it('GYSGLY 批量设置订单柜台物料的发货供应商', async () => {
+      const DD_GT_WLIds = [128, 129];
+      const GYSId = 6;
+
+      await post(
+        'setDDGTWLs_GYS',
+        {
+          DD_GT_WLIds,
+          GYSId,
+        },
+        GYSGLYToken,
+      );
+
+      const tmpDD_GT_WLs = await DD_GT_WL.findAll({
+        where: {
+          id: {
+            $in: DD_GT_WLIds,
+          },
+        },
+      });
+
+      assert.deepEqual([GYSId, GYSId], tmpDD_GT_WLs.map(item => item.GYSId));
+    });
+
+    it('GYSGLY 批量设置订单灯位灯片的发货供应商', async () => {
+      const DD_DW_DPIds = [16, 17];
+      const GYSId = 6;
+
+      await post(
+        'setDDDWDPs_GYS',
+        {
+          DD_DW_DPIds,
+          GYSId,
+        },
+        GYSGLYToken,
+      );
+
+      const tmpDD_DW_DPs = await DD_DW_DP.findAll({
+        where: {
+          id: {
+            $in: DD_DW_DPIds,
+          },
+        },
+      });
+
+      assert.deepEqual([GYSId, GYSId], tmpDD_DW_DPs.map(item => item.GYSId));
     });
   });
 });

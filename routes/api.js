@@ -25,6 +25,8 @@ import {
   YJZH,
   YJZHXGT,
   DD,
+  DD_GT_WL,
+  DD_DW_DP,
 } from '../models/Model';
 
 // const ppLog = debug('ppLog');
@@ -345,7 +347,7 @@ router.post('/createGYSAndGLY', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     const {
-      name, username, password, isSC, isKC,
+      name, username, password, type,
     } = req.body;
 
     // 检查操作记录权限
@@ -366,8 +368,7 @@ router.post('/createGYSAndGLY', async (req, res, next) => {
     const tmpGYS = await GYS.create(
       {
         name,
-        isSC,
-        isKC,
+        type,
       },
       { transaction },
     );
@@ -1217,6 +1218,169 @@ router.post('/setDD_GTFXs', async (req, res, next) => {
   }
 });
 
+// PPJL 批量设置订单柜台物料的安装公司
+router.post('/setDDGTWLs_AZGS', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.PPJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { id, DD_GT_WLIds } = req.body;
+
+    // 检查操作记录权限
+    // 检查DD_GT_WL是否属于同一个DD
+    const tmpDD_GT_WLs = await DD_GT_WL.findAll({
+      where: {
+        id: {
+          $in: DD_GT_WLIds,
+        },
+      },
+      transaction,
+    });
+
+    const tmpDD_GT_WLIds = tmpDD_GT_WLs.map(item => item.DDId);
+
+    if (tmpDD_GT_WLIds.length === 0) {
+      throw new Error('没有找到对应记录!');
+    }
+
+    const tmpDDId = tmpDD_GT_WLIds[0];
+
+    for (let i = 1; i < tmpDD_GT_WLIds.length; i++) {
+      if (tmpDD_GT_WLIds[i] !== tmpDDId) {
+        throw new Error('操作记录应该要属于同一个订单!');
+      }
+    }
+    // end 检查DD_GT_WL是否属于同一个DD
+
+    // 检查订单所属品牌是否在权限范围
+    const tmpDD = await user.checkDDId(tmpDDId, transaction);
+    // end 检查订单所属品牌是否在权限范围
+
+    // 检查订单状态是否是'待审批'
+    if (tmpDD.status !== DDStatus.DSP) {
+      throw new Error('记录状态不正确!');
+    }
+    // end 检查订单状态是否是'待审批'
+    // end 检查操作记录权限
+
+    await DD_GT_WL.update(
+      {
+        AZGSId: id,
+      },
+      {
+        where: {
+          id: {
+            $in: DD_GT_WLIds,
+          },
+        },
+        transaction,
+      },
+    );
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// PPJL 批量设置订单灯位灯片的安装公司
+router.post('/setDDDWDPs_AZGS', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.PPJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { id, DD_DW_DPIds } = req.body;
+
+    // 检查操作记录权限
+    // 检查DD_DW_DP是否属于同一个DD
+    const tmpDD_DW_DPs = await DD_DW_DP.findAll({
+      where: {
+        id: {
+          $in: DD_DW_DPIds,
+        },
+      },
+      transaction,
+    });
+
+    const tmpDD_DW_DPIds = tmpDD_DW_DPs.map(item => item.DDId);
+
+    if (tmpDD_DW_DPIds.length === 0) {
+      throw new Error('没有找到对应记录!');
+    }
+
+    const tmpDDId = tmpDD_DW_DPIds[0];
+
+    for (let i = 1; i < tmpDD_DW_DPIds.length; i++) {
+      if (tmpDD_DW_DPIds[i] !== tmpDDId) {
+        throw new Error('操作记录应该要属于同一个订单!');
+      }
+    }
+    // end 检查DD_DW_DP是否属于同一个DD
+
+    // 检查订单所属品牌是否在权限范围
+    const tmpDD = await user.checkDDId(tmpDDId, transaction);
+    // end 检查订单所属品牌是否在权限范围
+
+    // 检查订单状态是否是'待审批'
+    if (tmpDD.status !== DDStatus.DSP) {
+      throw new Error('记录状态不正确!');
+    }
+    // end 检查订单状态是否是'待审批'
+
+    // end 检查操作记录权限
+
+    await DD_DW_DP.update(
+      {
+        AZGSId: id,
+      },
+      {
+        where: {
+          id: {
+            $in: DD_DW_DPIds,
+          },
+        },
+        transaction,
+      },
+    );
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
 // PPJL 审批通过DD
 router.post('/approveDD', async (req, res, next) => {
   let transaction;
@@ -1276,6 +1440,178 @@ router.post('/approveDD', async (req, res, next) => {
     }
     // end 清除PP_DDOperationLock
 
+    ppLog(err);
+    next(err);
+  }
+});
+
+// GYSGLY 批量设置订单柜台物料的发货供应商
+router.post('/setDDGTWLs_GYS', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.GYSGLY].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { DD_GT_WLIds, GYSId } = req.body;
+
+    // 检查操作记录权限
+    await GYS.checkZZGYS(GYSId, transaction);
+    // 检查DD_GT_WL是否属于同一个DD, 并且当前GYS是操作者所属供应商
+    const tmpDD_GT_WLs = await DD_GT_WL.findAll({
+      where: {
+        id: {
+          $in: DD_GT_WLIds,
+        },
+      },
+      transaction,
+    });
+
+    const tmpDD_GT_WLIdGYSIds = tmpDD_GT_WLs.map(item => ({ DDId: item.DDId, GYSId: item.GYSId }));
+
+    if (tmpDD_GT_WLIdGYSIds.length === 0) {
+      throw new Error('没有找到对应记录!');
+    }
+
+    const tmpDDId = tmpDD_GT_WLIdGYSIds[0].DDId;
+
+    for (let i = 1; i < tmpDD_GT_WLIdGYSIds.length; i++) {
+      if (tmpDD_GT_WLIdGYSIds[i].DDId !== tmpDDId) {
+        throw new Error('操作记录应该要属于同一个订单!');
+      }
+
+      await user.checkGYSId(tmpDD_GT_WLIdGYSIds[i].GYSId, transaction);
+    }
+    // end 检查DD_GT_WL是否属于同一个DD, 并且当前GYS是操作者所属供应商
+
+    // 检查订单状态是否是'已审批'
+    const tmpDD = await DD.findOne({
+      where: {
+        id: tmpDDId,
+      },
+      transaction,
+    });
+    if (tmpDD.status !== DDStatus.YSP) {
+      throw new Error('记录状态不正确!');
+    }
+    // end 检查订单状态是否是'已审批'
+    // end 检查操作记录权限
+
+    await DD_GT_WL.update(
+      {
+        GYSId,
+      },
+      {
+        where: {
+          id: {
+            $in: DD_GT_WLIds,
+          },
+        },
+        transaction,
+      },
+    );
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// GYSGLY 批量设置订单灯位灯片的发货供应商
+router.post('/setDDDWDPs_GYS', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.GYSGLY].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { DD_DW_DPIds, GYSId } = req.body;
+
+    // 检查操作记录权限
+    await GYS.checkZZGYS(GYSId, transaction);
+    // 检查DD_DW_DP是否属于同一个DD, 并且当前GYS是操作者所属供应商
+    const tmpDD_DW_DPs = await DD_DW_DP.findAll({
+      where: {
+        id: {
+          $in: DD_DW_DPIds,
+        },
+      },
+      transaction,
+    });
+
+    const tmpDD_DW_DPIdGYSIds = tmpDD_DW_DPs.map(item => ({ DDId: item.DDId, GYSId: item.GYSId }));
+
+    if (tmpDD_DW_DPIdGYSIds.length === 0) {
+      throw new Error('没有找到对应记录!');
+    }
+
+    const tmpDDId = tmpDD_DW_DPIdGYSIds[0].DDId;
+
+    for (let i = 1; i < tmpDD_DW_DPIdGYSIds.length; i++) {
+      if (tmpDD_DW_DPIdGYSIds[i].DDId !== tmpDDId) {
+        throw new Error('操作记录应该要属于同一个订单!');
+      }
+
+      await user.checkGYSId(tmpDD_DW_DPIdGYSIds[i].GYSId, transaction);
+    }
+    // end 检查DD_DW_DP是否属于同一个DD, 并且当前GYS是操作者所属供应商
+
+    // 检查订单状态是否是'已审批'
+    const tmpDD = await DD.findOne({
+      where: {
+        id: tmpDDId,
+      },
+      transaction,
+    });
+    if (tmpDD.status !== DDStatus.YSP) {
+      throw new Error('记录状态不正确!');
+    }
+    // end 检查订单状态是否是'已审批'
+    // end 检查操作记录权限
+
+    await DD_DW_DP.update(
+      {
+        GYSId,
+      },
+      {
+        where: {
+          id: {
+            $in: DD_DW_DPIds,
+          },
+        },
+        transaction,
+      },
+    );
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
     ppLog(err);
     next(err);
   }

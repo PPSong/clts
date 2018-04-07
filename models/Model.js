@@ -43,6 +43,7 @@ const operatorsAliases = {
   $values: Op.values,
   $col: Op.col,
 };
+
 export const sequelize = new Sequelize('cltp', 'root', 'tcltcl', {
   dialect: 'mysql',
   dialectOptions: {
@@ -73,6 +74,11 @@ export const QY = {
 export const DDStatus = {
   DSP: '待审批',
   YSP: '已审批',
+};
+
+export const GYSType = {
+  SC: '生产',
+  ZZ: '中转',
 };
 
 export const CS = ['北京', '上海', '广州', '深圳'];
@@ -241,6 +247,98 @@ User.prototype.checkGTId = async function (id, transaction) {
   }
 
   return tmpGT;
+};
+
+User.prototype.checkDD_GT_WLId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpDD_GT_WL = await DD_GT_WL.findOne({
+    where: {
+      id,
+    },
+    transaction,
+  });
+
+  if (!tmpDD_GT_WL) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpDD = await tmpDD_GT_WL.getDD({ transaction });
+  const tmpPPId = tmpDD.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpDD_GT_WL;
+};
+
+User.prototype.checkDD_DW_DPId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpDD_DW_DP = await DD_DW_DP.findOne({
+    where: {
+      id,
+    },
+    transaction,
+  });
+
+  if (!tmpDD_DW_DP) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpDD = await tmpDD_DW_DP.getDD({ transaction });
+  const tmpPPId = tmpDD.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpDD_DW_DP;
 };
 
 User.prototype.checkDDId = async function (id, transaction) {
@@ -800,6 +898,45 @@ User.prototype.checkYJZHId = async function (id, transaction) {
   return tmpYJZH;
 };
 
+User.prototype.checkGYSId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpGYSs;
+  let tmpGYSIds;
+
+  const tmpGYS = await GYS.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpGYS) {
+    throw new Error('记录不合法!');
+  }
+
+  switch (this.JS) {
+    case JS.ADMIN:
+    case JS.PPJL:
+    case JS.KFJL:
+      break;
+    case JS.GYSGLY:
+      tmpGYSs = await this.getGLYGYSs({ transaction });
+      tmpGYSIds = tmpGYSs.map(item => item.id);
+      if (!tmpGYSIds.includes(id)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpGYS;
+};
+
 // 品牌
 export const PP = getBasicTable('PP');
 
@@ -1007,13 +1144,16 @@ export const GYS = sequelize.define(
       allowNull: false,
       unique: true,
     },
-    isSC: {
-      type: Sequelize.BOOLEAN,
+    type: {
+      type: Sequelize.STRING,
       allowNull: false,
-    },
-    isKC: {
-      type: Sequelize.BOOLEAN,
-      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(GYSType).includes(val)) {
+            throw new Error('非法供应商类型!');
+          }
+        },
+      },
     },
     disabledAt: {
       type: Sequelize.DATE,
@@ -1024,6 +1164,26 @@ export const GYS = sequelize.define(
     freezeTableName: true,
   },
 );
+
+GYS.checkZZGYS = async function (id, transaction) {
+  const tmpGYS = await GYS.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpGYS) {
+    throw new Error('记录不合法!');
+  }
+
+  if (tmpGYS.type !== GYSType.ZZ) {
+    throw new Error('记录不合法!');
+  }
+
+  return tmpGYS;
+};
 
 // 供应商管理员
 export const GLY_GYS = sequelize.define(
@@ -2030,6 +2190,9 @@ export const DD_DW_DP = sequelize.define(
     },
     YJAZDate: {
       type: Sequelize.DATE,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
     },
   },
   {

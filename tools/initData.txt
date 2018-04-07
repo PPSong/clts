@@ -7,13 +7,13 @@ id	name
 							
 // 供应商							
 [GYS]							
-id	name	isSC	isKC				
-1	GYS1	TRUE	TRUE				
-2	GYS2	TRUE	FALSE				
-3	GYS3	FALSE	TRUE				
-4	GYS4	TRUE	TRUE				
-5	GYS5	TRUE	FALSE				
-6	GYS6	FALSE	TRUE				
+id	name	type					
+1	GYS1	生产					
+2	GYS2	生产					
+3	GYS3	生产					
+4	GYS4	生产					
+5	GYS5	生产					
+6	GYS6	中转					
 							
 // 安装公司							
 [AZGS]							

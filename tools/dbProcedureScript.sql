@@ -101,11 +101,12 @@ BEGIN
     INSERT
     INTO
 		DD_DW_DP
-        (DDId, DWId, DPId, createdAt, updatedAt)
+        (DDId, DWId, DPId, GYSId, createdAt, updatedAt)
 	SELECT
 		aaa.DDId,
 		aaa.DWId,
 		aaa.DPId,
+        bbb.GYSId,
         v_now, 
         v_now
 	FROM
@@ -167,18 +168,23 @@ BEGIN
 			aa.DPId = bb.DPId
 		WHERE
 			bb.DWId IS NULL
-		) AS aaa;
+		) AS aaa
+	LEFT JOIN
+		DP bbb
+	ON
+		aaa.DPId = bbb.id;
     
     -- 创建和订单相关的WL
     INSERT
     INTO
 		DD_GT_WL
-        (DDId, GTId, WLId, number, createdAt, updatedAt)
+        (DDId, GTId, WLId, number, GYSId, createdAt, updatedAt)
 	SELECT
 		aaa.DDId,
 		aaa.GTId,
 		aaa.WLId,
 		aaa.number,
+		bbb.GYSId,
 		v_now, 
         v_now
 	FROM
@@ -230,6 +236,10 @@ BEGIN
 		AND
 			aa.WLId = bb.WLId
 		) AS aaa
+	LEFT JOIN
+		WL bbb
+	ON
+		aaa.WLId = bbb.id
 	WHERE
 		aaa.number > 0;
 END; 
