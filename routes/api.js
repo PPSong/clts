@@ -32,6 +32,8 @@ const ppLog = (obj) => {
   console.log('ppLog', obj);
 };
 
+const PP_DDOperationLock = {};
+
 const router = express.Router();
 
 // 新建PPJL [ADMIN]
@@ -1031,6 +1033,7 @@ router.post('/setYJZH_GTs', async (req, res, next) => {
 router.post('/createDD', async (req, res, next) => {
   let transaction;
   const { user } = req;
+  let tmpPPId;
 
   try {
     // 检查api调用权限
@@ -1042,6 +1045,13 @@ router.post('/createDD', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     const { PPId, name } = req.body;
+    tmpPPId = PPId;
+
+    // 检查PP_DDOperationLock
+    if (PP_DDOperationLock[PPId]) {
+      throw new Error('订单相关操作正在进行中, 请稍候再试!');
+    }
+    // end 检查PP_DDOperationLock
 
     // 检查操作记录权限
     const tmpPP = await user.checkPPId(PPId, transaction);
@@ -1060,6 +1070,10 @@ router.post('/createDD', async (req, res, next) => {
 
     await transaction.commit();
 
+    // 清除PP_DDOperationLock
+    delete PP_DDOperationLock[tmpPPId];
+    // end 清除PP_DDOperationLock
+
     res.json({
       code: 1,
       data: 'ok',
@@ -1067,6 +1081,11 @@ router.post('/createDD', async (req, res, next) => {
   } catch (err) {
     // Rollback
     await (transaction && transaction.rollback());
+
+    // 清除PP_DDOperationLock
+    delete PP_DDOperationLock[tmpPPId];
+    // end 清除PP_DDOperationLock
+
     ppLog(err);
     next(err);
   }
@@ -1076,6 +1095,7 @@ router.post('/createDD', async (req, res, next) => {
 router.post('/reCreateDD', async (req, res, next) => {
   let transaction;
   const { user } = req;
+  let tmpDD;
 
   try {
     // 检查api调用权限
@@ -1089,8 +1109,16 @@ router.post('/reCreateDD', async (req, res, next) => {
     const { DDId } = req.body;
 
     // 检查操作记录权限
-    const tmpDD = await user.checkDDId(DDId, transaction);
+    tmpDD = await user.checkDDId(DDId, transaction);
     // end 检查操作记录权限
+
+    // 检查PP_DDOperationLock
+    if (PP_DDOperationLock[tmpDD.PPId]) {
+      throw new Error('订单相关操作正在进行中, 请稍候再试!');
+    } else {
+      PP_DDOperationLock[tmpDD.PPId] = true;
+    }
+    // end 检查PP_DDOperationLock
 
     // 重置DD和相关Snapshot
     const r = await sequelize.query('call reGenDD(:DDId)', {
@@ -1105,6 +1133,10 @@ router.post('/reCreateDD', async (req, res, next) => {
 
     await transaction.commit();
 
+    // 清除PP_DDOperationLock
+    delete PP_DDOperationLock[tmpDD.PPId];
+    // end 清除PP_DDOperationLock
+
     res.json({
       code: 1,
       data: 'ok',
@@ -1112,6 +1144,13 @@ router.post('/reCreateDD', async (req, res, next) => {
   } catch (err) {
     // Rollback
     await (transaction && transaction.rollback());
+
+    // 清除PP_DDOperationLock
+    if (tmpDD) {
+      delete PP_DDOperationLock[tmpDD.PPId];
+    }
+    // end 清除PP_DDOperationLock
+
     ppLog(err);
     next(err);
   }
@@ -1121,6 +1160,7 @@ router.post('/reCreateDD', async (req, res, next) => {
 router.post('/setDD_GTFXs', async (req, res, next) => {
   let transaction;
   const { user } = req;
+  let tmpDD;
 
   try {
     // 检查api调用权限
@@ -1134,17 +1174,29 @@ router.post('/setDD_GTFXs', async (req, res, next) => {
     const { id, GTIds } = req.body;
 
     // 检查操作记录权限
-    const tmpDD = await user.checkDDId(id, transaction);
+    tmpDD = await user.checkDDId(id, transaction);
     for (let i = 0; i < GTIds.lengths; i++) {
       await user.checkGTId(GTIds[i].id);
     }
     // end 检查操作记录权限
+
+    // 检查PP_DDOperationLock
+    if (PP_DDOperationLock[tmpDD.PPId]) {
+      throw new Error('订单相关操作正在进行中, 请稍候再试!');
+    } else {
+      PP_DDOperationLock[tmpDD.PPId] = true;
+    }
+    // end 检查PP_DDOperationLock
 
     // setDD_GTFXs
     await tmpDD.setFXGTs(GTIds, { transaction });
     // end setDD_GTFXs
 
     await transaction.commit();
+
+    // 清除PP_DDOperationLock
+    delete PP_DDOperationLock[tmpDD.PPId];
+    // end 清除PP_DDOperationLock
 
     res.json({
       code: 1,
@@ -1153,6 +1205,77 @@ router.post('/setDD_GTFXs', async (req, res, next) => {
   } catch (err) {
     // Rollback
     await (transaction && transaction.rollback());
+
+    // 清除PP_DDOperationLock
+    if (tmpDD) {
+      delete PP_DDOperationLock[tmpDD.PPId];
+    }
+    // end 清除PP_DDOperationLock
+
+    ppLog(err);
+    next(err);
+  }
+});
+
+// PPJL 审批通过DD
+router.post('/approveDD', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+  let tmpDD;
+
+  try {
+    // 检查api调用权限
+    if (![JS.PPJL].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { id } = req.body;
+
+    // 检查操作记录权限
+    tmpDD = await user.checkDDId(id, transaction);
+    if (tmpDD.status !== DDStatus.DSP) {
+      throw new Error('记录状态不正确!');
+    }
+    // end 检查操作记录权限
+
+    // 检查PP_DDOperationLock
+    if (PP_DDOperationLock[tmpDD.PPId]) {
+      throw new Error('订单相关操作正在进行中, 请稍候再试!');
+    } else {
+      PP_DDOperationLock[tmpDD.PPId] = true;
+    }
+    // end 检查PP_DDOperationLock
+
+    await tmpDD.update(
+      {
+        status: DDStatus.YSP,
+      },
+      { transaction },
+    );
+
+    await transaction.commit();
+
+    // 清除PP_DDOperationLock
+    delete PP_DDOperationLock[tmpDD.PPId];
+    // end 清除PP_DDOperationLock
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+
+    // 清除PP_DDOperationLock
+    if (tmpDD) {
+      delete PP_DDOperationLock[tmpDD.PPId];
+    }
+    // end 清除PP_DDOperationLock
+
     ppLog(err);
     next(err);
   }

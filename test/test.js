@@ -879,5 +879,26 @@ describe('测试案例', () => {
       assert.equal(1, 1);
       // todo: 检查相关snapshot和DD_GT_WL DD_DW_DP
     });
+
+    it('PPJL审批通过DD', async () => {
+      const id = 1;
+
+      await post(
+        'approveDD',
+        {
+          id,
+        },
+        PPJLToken,
+      );
+
+      const tmpDD = await DD.findOne({
+        where: {
+          id,
+        },
+      });
+
+      assert.equal(DDStatus.YSP, tmpDD.status);
+      // todo: 检查相关snapshot和DD_GT_WL DD_DW_DP
+    });
   });
 });
