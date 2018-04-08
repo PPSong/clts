@@ -1020,5 +1020,29 @@ describe('测试案例', () => {
 
       assert.deepEqual([AZGUserId, AZGUserId], tmpDD_GT_WLs.map(item => item.AZGUserId));
     });
+
+    it('AZGSGLY 批量设置DD_DW_DP安装工', async () => {
+      const DD_DW_DPIds = [16, 17];
+      const AZGUserId = 40;
+
+      await post(
+        'setDDDWDPs_AZG',
+        {
+          DD_DW_DPIds,
+          AZGUserId,
+        },
+        AZGSGLYToken,
+      );
+
+      const tmpDD_DW_DPs = await DD_DW_DP.findAll({
+        where: {
+          id: {
+            $in: DD_DW_DPIds,
+          },
+        },
+      });
+
+      assert.deepEqual([AZGUserId, AZGUserId], tmpDD_DW_DPs.map(item => item.AZGUserId));
+    });
   });
 });

@@ -1711,6 +1711,100 @@ router.post('/setDDGTWLs_AZG', async (req, res, next) => {
   }
 });
 
+// AZGSGLY 批量设置DD_DW_DP安装工
+router.post('/setDDDWDPs_AZG', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.AZGSGLY].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const { DD_DW_DPIds, AZGUserId } = req.body;
+
+    // 检查操作记录权限
+    // 检查DD_DW_DP是否属于同一个DD, 同一个AZGS, 并且是操作者所属AZGS
+    const DD_DW_DPs = await DD_DW_DP.findAll({
+      where: {
+        id: {
+          $in: DD_DW_DPIds,
+        },
+      },
+      transaction,
+    });
+
+    if (DD_DW_DPs.length < 1) {
+      throw new Error('没有找到对应记录!');
+    }
+
+    const tmpDDId = DD_DW_DPs[0].DDId;
+    const tmpAZGSId = DD_DW_DPs[0].AZGSId;
+
+    for (let i = 1; i < DD_DW_DPs.length; i++) {
+      if (DD_DW_DPs[i].DDId !== tmpDDId) {
+        throw new Error('记录需要属于同一个订单!');
+      }
+
+      if (DD_DW_DPs[i].AZGSId !== tmpAZGSId) {
+        throw new Error('记录需要属于同一个安装公司!');
+      }
+    }
+
+    // 检查tmpAZGSId是否属于当前用户操作范围
+    const tmpAZGS = await user.checkAZGSId(tmpAZGSId, transaction);
+    // end 检查tmpAZGSId是否属于当前用户操作范围
+
+    // 检查AZGUserId是否属于tmpAZGS
+    const AZGUser = await tmpAZGS.checkAZGUserId(AZGUserId, transaction);
+    // end 检查AZGUserId是否属于tmpAZGS
+
+    // 检查订单状态是否是'已审批'
+    const tmpDD = await DD.findOne({
+      where: {
+        id: tmpDDId,
+      },
+      transaction,
+    });
+    if (tmpDD.status !== DDStatus.YSP) {
+      throw new Error('记录状态不正确!');
+    }
+    // end 检查订单状态是否是'已审批'
+    // end 检查DD_DW_DP是否属于同一个DD, 同一个AZGS, 并且是操作者所属AZGS
+    // end 检查操作记录权限
+
+    await DD_DW_DP.update(
+      {
+        AZGUserId,
+      },
+      {
+        where: {
+          id: {
+            $in: DD_DW_DPIds,
+          },
+        },
+        transaction,
+      },
+    );
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
 // 常规RESTFUL API
 router.post('/:table', async (req, res, next) => {
   let transaction;
