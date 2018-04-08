@@ -81,6 +81,31 @@ export const GYSType = {
   ZZ: '中转',
 };
 
+export const WYWLStatus = {
+  RK: '入库',
+  ZX: '装箱',
+  SH: '收货',
+  FK: '反馈',
+};
+
+export const WYDPStatus = {
+  RK: '入库',
+  ZX: '装箱',
+  SH: '收货',
+  FK: '反馈',
+};
+
+export const KDXStatus = {
+  ZX: '装箱',
+  FH: '发货',
+  SH: '收货',
+};
+
+export const AZFKType = {
+  OK: '成功',
+  SB: '失败',
+};
+
 export const CS = ['北京', '上海', '广州', '深圳'];
 
 const getBasicTable = str =>
@@ -937,6 +962,41 @@ User.prototype.checkGYSId = async function (id, transaction) {
   return tmpGYS;
 };
 
+User.prototype.checkAZGSId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpAZGSs;
+  let tmpAZGSIds;
+
+  const tmpAZGS = await AZGS.findOne({
+    where: {
+      id,
+      disabledAt: null,
+    },
+    transaction,
+  });
+
+  if (!tmpAZGS) {
+    throw new Error('记录不合法!');
+  }
+
+  switch (this.JS) {
+    case JS.AZGSGLY:
+      tmpAZGSs = await this.getGLYAZGSs({ transaction });
+      tmpAZGSIds = tmpAZGSs.map(item => item.id);
+      if (!tmpAZGSIds.includes(id)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpAZGS;
+};
+
 // 品牌
 export const PP = getBasicTable('PP');
 
@@ -1251,6 +1311,33 @@ GYS.belongsToMany(User, {
 
 // 安装公司
 export const AZGS = getBasicTable('AZGS');
+
+AZGS.prototype.checkAZGUserId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  const tmpAZGUser = await User.findOne({
+    where: {
+      id,
+      disabledAt: null,
+      JS: JS.AZG,
+    },
+    transaction,
+  });
+
+  if (!tmpAZGUser) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpAZGSs = await tmpAZGUser.getAZGAZGSs({ transaction });
+  const tmpAZGSIds = tmpAZGSs.map(item => item.id);
+  if (!tmpAZGSIds.includes(this.id)) {
+    throw new Error('没有权限!');
+  }
+
+  return tmpAZGUser;
+};
 
 // 安装公司管理员
 export const GLY_AZGS = sequelize.define(
@@ -2090,7 +2177,22 @@ export const DD_GT_WL = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
+    ZXNumber: {
+      type: Sequelize.INTEGER,
+    },
+    SHNumber: {
+      type: Sequelize.INTEGER,
+    },
+    FKNumber: {
+      type: Sequelize.INTEGER,
+    },
     AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+    AZGUserId: {
       type: Sequelize.INTEGER,
     },
     YJRKDate: {
@@ -2099,14 +2201,8 @@ export const DD_GT_WL = sequelize.define(
     YJZXDate: {
       type: Sequelize.DATE,
     },
-    AZGUserId: {
-      type: Sequelize.INTEGER,
-    },
     YJAZDate: {
       type: Sequelize.DATE,
-    },
-    GYSId: {
-      type: Sequelize.INTEGER,
     },
   },
   {
@@ -2176,7 +2272,22 @@ export const DD_DW_DP = sequelize.define(
       allowNull: false,
       unique: 'DDId_DWId_DPId',
     },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
+    ZXNumber: {
+      type: Sequelize.INTEGER,
+    },
+    SHNumber: {
+      type: Sequelize.INTEGER,
+    },
+    FKNumber: {
+      type: Sequelize.INTEGER,
+    },
     AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+    AZGUserId: {
       type: Sequelize.INTEGER,
     },
     YJRKDate: {
@@ -2185,14 +2296,8 @@ export const DD_DW_DP = sequelize.define(
     YJZXDate: {
       type: Sequelize.DATE,
     },
-    AZGUserId: {
-      type: Sequelize.INTEGER,
-    },
     YJAZDate: {
       type: Sequelize.DATE,
-    },
-    GYSId: {
-      type: Sequelize.INTEGER,
     },
   },
   {
@@ -2307,6 +2412,426 @@ export const DD_GTFX = sequelize.define(
 
 DD.belongsToMany(GT, { through: 'DD_GTFX', as: 'FXGTs', foreignKey: 'DDId' });
 GT.belongsToMany(DD, { through: 'DD_GTFX', as: 'FXDDs', foreignKey: 'GTId' });
+
+// KDD
+export const KDD = sequelize.define(
+  'KDD',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    code: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// KDX
+export const KDX = sequelize.define(
+  'KDX',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    EWM: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    KDDId: {
+      type: Sequelize.INTEGER,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(KDXStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+KDX.belongsTo(KDD, {
+  as: 'KDD',
+  foreignKey: 'KDDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+KDD.hasMany(KDX, {
+  as: 'KDXs',
+  foreignKey: 'KDDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+KDX.belongsTo(GT, {
+  as: 'GT',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GT.hasMany(KDX, {
+  as: 'KDXs',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// WYWL
+export const WYWL = sequelize.define(
+  'WYWL',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    EWM: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(WYWLStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    WLId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    DDGTWLId: {
+      type: Sequelize.INTEGER,
+    },
+    BHId: {
+      type: Sequelize.INTEGER,
+    },
+    KDXId: {
+      type: Sequelize.INTEGER,
+    },
+    AZFK: {
+      type: Sequelize.STRING,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(AZFKType).includes(val)) {
+            throw new Error('非法安装反馈类型!');
+          }
+        },
+      },
+    },
+    AZFKNote: {
+      type: Sequelize.STRING,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+WYWL.belongsTo(WL, {
+  as: 'WL',
+  foreignKey: 'WLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WL.hasMany(WYWL, {
+  as: 'WYWLs',
+  foreignKey: 'WLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+WYWL.belongsTo(GYS, {
+  as: 'GYS',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GYS.hasMany(WYWL, {
+  as: 'WYWLs',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+WYWL.belongsTo(DD_GT_WL, {
+  as: 'DD_GT_WL',
+  foreignKey: 'DDGTWLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_GT_WL.hasMany(WYWL, {
+  as: 'WYWLs',
+  foreignKey: 'DDGTWLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// todo: 建立和补货的关系
+
+WYWL.belongsTo(KDX, {
+  as: 'KDX',
+  foreignKey: 'KDXId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+KDX.hasMany(WYWL, {
+  as: 'WYWLs',
+  foreignKey: 'KDXId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// WYWLCZ
+export const WYWLCZ = sequelize.define(
+  'WYWLCZ',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    WYWLId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(WYWLStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+WYWLCZ.belongsTo(WYWL, {
+  as: 'WYWL',
+  foreignKey: 'WYWLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WYWL.hasMany(WYWLCZ, {
+  as: 'WYWLCZs',
+  foreignKey: 'WYWLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// WYDP
+export const WYDP = sequelize.define(
+  'WYDP',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    EWM: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(WYDPStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    DPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    DDDWDPId: {
+      type: Sequelize.INTEGER,
+    },
+    BHId: {
+      type: Sequelize.INTEGER,
+    },
+    KDXId: {
+      type: Sequelize.INTEGER,
+    },
+    AZFK: {
+      type: Sequelize.STRING,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(AZFKType).includes(val)) {
+            throw new Error('非法安装反馈类型!');
+          }
+        },
+      },
+    },
+    AZFKNote: {
+      type: Sequelize.STRING,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+WYDP.belongsTo(DP, {
+  as: 'DP',
+  foreignKey: 'DPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DP.hasMany(WYDP, {
+  as: 'WYDPs',
+  foreignKey: 'DPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+WYDP.belongsTo(GYS, {
+  as: 'GYS',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GYS.hasMany(WYDP, {
+  as: 'WYDPs',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+WYDP.belongsTo(DD_DW_DP, {
+  as: 'DD_DW_DP',
+  foreignKey: 'DDDWDPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD_DW_DP.hasMany(WYDP, {
+  as: 'WYDPs',
+  foreignKey: 'DDDWDPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// todo: 建立和补货的关系
+
+WYDP.belongsTo(KDX, {
+  as: 'KDX',
+  foreignKey: 'KDXId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+KDX.hasMany(WYDP, {
+  as: 'WYDPs',
+  foreignKey: 'KDXId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// WYDPCZ
+export const WYDPCZ = sequelize.define(
+  'WYDPCZ',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    WYDPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(WYDPStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+WYDPCZ.belongsTo(WYDP, {
+  as: 'WYDP',
+  foreignKey: 'WYDPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WYDP.hasMany(WYDPCZ, {
+  as: 'WYDPCZs',
+  foreignKey: 'WYDPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 

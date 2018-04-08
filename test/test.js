@@ -996,5 +996,29 @@ describe('测试案例', () => {
 
       assert.deepEqual([GYSId, GYSId], tmpDD_DW_DPs.map(item => item.GYSId));
     });
+
+    it('AZGSGLY 批量设置DD_GT_WL安装工', async () => {
+      const DD_GT_WLIds = [128, 129];
+      const AZGUserId = 40;
+
+      await post(
+        'setDDGTWLs_AZG',
+        {
+          DD_GT_WLIds,
+          AZGUserId,
+        },
+        AZGSGLYToken,
+      );
+
+      const tmpDD_GT_WLs = await DD_GT_WL.findAll({
+        where: {
+          id: {
+            $in: DD_GT_WLIds,
+          },
+        },
+      });
+
+      assert.deepEqual([AZGUserId, AZGUserId], tmpDD_GT_WLs.map(item => item.AZGUserId));
+    });
   });
 });
