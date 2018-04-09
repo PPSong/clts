@@ -1047,38 +1047,38 @@ describe('测试案例', () => {
       assert.deepEqual([AZGUserId, AZGUserId], tmpDD_DW_DPs.map(item => item.AZGUserId));
     });
 
-    // it('ZHY 批量入库WL', async () => {
-    //   const EWMs = [
-    //     {
-    //       type: 'WL',
-    //       typeId: '1',
-    //       uuid: '1',
-    //     },
-    //     {
-    //       type: 'WL',
-    //       typeId: '1',
-    //       uuid: '2',
-    //     },
-    //   ];
+    it('ZHY 批量入库WL', async () => {
+      const EWMs = [
+        {
+          type: 'WL',
+          typeId: '1',
+          uuid: '1',
+        },
+        {
+          type: 'WL',
+          typeId: '1',
+          uuid: '2',
+        },
+      ];
 
-    //   await post(
-    //     'PLRK',
-    //     {
-    //       EWMs,
-    //     },
-    //     ZHYToken,
-    //   );
+      await post(
+        'PLRK',
+        {
+          EWMs,
+        },
+        ZHYToken,
+      );
 
-    //   const tmpWYWLs = await WYWL.findAll({
-    //     // where: {
-    //     //   id: {
-    //     //     $in: DD_DW_DPIds,
-    //     //   },
-    //     // },
-    //   });
+      const tmpWYWLs = await WYWL.findAll({
+        // where: {
+        //   id: {
+        //     $in: DD_DW_DPIds,
+        //   },
+        // },
+      });
 
-    //   assert.deepEqual(EWMs.map(item => JSON.stringify(item)), tmpWYWLs.map(item => item.EWM));
-    // });
+      assert.deepEqual(EWMs.map(item => JSON.stringify(item)), tmpWYWLs.map(item => item.EWM));
+    });
 
     // it('ZHY 批量入库DP', async () => {
     //   const EWMs = [
