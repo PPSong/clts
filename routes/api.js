@@ -8,6 +8,7 @@ import * as tables from '../tables';
 import {
   sequelize,
   JS,
+  EWMType,
   DDStatus,
   User,
   PP,
@@ -27,6 +28,10 @@ import {
   DD,
   DD_GT_WL,
   DD_DW_DP,
+  WYWL,
+  WYDP,
+  WYWLStatus,
+  WYDPStatus,
 } from '../models/Model';
 
 // const ppLog = debug('ppLog');
@@ -1790,6 +1795,87 @@ router.post('/setDDDWDPs_AZG', async (req, res, next) => {
         transaction,
       },
     );
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// ZHY 批量入库
+router.post('/PLRK', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.ZHY].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    // [{ type: 'WL'/'DP'. typeId: 15, uuid: '123456'}]
+    const { EWMs } = req.body;
+
+    // 检查操作记录权限
+    // 检查二维码是否都属于同一种WL或者都属于DP
+    const tmpTypeTypeIds = EWMs.map(item => `${item.type}_${item.typeId}`);
+    const tmpUniqueTypeTypeIds = [...new Set(tmpTypeTypeIds)];
+    if (tmpUniqueTypeTypeIds.length !== 1) {
+      throw new Error('二维码组必须属于同一种物料或灯片!');
+    }
+
+    const tmpType = tmpUniqueTypeTypeIds[0].split('_')[0];
+    const tmpId = tmpUniqueTypeTypeIds[0].split('_')[1];
+    if (![EWMType.WL, EWMType.DP].includes(tmpType)) {
+      throw new Error('入库必须是物料或灯片!');
+    }
+    // end 检查二维码是否都属于同一种WL或者都属于DP
+
+    // 检查二维码中WLId/DPId是否属于ZHY所属GYS, 包括中转GYS
+    if (tmpType === EWMType.WL) {
+      await user.checkWLId(tmpId, transaction);
+    } else {
+      await user.checkDPId(tmpId, transaction);
+    }
+    // end 检查二维码中WLId/DPId是否属于ZHY所属GYS, 包括中转GYS
+    // end 检查操作记录权限
+
+    const tmpGYSId = await user.getGYSId(transaction);
+
+    if (tmpType === EWMType.WL) {
+      const newRecords = EWMs.map(item => ({
+        EWM: JSON.stringify(item),
+        status: WYWLStatus.RK,
+        WLId: tmpId,
+        GYSId: tmpGYSId,
+      }));
+
+      await WYWL.bulkCreate(newRecords, {
+        transaction,
+      });
+    } else {
+      const newRecords = EWMs.map(item => ({
+        EWM: JSON.stringify(item),
+        status: WYDPStatus.RK,
+        DPId: tmpId,
+        GYSId: tmpGYSId,
+      }));
+
+      await WYDP.bulkCreate(newRecords, {
+        transaction,
+      });
+    }
 
     await transaction.commit();
 

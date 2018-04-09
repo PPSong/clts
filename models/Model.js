@@ -106,6 +106,12 @@ export const AZFKType = {
   SB: '失败',
 };
 
+export const EWMType = {
+  WL: 'WL',
+  DP: 'DP',
+  KDX: 'KDX',
+};
+
 export const CS = ['北京', '上海', '广州', '深圳'];
 
 const getBasicTable = str =>
@@ -182,6 +188,30 @@ export const User = sequelize.define(
     version: true,
   },
 );
+
+User.prototype.getGYSId = async function (transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpGYSs;
+  let tmpGYSIds;
+  let tmpGYSId;
+
+  switch (this.JS) {
+    case JS.ZHY:
+      tmpGYSs = await this.getZHYGYSs({ transaction });
+      tmpGYSIds = tmpGYSs.map(item => item.id);
+      // 目前ZHY只能属于一个GYS, 所以取第一个
+      tmpGYSId = tmpGYSIds[0];
+
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpGYSId;
+};
 
 // 检查PP本身是否合法, 并且是否在用户权限范围
 User.prototype.checkPPId = async function (id, transaction) {
@@ -469,6 +499,10 @@ User.prototype.checkDPId = async function (id, transaction) {
 
   let tmpPPs;
   let tmpPPIds;
+
+  let tmpGYSs;
+  let tmpGYSIds;
+
   const tmpDP = await DP.findOne({
     where: {
       id,
@@ -482,6 +516,7 @@ User.prototype.checkDPId = async function (id, transaction) {
   }
 
   const tmpPPId = tmpDP.PPId;
+  const tmpGYSId = tmpDP.GYSId;
 
   switch (this.JS) {
     case JS.ADMIN:
@@ -500,6 +535,17 @@ User.prototype.checkDPId = async function (id, transaction) {
       if (!tmpPPIds.includes(tmpPPId)) {
         throw new Error('没有权限!');
       }
+      break;
+    case JS.ZHY:
+      tmpGYSs = await this.getZHYGYSs({ transaction });
+      // 目前ZHY只能属于一个GYS, 所以只需要取第一个
+      const tmpGYS = tmpGYSs[0];
+
+      // 如果不是中转GYS也不是所属GYZ则报错
+      if (!(tmpGYS.type === GYSType.ZZ || tmpGYS.id === tmpGYSId)) {
+        throw new Error('没有权限!');
+      }
+
       break;
     default:
       throw new Error('没有权限!');
@@ -792,6 +838,10 @@ User.prototype.checkWLId = async function (id, transaction) {
 
   let tmpPPs;
   let tmpPPIds;
+
+  let tmpGYSs;
+  let tmpGYSIds;
+
   const tmpWL = await WL.findOne({
     where: {
       id,
@@ -805,6 +855,7 @@ User.prototype.checkWLId = async function (id, transaction) {
   }
 
   const tmpPPId = tmpWL.PPId;
+  const tmpGYSId = tmpWL.GYSId;
 
   switch (this.JS) {
     case JS.ADMIN:
@@ -823,6 +874,17 @@ User.prototype.checkWLId = async function (id, transaction) {
       if (!tmpPPIds.includes(tmpPPId)) {
         throw new Error('没有权限!');
       }
+      break;
+    case JS.ZHY:
+      tmpGYSs = await this.getZHYGYSs({ transaction });
+      // 目前ZHY只能属于一个GYS, 所以只需要取第一个
+      const tmpGYS = tmpGYSs[0];
+
+      // 如果不是中转GYS也不是所属GYZ则报错
+      if (!(tmpGYS.type === GYSType.ZZ || tmpGYS.id === tmpGYSId)) {
+        throw new Error('没有权限!');
+      }
+
       break;
     default:
       throw new Error('没有权限!');
