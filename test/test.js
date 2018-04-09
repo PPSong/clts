@@ -1080,37 +1080,37 @@ describe('测试案例', () => {
       assert.deepEqual(EWMs.map(item => JSON.stringify(item)), tmpWYWLs.map(item => item.EWM));
     });
 
-    // it('ZHY 批量入库DP', async () => {
-    //   const EWMs = [
-    //     {
-    //       type: 'DP',
-    //       typeId: '1',
-    //       uuid: '3',
-    //     },
-    //     {
-    //       type: 'DP',
-    //       typeId: '1',
-    //       uuid: '4',
-    //     },
-    //   ];
+    it('ZHY 批量入库DP', async () => {
+      const EWMs = [
+        {
+          type: 'DP',
+          typeId: '1',
+          uuid: '3',
+        },
+        {
+          type: 'DP',
+          typeId: '1',
+          uuid: '4',
+        },
+      ];
 
-    //   await post(
-    //     'PLRK',
-    //     {
-    //       EWMs,
-    //     },
-    //     ZHYToken,
-    //   );
+      await post(
+        'PLRK',
+        {
+          EWMs,
+        },
+        ZHYToken,
+      );
 
-    //   const tmpWYDPs = await WYDP.findAll({
-    //     // where: {
-    //     //   id: {
-    //     //     $in: DD_DW_DPIds,
-    //     //   },
-    //     // },
-    //   });
+      const tmpWYDPs = await WYDP.findAll({
+        // where: {
+        //   id: {
+        //     $in: DD_DW_DPIds,
+        //   },
+        // },
+      });
 
-    //   assert.deepEqual(EWMs.map(item => JSON.stringify(item)), tmpWYDPs.map(item => item.EWM));
-    // });
+      assert.deepEqual(EWMs.map(item => JSON.stringify(item)), tmpWYDPs.map(item => item.EWM));
+    });
   });
 });
