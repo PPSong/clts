@@ -8,7 +8,8 @@
     "build": "babel src -d dist",
     "cjs": "cjs-to-es6",
     "initData": "nodemon --exec yarn run babel-node -- ./tools/initData.js",
-    "genData": "yarn run babel-node -- ./tools/initData.js"
+    "genData": "yarn run babel-node -- ./tools/initData.js",
+    "test": "mocha --compilers js:babel-core/register test --reporter mochawesome"
   },
   "dependencies": {
     "babel-plugin-wildcard": "^4.0.0",
@@ -42,6 +43,7 @@
     "eslint": "^4.19.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.9.0",
-    "mocha": "^5.0.5"
+    "mocha": "^5.0.5",
+    "mochawesome": "^3.0.2"
   }
 }
