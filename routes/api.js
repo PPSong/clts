@@ -1811,7 +1811,7 @@ router.post('/setDDDWDPs_AZG', async (req, res, next) => {
 });
 
 // ZHY 批量入库
-router.post('/PLRK', async (req, res, next) => {
+router.post('/piLiangRuKu', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -1876,6 +1876,501 @@ router.post('/PLRK', async (req, res, next) => {
         transaction,
       });
     }
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// ZHY 出箱
+router.post('/chuXiang', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.ZHY].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    // HWEWMs: [{ type: 'WL'/'DP'. typeId: 15, uuid: '123456'}]
+    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
+    const {
+      HWEWMs,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查HWEWMs是属于ZX状态
+    // end 检查HWEWMs是属于ZX状态
+
+    // 检查ZHY是否有权限出箱这个货物
+    // end 检查ZHY是否有权限出箱这个货物
+
+    // end 检查操作记录权限
+
+    // 新建相关记录
+    // 如需新建KDX则新建
+    // end 如需新建KDX则新建
+
+    // HWEWMs清除绑上KDXID, DD_GT_WL/DD_DW_DP, 转为RK状态
+    // end HWEWMs清除绑上KDXID, DD_GT_WL/DD_DW_DP, 转为RK状态
+
+    // 新建相关WYWLCZ/WYDPCZ
+    // end 新建相关WYWLCZ/WYDPCZ
+
+    // end 新建相关记录
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// ZHY 关联快递
+router.post('/guanLiangKuaiDi', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.ZHY].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
+    const {
+      KDXEWMs,
+      KDDCode,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查KDXEWMs是属于ZX状态, 而且属于同一个GT
+    // end 检查KDXEWMs是属于ZX状态, 而且属于同一个GT
+
+    // 不用检查ZHY是否有权限快递这个KDX, 谁都可以快递
+
+    // end 检查操作记录权限
+
+    // 新建相关记录
+    // 如需新建KDD则新建
+    // end 如需新建KDD则新建
+
+    // KDX状态转为FH
+    // end KDX状态转为FH
+
+    // 新建相关KDXCZ
+    // end 新建相关KDXCZ
+
+    // KDXEWMs绑上KDDId, 转为状态FH
+    // end KDXEWMs绑上KDDId, 转为状态FH
+
+    // 新建相关WYWLCZ/WYDPCZ
+    // end 新建相关WYWLCZ/WYDPCZ
+
+    // end 新建相关记录
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// ZHY 解除关联快递
+router.post('/jieChuGuanLiangKuaiDi', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.ZHY].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
+    const {
+      KDXEWMs,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查KDXEWMs是属于KD状态
+    // end 检查KDXEWMs是属于KD状态
+
+    // 不用检查ZHY是否有权限解除这个KDX的关联, 谁都可以解除
+
+    // end 检查操作记录权限
+
+    // KDX状态转为ZX
+    // end KDX状态转为ZX
+
+    // 新建相关KDXCZ
+    // end 新建相关KDXCZ
+
+    // KDXEWMs取消绑定KDDId, 转为状态ZX
+    // end KDXEWMs取消绑定KDDId, 转为状态ZX
+
+    // 新建相关WYWLCZ/WYDPCZ
+    // end 新建相关WYWLCZ/WYDPCZ
+
+    // end 新建相关记录
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// ZHY 收箱
+router.post('/shouXiang', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.GTBA].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
+    const {
+      KDXEWMs,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查KDXEWMs是属于KD状态
+    // end 检查KDXEWMs是属于KD状态
+
+    // 检查KDX所属GT是和这个操作员一致
+    // end 检查KDX所属GT是和这个操作员一致
+
+    // end 检查操作记录权限
+
+    // KDX状态转为SX
+    // end KDX状态转为SX
+
+    // 新建相关KDXCZ
+    // end 新建相关KDXCZ
+
+    // KDXEWMs转为状态SX
+    // end KDXEWMs转为状态SX
+
+    // 新建相关WYWLCZ/WYDPCZ
+    // end 新建相关WYWLCZ/WYDPCZ
+
+    // end 新建相关记录
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// AZG 收货
+router.post('/shouHuo', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.GTBA].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
+    const {
+      HWEWMs,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查HWEWMs是属于SX状态
+    // end 检查HWEWMs是属于SX状态
+
+    // 检查HWEWMs所属GT是和这个操作员一致
+    // end 检查HWEWMs所属GT是和这个操作员一致
+
+    // end 检查操作记录权限
+
+    // HWEWMs状态转为SH
+    // end HWEWMs状态转为SH
+
+    // 新建相关WYWLCZ/WYDPCZ
+    // end 新建相关WYWLCZ/WYDPCZ
+
+    // end 新建相关记录
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// AZG 安装反馈状态
+router.post('/anZhuangFanKuiZhuangTai', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.GTBA].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
+    const {
+      HWEWMs,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查HWEWMs是属于SH状态
+    // end 检查HWEWMs是属于SH状态
+
+    // 检查HWEWMs所属AZGUserId是和这个操作员一致
+    // end 检查HWEWMs所属AZGUserId是和这个操作员一致
+
+    // end 检查操作记录权限
+
+    // HWEWMs状态转为FK
+    // end HWEWMs状态转为FK
+
+    // 新建相关WYWLCZ/WYDPCZ
+    // end 新建相关WYWLCZ/WYDPCZ
+
+    // end 新建相关记录
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// AZG 安装WL反馈图片
+router.post('/anZhuangWLFanKuiTuPian', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.GTBA].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    // WYWLs: [{id: 1, imageUrl: 'xxx'}]
+    const {
+      GTId,
+      WYWLs,
+      QJTImageUrl,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查这个DD_GT属于这个AZG的任务都在这里了
+    // end 检查这个DD_GT属于这个AZG的任务都在这里了
+
+    // WYWLs状态为FK
+    // end WYWLs状态为FK
+
+    // end 检查操作记录权限
+
+    // WYWLs状态转为FKT, 加上反馈图
+    // end WYWLs状态转为FKT, 加上反馈图
+
+    // 重置WLQJFKT
+    // end 重置WLQJFKT
+
+    // 新建相关WYWLCZ/WYDPCZ
+    // end 新建相关WYWLCZ/WYDPCZ
+
+    // end 新建相关记录
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// AZG, GTBA, GZ 申请上市物料补货
+router.post('/shenShangShiQingWLBuHuo', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.AZG, JS.GTBA, JS.GZ].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const {
+      DDId,
+      GTId,
+      WYId,
+      imageUrl,
+      note,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查这个GT是否在操作员权限范围
+    // end 检查这个GT是否在操作员权限范围
+
+    // 检查这个WLId是否在这个柜台, 如果是AZG, 是否这个WL的安装工
+    // end 检查这个WLId是否在这个柜台, 如果是AZG, 是否这个WL的安装工
+
+    // end 检查操作记录权限
+
+    // 创建WLBH
+    // end 创建WLBH
+
+    // 新建相关WLBHCZ
+    // end 新建相关WLBHCZ
+
+    // end 新建相关记录
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// AZG, GTBA, GZ 申请日常物料补货
+router.post('/shenRiChangQingWLBuHuo', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.AZG, JS.GTBA, JS.GZ].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    const {
+      GTId,
+      WYId,
+      imageUrl,
+      note,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查这个GT是否在操作员权限范围
+    // end 检查这个GT是否在操作员权限范围
+
+    // 检查这个WLId是否在这个柜台, 如果是AZG, 是否这个WL的安装工
+    // end 检查这个WLId是否在这个柜台, 如果是AZG, 是否这个WL的安装工
+
+    // end 检查操作记录权限
+
+    // 创建WLBH
+    // end 创建WLBH
+
+    // 新建相关WLBHCZ
+    // end 新建相关WLBHCZ
+
+    // end 新建相关记录
 
     await transaction.commit();
 

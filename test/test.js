@@ -1062,7 +1062,7 @@ describe('测试案例', () => {
       ];
 
       await post(
-        'PLRK',
+        'piLiangRuKu',
         {
           EWMs,
         },
@@ -1095,7 +1095,7 @@ describe('测试案例', () => {
       ];
 
       await post(
-        'PLRK',
+        'piLiangRuKu',
         {
           EWMs,
         },

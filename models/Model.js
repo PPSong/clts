@@ -84,21 +84,35 @@ export const GYSType = {
 export const WYWLStatus = {
   RK: '入库',
   ZX: '装箱',
+  FH: '发货',
+  SX: '收箱',
   SH: '收货',
-  FK: '反馈',
+  AZCG: '安装成功',
+  DS: '丢失',
+  CCBD: '尺寸不对',
+  PS: '破损',
+  QT: '其他',
+  FKT: '反馈图',
 };
 
 export const WYDPStatus = {
   RK: '入库',
   ZX: '装箱',
+  FH: '发货',
+  SX: '收箱',
   SH: '收货',
-  FK: '反馈',
+  AZCG: '安装成功',
+  DS: '丢失',
+  CCBD: '尺寸不对',
+  PS: '破损',
+  QT: '其他',
+  FKT: '反馈图',
 };
 
 export const KDXStatus = {
   ZX: '装箱',
   FH: '发货',
-  SH: '收货',
+  SX: '收箱',
 };
 
 export const AZFKType = {

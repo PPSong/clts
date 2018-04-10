@@ -1,535 +1,458 @@
-//test
+import { assert } from 'chai';
+import Sequelize from 'sequelize';
+import mysql from 'mysql2';
+import axios from 'axios';
+import debug from 'debug';
+import fs from 'fs';
+import _ from 'lodash';
+
 import {
-    assert
-  } from 'chai';
-  import axios from 'axios';
-  import debug from 'debug';
-  import fs from 'fs';
-  import _ from 'lodash';
-  
-  import {
-    init,
-    sequelize,
-    QY,
-    CS,
-    JS,
-    PPJL_PP,
-    KFJL_PP,
-    PP,
-    GT,
-    GYS,
-    AZGS,
-    User,
-    DW,
-    DP,
-    WL,
-  } from '../models/Model';
-  
-  const readFile = (path, opts = 'utf8') =>
-    new Promise((res, rej) => {
-      fs.readFile(path, opts, (err, data) => {
-        if (err) rej(err);
-        else res(data);
-      });
-    });
-  
-  const getToken = async (username, password) => {
-    const r = await axios.post(`${baseUrl}/auth/signin`, {
-      username,
-      password,
-    });
-    return r.data.token;
-  };
-  
-  const post = async (path, body, token) => {
-      try {
-        const r = await axios.post(`${api}/${path}`, body, {
-            headers: {
-              Authorization: `bearer ${token}`
-            },
-          });
+  sequelize,
+  JS,
+  EWMType,
+  DDStatus,
+  User,
+  PP,
+  GT,
+  GYS,
+  AZGS,
+  DP,
+  DW,
+  WL,
+  FG,
+  Tester,
+  FG_Tester,
+  EJZH,
+  EJZHXGT,
+  YJZH,
+  YJZHXGT,
+  DD,
+  DD_GT_WL,
+  DD_DW_DP,
+  WYWL,
+  WYDP,
+  WYWLStatus,
+  WYDPStatus,
+} from '../models/Model';
 
-          console.log('ppt113', r.status);
-          return r;
-      } catch(err) {
-        console.log('ppt112', err.response.status);
-        return err;
-      }
-  };
-  
-  const put = async (path, body, token) => {
-    const r = await axios.put(`${api}/${path}`, body, {
-      headers: {
-        Authorization: `bearer ${token}`
-      },
+const readFile = (path, opts = 'utf8') =>
+  new Promise((res, rej) => {
+    fs.readFile(path, opts, (err, data) => {
+      if (err) rej(err);
+      else res(data);
     });
-  
-    return r;
-  };
-  
-  const get = async (path, params, token) => {
-    const r = await axios.get(`${api}/${path}`, {
-      params,
-      headers: {
-        Authorization: `bearer ${token}`
-      },
-    });
-  
-    return r;
-  };
-  
-  process.env.NODE_ENV = 'test';
-  const server = require('../app');
-  
-  const ppLog = debug('ppLog');
-  const baseUrl = 'http://localhost:3001';
-  const api = `${baseUrl}/api`;
-  let adminToken;
-  let PPJLToken;
-  let KFJLToken;
-  let GZToken;
-  let GTBAToken;
-  let GYSGLYToken;
-  let AZGSGLYToken;
-  let ZHYToken;
-  let AZGToken;
-  
-  describe('SPRT测试案例', () => {
-    before(async () => {
-  
-      adminToken = await getToken('admin', '123456');
-      PPJLToken = await getToken('PPJL1', '123456');
-      KFJLToken = await getToken('KFJL1', '123456');
-      GZToken = await getToken('GZ1', '123456');
-      GTBAToken = await getToken('GTBA1', '123456');
-      GYSGLYToken = await getToken('GYSGLY1', '123456');
-      AZGSGLYToken = await getToken('AZGSGLY1', '123456');
-      ZHYToken = await getToken('ZHY1', '123456');
-      AZGToken = await getToken('AZG1', '123456');
-  
-    });
-  
-    describe('test', async () => {
-      it('small test', async () => {
-        assert.equal(1, 1);
-      });
-  
-      it('small test2', async () => {
-        assert.equal(1, 1);
-      });
-  
-      it('temp test', async () => {
-        const r = await get(
-          'DW', {
-            keyword: '1',
-          },
-          PPJLToken,
-        );
-        // console.log('izz--->',r.data)
-        assert.equal(1, 1);
-      });
-    });
-  
-    describe('品牌(PP)', async () => {
-      describe('成功', async () => {
-        it('admin创建PP成功', async () => {
-          const name = 'YSL';
-          const response = await post(
-            'PP', {
-              name,
-            },
-            adminToken,
-          );
-  
-          const r = await PP.findOne({
-            where: {
-              name
-            }
-          });
-  
-          // console.log('--->admin创建PP成功', response.data)
-          assert.equal(1, response.data);
-          assert.notEqual(r, null);
-          assert.equal('YSL', r.dataValues.name);
-        });
-      });
-  
-      describe('失败', async () => {
-        it('admin创建PP失败-创建重复品牌', async () => {
-          const name = 'YSL';
-          const response = await post(
-            'PP', {
-              name,
-            },
-            adminToken,
-          );
-          assert.equal(-1, response.data.code);
-        });
-  
-        it('PPJL创建PP失败-没有权限', async () => {
-          const name = 'YSL1';
-          const response = await post(
-            'PP', {
-              name,
-            },
-            PPJLToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-          assert.exists('无此权限', response.data.msg);
-        });
-  
-        it('KFJL创建PP失败-没有权限', async () => {
-          const name = 'YSL1';
-          const response = await post(
-            'PP', {
-              name,
-            },
-            KFJLToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-          assert.exists('无此权限', response.data.msg);
-        });
-  
-        it('GZ创建PP失败-没有权限', async () => {
-          const name = 'YSL1';
-          const response = await post(
-            'PP', {
-              name,
-            },
-            GZToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-          assert.exists('无此权限', response.data.msg);
-        });
-  
-        it('GTBA创建PP失败-没有权限', async () => {
-          const name = 'YSL1';
-          const response = await post(
-            'PP', {
-              name,
-            },
-            GTBAToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-          assert.exists('无此权限', response.data.msg);
-        });
-  
-        it('GYSGLY创建PP失败-没有权限', async () => {
-          const name = 'YSL1';
-          const response = await post(
-            'PP', {
-              name,
-            },
-            GYSGLYToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-          assert.exists('无此权限', response.data.msg);
-        });
-  
-        it('AZGSGLY创建PP失败-没有权限', async () => {
-          const name = 'YSL1';
-          const response = await post(
-            'PP', {
-              name,
-            },
-            AZGSGLYToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-          assert.exists('无此权限', response.data.msg);
-        });
-  
-        it('ZHY创建PP失败-没有权限', async () => {
-          const name = 'YSL1';
-  
-            const response = await post(
-              'PP', {
-                name,
-              },
-              ZHYToken,
-            );
-         
-  
-          assert.equal(-1, response.data.code);
-          assert.exists('无此权限', response.data.msg);
-        }); //todo:request failed with status code 401
-  
-        it.skip('AZG创建PP失败-没有权限', async () => {
-          const name = 'YSL1';
-          const response = await post(
-            'PP', {
-              name,
-            },
-            AZGToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-          assert.exists('无此权限', response.data.msg);
-        }); //todo:request failed with status code 401
-  
-      });
-    });
-  
-    describe('用户(User)', async () => {
-      describe('成功', async () => {
-        it('admin创建PPJL成功', async () => {
-          const PPname = 'YSL'
-          const PPFind = await PP.findOne({
-            where: {
-              name: PPname
-            }
-          });
-          const PPId = PPFind.dataValues.id;
-          const username = 'YSL_PPJL';
-          const password = '123456';
-          const response = await post(
-            'createPPJL', {
-              PPId,
-              username,
-              password,
-            },
-            adminToken,
-          );
-  
-          const user = await User.findOne({
-            where: {
-              username
-            }
-          });
-          assert.equal('YSL_PPJL', user.dataValues.username);
-  
-          const r = await PPJL_PP.findOne({
-            where: {
-              PPId: PPId
-            }
-          });
-  
-          assert.equal(1, response.data.code);
-          assert.equal(user.dataValues.id, r.dataValues.UserId);
-        });
-  
-        it('PPJL创建KFJL成功', async () => {
-          const PPname = 'YSL'
-          const PPFind = await PP.findOne({
-            where: {
-              name: PPname
-            }
-          });
-          const PPId = PPFind.dataValues.id;
-          const YSL_PPJLToken = await getToken('YSL_PPJL', '123456');
-  
-          const username = 'YSL_KFJL';
-          const password = '123456';
-          const response = await post(
-            'createKFJL', {
-              PPId,
-              username,
-              password,
-            },
-            YSL_PPJLToken,
-          );
-  
-          const user = await User.findOne({
-            where: {
-              // username: username
-            }
-          });
-          console.log('---------->izz5', response.data)
-          assert.equal('YSL_KFJL', user.dataValues.username);
-  
-          const r = await KFJL_PP.findOne({
-            where: {
-              PPId: PPId
-            }
-          });
-          assert.equal(user.dataValues.id, r.dataValues.UserId);
-        });
-      }); //todo:'user.checkPPId is not a function'
-  
-      describe('失败', async () => {
-        it('admin创建PPJL失败-用户名重复', async () => {
-          const PPname = 'YSL'
-          const PPFind = await PP.findOne({
-            where: {
-              name: PPname
-            }
-          });
-          const PPId = PPFind.dataValues.id;
-          const username = 'YSL_PPJL';
-          const password = '123456';
-          const response = await post(
-            'createPPJL', {
-              PPId,
-              username,
-              password,
-            },
-            adminToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-        });
-  
-        it('PPJL创建KFJL失败-用户名重复', async () => {
-          const PPname = 'YSL'
-          const PPFind = await PP.findOne({
-            where: {
-              name: PPname
-            }
-          });
-          const PPId = PPFind.dataValues.id;
-          const username = 'YSL_PPJL';
-          const password = '123456';
-          const response = await post(
-            'createPPJL', {
-              PPId,
-              username,
-              password,
-            },
-            PPJLToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-        });
-  
-        it('PPJL创建KFJL失败-与PPJL所属PP不同的KFJL', async () => {
-          const PPname = 'YSL'
-          const PPFind = await PP.findOne({
-            where: {
-              name: PPname
-            }
-          });
-          const PPId = PPFind.dataValues.id;
-          const username = 'YSL_PPJL';
-          const password = '123456';
-          const response = await post(
-            'createPPJL', {
-              PPId,
-              username,
-              password,
-            },
-            PPJLToken,
-          );
-  
-          assert.equal(-1, response.data.code);
-        });
-      });
-    });
-  
-    describe('柜台(GT)', async () => {
-      let YSL_KFJLToken;
-      before(async () => {
-        const YSL_KFJLToken = await getToken('YSL_KFJL', '123456');
-      })
-  
-      describe('成功', async () => {
-        it('KFJL创建GT&GTBA成功', async () => {
-          const PPname = 'YSL'
-          const PPFind = await PP.findOne({
-            where: {
-              name: PPname
-            }
-          });
-          const PPId = PPFind.dataValues.id;
-          const name = '上海YSL';
-          const code = 'YSL01';
-          const QY = '东区';
-          const CS = '上海';
-          const response = await post(
-            'createGT_GTBA', {
-              PPId,
-              name,
-              code,
-              QY,
-              CS
-            },
-            YSL_KFJLToken,
-          );
-          assert.equal(1, response.data.code);
-  
-          const user = await User.findOne({
-            where: {
-              username: code
-            }
-          });
-          assert.equal(code, user.dataValues.username);
-  
-          const GTinfo = await GT.findOne({
-            where: {
-              PPId: PPId
-            }
-          });
-          assert.equal('上海YSL', GTinfo.dataValues.name);
-        });
-      });
-  
-      describe('失败', async () => {
-        it('KFJL创建GT失败-与KFJL所属PP不同的GT', async () => {
-          const PPname = 'YSL'
-          const PPFind = await PP.findOne({
-            where: {
-              name: PPname
-            }
-          });
-          const PPId = PPFind.dataValues.id;
-          const name = '上海YSL';
-          const code = 'YSL01';
-          const QY = '东区';
-          const CS = '上海';
-          const response = await post(
-            'createGT_GTBA', {
-              PPId,
-              name,
-              code,
-              QY,
-              CS
-            },
-            KFJLToken,
-          );
-          assert.equal(-1, response.data.code);
-        });
-  
-        it('KFJL创建GT失败-GT名称系统已经存在', async () => {
-          const PPname = 'YSL'
-          const PPFind = await PP.findOne({
-            where: {
-              name: PPname
-            }
-          });
-          const PPId = PPFind.dataValues.id;
-          const name = '上海YSL';
-          const code = 'YSL01';
-          const QY = '东区';
-          const CS = '上海';
-          console.log('ppt111')
-          const response = await post(
-            'createGT_GTBA', {
-              PPId,
-              name,
-              code,
-              QY,
-              CS
-            },
-            YSL_KFJLToken,
-          );
-
-          assert.equal(-1, response.data.code);
-        });
-      });
-    });
-  
-    describe('用户', async () => {
-        describe('成功', async () => {
-  
-        });
-  
-        describe('失败', async () => {
-  
-        });
-    });
-  
   });
+
+const getToken = async (username, password) => {
+  const r = await axios.post(`${baseUrl}/auth/signin`, {
+    username,
+    password,
+  });
+  return r.data.token;
+};
+
+const post = async (path, body, token) => {
+  try {
+    const r = await axios.post(`${api}/${path}`, body, {
+      headers: {
+        Authorization: `bearer ${token}`
+      },
+    });
+
+    return r;
+  } catch (err) {
+
+    return err;
+  }
+};
+
+const put = async (path, body, token) => {
+  const r = await axios.put(`${api}/${path}`, body, {
+    headers: {
+      Authorization: `bearer ${token}`
+    },
+  });
+
+  return r;
+};
+
+const get = async (path, params, token) => {
+  const r = await axios.get(`${api}/${path}`, {
+    params,
+    headers: {
+      Authorization: `bearer ${token}`
+    },
+  });
+
+  return r;
+};
+
+process.env.NODE_ENV = 'test';
+const server = require('../app');
+
+const ppLog = debug('ppLog');
+const baseUrl = 'http://localhost:3001';
+const api = `${baseUrl}/api`;
+let adminToken;
+let PPJLToken;
+let KFJLToken;
+let GZToken;
+let GTBAToken;
+let GYSGLYToken;
+let AZGSGLYToken;
+let ZHYToken;
+let AZGToken;
+
+describe('SPRT测试案例', () => {
+  before(async () => {
+    const con = mysql.createConnection({
+      host: 'localhost',
+      user: 'root',
+      password: 'tcltcl',
+    });
+
+    await con.connect();
+    await con.query('DROP DATABASE cltp');
+    await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
+
+    // Drop all tables
+    await sequelize.drop();
+    await sequelize.sync({ force: true });
+    await User.create({
+      id: '1',
+      JS: '系统管理员',
+      username: 'admin',
+      password: '$2a$08$L0.LfGHcX4CsXP1H5DBmlustuUNWoFGhwVUcxLjHDkfWAO6M0MCxq',
+      createdAt: '2018-04-07 20:11:04.108',
+      updatedAt: '2018-04-07 20:11:04.108'
+    });
+
+    adminToken = await getToken('admin', '123456'); 
+
+  });
+
+  describe('test', async () => {
+    it('small test', async () => {
+      assert.equal(1, 1);
+    });
+    it('small test2', async () => {
+      assert.equal(1, 1);
+    });
+  });
+
+  // 格式说明
+  // describe('API名称', async () => {
+  //   describe('成功案例', async () => {
+  //   });
+  //   describe('失败案例', async () => {
+  //     describe('数据不合法', async () => { });
+  //     describe('没有权限', async () => { });
+  //     describe('操作状态不正确', async () => { });
+  //     describe('唯一性校验', async () => { });
+  //   });
+  // });
+
+  // 新建PPJL [ADMIN]
+  describe('/createPPJL', async () => {
+    describe('成功', async () => {
+      it('admin 为 PP1 创建 PPJL1', async () => {
+
+      });
+
+      it('admin 为 PP1 创建 PPJL2', async () => {
+
+      });
+    });
+    describe.skip('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // 新建KFJL [PPJL]
+  describe('/createKFJL', async () => {
+    describe('成功', async () => {
+      it('PPJL1 为 PP1 创建 KFJL1', async () => {
+
+      });
+
+      it('PPJL1 为 PP1 创建 KFJL2', async () => {
+
+      });//PP1的KFJL变成KFJL2
+    });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => { 
+        it('PPJL1 为 PP2 创建 KFJL3', async () => {
+
+        });
+      });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
+    });
+  });
+
+  // 新建GT, GTBA [KFJL]
+  describe('/createGT_GTBA', async () => {
+    describe('成功', async () => {
+      it('KFJL1 为 PP1 创建 GT1&GTBA1', async () => {
+
+      });
+    });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => { 
+        it('KFJL1 为 PP2 创建 GT2', async () => {
+
+        });
+      });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
+    });
+  });
+
+  // 编辑柜台图 [KFJL]
+  describe('/setGT_IMAGE', async () => {
+    describe('成功', async () => {
+      it('KFJL1 编辑 GT1 的图片', async () => {
+
+      });
+    });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => { 
+        it('KFJL1 编辑 GT2 的图片', async () => {
+
+        });
+      });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
+    });
+  });
+
+  // 创建 GZ [KFJL]
+  describe('/createGZ', async () => {
+    describe('成功', async () => {
+      it('KFJL1 为PP1 创建 GZ1', async () => {
+
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { 
+        it('KFJL1 为PP2 创建 GZ2', async () => {
+
+        });
+      });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // 配置 GZ 负责柜台 [KFJL]
+  describe('/setGZ_GTs', async () => {
+    describe('成功', async () => {
+      it('KFJL1 GT1&GT2 配置GZ1', async () => {
+
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('KFJL1 GT3&GT4 配置GZ2', async () => {
+
+        });
+       });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // 新建GYS, GLY
+  describe('/createGYSAndGLY', async () => {
+    describe('成功', async () => {
+      it('KFJL1 创建 GYSGLY1', async () => {
+
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // 新建AZGS, GLY
+  describe('/createAZGSAndGLY', async () => {
+    describe('成功', async () => {
+      it('KFJL1 创建 AZGSGLY1', async () => {
+
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // 配置 DP_DWs [KFJL]
+  describe('/setDP_DWs', async () => {
+    describe('成功', async () => {
+      it('KFJL1 将DP1 关联 GT1的 DW1&DW2', async () => {
+
+      });
+
+      it('KFJL1 将DP2 关联 GT1的 DW3 GT2的 DW1', async () => {
+
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { 
+        it('KFJL1 将DP3 关联 GT1的 DW1', async () => {
+
+        });
+      });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 创建 FG, Tester, FGTester
+  describe('/createFG_Tester_FGTester', async () => {
+    describe('成功', async () => {
+      it('KFJL1 创建 FG1 Tester1 & Tester2', async () => {
+
+      });//前置条件：Tester1&Tester2数据库中不存在
+
+      it('KFJL1 创建 FG1 Tester2 & Tester3', async () => {
+
+      });//前置条件：Tester2数据中存在&Tester3数据库不中存在
+
+      it('KFJL1 创建 FG2 Tester2 & Tester3', async () => {
+
+      });//前置条件：Tester2&Tester3数据库中存在
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { 
+      });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 创建 EJZH id, WLId, imageUrl, XGTs, FGTesters, SJWLs,
+  describe('/createEJZH', async () => {
+    describe('成功', async () => {
+      it('KFJL1 创建 EJZH1 ', async () => {
+        //没有物料
+      });
+      it('KFJL1 创建 EJZH2 ', async () => {
+        //仅FGTesters
+      });
+      it('KFJL1 创建 EJZH3 ', async () => {
+        //仅SJWLs
+      });
+      it('KFJL1 创建 EJZH4 ', async () => {
+        //FGTesters&SJWLs
+      });
+      it('KFJL1 创建 EJZH5 ', async () => {
+        //与EJZH4相同
+      });
+      it('KFJL1 创建 EJZH6 ', async () => {
+        //与EJZH4不同的FGTesters&SJWLs
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 编辑 EJZH
+  describe('/editEJZH', async () => {
+    describe('成功', async () => {
+      it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
+        
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 创建 YJZH
+  describe('/createYJZH', async () => {
+    describe('成功', async () => {
+      it('KFJL1 创建 YJZH1 ', async () => {
+        //没有EJZH
+      });
+      it('KFJL1 创建 YJZH2 ', async () => {
+        //EJZH1
+      });
+      it('KFJL1 创建 YJZH3 ', async () => {
+        //EJZH1
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 编辑 YJZH
+  describe('/editYJZH', async () => {
+    describe('成功', async () => {
+      it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
+        
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 配置YJZH_GTs
+  describe('/setYJZH_GTs', async () => {
+    describe('成功', async () => {
+      it('KFJL1 将 EJZH1 配置到GT1&GT2', async () => {
+        
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 生成订单
+  describe('/createDD', async () => {
+    describe('成功', async () => {
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+});
+
