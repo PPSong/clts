@@ -1,6 +1,7 @@
 import express from 'express';
 import bCrypt from 'bcryptjs';
 import debug from 'debug';
+import _ from 'lodash';
 
 /* eslint-disable */
 import * as tables from '../tables';
@@ -32,6 +33,10 @@ import {
   WYDP,
   WYWLStatus,
   WYDPStatus,
+  WYWLCZ,
+  WYDPCZ,
+  KDX,
+  KDXStatus,
 } from '../models/Model';
 
 // const ppLog = debug('ppLog');
@@ -1861,9 +1866,21 @@ router.post('/piLiangRuKu', async (req, res, next) => {
         GYSId: tmpGYSId,
       }));
 
-      await WYWL.bulkCreate(newRecords, {
+      const tmpWYWLs = await WYWL.bulkCreate(newRecords, {
         transaction,
       });
+
+      const tmpWYWLCZs = tmpWYWLs.map(item => ({
+        WYWLId: item.id,
+        status: WYWLStatus.RK,
+        UserId: user.id,
+      }));
+
+      // 新建相关WYWLCZ
+      await WYWLCZ.bulkCreate(tmpWYWLCZs, {
+        transaction,
+      });
+      // end 新建相关WYWLCZ
     } else {
       const newRecords = EWMs.map(item => ({
         EWM: JSON.stringify(item),
@@ -1872,10 +1889,310 @@ router.post('/piLiangRuKu', async (req, res, next) => {
         GYSId: tmpGYSId,
       }));
 
-      await WYDP.bulkCreate(newRecords, {
+      const tmpWYDPs = await WYDP.bulkCreate(newRecords, {
         transaction,
       });
+
+      const tmpWYDPCZs = tmpWYDPs.map(item => ({
+        WYDPId: item.id,
+        status: WYDPStatus.RK,
+        UserId: user.id,
+      }));
+
+      // 新建相关WYDPCZ
+      await WYDPCZ.bulkCreate(tmpWYDPCZs, {
+        transaction,
+      });
+      // end 新建相关WYDPCZ
     }
+
+    await transaction.commit();
+
+    res.json({
+      code: 1,
+      data: 'ok',
+    });
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+// ZHY 装箱
+router.post('/zhuangXiang', async (req, res, next) => {
+  let transaction;
+  const { user } = req;
+
+  try {
+    // 检查api调用权限
+    if (![JS.ZHY].includes(user.JS)) {
+      throw new Error('没有权限!');
+    }
+    // end 检查api调用权限
+
+    transaction = await sequelize.transaction();
+
+    // HWEWMs: [{ type: 'WL'/'DP'. typeId: 15, uuid: '123456'}]
+    // KDXEWM: { type: 'KDX', uuid: '123456'}
+    const {
+      DDId, GTId, HWEWMs, KDXEWM,
+    } = req.body;
+
+    // 检查操作记录权限
+
+    // 检查KDXEWM是否是KDX
+    if (KDXEWM.type !== EWMType.KDX) {
+      throw new Error('快递箱二维码不正确!');
+    }
+    // end 检查KDXEWM是否是KDX
+
+    // 检查二维码是否都属于WL或DP
+    const tmpTypes = HWEWMs.map(item => item.type);
+    const tmpUniqueType = [...new Set(tmpTypes)];
+    if (
+      !(
+        tmpUniqueType.length === 1 &&
+        (tmpUniqueType[0] === EWMType.WL || tmpUniqueType[0] === EWMType.DP)
+      )
+    ) {
+      throw new Error('二维码组必须同属于物料或灯片!');
+    }
+
+    const tmpType = tmpUniqueType[0];
+    // end 检查二维码是否都属于WL或DP
+
+    let tmpTargetTypeIds;
+    let tmpTargetGYSIds;
+    // 判断HWEWMs属于同一个DD_GT
+    const tmpTypeIds = HWEWMs.map(item => item.typeId);
+
+    if (tmpType === EWMType.WL) {
+      const tmpTargetTypeHWs = await DD_GT_WL.findAll({
+        where: {
+          DDId,
+          GTId,
+        },
+        transaction,
+      });
+      tmpTargetTypeIds = tmpTargetTypeHWs.map(item => item.WLId);
+      tmpTargetGYSIds = tmpTargetTypeHWs.map(item => item.GYSId);
+    } else {
+      const tmpTargetTypeHWs = await DD_DW_DP.findAll({
+        where: {
+          DDId,
+        },
+        include: [
+          {
+            model: GT,
+            where: {
+              id: GTId,
+            },
+          },
+        ],
+        transaction,
+      });
+      tmpTargetTypeIds = tmpTargetTypeHWs.map(item => item.DPId);
+      tmpTargetGYSIds = tmpTargetTypeHWs.map(item => item.GYSId);
+    }
+
+    if (_.difference(tmpTypeIds, tmpTargetTypeIds).length > 0) {
+      throw new Error('二维码组必须同属于同一批订单的同一个柜台!');
+    }
+    // end 判断HWEWMs属于同一个DD_GT
+
+    const tmpUniqueGYSIdArr = [...new Set(tmpTargetGYSIds)];
+
+    if (tmpUniqueGYSIdArr.length !== 1) {
+      throw new Error('二维码组必须同属于同一个发货供应商!');
+    }
+
+    // 检查ZHY是否有权限装箱这个货物
+    const tmpGYS = await user.checkGYSId(tmpUniqueGYSIdArr[0], transaction);
+    // end 检查ZHY是否有权限装箱这个货物
+    // end 检查操作记录权限
+
+    // 更新并检查DD_GT_WL/DD_DW_DP ZXNumber是否超限
+    for (let i = 0; i < tmpTypeIds; i++) {
+      let tmpR;
+      if (tmpType === EWMType.WL) {
+        tmpR = await DD_GT_WL.findOne({
+          where: {
+            DDId,
+            GTId,
+            WLId: tmpTypeIds[i],
+          },
+          transaction,
+        });
+      } else {
+        tmpR = await DD_DW_DP.findOne({
+          where: {
+            DDId,
+            DPId: tmpTypeIds[i],
+          },
+          include: [
+            {
+              model: GT,
+              where: {
+                id: GTId,
+              },
+            },
+          ],
+          transaction,
+        });
+      }
+      tmpR.ZXNumber = (tmpR.ZXNumber ? tmpR.ZXNumber : 1) + 1;
+
+      if (tmpR.ZXNumber > tmpR.number) {
+        throw new Error('货物超限!');
+      }
+
+      await tmpR.save({ transaction });
+    }
+    // end 更新并检查DD_GT_WL/DD_DW_DP ZXNumber是否超限
+
+    // 新建相关记录
+    // 如需新建KDX则新建, 并新建相关KDXCZ
+    let tmpKDX = await KDX.findOne({
+      where: {
+        EWM: JSON.stringify(KDXEWM),
+      },
+      transaction,
+    });
+
+    if (tmpKDX) {
+      if (tmpKDX.GTId !== GTId) {
+        throw new Error('快递箱不属于这个柜台!');
+      }
+
+      if (tmpKDX.status !== KDXStatus.ZX) {
+        throw new Error(`快递箱不在${KDXStatus.ZX}状态!`);
+      }
+    } else {
+      tmpKDX = await KDX.create(
+        {
+          EWM: JSON.stringify(KDXEWM),
+          GTId,
+          status: KDXStatus.ZX,
+        },
+        {
+          transaction,
+        },
+      );
+    }
+    // end 如需新建KDX则新建, 并新建相关KDXCZ
+
+    const tmpRIds = [];
+    // 检查HWEWMs在WYWL/WYDP存在, 如果是属于RK状态, 则转为ZX状态, 否则报错
+    for (let i = 0; i < HWEWMs; i++) {
+      let tmpR;
+      if (tmpType === EWMType.WL) {
+        const tmpDDGTWL = await DD_GT_WL.findOne(
+          {
+            where: {
+              DDId,
+              GTId,
+              WLId: HWEWMs[i].typeId,
+            },
+          },
+          {
+            transaction,
+          },
+        );
+        tmpR = await WYWL.findOne({
+          where: {
+            EWM: JSON.stringify(HWEWMs[i]),
+          },
+          transaction,
+        });
+        if (tmpR) {
+          if (tmpR.status !== WYWLStatus.RK) {
+            throw new Error('货物状态不正确!');
+          } else {
+            await tmpR.update(
+              {
+                status: WYWLStatus.ZX,
+                GYSId: tmpGYS.id,
+                DDGTWLId: tmpDDGTWL.id,
+              },
+              { transaction },
+            );
+          }
+        } else {
+          tmpR = await WYWL.create(
+            {
+              EWM: JSON.stringify(HWEWMs[i]),
+              status: WYWLStatus.ZX,
+              WLId: HWEWMs[i].TypeId,
+              GYSId: tmpGYS.id,
+              DDGTWLId: tmpDDGTWL.id,
+            },
+            {
+              transaction,
+            },
+          );
+        }
+      } else {
+        // 一个柜台上使用同一种DP的DW可能有多个
+        const tmpDDDWDPs = await DD_DW_DP.findAll(
+          {
+            where: {
+              DDId,
+              DPId: HWEWMs[i].typeId,
+            },
+            order: [
+              ['id', 'ASC'],
+            ],
+          },
+          {
+            transaction,
+          },
+        );
+        tmpR = await WYWL.findOne({
+          where: {
+            EWM: JSON.stringify(HWEWMs[i]),
+          },
+          transaction,
+        });
+        if (tmpR) {
+          if (tmpR.status !== WYWLStatus.RK) {
+            throw new Error('货物状态不正确!');
+          } else {
+            await tmpR.update(
+              {
+                status: WYWLStatus.ZX,
+                GYSId: tmpGYS.id,
+                DDGTWLId: tmpDDGTWL.id,
+              },
+              { transaction },
+            );
+          }
+        } else {
+          tmpR = await WYWL.create(
+            {
+              EWM: JSON.stringify(HWEWMs[i]),
+              status: WYWLStatus.ZX,
+              WLId: HWEWMs[i].TypeId,
+              GYSId: tmpGYS.id,
+              DDGTWLId: tmpDDGTWL.id,
+            },
+            {
+              transaction,
+            },
+          );
+        }
+      }
+    }
+    // end 检查HWEWMs在WYWL/WYDP存在, 如果是属于RK状态, 则转为ZX状态, 否则报错
+
+    // 检查HWEWMs在WYWL/WYDP是否不存在, 则新建, 设置为ZX状态, 并绑上KDX
+    // end 检查HWEWMs在WYWL/WYDP是否不存在, 则新建, 设置为ZX状态, 并绑上KDX
+
+    // 新建相关WYWLCZ/WYDPCZ
+    // end 新建相关WYWLCZ/WYDPCZ
+
+    // end 新建相关记录
 
     await transaction.commit();
 
@@ -1907,9 +2224,7 @@ router.post('/chuXiang', async (req, res, next) => {
 
     // HWEWMs: [{ type: 'WL'/'DP'. typeId: 15, uuid: '123456'}]
     // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
-    const {
-      HWEWMs,
-    } = req.body;
+    const { HWEWMs } = req.body;
 
     // 检查操作记录权限
 
@@ -1962,10 +2277,7 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
-    const {
-      KDXEWMs,
-      KDDCode,
-    } = req.body;
+    const { KDXEWMs, KDDCode } = req.body;
 
     // 检查操作记录权限
 
@@ -2023,9 +2335,7 @@ router.post('/jieChuGuanLiangKuaiDi', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
-    const {
-      KDXEWMs,
-    } = req.body;
+    const { KDXEWMs } = req.body;
 
     // 检查操作记录权限
 
@@ -2079,9 +2389,7 @@ router.post('/shouXiang', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
-    const {
-      KDXEWMs,
-    } = req.body;
+    const { KDXEWMs } = req.body;
 
     // 检查操作记录权限
 
@@ -2136,9 +2444,7 @@ router.post('/shouHuo', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
-    const {
-      HWEWMs,
-    } = req.body;
+    const { HWEWMs } = req.body;
 
     // 检查操作记录权限
 
@@ -2187,9 +2493,7 @@ router.post('/anZhuangFanKuiZhuangTai', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
-    const {
-      HWEWMs,
-    } = req.body;
+    const { HWEWMs } = req.body;
 
     // 检查操作记录权限
 
@@ -2238,11 +2542,7 @@ router.post('/anZhuangWLFanKuiTuPian', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     // WYWLs: [{id: 1, imageUrl: 'xxx'}]
-    const {
-      GTId,
-      WYWLs,
-      QJTImageUrl,
-    } = req.body;
+    const { GTId, WYWLs, QJTImageUrl } = req.body;
 
     // 检查操作记录权限
 
@@ -2294,11 +2594,7 @@ router.post('/shenShangShiQingWLBuHuo', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     const {
-      DDId,
-      GTId,
-      WYId,
-      imageUrl,
-      note,
+      DDId, GTId, WYId, imageUrl, note,
     } = req.body;
 
     // 检查操作记录权限
@@ -2348,10 +2644,7 @@ router.post('/shenRiChangQingWLBuHuo', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     const {
-      GTId,
-      WYId,
-      imageUrl,
-      note,
+      GTId, WYId, imageUrl, note,
     } = req.body;
 
     // 检查操作记录权限
