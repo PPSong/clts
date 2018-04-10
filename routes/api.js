@@ -37,6 +37,7 @@ import {
   WYDPCZ,
   KDX,
   KDXStatus,
+  KDXCZ,
 } from '../models/Model';
 
 // const ppLog = debug('ppLog');
@@ -1920,6 +1921,211 @@ router.post('/piLiangRuKu', async (req, res, next) => {
   }
 });
 
+async function checkWLEWMSIsSameDDGTAndGetGYSIds(DDId, GTId, HWEWMs, transaction) {
+  const tmpWLIds = HWEWMs.map(item => item.typeId);
+
+  const tmpTargetWLs = await DD_GT_WL.findAll({
+    where: {
+      DDId,
+      GTId,
+    },
+    transaction,
+  });
+
+  const tmpTargetWLIds = tmpTargetWLs.map(item => item.WLId);
+
+  const diffWLIds = _.difference(tmpWLIds, tmpTargetWLIds);
+  if (diffWLIds.length > 0) {
+    throw new Error(`${diffWLIds}不属于目标柜台!`);
+  }
+
+  const tmpDDGTWLs = await DD_GT_WL.findAll({
+    where: {
+      DDId,
+      GTId,
+      WLId: {
+        $in: tmpWLIds,
+      },
+    },
+    transaction,
+  });
+  const tmpDDGTWLGYSIds = tmpDDGTWLs.map(item => item.GYSId);
+
+  return tmpDDGTWLGYSIds;
+}
+
+async function checkDPEWMSIsSameDDGTAndGetGYSIds(DDId, GTId, HWEWMs, transaction) {
+  const tmpDPIds = HWEWMs.map(item => item.typeId);
+
+  const tmpTargetDPs = await DD_DW_DP.findAll({
+    where: {
+      DDId,
+    },
+    include: [
+      {
+        model: DW,
+        as: 'DW',
+        where: {
+          GTId,
+        },
+      },
+    ],
+    transaction,
+  });
+  const tmpTargetDPIds = tmpTargetDPs.map(item => item.DPId);
+
+  const diffDPIds = _.difference(tmpDPIds, tmpTargetDPIds);
+  if (diffDPIds.length > 0) {
+    throw new Error(`${diffDPIds}不属于目标柜台!`);
+  }
+
+  const tmpDDDWDPs = await DD_DW_DP.findAll({
+    where: {
+      DDId,
+      DPId: {
+        $in: tmpDPIds,
+      },
+    },
+    include: [
+      {
+        model: DW,
+        as: 'DW',
+        where: {
+          GTId,
+        },
+      },
+    ],
+    transaction,
+  });
+  const tmpDDDWDPGYSIds = tmpDDDWDPs.map(item => item.GYSId);
+
+  return tmpDDDWDPGYSIds;
+}
+
+async function zhuangXiangWLEWM(DDGTWL, WYWLEWM, GYSId, KDXId, user, transaction) {
+  let tmpWYWL = await WYWL.findOne({
+    where: {
+      EWM: JSON.stringify(WYWLEWM),
+    },
+    transaction,
+  });
+
+  if (tmpWYWL) {
+    // WYWL存在
+    if (tmpWYWL.status !== WYWLStatus.RK) {
+      // 如果不属于RK状态报错
+      throw new Error(`货物${WYWLEWM.type}_${WYWLEWM.typeId}_${WYWLEWM.uuid}状态为:${tmpWYWL.status}, 不可装箱!`);
+    }
+
+    if (tmpWYWL.GYSId !== GYSId) {
+      // 发货供应商不正确
+      throw new Error(`货物${WYWLEWM.type}_${WYWLEWM.typeId}_${WYWLEWM.uuid}发货供应商不正确, 不可装箱!`);
+    }
+
+    // 设置状态, 绑定KDXId
+    await tmpWYWL.update(
+      {
+        status: WYWLStatus.ZX,
+        DDGTWLId: DDGTWL.id,
+        KDXId,
+      },
+      {
+        transaction,
+      },
+    );
+  } else {
+    // WYWL不存在就新建
+    tmpWYWL = await WYWL.create(
+      {
+        EWM: JSON.stringify(WYWLEWM),
+        status: WYWLStatus.ZX,
+        WLId: WYWLEWM.typeId,
+        GYSId,
+        DDGTWLId: DDGTWL.id,
+        KDXId,
+      },
+      {
+        transaction,
+      },
+    );
+  }
+
+  // 新建相关WYWLCZ
+  await WYWLCZ.create(
+    {
+      WYWLId: tmpWYWL.id,
+      status: WYWLStatus.ZX,
+      UserId: user.id,
+    },
+    {
+      transaction,
+    },
+  );
+  // end 新建相关WYWLCZ
+}
+
+async function zhuangXiangDPEWM(DDDWDP, WYDPEWM, GYSId, KDXId, user, transaction) {
+  let tmpWYDP = await WYDP.findOne({
+    where: {
+      EWM: JSON.stringify(WYDPEWM),
+    },
+    transaction,
+  });
+
+  if (tmpWYDP) {
+    // WYDP存在
+    if (tmpWYDP.status !== WYDPStatus.RK) {
+      // 如果不属于RK状态报错
+      throw new Error(`货物${WYDPEWM.type}_${WYDPEWM.typeId}_${WYDPEWM.uuid}状态为:${tmpWYDP.status}, 不可装箱!`);
+    }
+
+    if (tmpWYDP.GYSId !== GYSId) {
+      // 发货供应商不正确
+      throw new Error(`货物${WYDPEWM.type}_${WYDPEWM.typeId}_${WYDPEWM.uuid}发货供应商不正确, 不可装箱!`);
+    }
+
+    // 设置状态, 绑定KDXId
+    await tmpWYDP.update(
+      {
+        status: WYDPStatus.ZX,
+        DDGTWLId: DDDWDP.id,
+        KDXId,
+      },
+      {
+        transaction,
+      },
+    );
+  } else {
+    // WYDP不存在就新建
+    tmpWYDP = await WYDP.create(
+      {
+        EWM: JSON.stringify(WYDPEWM),
+        status: WYWLStatus.ZX,
+        DPId: WYDPEWM.typeId,
+        GYSId,
+        DDDWDPId: DDDWDP.id,
+        KDXId,
+      },
+      {
+        transaction,
+      },
+    );
+  }
+
+  // 新建相关WYDPCZ
+  await WYDPCZ.create(
+    {
+      WYDPId: tmpWYDP.id,
+      status: WYDPStatus.ZX,
+      UserId: user.id,
+    },
+    {
+      transaction,
+    },
+  );
+  // end 新建相关WYDPCZ
+}
+
 // ZHY 装箱
 router.post('/zhuangXiang', async (req, res, next) => {
   let transaction;
@@ -1963,94 +2169,25 @@ router.post('/zhuangXiang', async (req, res, next) => {
     const tmpType = tmpUniqueType[0];
     // end 检查二维码是否都属于WL或DP
 
-    let tmpTargetTypeIds;
     let tmpTargetGYSIds;
     // 判断HWEWMs属于同一个DD_GT
-    const tmpTypeIds = HWEWMs.map(item => item.typeId);
-
     if (tmpType === EWMType.WL) {
-      const tmpTargetTypeHWs = await DD_GT_WL.findAll({
-        where: {
-          DDId,
-          GTId,
-        },
-        transaction,
-      });
-      tmpTargetTypeIds = tmpTargetTypeHWs.map(item => item.WLId);
-      tmpTargetGYSIds = tmpTargetTypeHWs.map(item => item.GYSId);
+      tmpTargetGYSIds = await checkWLEWMSIsSameDDGTAndGetGYSIds(DDId, GTId, HWEWMs, transaction);
     } else {
-      const tmpTargetTypeHWs = await DD_DW_DP.findAll({
-        where: {
-          DDId,
-        },
-        include: [
-          {
-            model: GT,
-            where: {
-              id: GTId,
-            },
-          },
-        ],
-        transaction,
-      });
-      tmpTargetTypeIds = tmpTargetTypeHWs.map(item => item.DPId);
-      tmpTargetGYSIds = tmpTargetTypeHWs.map(item => item.GYSId);
-    }
-
-    if (_.difference(tmpTypeIds, tmpTargetTypeIds).length > 0) {
-      throw new Error('二维码组必须同属于同一批订单的同一个柜台!');
+      tmpTargetGYSIds = await checkDPEWMSIsSameDDGTAndGetGYSIds(DDId, GTId, HWEWMs, transaction);
     }
     // end 判断HWEWMs属于同一个DD_GT
 
+    // 检查ZHY是否有权限装箱这个货物
     const tmpUniqueGYSIdArr = [...new Set(tmpTargetGYSIds)];
 
     if (tmpUniqueGYSIdArr.length !== 1) {
       throw new Error('二维码组必须同属于同一个发货供应商!');
     }
 
-    // 检查ZHY是否有权限装箱这个货物
     const tmpGYS = await user.checkGYSId(tmpUniqueGYSIdArr[0], transaction);
     // end 检查ZHY是否有权限装箱这个货物
     // end 检查操作记录权限
-
-    // 更新并检查DD_GT_WL/DD_DW_DP ZXNumber是否超限
-    for (let i = 0; i < tmpTypeIds; i++) {
-      let tmpR;
-      if (tmpType === EWMType.WL) {
-        tmpR = await DD_GT_WL.findOne({
-          where: {
-            DDId,
-            GTId,
-            WLId: tmpTypeIds[i],
-          },
-          transaction,
-        });
-      } else {
-        tmpR = await DD_DW_DP.findOne({
-          where: {
-            DDId,
-            DPId: tmpTypeIds[i],
-          },
-          include: [
-            {
-              model: GT,
-              where: {
-                id: GTId,
-              },
-            },
-          ],
-          transaction,
-        });
-      }
-      tmpR.ZXNumber = (tmpR.ZXNumber ? tmpR.ZXNumber : 1) + 1;
-
-      if (tmpR.ZXNumber > tmpR.number) {
-        throw new Error('货物超限!');
-      }
-
-      await tmpR.save({ transaction });
-    }
-    // end 更新并检查DD_GT_WL/DD_DW_DP ZXNumber是否超限
 
     // 新建相关记录
     // 如需新建KDX则新建, 并新建相关KDXCZ
@@ -2062,14 +2199,18 @@ router.post('/zhuangXiang', async (req, res, next) => {
     });
 
     if (tmpKDX) {
+      // KDX已存在
       if (tmpKDX.GTId !== GTId) {
+        // 检查已有KDX所属柜台
         throw new Error('快递箱不属于这个柜台!');
       }
 
       if (tmpKDX.status !== KDXStatus.ZX) {
+        // 检查已有KDX当前状态
         throw new Error(`快递箱不在${KDXStatus.ZX}状态!`);
       }
     } else {
+      // KDX不存在
       tmpKDX = await KDX.create(
         {
           EWM: JSON.stringify(KDXEWM),
@@ -2081,117 +2222,73 @@ router.post('/zhuangXiang', async (req, res, next) => {
         },
       );
     }
+
+    // 新建相关KDXCZ
+    await KDXCZ.create(
+      {
+        KDXId: tmpKDX.id,
+        status: KDXStatus.ZX,
+        UserId: user.id,
+      },
+      { transaction },
+    );
+    // end 新建相关KDXCZ
     // end 如需新建KDX则新建, 并新建相关KDXCZ
 
-    const tmpRIds = [];
-    // 检查HWEWMs在WYWL/WYDP存在, 如果是属于RK状态, 则转为ZX状态, 否则报错
-    for (let i = 0; i < HWEWMs; i++) {
-      let tmpR;
+    for (let i = 0; i < HWEWMs.length; i++) {
       if (tmpType === EWMType.WL) {
-        const tmpDDGTWL = await DD_GT_WL.findOne(
-          {
-            where: {
-              DDId,
-              GTId,
-              WLId: HWEWMs[i].typeId,
-            },
-          },
-          {
-            transaction,
-          },
-        );
-        tmpR = await WYWL.findOne({
+        // WL
+        const tmpDDGTWL = await DD_GT_WL.findOne({
           where: {
-            EWM: JSON.stringify(HWEWMs[i]),
+            DDId,
+            GTId,
+            WLId: HWEWMs[i].typeId,
           },
           transaction,
         });
-        if (tmpR) {
-          if (tmpR.status !== WYWLStatus.RK) {
-            throw new Error('货物状态不正确!');
-          } else {
-            await tmpR.update(
-              {
-                status: WYWLStatus.ZX,
-                GYSId: tmpGYS.id,
-                DDGTWLId: tmpDDGTWL.id,
-              },
-              { transaction },
-            );
-          }
-        } else {
-          tmpR = await WYWL.create(
-            {
-              EWM: JSON.stringify(HWEWMs[i]),
-              status: WYWLStatus.ZX,
-              WLId: HWEWMs[i].TypeId,
-              GYSId: tmpGYS.id,
-              DDGTWLId: tmpDDGTWL.id,
-            },
-            {
-              transaction,
-            },
-          );
+        if (tmpDDGTWL.ZXNumber === tmpDDGTWL.number) {
+          // 如果预订数额已满则报错
+          throw new Error(`${tmpDDGTWL.id}数额已满!`);
         }
+        await zhuangXiangWLEWM(tmpDDGTWL, HWEWMs[i], tmpGYS.id, tmpKDX.id, user, transaction);
+        await sequelize.query(
+          'UPDATE DD_GT_WL SET ZXNumber = IFNULL(ZXNumber, 0) + 1 WHERE id = :id',
+          {
+            transaction, replacements: { id: tmpDDGTWL.id }, raw: true, type: 'UPDATE',
+          },
+        );
       } else {
-        // 一个柜台上使用同一种DP的DW可能有多个
-        const tmpDDDWDPs = await DD_DW_DP.findAll(
-          {
-            where: {
-              DDId,
-              DPId: HWEWMs[i].typeId,
-            },
-            order: [
-              ['id', 'ASC'],
-            ],
-          },
-          {
-            transaction,
-          },
-        );
-        tmpR = await WYWL.findOne({
+        // DP
+        const tmpDDDWDP = await DD_DW_DP.findOne({
           where: {
-            EWM: JSON.stringify(HWEWMs[i]),
+            DDId,
+            DPId: HWEWMs[i].typeId,
+            ZXNumber: null,
           },
+          include: [
+            {
+              model: DW,
+              as: 'DW',
+              where: {
+                GTId,
+              },
+            },
+          ],
           transaction,
         });
-        if (tmpR) {
-          if (tmpR.status !== WYWLStatus.RK) {
-            throw new Error('货物状态不正确!');
-          } else {
-            await tmpR.update(
-              {
-                status: WYWLStatus.ZX,
-                GYSId: tmpGYS.id,
-                DDGTWLId: tmpDDGTWL.id,
-              },
-              { transaction },
-            );
-          }
-        } else {
-          tmpR = await WYWL.create(
-            {
-              EWM: JSON.stringify(HWEWMs[i]),
-              status: WYWLStatus.ZX,
-              WLId: HWEWMs[i].TypeId,
-              GYSId: tmpGYS.id,
-              DDGTWLId: tmpDDGTWL.id,
-            },
-            {
-              transaction,
-            },
-          );
+        if (!tmpDDDWDP) {
+          // 如果预订数额已满则报错
+          throw new Error(`${HWEWMs[i]}数额已满!`);
         }
+        await zhuangXiangDPEWM(tmpDDDWDP, HWEWMs[i], tmpGYS.id, tmpKDX.id, user, transaction);
+        await sequelize.query(
+          'UPDATE DD_DW_DP SET ZXNumber = 1 WHERE ID = :id',
+          {
+            transaction, replacements: { id: tmpDDDWDP.id }, raw: true, type: 'UPDATE',
+          },
+        );
       }
     }
-    // end 检查HWEWMs在WYWL/WYDP存在, 如果是属于RK状态, 则转为ZX状态, 否则报错
-
-    // 检查HWEWMs在WYWL/WYDP是否不存在, 则新建, 设置为ZX状态, 并绑上KDX
-    // end 检查HWEWMs在WYWL/WYDP是否不存在, 则新建, 设置为ZX状态, 并绑上KDX
-
-    // 新建相关WYWLCZ/WYDPCZ
-    // end 新建相关WYWLCZ/WYDPCZ
-
     // end 新建相关记录
 
     await transaction.commit();

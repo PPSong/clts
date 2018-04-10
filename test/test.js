@@ -1112,5 +1112,75 @@ describe('测试案例', () => {
 
       assert.deepEqual(EWMs.map(item => JSON.stringify(item)), tmpWYDPs.map(item => item.EWM));
     });
+
+    it('ZHY 装箱WL', async () => {
+      const DDId = 1;
+      const GTId = 1;
+      const HWEWMs = [
+        {
+          type: 'WL',
+          typeId: 13,
+          uuid: 'T_uuid1',
+        },
+        {
+          type: 'WL',
+          typeId: 14,
+          uuid: 'T_uuid2',
+        },
+      ];
+      const KDXEWM = {
+        type: 'KDX',
+        uuid: 'T_uuid3',
+      };
+
+      await post(
+        'zhuangXiang',
+        {
+          DDId,
+          GTId,
+          HWEWMs,
+          KDXEWM,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('ZHY 装箱DP', async () => {
+      const DDId = 1;
+      const GTId = 2;
+      const HWEWMs = [
+        {
+          type: 'DP',
+          typeId: 2,
+          uuid: 'T_uuid4',
+        },
+        {
+          type: 'DP',
+          typeId: 2,
+          uuid: 'T_uuid5',
+        },
+      ];
+      const KDXEWM = {
+        type: 'KDX',
+        uuid: 'T_uuid6',
+      };
+
+      await post(
+        'zhuangXiang',
+        {
+          DDId,
+          GTId,
+          HWEWMs,
+          KDXEWM,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
   });
 });
