@@ -55,7 +55,7 @@ app.use((err, req, res, next) => {
 });
 
 const port = 3001;
-app.listen(port);
+const server = app.listen(port);
 console.log(`Listening on port ${port}`);
 
-module.exports = app; // for testing
+module.exports = server; // for testing
