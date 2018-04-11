@@ -38,6 +38,7 @@ import {
   KDX,
   KDXStatus,
   KDXCZ,
+  KDD,
 } from '../models/Model';
 
 // const ppLog = debug('ppLog');
@@ -2254,7 +2255,10 @@ router.post('/zhuangXiang', async (req, res, next) => {
         await sequelize.query(
           'UPDATE DD_GT_WL SET ZXNumber = IFNULL(ZXNumber, 0) + 1 WHERE id = :id',
           {
-            transaction, replacements: { id: tmpDDGTWL.id }, raw: true, type: 'UPDATE',
+            transaction,
+            replacements: { id: tmpDDGTWL.id },
+            raw: true,
+            type: 'UPDATE',
           },
         );
       } else {
@@ -2281,12 +2285,12 @@ router.post('/zhuangXiang', async (req, res, next) => {
           throw new Error(`${HWEWMs[i]}数额已满!`);
         }
         await zhuangXiangDPEWM(tmpDDDWDP, HWEWMs[i], tmpGYS.id, tmpKDX.id, user, transaction);
-        await sequelize.query(
-          'UPDATE DD_DW_DP SET ZXNumber = 1 WHERE ID = :id',
-          {
-            transaction, replacements: { id: tmpDDDWDP.id }, raw: true, type: 'UPDATE',
-          },
-        );
+        await sequelize.query('UPDATE DD_DW_DP SET ZXNumber = 1 WHERE ID = :id', {
+          transaction,
+          replacements: { id: tmpDDDWDP.id },
+          raw: true,
+          type: 'UPDATE',
+        });
       }
     }
     // end 新建相关记录
@@ -2305,6 +2309,134 @@ router.post('/zhuangXiang', async (req, res, next) => {
   }
 });
 
+async function chuXiangWYWL(WYWLEWM, user, transaction) {
+  // 检查操作记录权限
+  // 检查HWEWMs存在且是属于ZX状态
+  const tmpWYWL = await WYWL.findOne({
+    where: {
+      EWM: JSON.stringify(WYWLEWM),
+    },
+    transaction,
+  });
+
+  if (!tmpWYWL) {
+    throw new Error(`没找到对应唯一物料:${WYWLEWM}`);
+  }
+
+  if (tmpWYWL.status !== WYWLStatus.ZX) {
+    throw new Error(`物料:${WYWLEWM}状态是:${tmpWYWL.status}, 不能出箱!`);
+  }
+  // end 检查HWEWMs存在且是属于ZX状态
+
+  // 检查ZHY是否有权限出箱这个货物
+  await user.checkGYSId(tmpWYWL.GYSId, transaction);
+  // end 检查ZHY是否有权限出箱这个货物
+
+  // end 检查操作记录权限
+
+  // 新建相关记录
+
+  // 减少DD_GT_WL ZXNumber
+  await sequelize.query('UPDATE DD_GT_WL SET ZXNumber = ZXNumber - 1 WHERE id = :id', {
+    transaction,
+    replacements: { id: tmpWYWL.DDGTWLId },
+    raw: true,
+    type: 'UPDATE',
+  });
+  // end 减少DD_GT_WL ZXNumber
+
+  // HWEWMs清除绑上KDXID, DD_GT_WL, 转为RK状态
+  await tmpWYWL.update(
+    {
+      DDGTWLId: null,
+      status: WYWLStatus.RK,
+    },
+    {
+      transaction,
+    },
+  );
+  // end HWEWMs清除绑上KDXID, DD_GT_WL, 转为RK状态
+
+  // 新建相关WYWLCZ
+  await WYWLCZ.create(
+    {
+      WYWLId: tmpWYWL.id,
+      status: WYWLStatus.RK,
+      UserId: user.id,
+    },
+    {
+      transaction,
+    },
+  );
+  // end 新建相关WYWLCZ
+
+  // end 新建相关记录
+}
+
+async function chuXiangWYDP(WYDPEWM, user, transaction) {
+  // 检查操作记录权限
+  // 检查HWEWMs存在且是属于ZX状态
+  const tmpWYDP = await WYDP.findOne({
+    where: {
+      EWM: JSON.stringify(WYDPEWM),
+    },
+    transaction,
+  });
+
+  if (!tmpWYDP) {
+    throw new Error(`没找到对应唯一灯片:${WYDPEWM}`);
+  }
+
+  if (tmpWYDP.status !== WYDPStatus.ZX) {
+    throw new Error(`灯片:${WYDPEWM}状态是:${tmpWYDP.status}, 不能出箱!`);
+  }
+  // end 检查HWEWMs存在且是属于ZX状态
+
+  // 检查ZHY是否有权限出箱这个货物
+  await user.checkGYSId(tmpWYDP.GYSId, transaction);
+  // end 检查ZHY是否有权限出箱这个货物
+
+  // end 检查操作记录权限
+
+  // 新建相关记录
+
+  // 减少DD_DW_DP ZXNumber
+  await sequelize.query('UPDATE DD_DW_DP SET ZXNumber = 0 WHERE id = :id', {
+    transaction,
+    replacements: { id: tmpWYDP.DDDWDPId },
+    raw: true,
+    type: 'UPDATE',
+  });
+  // end 减少DD_DW_DP ZXNumber
+
+  // HWEWMs清除绑上KDXID, DD_DW_DP, 转为RK状态
+  await tmpWYDP.update(
+    {
+      DDDWDPId: null,
+      status: WYDPStatus.RK,
+    },
+    {
+      transaction,
+    },
+  );
+  // end HWEWMs清除绑上KDXID, DD_DW_DP, 转为RK状态
+
+  // 新建相关WYDPCZ
+  await WYDPCZ.create(
+    {
+      WYDPId: tmpWYDP.id,
+      status: WYDPStatus.RK,
+      UserId: user.id,
+    },
+    {
+      transaction,
+    },
+  );
+  // end 新建相关WYDPCZ
+
+  // end 新建相关记录
+}
+
 // ZHY 出箱
 router.post('/chuXiang', async (req, res, next) => {
   let transaction;
@@ -2320,30 +2452,17 @@ router.post('/chuXiang', async (req, res, next) => {
     transaction = await sequelize.transaction();
 
     // HWEWMs: [{ type: 'WL'/'DP'. typeId: 15, uuid: '123456'}]
-    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
     const { HWEWMs } = req.body;
 
-    // 检查操作记录权限
-
-    // 检查HWEWMs是属于ZX状态
-    // end 检查HWEWMs是属于ZX状态
-
-    // 检查ZHY是否有权限出箱这个货物
-    // end 检查ZHY是否有权限出箱这个货物
-
-    // end 检查操作记录权限
-
-    // 新建相关记录
-    // 如需新建KDX则新建
-    // end 如需新建KDX则新建
-
-    // HWEWMs清除绑上KDXID, DD_GT_WL/DD_DW_DP, 转为RK状态
-    // end HWEWMs清除绑上KDXID, DD_GT_WL/DD_DW_DP, 转为RK状态
-
-    // 新建相关WYWLCZ/WYDPCZ
-    // end 新建相关WYWLCZ/WYDPCZ
-
-    // end 新建相关记录
+    for (let i = 0; i < HWEWMs.length; i++) {
+      if (HWEWMs[i].type === EWMType.WL) {
+        // WL
+        await chuXiangWYWL(HWEWMs[i], user, transaction);
+      } else {
+        // DP
+        await chuXiangWYDP(HWEWMs[i], user, transaction);
+      }
+    }
 
     await transaction.commit();
 
@@ -2378,7 +2497,36 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
 
     // 检查操作记录权限
 
+    const tmpKDXs = await KDX.findAll({
+      where: {
+        EWM: {
+          $in: KDXEWMs,
+        },
+      },
+      transaction,
+    });
+
+    // 检查KDXEWMs都是存在的
+    const tmpKDXEWMs = tmpKDXs.map(item => item.EWM);
+    const diffEWMs = _.difference(KDXEWMs, tmpKDXEWMs);
+    if (diffEWMs.length > 0) {
+      throw new Error(`${diffEWMs}不存在!`);
+    }
+    // end 检查KDXEWMs都是存在的
+
     // 检查KDXEWMs是属于ZX状态, 而且属于同一个GT
+    const tmpFailedStatusKDXs = tmpKDXs.filter(item => item.status !== KDXStatus.ZX);
+
+    if (tmpFailedStatusKDXs.length > 0) {
+      const tmpFailedKDXEWMs = tmpFailedStatusKDXs.map(item => item.EWM);
+      throw new Error(`${tmpFailedKDXEWMs}不在${KDXStatus.ZX}状态不能绑定快递!`);
+    }
+
+    const tmpKDXGTs = tmpKDXs.map(item => item.GTId);
+    const tmpUniqueKDXGTs = [...new Set(tmpKDXGTs)];
+    if (tmpUniqueKDXGTs.length !== 1) {
+      throw new Error('同一个快递单号的快递箱必须发往同一柜台');
+    }
     // end 检查KDXEWMs是属于ZX状态, 而且属于同一个GT
 
     // 不用检查ZHY是否有权限快递这个KDX, 谁都可以快递
@@ -2387,16 +2535,47 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
 
     // 新建相关记录
     // 如需新建KDD则新建
+    const tmpKDD = await KDD.findOrCreate({
+      where: {
+        code: KDDCode,
+      },
+      defaults: {
+        code: KDDCode,
+      },
+      transaction,
+    });
     // end 如需新建KDD则新建
 
-    // KDX状态转为FH
-    // end KDX状态转为FH
+    // KDXEWMs绑上KDDId, 转为状态FH
+    await KDX.update(
+      {
+        status: KDXStatus.FH,
+        KDDId: tmpKDD.id,
+      },
+      {
+        where: {
+          EWM: {
+            $in: KDXEWMs,
+          },
+        },
+        transaction,
+      },
+    );
+    // end KDXEWMs绑上KDDId, 转为状态FH
 
     // 新建相关KDXCZ
+    const tmpKDXCZs = tmpKDXs.map(item => ({
+      KDXId: item.id,
+      status: KDXStatus.FH,
+      UserId: user.id,
+    }));
+    await KDXCZ.bulkCreate(
+      tmpKDXCZs,
+      {
+        transaction,
+      },
+    );
     // end 新建相关KDXCZ
-
-    // KDXEWMs绑上KDDId, 转为状态FH
-    // end KDXEWMs绑上KDDId, 转为状态FH
 
     // 新建相关WYWLCZ/WYDPCZ
     // end 新建相关WYWLCZ/WYDPCZ

@@ -1182,5 +1182,41 @@ describe('测试案例', () => {
       // todo:
       assert.equal(1, 1);
     });
+
+    it('ZHY 出箱WL', async () => {
+      const HWEWMs = [
+        {
+          type: 'WL',
+          typeId: 13,
+          uuid: 'T_uuid1',
+        },
+        {
+          type: 'WL',
+          typeId: 14,
+          uuid: 'T_uuid2',
+        },
+        {
+          type: 'DP',
+          typeId: 2,
+          uuid: 'T_uuid4',
+        },
+        {
+          type: 'DP',
+          typeId: 2,
+          uuid: 'T_uuid5',
+        },
+      ];
+
+      await post(
+        'chuXiang',
+        {
+          HWEWMs,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
   });
 });
