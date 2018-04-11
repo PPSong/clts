@@ -1183,7 +1183,7 @@ describe('测试案例', () => {
       assert.equal(1, 1);
     });
 
-    it('ZHY 出箱WL', async () => {
+    it.skip('ZHY 出箱', async () => {
       const HWEWMs = [
         {
           type: 'WL',
@@ -1255,6 +1255,30 @@ describe('测试案例', () => {
         {
           KDXEWMs,
           KDDCode,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('ZHY 解除关联快递', async () => {
+      const KDXEWMs = [
+        {
+          type: 'KDX',
+          uuid: 'T_uuid3',
+        },
+        {
+          type: 'KDX',
+          uuid: 'T_uuid6',
+        },
+      ];
+
+      await post(
+        'jieChuGuanLiangKuaiDi',
+        {
+          KDXEWMs,
         },
         ZHYToken,
       );

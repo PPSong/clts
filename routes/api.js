@@ -2348,6 +2348,7 @@ async function chuXiangWYWL(WYWLEWM, user, transaction) {
   // HWEWMs清除绑上KDXID, DD_GT_WL, 转为RK状态
   await tmpWYWL.update(
     {
+      KDXId: null,
       DDGTWLId: null,
       status: WYWLStatus.RK,
     },
@@ -2412,6 +2413,7 @@ async function chuXiangWYDP(WYDPEWM, user, transaction) {
   // HWEWMs清除绑上KDXID, DD_DW_DP, 转为RK状态
   await tmpWYDP.update(
     {
+      KDXId: null,
       DDDWDPId: null,
       status: WYDPStatus.RK,
     },
@@ -2538,7 +2540,7 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
 
     // 新建相关记录
     // 如需新建KDD则新建
-    const tmpKDD = await KDD.findOrCreate({
+    const tmpKDDR = await KDD.findOrCreate({
       where: {
         code: KDDCode,
       },
@@ -2548,6 +2550,7 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
       transaction,
     });
     // end 如需新建KDD则新建
+    const tmpKDD = tmpKDDR[0];
 
     // KDXEWMs绑上KDDId, 转为状态FH
     await KDX.update(
@@ -2577,25 +2580,41 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
     });
     // end 新建相关KDXCZ
 
-    // 新建相关WYWLCZ
-    const tmpWYWLCZSql = `
-      SELECT
-        a.id id
-      FROM
-        WYWL a
-      JOIN
-        KDX b
-      ON
-        a.KDXId = b.id
-      AND
-        b.EWM in (:KDXEWMs);
-    `;
-    const tmpWYWLCZSqlR = await sequelize.query(tmpWYWLCZSql, {
+    const tmpWYWLSql = `
+    SELECT
+      a.id id
+    FROM
+      WYWL a
+    JOIN
+      KDX b
+    ON
+      a.KDXId = b.id
+    AND
+      b.EWM in (:KDXEWMs);
+  `;
+    const tmpWYWLCZSqlR = await sequelize.query(tmpWYWLSql, {
       transaction,
-      replacements: { KDXEWMs: tmpKDXEWMStrings.join(',') },
+      replacements: { KDXEWMs: tmpKDXEWMStrings },
     });
     const tmpWYWLIds = tmpWYWLCZSqlR[0];
 
+    // 更改相关WYWL状态为FH
+    await WYWL.update(
+      {
+        status: WYWLStatus.FH,
+      },
+      {
+        where: {
+          id: {
+            $in: tmpWYWLIds.map(item => item.id),
+          },
+        },
+        transaction,
+      },
+    );
+    // end 更改相关WYWL状态为FH
+
+    // 新建相关WYWLCZ
     const tmpWYWLCZs = tmpWYWLIds.map(item => ({
       WYWLId: item.id,
       status: WYWLStatus.FH,
@@ -2606,7 +2625,6 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
     });
     // end 新建相关WYWLCZ
 
-    // 新建相关WYDPCZ
     const tmpWYDPSql = `
     SELECT
       a.id
@@ -2621,11 +2639,27 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
   `;
     const tmpWYDPCZSqlR = await sequelize.query(tmpWYDPSql, {
       transaction,
-      replacements: { KDXEWMs: tmpKDXEWMStrings.join(',') },
+      replacements: { KDXEWMs: tmpKDXEWMStrings },
     });
-
     const tmpWYDPIds = tmpWYDPCZSqlR[0];
 
+    // 更改相关WYDP状态为FH
+    await WYDP.update(
+      {
+        status: WYDPStatus.FH,
+      },
+      {
+        where: {
+          id: {
+            $in: tmpWYDPIds.map(item => item.id),
+          },
+        },
+        transaction,
+      },
+    );
+    // end 更改相关WYDP状态为FH
+
+    // 新建相关WYDPCZ
     const tmpWYDPCZs = tmpWYDPIds.map(item => ({
       WYDPId: item.id,
       status: WYDPStatus.FH,
@@ -2671,24 +2705,153 @@ router.post('/jieChuGuanLiangKuaiDi', async (req, res, next) => {
 
     // 检查操作记录权限
 
-    // 检查KDXEWMs是属于KD状态
-    // end 检查KDXEWMs是属于KD状态
+    const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
+
+    const tmpKDXs = await KDX.findAll({
+      where: {
+        EWM: {
+          $in: KDXEWMStrings,
+        },
+      },
+      transaction,
+    });
+
+    // 检查KDXEWMs都是存在的
+    const tmpKDXEWMStrings = tmpKDXs.map(item => item.EWM);
+    const diffEWMs = _.difference(KDXEWMStrings, tmpKDXEWMStrings);
+    if (diffEWMs.length > 0) {
+      throw new Error(`${diffEWMs}不存在!`);
+    }
+    // end 检查KDXEWMs都是存在的
+
+    // 检查KDXEWMs是属于FH状态
+    const tmpFailedStatusKDXs = tmpKDXs.filter(item => item.status !== KDXStatus.FH);
+    if (tmpFailedStatusKDXs.length > 0) {
+      throw new Error(`${tmpFailedStatusKDXs}状态不在${KDXStatus.FH}, 无法解除关联快递!`);
+    }
+    // end 检查KDXEWMs是属于FH状态
 
     // 不用检查ZHY是否有权限解除这个KDX的关联, 谁都可以解除
 
     // end 检查操作记录权限
 
-    // KDX状态转为ZX
-    // end KDX状态转为ZX
-
-    // 新建相关KDXCZ
-    // end 新建相关KDXCZ
-
     // KDXEWMs取消绑定KDDId, 转为状态ZX
+    await KDX.update(
+      {
+        status: KDXStatus.ZX,
+        KDDId: null,
+      },
+      {
+        where: {
+          EWM: {
+            $in: KDXEWMStrings,
+          },
+        },
+        transaction,
+      },
+    );
     // end KDXEWMs取消绑定KDDId, 转为状态ZX
 
-    // 新建相关WYWLCZ/WYDPCZ
-    // end 新建相关WYWLCZ/WYDPCZ
+    // 新建相关KDXCZ
+    const tmpKDXCZs = tmpKDXs.map(item => ({
+      KDXId: item.id,
+      status: KDXStatus.ZX,
+      UserId: user.id,
+    }));
+    await KDXCZ.bulkCreate(tmpKDXCZs, {
+      transaction,
+    });
+    // end 新建相关KDXCZ
+
+    const tmpWYWLSql = `
+    SELECT
+      a.id id
+    FROM
+      WYWL a
+    JOIN
+      KDX b
+    ON
+      a.KDXId = b.id
+    AND
+      b.EWM in (:KDXEWMs);
+    `;
+    const tmpWYWLCZSqlR = await sequelize.query(tmpWYWLSql, {
+      transaction,
+      replacements: { KDXEWMs: tmpKDXEWMStrings },
+    });
+    const tmpWYWLIds = tmpWYWLCZSqlR[0];
+
+    // 更改相关WYWL状态为ZX
+    await WYWL.update(
+      {
+        status: WYWLStatus.ZX,
+      },
+      {
+        where: {
+          id: {
+            $in: tmpWYWLIds.map(item => item.id),
+          },
+        },
+        transaction,
+      },
+    );
+    // end 更改相关WYWL状态为ZX
+
+    // 新建相关WYWLCZ
+    const tmpWYWLCZs = tmpWYWLIds.map(item => ({
+      WYWLId: item.id,
+      status: WYWLStatus.ZX,
+      UserId: user.id,
+    }));
+    await WYWLCZ.bulkCreate(tmpWYWLCZs, {
+      transaction,
+    });
+    // end 新建相关WYWLCZ
+
+    const tmpWYDPSql = `
+    SELECT
+    a.id
+    FROM
+    WYDP a
+    JOIN
+    KDX b
+    ON
+    a.KDXId = b.id
+    AND
+    b.EWM in (:KDXEWMs);
+    `;
+    const tmpWYDPCZSqlR = await sequelize.query(tmpWYDPSql, {
+      transaction,
+      replacements: { KDXEWMs: tmpKDXEWMStrings },
+    });
+    const tmpWYDPIds = tmpWYDPCZSqlR[0];
+
+    // 更改相关WYDP状态为ZX
+    await WYDP.update(
+      {
+        status: WYDPStatus.ZX,
+      },
+      {
+        where: {
+          id: {
+            $in: tmpWYDPIds.map(item => item.id),
+          },
+        },
+        transaction,
+      },
+    );
+    // end 更改相关WYDP状态为ZX
+
+    // 新建相关WYDPCZ
+    const tmpWYDPCZs = tmpWYDPIds.map(item => ({
+      WYDPId: item.id,
+      status: WYDPStatus.ZX,
+      UserId: user.id,
+    }));
+    await WYDPCZ.bulkCreate(tmpWYDPCZs, {
+      transaction,
+    });
+    // end 新建相关WYDPCZ
 
     // end 新建相关记录
 
