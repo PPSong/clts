@@ -86,7 +86,6 @@ const get = async (path, params, token) => {
   });
 
   return r;
-  console.log('test---izz',r)
 };
 
 process.env.NODE_ENV = 'test';
@@ -129,33 +128,33 @@ describe('SPRT测试案例', () => {
     //   updatedAt: '2018-04-07 20:11:04.108'
     // });
 
-    // const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
+    const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
 
-    // const scriptArr = data.split(';');
+    const scriptArr = data.split(';');
 
-    // await sequelize.sync({ force: true });
+    await sequelize.sync({ force: true });
 
-    // for (let i = 0; i < scriptArr.length; i++) {
-    //   if (scriptArr[i].trim().length > 0) {
-    //     const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
-    //   }
-    // }
+    for (let i = 0; i < scriptArr.length; i++) {
+      if (scriptArr[i].trim().length > 0) {
+        const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
+      }
+    }
 
-    // // 创建View
-    // const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
-    // await sequelize.query(viewSql, {
-    //   type: sequelize.QueryTypes.SELECT,
-    // });
-    // // end 创建View
+    // 创建View
+    const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
+    await sequelize.query(viewSql, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // end 创建View
 
-    // // 创建Procedure
-    // const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
-    // const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
-    // const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
-    // await sequelize.query(procedureSql2, {
-    //   type: sequelize.QueryTypes.SELECT,
-    // });
-    // // end 创建创建Procedure
+    // 创建Procedure
+    const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
+    const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
+    const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
+    await sequelize.query(procedureSql2, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // end 创建创建Procedure
 
     adminToken = await getToken('admin', '123456');
 
@@ -186,7 +185,7 @@ describe('SPRT测试案例', () => {
   // 新建PPJL [ADMIN]
   describe('/createPPJL', async () => {
     describe('成功', async () => {
-      // it('admin 为 PP1 创建 PPJL1', async () => {
+      // it('admin 为 PP3 创建 PPJL_T', async () => {
       //   const PPId = 3;
       //   const username = 'PPJL_T';
       //   const password = '123456';
