@@ -2869,7 +2869,7 @@ router.post('/jieChuGuanLiangKuaiDi', async (req, res, next) => {
   }
 });
 
-// ZHY 收箱
+// GTBA 收箱
 router.post('/shouXiang', async (req, res, next) => {
   let transaction;
   const { user } = req;
@@ -2888,25 +2888,156 @@ router.post('/shouXiang', async (req, res, next) => {
 
     // 检查操作记录权限
 
-    // 检查KDXEWMs是属于KD状态
-    // end 检查KDXEWMs是属于KD状态
+    const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
+
+    const tmpKDXs = await KDX.findAll({
+      where: {
+        EWM: {
+          $in: KDXEWMStrings,
+        },
+      },
+      transaction,
+    });
+
+    // 检查KDXEWMs都是存在的
+    const tmpKDXEWMStrings = tmpKDXs.map(item => item.EWM);
+    const diffEWMs = _.difference(KDXEWMStrings, tmpKDXEWMStrings);
+    if (diffEWMs.length > 0) {
+      throw new Error(`${diffEWMs}不存在!`);
+    }
+    // end 检查KDXEWMs都是存在的
+
+    // 检查KDXEWMs是属于FH状态
+    const tmpFailedStatusKDXs = tmpKDXs.filter(item => item.status !== KDXStatus.FH);
+    if (tmpFailedStatusKDXs.length > 0) {
+      throw new Error(`${tmpFailedStatusKDXs}状态不在${KDXStatus.FH}, 无法收箱!`);
+    }
+    // end 检查KDXEWMs是属于FH状态
 
     // 检查KDX所属GT是和这个操作员一致
+    for (let i = 0; i < tmpKDXs.length; i++) {
+      await user.checkGTId(tmpKDXs[i].GTId, transaction);
+    }
     // end 检查KDX所属GT是和这个操作员一致
 
     // end 检查操作记录权限
 
     // KDX状态转为SX
+    await KDX.update(
+      {
+        status: KDXStatus.SX,
+      },
+      {
+        where: {
+          EWM: {
+            $in: KDXEWMStrings,
+          },
+        },
+        transaction,
+      },
+    );
     // end KDX状态转为SX
 
     // 新建相关KDXCZ
+    const tmpKDXCZs = tmpKDXs.map(item => ({
+      KDXId: item.id,
+      status: KDXStatus.SX,
+      UserId: user.id,
+    }));
+    await KDXCZ.bulkCreate(tmpKDXCZs, {
+      transaction,
+    });
     // end 新建相关KDXCZ
 
-    // KDXEWMs转为状态SX
-    // end KDXEWMs转为状态SX
+    const tmpWYWLSql = `
+    SELECT
+      a.id id
+    FROM
+      WYWL a
+    JOIN
+      KDX b
+    ON
+      a.KDXId = b.id
+    AND
+      b.EWM in (:KDXEWMs);
+    `;
+    const tmpWYWLCZSqlR = await sequelize.query(tmpWYWLSql, {
+      transaction,
+      replacements: { KDXEWMs: tmpKDXEWMStrings },
+    });
+    const tmpWYWLIds = tmpWYWLCZSqlR[0];
 
-    // 新建相关WYWLCZ/WYDPCZ
-    // end 新建相关WYWLCZ/WYDPCZ
+    // 更改相关WYWL状态为ZX
+    await WYWL.update(
+      {
+        status: WYWLStatus.SX,
+      },
+      {
+        where: {
+          id: {
+            $in: tmpWYWLIds.map(item => item.id),
+          },
+        },
+        transaction,
+      },
+    );
+    // end 更改相关WYWL状态为ZX
+
+    // 新建相关WYWLCZ
+    const tmpWYWLCZs = tmpWYWLIds.map(item => ({
+      WYWLId: item.id,
+      status: WYWLStatus.SX,
+      UserId: user.id,
+    }));
+    await WYWLCZ.bulkCreate(tmpWYWLCZs, {
+      transaction,
+    });
+    // end 新建相关WYWLCZ
+
+    const tmpWYDPSql = `
+    SELECT
+    a.id
+    FROM
+    WYDP a
+    JOIN
+    KDX b
+    ON
+    a.KDXId = b.id
+    AND
+    b.EWM in (:KDXEWMs);
+    `;
+    const tmpWYDPCZSqlR = await sequelize.query(tmpWYDPSql, {
+      transaction,
+      replacements: { KDXEWMs: tmpKDXEWMStrings },
+    });
+    const tmpWYDPIds = tmpWYDPCZSqlR[0];
+
+    // 更改相关WYDP状态为ZX
+    await WYDP.update(
+      {
+        status: WYDPStatus.SX,
+      },
+      {
+        where: {
+          id: {
+            $in: tmpWYDPIds.map(item => item.id),
+          },
+        },
+        transaction,
+      },
+    );
+    // end 更改相关WYDP状态为ZX
+
+    // 新建相关WYDPCZ
+    const tmpWYDPCZs = tmpWYDPIds.map(item => ({
+      WYDPId: item.id,
+      status: WYDPStatus.SX,
+      UserId: user.id,
+    }));
+    await WYDPCZ.bulkCreate(tmpWYDPCZs, {
+      transaction,
+    });
+    // end 新建相关WYDPCZ
 
     // end 新建相关记录
 
@@ -2924,6 +3055,108 @@ router.post('/shouXiang', async (req, res, next) => {
   }
 });
 
+async function shouHuoWYWL(WYWLEWM, user, transaction) {
+  const WYWLEWMString = JSON.stringify(WYWLEWM);
+  const tmpWYWL = await WYWL.findOne({
+    where: {
+      EWM: WYWLEWMString,
+    },
+    transaction,
+  });
+  if (!tmpWYWL) {
+    throw new Error(`${WYWLEWM}不存在!`);
+  }
+
+  // 检查HWEWMs是属于SX状态
+  if (tmpWYWL.status !== WYWLStatus.SX) {
+    throw new Error(`${WYWLEWM}状态不是${WYWLStatus.SX}状态, 不能收货!`);
+  }
+  // end 检查HWEWMs是属于SX状态
+
+  // 检查HWEWMs和这个操作员是否一致
+  await user.checkWYWLId(tmpWYWL.id, transaction);
+  // end 检查HWEWMs和这个操作员是否一致
+
+  // end 检查操作记录权限
+
+  // HWEWMs状态转为SH
+  await tmpWYWL.update(
+    {
+      status: WYWLStatus.SH,
+    },
+    {
+      transaction,
+    },
+  );
+  // end HWEWMs状态转为SH
+
+  // 新建相关WYWLCZ
+  await WYWLCZ.create(
+    {
+      WYWLId: tmpWYWL.id,
+      status: WYWLStatus.SH,
+      UserId: user.id,
+    },
+    {
+      transaction,
+    },
+  );
+  // end 新建相关WYWLCZ
+
+  // end 新建相关记录
+}
+
+async function shouHuoWYDP(WYDPEWM, user, transaction) {
+  const WYDPEWMString = JSON.stringify(WYDPEWM);
+  const tmpWYDP = await WYWL.findOne({
+    where: {
+      EWM: WYDPEWMString,
+    },
+    transaction,
+  });
+  if (!tmpWYDP) {
+    throw new Error(`${WYDPEWM}不存在!`);
+  }
+
+  // 检查HWEWMs是属于SX状态
+  if (tmpWYDP.status !== WYDPStatus.SX) {
+    throw new Error(`${WYDPEWM}状态不是${WYDPStatus.SX}状态, 不能收货!`);
+  }
+  // end 检查HWEWMs是属于SX状态
+
+  // 检查HWEWMs和这个操作员是否一致
+  await user.checkWYDPId(tmpWYDP.id, transaction);
+  // end 检查HWEWMs和这个操作员是否一致
+
+  // end 检查操作记录权限
+
+  // HWEWMs状态转为SH
+  await tmpWYDP.update(
+    {
+      status: WYDPStatus.SH,
+    },
+    {
+      transaction,
+    },
+  );
+  // end HWEWMs状态转为SH
+
+  // 新建相关WYDPCZ
+  await WYDPCZ.create(
+    {
+      WYDPId: tmpWYDP.id,
+      status: WYDPStatus.SH,
+      UserId: user.id,
+    },
+    {
+      transaction,
+    },
+  );
+  // end 新建相关WYDPCZ
+
+  // end 新建相关记录
+}
+
 // AZG 收货
 router.post('/shouHuo', async (req, res, next) => {
   let transaction;
@@ -2931,7 +3164,7 @@ router.post('/shouHuo', async (req, res, next) => {
 
   try {
     // 检查api调用权限
-    if (![JS.GTBA].includes(user.JS)) {
+    if (![JS.GTBA, JS.AZG].includes(user.JS)) {
       throw new Error('没有权限!');
     }
     // end 检查api调用权限
@@ -2943,21 +3176,15 @@ router.post('/shouHuo', async (req, res, next) => {
 
     // 检查操作记录权限
 
-    // 检查HWEWMs是属于SX状态
-    // end 检查HWEWMs是属于SX状态
-
-    // 检查HWEWMs所属GT是和这个操作员一致
-    // end 检查HWEWMs所属GT是和这个操作员一致
-
-    // end 检查操作记录权限
-
-    // HWEWMs状态转为SH
-    // end HWEWMs状态转为SH
-
-    // 新建相关WYWLCZ/WYDPCZ
-    // end 新建相关WYWLCZ/WYDPCZ
-
-    // end 新建相关记录
+    for (let i = 0; i < HWEWMs.length; i++) {
+      if (HWEWMs[i].type === EWMType.WL) {
+        await shouHuoWYWL(HWEWMs[i], user, transaction);
+      } else if (HWEWMs[i].type === EWMType.DP) {
+        await shouHuoWYDP(HWEWMs[i], user, transaction);
+      } else {
+        throw new Error(`${HWEWMs[i]}不属于可收货的类型!`);
+      }
+    }
 
     await transaction.commit();
 

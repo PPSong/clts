@@ -138,7 +138,7 @@ describe('测试案例', () => {
     PPJLToken = await getToken('PPJL1', '1');
     KFJLToken = await getToken('KFJL1', '1');
     GZToken = await getToken('GZ1', '1');
-    GTBAToken = await getToken('GTBA1', '1');
+    GTBAToken = await getToken('GT1BA', '1');
     GYSGLYToken = await getToken('GYSGLY1', '1');
     AZGSGLYToken = await getToken('AZGSGLY1', '1');
     ZHYToken = await getToken('ZHY1', '1');
@@ -1263,7 +1263,7 @@ describe('测试案例', () => {
       assert.equal(1, 1);
     });
 
-    it('ZHY 解除关联快递', async () => {
+    it.skip('ZHY 解除关联快递', async () => {
       const KDXEWMs = [
         {
           type: 'KDX',
@@ -1281,6 +1281,56 @@ describe('测试案例', () => {
           KDXEWMs,
         },
         ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('GTBA 收箱', async () => {
+      const KDXEWMs = [
+        {
+          type: 'KDX',
+          uuid: 'T_uuid3',
+        },
+        // {
+        //   type: 'KDX',
+        //   uuid: 'T_uuid6',
+        // },
+      ];
+
+      await post(
+        'shouXiang',
+        {
+          KDXEWMs,
+        },
+        GTBAToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('AZG 收货', async () => {
+      const HWEWMs = [
+        {
+          type: 'WL',
+          typeId: 13,
+          uuid: 'T_uuid1',
+        },
+        {
+          type: 'WL',
+          typeId: 14,
+          uuid: 'T_uuid2',
+        },
+      ];
+
+      await post(
+        'shouHuo',
+        {
+          HWEWMs,
+        },
+        GTBAToken,
       );
 
       // todo:

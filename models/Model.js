@@ -312,11 +312,48 @@ User.prototype.checkGTId = async function (id, transaction) {
         throw new Error('没有权限!');
       }
       break;
+    case JS.GTBA:
+      if (tmpGT.GTBAUserId !== this.id) {
+        throw new Error('没有权限!');
+      }
+      break;
     default:
       throw new Error('没有权限!');
   }
 
   return tmpGT;
+};
+
+User.prototype.checkWYWLId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  const tmpWYWL = await WYWL.findOne({
+    where: {
+      id,
+    },
+    transaction,
+  });
+
+  if (!tmpWYWL) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpDDGTWLId = tmpWYWL.DDGTWLId;
+
+  switch (this.JS) {
+    case JS.AZG:
+      await this.checkDD_GT_WLId(tmpDDGTWLId, transaction);
+      break;
+    case JS.GTBA:
+      await this.checkDD_GT_WLId(tmpDDGTWLId, transaction);
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpWYWL;
 };
 
 User.prototype.checkDD_GT_WLId = async function (id, transaction) {
@@ -358,11 +395,55 @@ User.prototype.checkDD_GT_WLId = async function (id, transaction) {
         throw new Error('没有权限!');
       }
       break;
+    case JS.AZG:
+      if (tmpDD_GT_WL.AZGUserId !== this.id) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.GTBA:
+      if (tmpDD_GT_WL.AZGUserId !== null) {
+        throw new Error('没有权限!');
+      }
+      await this.checkGTId(tmpDD_GT_WL.GTId, transaction);
+      break;
     default:
       throw new Error('没有权限!');
   }
 
   return tmpDD_GT_WL;
+};
+
+
+User.prototype.checkWYDPId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  const tmpWYDP = await WYDP.findOne({
+    where: {
+      id,
+    },
+    transaction,
+  });
+
+  if (!tmpWYDP) {
+    throw new Error('记录不合法!');
+  }
+
+  const tmpDDDWDPId = tmpWYDP.DDDWDPId;
+
+  switch (this.JS) {
+    case JS.AZG:
+      await this.checkDD_DW_DPId(tmpDDDWDPId, transaction);
+      break;
+    case JS.GTBA:
+      await this.checkDD_DW_DPId(tmpDDDWDPId, transaction);
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpWYDP;
 };
 
 User.prototype.checkDD_DW_DPId = async function (id, transaction) {
@@ -376,6 +457,12 @@ User.prototype.checkDD_DW_DPId = async function (id, transaction) {
     where: {
       id,
     },
+    include: [
+      {
+        model: DW,
+        as: 'DW',
+      },
+    ],
     transaction,
   });
 
@@ -403,6 +490,17 @@ User.prototype.checkDD_DW_DPId = async function (id, transaction) {
       if (!tmpPPIds.includes(tmpPPId)) {
         throw new Error('没有权限!');
       }
+      break;
+    case JS.AZG:
+      if (tmpDD_DW_DP.AZGUserId !== this.id) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.GTBA:
+      if (tmpDD_DW_DP.AZGUserId !== null) {
+        throw new Error('没有权限!');
+      }
+      await this.checkGTId(tmpDD_DW_DP.DW.GTId, transaction);
       break;
     default:
       throw new Error('没有权限!');
