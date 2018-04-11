@@ -34,6 +34,9 @@ import {
   WYWLStatus,
   WYDPStatus,
   PPJL_PP,
+  KFJL_PP,
+  GZ_PP,
+  GLY_AZGS,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -88,6 +91,17 @@ const get = async (path, params, token) => {
   return r;
 };
 
+const getUserIdList = (r) => {
+  let userIdList = [];
+  for (let i = 0; i < r.length; i++) {
+    userIdList.push(r[i].dataValues.UserId);
+  }
+
+  return userIdList;
+}
+
+const replaceAll = (str, target, replacement) => str.replace(new RegExp(target, 'g'), replacement);
+
 process.env.NODE_ENV = 'test';
 const server = require('../app');
 
@@ -105,7 +119,7 @@ let ZHYToken;
 let AZGToken;
 
 describe('SPRT测试案例', () => {
-  before(async () => {
+  beforeEach(async () => {
     const con = mysql.createConnection({
       host: 'localhost',
       user: 'root',
@@ -157,15 +171,19 @@ describe('SPRT测试案例', () => {
     // end 创建创建Procedure
 
     adminToken = await getToken('admin', '123456');
+    PPJLToken = await getToken('PPJL1', '123456');
+    KFJLToken = await getToken('KFJL1', '1');
+    GZToken = await getToken('GZ1', '1');
+    GTBAToken = await getToken('GTBA1', '1');
+    GYSGLYToken = await getToken('GYSGLY1', '1');
+    AZGSGLYToken = await getToken('AZGSGLY1', '1');
+    ZHYToken = await getToken('ZHY1', '1');
+    AZGToken = await getToken('AZG1', '1');
 
   });
 
   describe('test', async () => {
     it('small test', async () => {
-      assert.equal(1, 1);
-    });
-    it('small test2', async () => {
-      console.log('izz------------->', adminToken);
       assert.equal(1, 1);
     });
   });
@@ -185,29 +203,53 @@ describe('SPRT测试案例', () => {
   // 新建PPJL [ADMIN]
   describe('/createPPJL', async () => {
     describe('成功', async () => {
-      // it('admin 为 PP3 创建 PPJL_T', async () => {
-      //   const PPId = 3;
-      //   const username = 'PPJL_T';
-      //   const password = '123456';
-      //   const response = await post(
-      //     'createPPJL',
-      //     {
-      //       PPId,
-      //       username,
-      //       password,
-      //     },
-      //     adminToken,
-      //   );
-      //   assert.equal(1, response.data.code);
-      //   const user = await User.findAll({ where: { username: username} });
-      //   assert.notEqual(user, null);
+      it('admin为品牌创建PPJL', async () => {
+        const PPId = 3;
+        const username = 'PPJL_T';
+        const password = '123456';
+        const response = await post(
+          'createPPJL',
+          {
+            PPId,
+            username,
+            password,
+          },
+          adminToken,
+        );
+        assert.equal(response.data.code, 1);
+        const user = await User.findOne({ where: { username: username } });
+        assert.notEqual(user, null);
 
-      //   const r = await PPJL_PP.findAll({ where: { PPId: PPId} });
-      //   assert.exists(user.id, r);
-      // });
+        const r = await PPJL_PP.findAll({ where: { PPId: PPId } });
+        const userList = await getUserIdList(r);
+        assert.include(userList, user.dataValues.id);
+      });
 
-      it('admin 为 PP1 创建 PPJL_T1', async () => {
+      it('admin为已经创建过PPJL的PP再次创建PPJL', async () => {
+        const PPId = 1;
+        const username = 'PPJL_T1';
+        const password = '123456';
+        const response = await post(
+          'createPPJL',
+          {
+            PPId,
+            username,
+            password,
+          },
+          adminToken,
+        );
+        assert.equal(response.data.code, 1);
 
+        const user = await User.findOne({ where: { username: username } });
+        assert.notEqual(user, null);
+
+        const r = await PPJL_PP.findAll({ where: { PPId: PPId } });
+        const userList = await getUserIdList(r);
+        assert.include(userList, user.dataValues.id);
+
+        const user1 = await User.findOne({ where: { username: 'PPJL1' } });
+        console.log('userList', userList);
+        assert.notInclude(userList, user1.dataValues.id);
       });
     });
     describe.skip('失败', async () => {
@@ -220,20 +262,88 @@ describe('SPRT测试案例', () => {
 
   // 新建KFJL [PPJL]
   describe('/createKFJL', async () => {
-    describe('成功', async () => {
-      it('PPJL1 为 PP1 创建 KFJL_T', async () => {
 
+    describe('成功', async () => {
+      it('PPJL创建KFJL', async () => {
+        let tempPPJLToken;
+        await post(
+          'createPPJL',
+          {
+            PPId: 3,
+            username: 'PPJL_T',
+            password: '123456',
+          },
+          adminToken,
+        );
+        tempPPJLToken = await getToken('PPJL_T', '123456');
+
+        const PPId = 3;
+        const username = 'KFJL_T';
+        const password = '123456';
+
+        const response = await post(
+          'createKFJL',
+          {
+            PPId: PPId,
+            username: username,
+            password: password,
+          },
+          tempPPJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        const user = await User.findOne({ where: { username: username } });
+        assert.notEqual(user, null);
+
+        const r = await KFJL_PP.findAll({ where: { PPId: PPId } });
+        const userList = await getUserIdList(r);
+        assert.include(userList, user.dataValues.id);
       });
 
-      it('PPJL1 为 PP1 创建 KFJL_T1', async () => {
+      it('PPJL为已经创建过KFJL的PP再次创建KFJL', async () => {
+        const PPId = 1;
+        const username = 'KFJL_T1';
+        const password = '123456';
 
+        const response = await post(
+          'createKFJL',
+          {
+            PPId: PPId,
+            username: username,
+            password: password,
+          },
+          PPJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        const user = await User.findOne({ where: { username: username } });
+        assert.notEqual(user, null);
+
+        const r = await KFJL_PP.findAll({ where: { PPId: PPId } });
+        const userList = await getUserIdList(r);
+        assert.include(userList, user.dataValues.id);
+
+        const user1 = await User.findOne({ where: { username: 'KFJL1' } });
+        assert.notInclude(userList, user1.dataValues.id);
       });//PP1的KFJL_T变成KFJL1
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('PPJL1 为 PP2 创建 KFJL5', async () => {
+        it('PPJL为不属于自己管理的PP创建PPJL', async () => {
+          const PPId = 3;
+          const username = 'KFJL_T1';
+          const password = '123456';
 
+          const response = await post(
+            'createKFJL',
+            {
+              PPId: PPId,
+              username: username,
+              password: password,
+            },
+            PPJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe.skip('操作状态不正确', async () => { });
@@ -244,15 +354,53 @@ describe('SPRT测试案例', () => {
   // 新建GT, GTBA [KFJL]
   describe('/createGT_GTBA', async () => {
     describe('成功', async () => {
-      it('KFJL1 为 PP1 创建 GT_T&GTBA_T', async () => {
+      it('KFJL创建GT', async () => {
+        const PPId = 1;
+        const name = 'GT_T';
+        const code = 'GT_T_code';
+        const tmpQY = QY.EAST;
+        const tmpCS = '上海';
+        const response = await post(
+          'createGT_GTBA',
+          {
+            PPId: PPId,
+            name: name,
+            code: code,
+            QY: tmpQY,
+            CS: tmpCS,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
 
+        const gt = await GT.findOne({ where: { name: name } });
+        assert.notEqual(gt, null);
+
+        const user = await User.findOne({ where: { id: gt.dataValues.GTBAUserId } });
+        assert.notEqual(user, null);
       });
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL1 为 PP2 创建 GT10', async () => {
-
+        it('KFJL为不属于自己管理的PP创建GT', async () => {
+          const PPId = 2;
+          const name = 'GT_T';
+          const code = 'GT_T_code';
+          const tmpQY = QY.EAST;
+          const tmpCS = '上海';
+          const response = await post(
+            'createGT_GTBA',
+            {
+              PPId: PPId,
+              name: name,
+              code: code,
+              QY: tmpQY,
+              CS: tmpCS,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
         });
       });
       describe.skip('操作状态不正确', async () => { });
@@ -263,15 +411,38 @@ describe('SPRT测试案例', () => {
   // 编辑柜台图 [KFJL]
   describe('/setGT_IMAGE', async () => {
     describe('成功', async () => {
-      it('KFJL1 编辑 GT1 的imageUrl', async () => {
+      it('KFJL编辑GT图片', async () => {
+        const GTId = 1;
+        const imageUrl = 'imageUrl_T'
+        const response = await post(
+          'setGT_IMAGE',
+          {
+            id: GTId,
+            imageUrl: imageUrl,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
 
+        const gt = await GT.findOne({ where: { id: GTId } });
+        assert.equal(gt.dataValues.imageUrl, imageUrl);
       });
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL1 编辑 GT5 的imageUrl', async () => {
-
+        it('KFJL编辑不属于自己管理的PP的GT图片', async () => {
+          const GTId = 4;
+          const imageUrl = 'imageUrl_T'
+          const response = await post(
+            'setGT_IMAGE',
+            {
+              id: GTId,
+              imageUrl: imageUrl,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
         });
       });
       describe.skip('操作状态不正确', async () => { });
@@ -282,19 +453,46 @@ describe('SPRT测试案例', () => {
   // 创建 GZ [KFJL]
   describe('/createGZ', async () => {
     describe('成功', async () => {
-      it('KFJL1 为PP1 创建 GZ_T', async () => {
+      it('KFJL创建GZ', async () => {
+        const PPId = 1;
+        const username = 'GT_T';
+        const password = '123456';
+        const response = await post(
+          'createGZ',
+          {
+            PPId: PPId,
+            username: username,
+            password: password,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
 
-      });
+        const user = await User.findOne({ where: { username: username } });
+        assert.notEqual(user, null);
 
-      it('KFJL1 为PP1 创建 GZ_T1', async () => {
-
+        const r = await GZ_PP.findAll({ where: { PPId: PPId } });
+        const userList = await getUserIdList(r);
+        assert.include(userList, user.dataValues.id);
       });
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL1 为PP2 创建 GZ5', async () => {
-
+        it('KFJL为不属于自己管理的PP创建GZ', async () => {
+          const PPId = 2;
+          const username = 'GT_T';
+          const password = '123456';
+          const response = await post(
+            'createGZ',
+            {
+              PPId: PPId,
+              username: username,
+              password: password,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
         });
       });
       describe.skip('操作状态不正确', async () => { });
@@ -305,30 +503,96 @@ describe('SPRT测试案例', () => {
   // 配置 GZ 负责柜台 [KFJL]
   describe('/setGZ_GTs', async () => {
     describe('成功', async () => {
-      it('KFJL1 GT1&GT2 配置GZ1', async () => {
+      it('KFJL为多个GT分配GZ', async () => {
+        const GZId = 10;
+        const GTIds = [9, 10];
+        const response = await post(
+          'setGZ_GTs',
+          {
+            GZUserId: GZId,
+            GTIds: GTIds,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
 
+        const gt = await GT.findAll({ where: { GZUserId: GZId } });
+        let GTIdList = [];
+        for (let i = 0; i < gt.length; i++) {
+          GTIdList.push(gt[i].dataValues.id);
+        }
+        GTIds.forEach(item => {
+          assert.include(GTIdList, item);
+        });
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL1 GT3&GT4 配置GZ2', async () => {
+        it('KFJL为不属于自己管理的GT分配GZ', async () => {
+          const GZId = 12;
+          const GTIds = [13, 14];
+          const response = await post(
+            'setGZ_GTs',
+            {
+              GZUserId: GZId,
+              GTIds: GTIds,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+        });
 
+        it('KFJL为GT分配不属于自己管理的PP的GZ', async () => {
+          const GZId = 10;
+          const GTIds = [13, 14];
+          const response = await post(
+            'setGZ_GTs',
+            {
+              GZUserId: GZId,
+              GTIds: GTIds,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
         });
       });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
     });
   });
 
   // 新建GYS, GLY
   describe('/createGYSAndGLY', async () => {
     describe('成功', async () => {
-      it('KFJL1 创建 GYSGLY1', async () => {
+      it('KFJ创建GYSGLY', async () => {
+        const name = 'GYS_T';
+        const username = 'GYSGLY_T';
+        const password = '123456';
+        const type = GYSType.SC;
+        const response = await post(
+          'createGYSAndGLY',
+          {
+            name: name,
+            username: username,
+            password: password,
+            type: type,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        const gys = await GYS.findOne({ where: { name: name } });
+        assert.notEqual(gys, null);
 
+        const user = await User.findOne({ where: { username: username } });
+        assert.notEqual(user, null);
+
+        const r = await GLY_GYS.findAll({ where: { GYSId: gys.dataValues.id } });
+        const userList = await getUserIdList(r);
+        assert.include(userList, user.dataValues.id);
       });
     });
-    describe('失败', async () => {
+    describe.skip('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => { });
       describe('操作状态不正确', async () => { });
@@ -339,11 +603,32 @@ describe('SPRT测试案例', () => {
   // 新建AZGS, GLY
   describe('/createAZGSAndGLY', async () => {
     describe('成功', async () => {
-      it('KFJL1 创建 AZGSGLY1', async () => {
+      it('KFJL创建AZGSGLY和AZGS', async () => {
+        const name = 'AZGS_T';
+        const username = 'AZGSGLY_T';
+        const password = '123456';
+        const response = await post(
+          'createAZGSAndGLY',
+          {
+            name: name,
+            username: username,
+            password: password,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        const azgs = await AZGS.findOne({ where: { name: name } });
+        assert.notEqual(azgs, null);
 
+        const user = await User.findOne({ where: { username: username } });
+        assert.notEqual(user, null);
+
+        const r = await GLY_AZGS.findAll({ where: { GYSId: azgs.dataValues.id } });
+        const userList = await getUserIdList(r);
+        assert.include(userList, user.dataValues.id);
       });
     });
-    describe('失败', async () => {
+    describe.skip('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => { });
       describe('操作状态不正确', async () => { });
@@ -354,19 +639,65 @@ describe('SPRT测试案例', () => {
   // 配置 DP_DWs [KFJL]
   describe('/setDP_DWs', async () => {
     describe('成功', async () => {
-      it('KFJL1 将DP1 关联 GT1的 DW1&DW2', async () => {
+      it('KFJL将DP关联1个GT的多个DW', async () => {
+        const DPId = 7;
+        const DWIds = [13, 14];
+        const response = await post(
+          'setDP_DWs',
+          {
+            id: DPIds,
+            DWIds: DWIds,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
 
+        DWIds.forEach(item => {
+          const dw = await DW.findOne({ where: { id: item } });
+          assert.equal(dw.dataValues.DPId, DPId);
+        });
       });
 
-      it('KFJL1 将DP2 关联 GT1的 DW3 GT2的 DW1', async () => {
+      it('KFJL将DP关联多个GT的DW', async () => {
+        const DPId = 8;
+        const DWIds = [15, 16];
+        const response = await post(
+          'setDP_DWs',
+          {
+            id: DPIds,
+            DWIds: DWIds,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
 
+        DWIds.forEach(item => {
+          const dw = await DW.findOne({ where: { id: item } });
+          assert.equal(dw.dataValues.DPId, DPId);
+        });
+      });
+
+      it('KFJL将GT的DW由DP1修改成DP2', async () => {
+        const DPId = 2;
+        const DWIds = [1];
+        const response = await post(
+          'setDP_DWs',
+          {
+            id: DPIds,
+            DWIds: DWIds,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        DWIds.forEach(item => {
+          const dw = await DW.findOne({ where: { id: item } });
+          assert.equal(dw.dataValues.DPId, DPId);
+        });
       });
     });
-    describe('失败', async () => {
+    describe.skip('失败', async () => {
       describe('数据不合法', async () => {
-        it('KFJL1 将DP3 关联 GT1的 DW1', async () => {
-
-        });
       });
       describe('没有权限', async () => { });
       describe('操作状态不正确', async () => { });
@@ -398,112 +729,112 @@ describe('SPRT测试案例', () => {
     });
   });
 
-  // KFJL 创建 EJZH id, WLId, imageUrl, XGTs, FGTesters, SJWLs,
-  describe('/createEJZH', async () => {
-    describe('成功', async () => {
-      it('KFJL1 创建 EJZH1 ', async () => {
-        //没有物料
-      });
-      it('KFJL1 创建 EJZH2 ', async () => {
-        //仅FGTesters
-      });
-      it('KFJL1 创建 EJZH3 ', async () => {
-        //仅SJWLs
-      });
-      it('KFJL1 创建 EJZH4 ', async () => {
-        //FGTesters&SJWLs
-      });
-      it('KFJL1 创建 EJZH5 ', async () => {
-        //与EJZH4相同
-      });
-      it('KFJL1 创建 EJZH6 ', async () => {
-        //与EJZH4不同的FGTesters&SJWLs
-      });
-    });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
-    });
-  });
+  // // KFJL 创建 EJZH id, WLId, imageUrl, XGTs, FGTesters, SJWLs,
+  // describe('/createEJZH', async () => {
+  //   describe('成功', async () => {
+  //     it('KFJL1 创建 EJZH1 ', async () => {
+  //       //没有物料
+  //     });
+  //     it('KFJL1 创建 EJZH2 ', async () => {
+  //       //仅FGTesters
+  //     });
+  //     it('KFJL1 创建 EJZH3 ', async () => {
+  //       //仅SJWLs
+  //     });
+  //     it('KFJL1 创建 EJZH4 ', async () => {
+  //       //FGTesters&SJWLs
+  //     });
+  //     it('KFJL1 创建 EJZH5 ', async () => {
+  //       //与EJZH4相同
+  //     });
+  //     it('KFJL1 创建 EJZH6 ', async () => {
+  //       //与EJZH4不同的FGTesters&SJWLs
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => { });
+  //     describe('没有权限', async () => { });
+  //     describe('操作状态不正确', async () => { });
+  //     describe('唯一性校验', async () => { });
+  //   });
+  // });
 
-  // KFJL 编辑 EJZH
-  describe('/editEJZH', async () => {
-    describe('成功', async () => {
-      it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
+  // // KFJL 编辑 EJZH
+  // describe('/editEJZH', async () => {
+  //   describe('成功', async () => {
+  //     it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
 
-      });
-    });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
-    });
-  });
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => { });
+  //     describe('没有权限', async () => { });
+  //     describe('操作状态不正确', async () => { });
+  //     describe('唯一性校验', async () => { });
+  //   });
+  // });
 
-  // KFJL 创建 YJZH
-  describe('/createYJZH', async () => {
-    describe('成功', async () => {
-      it('KFJL1 创建 YJZH1 ', async () => {
-        //没有EJZH
-      });
-      it('KFJL1 创建 YJZH2 ', async () => {
-        //EJZH1
-      });
-      it('KFJL1 创建 YJZH3 ', async () => {
-        //EJZH1
-      });
-    });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
-    });
-  });
+  // // KFJL 创建 YJZH
+  // describe('/createYJZH', async () => {
+  //   describe('成功', async () => {
+  //     it('KFJL1 创建 YJZH1 ', async () => {
+  //       //没有EJZH
+  //     });
+  //     it('KFJL1 创建 YJZH2 ', async () => {
+  //       //EJZH1
+  //     });
+  //     it('KFJL1 创建 YJZH3 ', async () => {
+  //       //EJZH1
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => { });
+  //     describe('没有权限', async () => { });
+  //     describe('操作状态不正确', async () => { });
+  //     describe('唯一性校验', async () => { });
+  //   });
+  // });
 
-  // KFJL 编辑 YJZH
-  describe('/editYJZH', async () => {
-    describe('成功', async () => {
-      it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
+  // // KFJL 编辑 YJZH
+  // describe('/editYJZH', async () => {
+  //   describe('成功', async () => {
+  //     it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
 
-      });
-    });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
-    });
-  });
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => { });
+  //     describe('没有权限', async () => { });
+  //     describe('操作状态不正确', async () => { });
+  //     describe('唯一性校验', async () => { });
+  //   });
+  // });
 
-  // KFJL 配置YJZH_GTs
-  describe('/setYJZH_GTs', async () => {
-    describe('成功', async () => {
-      it('KFJL1 将 EJZH1 配置到GT1&GT2', async () => {
+  // // KFJL 配置YJZH_GTs
+  // describe('/setYJZH_GTs', async () => {
+  //   describe('成功', async () => {
+  //     it('KFJL1 将 EJZH1 配置到GT1&GT2', async () => {
 
-      });
-    });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
-    });
-  });
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => { });
+  //     describe('没有权限', async () => { });
+  //     describe('操作状态不正确', async () => { });
+  //     describe('唯一性校验', async () => { });
+  //   });
+  // });
 
-  // KFJL 生成订单
-  describe('/createDD', async () => {
-    describe('成功', async () => {
-    });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
-    });
-  });
+  // // KFJL 生成订单
+  // describe('/createDD', async () => {
+  //   describe('成功', async () => {
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => { });
+  //     describe('没有权限', async () => { });
+  //     describe('操作状态不正确', async () => { });
+  //     describe('唯一性校验', async () => { });
+  //   });
+  // });
 });
 

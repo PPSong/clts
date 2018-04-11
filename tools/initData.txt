@@ -46,16 +46,12 @@ id	name
 [PPJL_PP]							
 UserId	PPId						
 2	1						
-3	1						
-4	2						
-5	2						
+3	2						
 							
 [KFJL_PP]							
 UserId	PPId						
 6	1						
-7	1						
-8	2						
-9	2						
+7	2						
 							
 [GZ_PP]							
 UserId	PPId						
@@ -75,24 +71,27 @@ id	name	code	PPId	QY	GTBAUserId	GZUserId	CS
 6	GT6	6	2	东区	19	12	广州
 7	GT7	7	2	北区	20	13	深圳
 8	GT8	8	2	北区	21	13	深圳
-9	GT9	9	1	东区	27		上海
-10	GT10	10	1	东区	28		上海
-11	GT11	11	1	北区	29		北京
-12	GT12	12	1	北区	30		北京
-13	GT13	13	2	东区	31		广州
-14	GT14	14	2	东区	32		广州
-15	GT15	15	2	北区	33		深圳
-16	GT16	16	2	北区	34		深圳
+							
+[GT]							
+id	name	code	PPId	QY	GTBAUserId	CS	
+9	GT9	9	1	东区	27	上海	
+10	GT10	10	1	东区	28	上海	
+11	GT11	11	1	北区	29	北京	
+12	GT12	12	1	北区	30	北京	
+13	GT13	13	2	东区	31	广州	
+14	GT14	14	2	东区	32	广州	
+15	GT15	15	2	北区	33	深圳	
+16	GT16	16	2	北区	34	深圳	
 							
 							
 							
 // 供应商							
 [GYS]							
-id	Name	isSC	isKC				
-1	GYS1	TRUE	TRUE				
-2	GYS2	TRUE	FALSE				
-3	GYS3	FALSE	TRUE				
-4	GYS4	TRUE	TRUE				
+id	Name	type					
+1	GYS1	生产					
+2	GYS2	生产					
+3	GYS3	中转					
+4	GYS4	生产					
 							
 [GLY_GYS]							
 UserId	GYSId						
