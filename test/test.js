@@ -227,7 +227,7 @@ describe('测试案例', () => {
       const tmpQY = QY.EAST;
       const tmpCS = '上海';
       await post(
-        'createGT_GTBA',
+        'createGTWithGTBA',
         {
           PPId,
           name,
@@ -255,7 +255,7 @@ describe('测试案例', () => {
       const id = tmpGT.id;
       const imageUrl = 'T_imageUrl';
       await post(
-        'setGT_IMAGE',
+        'setGTImage',
         {
           id,
           imageUrl,
@@ -296,7 +296,7 @@ describe('测试案例', () => {
       const GTId = tmpGT.id;
       const GTIds = [GTId];
       await post(
-        'setGZ_GTs',
+        'setGZGTs',
         {
           GZUserId,
           GTIds,
@@ -314,7 +314,7 @@ describe('测试案例', () => {
       const password = '1';
       const type = GYSType.SC;
       await post(
-        'createGYSAndGLY',
+        'createGYSWithGLY',
         {
           name,
           username,
@@ -336,7 +336,7 @@ describe('测试案例', () => {
       const username = 'T_AZGSGLY';
       const password = '1';
       await post(
-        'createAZGSAndGLY',
+        'createAZGSWithGLY',
         {
           name,
           username,
@@ -424,7 +424,7 @@ describe('测试案例', () => {
       const DWIds = [11];
 
       await post(
-        'setDP_DWs',
+        'setDPDWs',
         {
           id,
           DWIds,
@@ -510,10 +510,10 @@ describe('测试案例', () => {
       };
 
       await post(
-        'createFG_Tester_FGTester',
+        'createFGAndTesterAndFGTester',
         {
           PPId,
-          FG: FGPayload,
+          FGPayload,
         },
         KFJLToken,
       );

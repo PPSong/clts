@@ -50,6 +50,11 @@ const PP_DDOperationLock = {};
 
 const router = express.Router();
 
+const OK = {
+  code: 1,
+  data: 'ok',
+};
+
 // 新建PPJL [ADMIN]
 router.post('/createPPJL', async (req, res, next) => {
   let transaction;
@@ -61,6 +66,7 @@ router.post('/createPPJL', async (req, res, next) => {
       throw new Error('没有权限!');
     }
     // end 检查api调用权限
+
     transaction = await sequelize.transaction();
 
     const { username, password, PPId } = req.body;
@@ -88,15 +94,15 @@ router.post('/createPPJL', async (req, res, next) => {
     await tmpPP.setPPJLs([tmpUser], { transaction });
     // end 新建用户
 
+    // commit
     await transaction.commit();
+    // end commit
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
+    res.json(OK);
   } catch (err) {
-    // Rollback
+    // rollback
     await (transaction && transaction.rollback());
+    // end rollback
     ppLog(err);
     next(err);
   }
@@ -135,22 +141,22 @@ router.post('/createKFJL', async (req, res, next) => {
     await tmpPP.setKFJLs([tmpUser], { transaction });
     // end 新建用户
 
+    // commit
     await transaction.commit();
+    // end commit
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
+    res.json(OK);
   } catch (err) {
-    // Rollback
+    // rollback
     await (transaction && transaction.rollback());
+    // end rollback
     ppLog(err);
     next(err);
   }
 });
 
 // 新建GT, GTBA [KFJL]
-router.post('/createGT_GTBA', async (req, res, next) => {
+router.post('/createGTWithGTBA', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -196,22 +202,22 @@ router.post('/createGT_GTBA', async (req, res, next) => {
     );
     // end 新建GT
 
+    // commit
     await transaction.commit();
+    // end commit
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
+    res.json(OK);
   } catch (err) {
-    // Rollback
+    // rollback
     await (transaction && transaction.rollback());
+    // end rollback
     ppLog(err);
     next(err);
   }
 });
 
-// 编辑柜台图 [KFJL]
-router.post('/setGT_IMAGE', async (req, res, next) => {
+// 编辑GT图 [KFJL]
+router.post('/setGTImage', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -240,21 +246,21 @@ router.post('/setGT_IMAGE', async (req, res, next) => {
 
     // end 设置image
 
+    // commit
     await transaction.commit();
+    // end commit
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
+    res.json(OK);
   } catch (err) {
-    // Rollback
+    // rollback
     await (transaction && transaction.rollback());
+    // end rollback
     ppLog(err);
     next(err);
   }
 });
 
-// 创建 GZ [KFJL]
+// 创建GZ [KFJL]
 router.post('/createGZ', async (req, res, next) => {
   let transaction;
   const { user } = req;
@@ -289,22 +295,22 @@ router.post('/createGZ', async (req, res, next) => {
     await tmpGZUser.setGZPPs([PPId], { transaction });
     // end 设定GZ的PP
 
+    // commit
     await transaction.commit();
+    // end commit
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
+    res.json(OK);
   } catch (err) {
-    // Rollback
+    // rollback
     await (transaction && transaction.rollback());
+    // end rollback
     ppLog(err);
     next(err);
   }
 });
 
-// 配置 GZ 负责柜台 [KFJL]
-router.post('/setGZ_GTs', async (req, res, next) => {
+// 配置GZ负责GT [KFJL]
+router.post('/setGZGTs', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -330,22 +336,22 @@ router.post('/setGZ_GTs', async (req, res, next) => {
     await tmpGZ.setGTs(GTIds, { transaction });
     // end 设置GTIds
 
+    // commit
     await transaction.commit();
+    // end commit
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
+    res.json(OK);
   } catch (err) {
-    // Rollback
+    // rollback
     await (transaction && transaction.rollback());
+    // end rollback
     ppLog(err);
     next(err);
   }
 });
 
-// 新建GYS, GLY
-router.post('/createGYSAndGLY', async (req, res, next) => {
+// 新建GYS, GLY [KFJL]
+router.post('/createGYSWithGLY', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -388,22 +394,22 @@ router.post('/createGYSAndGLY', async (req, res, next) => {
 
     await tmpGYS.setGLYs([tmpGYSGLYUser], { transaction });
 
+    // commit
     await transaction.commit();
+    // end commit
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
+    res.json(OK);
   } catch (err) {
-    // Rollback
+    // rollback
     await (transaction && transaction.rollback());
+    // end rollback
     ppLog(err);
     next(err);
   }
 });
 
-// 新建AZGS, GLY
-router.post('/createAZGSAndGLY', async (req, res, next) => {
+// 新建AZGS, GLY [KFJL]
+router.post('/createAZGSWithGLY', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -443,22 +449,22 @@ router.post('/createAZGSAndGLY', async (req, res, next) => {
 
     await tmpAZGS.setGLYs([tmpAZGSGLYUser], { transaction });
 
+    // commit
     await transaction.commit();
+    // end commit
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
+    res.json(OK);
   } catch (err) {
-    // Rollback
+    // rollback
     await (transaction && transaction.rollback());
+    // end rollback
     ppLog(err);
     next(err);
   }
 });
 
-// 配置 DP_DWs [KFJL]
-router.post('/setDP_DWs', async (req, res, next) => {
+// 配置DP到DWs [KFJL]
+router.post('/setDPDWs', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -480,7 +486,7 @@ router.post('/setDP_DWs', async (req, res, next) => {
     }
     // end 检查操作记录权限
 
-    // 设置DP_DWs
+    // 设置DPDWs
     const tmpDP = await DP.findOne({
       where: {
         id,
@@ -488,24 +494,24 @@ router.post('/setDP_DWs', async (req, res, next) => {
       transaction,
     });
     await tmpDP.setDWs(DWIds, { transaction });
-    // end 设置GTIds
+    // end 设置DPDWs
 
+    // commit
     await transaction.commit();
+    // end commit
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
+    res.json(OK);
   } catch (err) {
-    // Rollback
+    // rollback
     await (transaction && transaction.rollback());
+    // end rollback
     ppLog(err);
     next(err);
   }
 });
 
-// KFJL 创建 FG, Tester, FGTester
-router.post('/createFG_Tester_FGTester', async (req, res, next) => {
+// 创建FG, Tester, FGTester [KFJL]
+router.post('/createFGAndTesterAndFGTester', async (req, res, next) => {
   let transaction;
   const { user } = req;
 
@@ -518,12 +524,12 @@ router.post('/createFG_Tester_FGTester', async (req, res, next) => {
 
     transaction = await sequelize.transaction();
 
-    const { PPId, FG: FGPayload } = req.body;
+    const { PPId, FGPayload } = req.body;
 
     // 检查操作记录权限
     await user.checkPPId(PPId, transaction);
 
-    // 检查FG如果在对应PP中已存在是enable状态
+    // 检查FG如果在对应PP中已存在, 应该是enable状态
     const tmpFG = await FG.findOne({
       where: {
         PPId,
@@ -534,12 +540,12 @@ router.post('/createFG_Tester_FGTester', async (req, res, next) => {
 
     if (tmpFG) {
       if (tmpFG.disabledAt != null) {
-        throw new Error('记录状态不正确!');
+        throw new Error(`${tmpFG}记录状态不正确!`);
       }
     }
-    // end 检查FG如果在对应PP中已存在是enable状态
+    // end 检查FG如果在对应PP中已存在, 应该是enable状态
 
-    // 检查Testers如果在对应PPId已存在是enable状态
+    // 检查Testers如果在对应PPId已存在, 应该是enable状态
     const { Testers } = FGPayload;
     for (let i = 0; i < Testers.length; i++) {
       const tmpTester = await Tester.findOne({
@@ -552,11 +558,11 @@ router.post('/createFG_Tester_FGTester', async (req, res, next) => {
 
       if (tmpTester) {
         if (tmpTester.disabledAt != null) {
-          throw new Error('记录状态不正确!');
+          throw new Error(`${tmpTester}记录状态不正确!`);
         }
       }
     }
-    // end 检查Testers如果在对应PPId已存在是enable状态
+    // end 检查Testers如果在对应PPId已存在, 应该是enable状态
 
     // end 检查操作记录权限
 
@@ -3173,8 +3179,6 @@ router.post('/shouHuo', async (req, res, next) => {
 
     // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
     const { HWEWMs } = req.body;
-
-    // 检查操作记录权限
 
     for (let i = 0; i < HWEWMs.length; i++) {
       if (HWEWMs[i].type === EWMType.WL) {
