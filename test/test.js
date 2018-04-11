@@ -1218,5 +1218,49 @@ describe('测试案例', () => {
       // todo:
       assert.equal(1, 1);
     });
+
+    it('ZHY 关联快递WL', async () => {
+      const KDXEWMs = [
+        {
+          type: 'KDX',
+          uuid: 'T_uuid3',
+        },
+      ];
+      const KDDCode = 'T_KDDCode1';
+
+      await post(
+        'guanLiangKuaiDi',
+        {
+          KDXEWMs,
+          KDDCode,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('ZHY 关联快递DP', async () => {
+      const KDXEWMs = [
+        {
+          type: 'KDX',
+          uuid: 'T_uuid6',
+        },
+      ];
+      const KDDCode = 'T_KDDCode2';
+
+      await post(
+        'guanLiangKuaiDi',
+        {
+          KDXEWMs,
+          KDDCode,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
   });
 });

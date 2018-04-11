@@ -2500,15 +2500,18 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
     const tmpKDXs = await KDX.findAll({
       where: {
         EWM: {
-          $in: KDXEWMs,
+          $in: KDXEWMs.map(item => JSON.stringify(item)),
         },
       },
       transaction,
     });
 
     // 检查KDXEWMs都是存在的
-    const tmpKDXEWMs = tmpKDXs.map(item => item.EWM);
-    const diffEWMs = _.difference(KDXEWMs, tmpKDXEWMs);
+    const tmpKDXEWMStrings = tmpKDXs.map(item => item.EWM);
+    // 比较要用JSON.stringify后比
+    const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
+    // end 比较要用JSON.stringify后比
+    const diffEWMs = _.difference(KDXEWMStrings, tmpKDXEWMStrings);
     if (diffEWMs.length > 0) {
       throw new Error(`${diffEWMs}不存在!`);
     }
@@ -2555,7 +2558,7 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
       {
         where: {
           EWM: {
-            $in: KDXEWMs,
+            $in: KDXEWMs.map(item => JSON.stringify(item)),
           },
         },
         transaction,
@@ -2569,16 +2572,69 @@ router.post('/guanLiangKuaiDi', async (req, res, next) => {
       status: KDXStatus.FH,
       UserId: user.id,
     }));
-    await KDXCZ.bulkCreate(
-      tmpKDXCZs,
-      {
-        transaction,
-      },
-    );
+    await KDXCZ.bulkCreate(tmpKDXCZs, {
+      transaction,
+    });
     // end 新建相关KDXCZ
 
-    // 新建相关WYWLCZ/WYDPCZ
-    // end 新建相关WYWLCZ/WYDPCZ
+    // 新建相关WYWLCZ
+    const tmpWYWLCZSql = `
+      SELECT
+        a.id id
+      FROM
+        WYWL a
+      JOIN
+        KDX b
+      ON
+        a.KDXId = b.id
+      AND
+        b.EWM in (:KDXEWMs);
+    `;
+    const tmpWYWLCZSqlR = await sequelize.query(tmpWYWLCZSql, {
+      transaction,
+      replacements: { KDXEWMs: tmpKDXEWMStrings.join(',') },
+    });
+    const tmpWYWLIds = tmpWYWLCZSqlR[0];
+
+    const tmpWYWLCZs = tmpWYWLIds.map(item => ({
+      WYWLId: item.id,
+      status: WYWLStatus.FH,
+      UserId: user.id,
+    }));
+    await WYWLCZ.bulkCreate(tmpWYWLCZs, {
+      transaction,
+    });
+    // end 新建相关WYWLCZ
+
+    // 新建相关WYDPCZ
+    const tmpWYDPSql = `
+    SELECT
+      a.id
+    FROM
+      WYDP a
+    JOIN
+      KDX b
+    ON
+      a.KDXId = b.id
+    AND
+      b.EWM in (:KDXEWMs);
+  `;
+    const tmpWYDPCZSqlR = await sequelize.query(tmpWYDPSql, {
+      transaction,
+      replacements: { KDXEWMs: tmpKDXEWMStrings.join(',') },
+    });
+
+    const tmpWYDPIds = tmpWYDPCZSqlR[0];
+
+    const tmpWYDPCZs = tmpWYDPIds.map(item => ({
+      WYDPId: item.id,
+      status: WYDPStatus.FH,
+      UserId: user.id,
+    }));
+    await WYDPCZ.bulkCreate(tmpWYDPCZs, {
+      transaction,
+    });
+    // end 新建相关WYDPCZ
 
     // end 新建相关记录
 
