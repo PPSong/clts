@@ -33,6 +33,7 @@ import {
   WYDP,
   WYWLStatus,
   WYDPStatus,
+  PPJL_PP,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -85,6 +86,7 @@ const get = async (path, params, token) => {
   });
 
   return r;
+  console.log('test---izz',r)
 };
 
 process.env.NODE_ENV = 'test';
@@ -115,19 +117,47 @@ describe('SPRT测试案例', () => {
     await con.query('DROP DATABASE cltp');
     await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
 
-    // Drop all tables
-    await sequelize.drop();
-    await sequelize.sync({ force: true });
-    await User.create({
-      id: '1',
-      JS: '系统管理员',
-      username: 'admin',
-      password: '$2a$08$L0.LfGHcX4CsXP1H5DBmlustuUNWoFGhwVUcxLjHDkfWAO6M0MCxq',
-      createdAt: '2018-04-07 20:11:04.108',
-      updatedAt: '2018-04-07 20:11:04.108'
-    });
+    // // Drop all tables
+    // await sequelize.drop();
+    // await sequelize.sync({ force: true });
+    // await User.create({
+    //   id: '1',
+    //   JS: '系统管理员',
+    //   username: 'admin',
+    //   password: '$2a$08$L0.LfGHcX4CsXP1H5DBmlustuUNWoFGhwVUcxLjHDkfWAO6M0MCxq',
+    //   createdAt: '2018-04-07 20:11:04.108',
+    //   updatedAt: '2018-04-07 20:11:04.108'
+    // });
 
-    adminToken = await getToken('admin', '123456'); 
+    // const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
+
+    // const scriptArr = data.split(';');
+
+    // await sequelize.sync({ force: true });
+
+    // for (let i = 0; i < scriptArr.length; i++) {
+    //   if (scriptArr[i].trim().length > 0) {
+    //     const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
+    //   }
+    // }
+
+    // // 创建View
+    // const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
+    // await sequelize.query(viewSql, {
+    //   type: sequelize.QueryTypes.SELECT,
+    // });
+    // // end 创建View
+
+    // // 创建Procedure
+    // const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
+    // const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
+    // const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
+    // await sequelize.query(procedureSql2, {
+    //   type: sequelize.QueryTypes.SELECT,
+    // });
+    // // end 创建创建Procedure
+
+    adminToken = await getToken('admin', '123456');
 
   });
 
@@ -136,6 +166,7 @@ describe('SPRT测试案例', () => {
       assert.equal(1, 1);
     });
     it('small test2', async () => {
+      console.log('izz------------->', adminToken);
       assert.equal(1, 1);
     });
   });
@@ -155,11 +186,28 @@ describe('SPRT测试案例', () => {
   // 新建PPJL [ADMIN]
   describe('/createPPJL', async () => {
     describe('成功', async () => {
-      it('admin 为 PP1 创建 PPJL1', async () => {
+      // it('admin 为 PP1 创建 PPJL1', async () => {
+      //   const PPId = 3;
+      //   const username = 'PPJL_T';
+      //   const password = '123456';
+      //   const response = await post(
+      //     'createPPJL',
+      //     {
+      //       PPId,
+      //       username,
+      //       password,
+      //     },
+      //     adminToken,
+      //   );
+      //   assert.equal(1, response.data.code);
+      //   const user = await User.findAll({ where: { username: username} });
+      //   assert.notEqual(user, null);
 
-      });
+      //   const r = await PPJL_PP.findAll({ where: { PPId: PPId} });
+      //   assert.exists(user.id, r);
+      // });
 
-      it('admin 为 PP1 创建 PPJL2', async () => {
+      it('admin 为 PP1 创建 PPJL_T1', async () => {
 
       });
     });
@@ -174,18 +222,18 @@ describe('SPRT测试案例', () => {
   // 新建KFJL [PPJL]
   describe('/createKFJL', async () => {
     describe('成功', async () => {
-      it('PPJL1 为 PP1 创建 KFJL1', async () => {
+      it('PPJL1 为 PP1 创建 KFJL_T', async () => {
 
       });
 
-      it('PPJL1 为 PP1 创建 KFJL2', async () => {
+      it('PPJL1 为 PP1 创建 KFJL_T1', async () => {
 
-      });//PP1的KFJL变成KFJL2
+      });//PP1的KFJL_T变成KFJL1
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
-      describe('没有权限', async () => { 
-        it('PPJL1 为 PP2 创建 KFJL3', async () => {
+      describe('没有权限', async () => {
+        it('PPJL1 为 PP2 创建 KFJL5', async () => {
 
         });
       });
@@ -197,14 +245,14 @@ describe('SPRT测试案例', () => {
   // 新建GT, GTBA [KFJL]
   describe('/createGT_GTBA', async () => {
     describe('成功', async () => {
-      it('KFJL1 为 PP1 创建 GT1&GTBA1', async () => {
+      it('KFJL1 为 PP1 创建 GT_T&GTBA_T', async () => {
 
       });
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
-      describe('没有权限', async () => { 
-        it('KFJL1 为 PP2 创建 GT2', async () => {
+      describe('没有权限', async () => {
+        it('KFJL1 为 PP2 创建 GT10', async () => {
 
         });
       });
@@ -216,14 +264,14 @@ describe('SPRT测试案例', () => {
   // 编辑柜台图 [KFJL]
   describe('/setGT_IMAGE', async () => {
     describe('成功', async () => {
-      it('KFJL1 编辑 GT1 的图片', async () => {
+      it('KFJL1 编辑 GT1 的imageUrl', async () => {
 
       });
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
-      describe('没有权限', async () => { 
-        it('KFJL1 编辑 GT2 的图片', async () => {
+      describe('没有权限', async () => {
+        it('KFJL1 编辑 GT5 的imageUrl', async () => {
 
         });
       });
@@ -235,19 +283,23 @@ describe('SPRT测试案例', () => {
   // 创建 GZ [KFJL]
   describe('/createGZ', async () => {
     describe('成功', async () => {
-      it('KFJL1 为PP1 创建 GZ1', async () => {
+      it('KFJL1 为PP1 创建 GZ_T', async () => {
+
+      });
+
+      it('KFJL1 为PP1 创建 GZ_T1', async () => {
 
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { 
-        it('KFJL1 为PP2 创建 GZ2', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('KFJL1 为PP2 创建 GZ5', async () => {
 
         });
       });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
     });
   });
 
@@ -264,7 +316,7 @@ describe('SPRT测试案例', () => {
         it('KFJL1 GT3&GT4 配置GZ2', async () => {
 
         });
-       });
+      });
       describe('操作状态不正确', async () => { });
       describe('唯一性校验', async () => { });
     });
@@ -312,7 +364,7 @@ describe('SPRT测试案例', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { 
+      describe('数据不合法', async () => {
         it('KFJL1 将DP3 关联 GT1的 DW1', async () => {
 
         });
@@ -339,7 +391,7 @@ describe('SPRT测试案例', () => {
       });//前置条件：Tester2&Tester3数据库中存在
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { 
+      describe('数据不合法', async () => {
       });
       describe('没有权限', async () => { });
       describe('操作状态不正确', async () => { });
@@ -381,7 +433,7 @@ describe('SPRT测试案例', () => {
   describe('/editEJZH', async () => {
     describe('成功', async () => {
       it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
-        
+
       });
     });
     describe('失败', async () => {
@@ -417,7 +469,7 @@ describe('SPRT测试案例', () => {
   describe('/editYJZH', async () => {
     describe('成功', async () => {
       it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
-        
+
       });
     });
     describe('失败', async () => {
@@ -432,7 +484,7 @@ describe('SPRT测试案例', () => {
   describe('/setYJZH_GTs', async () => {
     describe('成功', async () => {
       it('KFJL1 将 EJZH1 配置到GT1&GT2', async () => {
-        
+
       });
     });
     describe('失败', async () => {

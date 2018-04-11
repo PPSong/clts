@@ -1,337 +1,375 @@
+// 用户							
+[User]							
+Id	username	password	JS				
+1	admin	password(123456)	系统管理员				
+2	PPJL1	password(123456)	品牌经理				
+3	PPJL2	password(123456)	品牌经理				
+4	PPJL3	password(123456)	品牌经理				
+5	PPJL4	password(123456)	品牌经理				
+6	KFJL1	password(123456)	客服经理				
+7	KFJL2	password(123456)	客服经理				
+8	KFJL3	password(123456)	客服经理				
+9	KFJL4	password(123456)	客服经理				
+10	GZ1	password(123456)	柜长				
+11	GZ2	password(123456)	柜长				
+12	GZ3	password(123456)	柜长				
+13	GZ4	password(123456)	柜长				
+14	GTBA1	password(123456)	柜台BA				
+15	GTBA2	password(123456)	柜台BA				
+16	GTBA3	password(123456)	柜台BA				
+17	GTBA4	password(123456)	柜台BA				
+18	GTBA5	password(123456)	柜台BA				
+19	GTBA6	password(123456)	柜台BA				
+20	GTBA7	password(123456)	柜台BA				
+21	GTBA8	password(123456)	柜台BA				
+22	GYSGLY1	password(123456)	供应商管理员				
+23	GYSGLY2	password(123456)	供应商管理员				
+24	GYSGLY3	password(123456)	供应商管理员				
+25	AZGSGLY1	password(123456)	安装公司管理员				
+26	AZGSGLY2	password(123456)	安装公司管理员				
+27	GTBA9	password(123456)	柜台BA				
+28	GTBA10	password(123456)	柜台BA				
+29	GTBA11	password(123456)	柜台BA				
+30	GTBA12	password(123456)	柜台BA				
+31	GTBA13	password(123456)	柜台BA				
+32	GTBA14	password(123456)	柜台BA				
+33	GTBA15	password(123456)	柜台BA				
+34	GTBA16	password(123456)	柜台BA				
+							
 // 品牌							
 [PP]							
 id	name						
-1	PP1_C						
+1	PP1						
 2	PP2						
 3	PP3						
 							
+[PPJL_PP]							
+UserId	PPId						
+2	1						
+3	1						
+4	2						
+5	2						
+							
+[KFJL_PP]							
+UserId	PPId						
+6	1						
+7	1						
+8	2						
+9	2						
+							
+[GZ_PP]							
+UserId	PPId						
+10	1						
+11	1						
+12	2						
+13	2						
+							
+// 柜台							
+[GT]							
+id	name	code	PPId	QY	GTBAUserId	GZUserId	CS
+1	GT1	1	1	东区	14	10	上海
+2	GT2	2	1	东区	15	10	上海
+3	GT3	3	1	北区	16	11	北京
+4	GT4	4	1	北区	17	11	北京
+5	GT5	5	2	东区	18	12	广州
+6	GT6	6	2	东区	19	12	广州
+7	GT7	7	2	北区	20	13	深圳
+8	GT8	8	2	北区	21	13	深圳
+9	GT9	9	1	东区	27		上海
+10	GT10	10	1	东区	28		上海
+11	GT11	11	1	北区	29		北京
+12	GT12	12	1	北区	30		北京
+13	GT13	13	2	东区	31		广州
+14	GT14	14	2	东区	32		广州
+15	GT15	15	2	北区	33		深圳
+16	GT16	16	2	北区	34		深圳
+							
+							
+							
 // 供应商							
 [GYS]							
-id	name	type					
-1	GYS1	生产					
-2	GYS2	生产					
-3	GYS3	生产					
-4	GYS4	生产					
-5	GYS5	生产					
-6	GYS6	中转					
+id	Name	isSC	isKC				
+1	GYS1	TRUE	TRUE				
+2	GYS2	TRUE	FALSE				
+3	GYS3	FALSE	TRUE				
+4	GYS4	TRUE	TRUE				
+							
+[GLY_GYS]							
+UserId	GYSId						
+22	1						
+23	2						
+							
 							
 // 安装公司							
 [AZGS]							
 id	name						
 1	AZGS1						
 2	AZGS2						
-3	AZGS3						
-4	AZGS4						
-5	AZGS5						
-6	AZGS6						
 							
-// 用户							
-[User]							
-id	JS	username	password				
-1	系统管理员	admin	password(1)				
-2	品牌经理	PPJL1	password(1)				
-3	品牌经理	PPJL2	password(1)				
-4	客服经理	KFJL1	password(1)				
-5	客服经理	KFJL2	password(1)				
-6	柜长	GZ1	password(1)				
-7	柜长	GZ2	password(1)				
-8	柜长	GZ3	password(1)				
-9	柜长	GZ4	password(1)				
-10	柜长	GZ5	password(1)				
-11	柜长	GZ6	password(1)				
-12	柜长	GZ7	password(1)				
-13	柜长	GZ8	password(1)				
-14	柜台BA	GT1BA	password(1)				
-15	柜台BA	GT2BA	password(1)				
-16	柜台BA	GT3BA	password(1)				
-17	柜台BA	GT4BA	password(1)				
-18	柜台BA	GT5BA	password(1)				
-19	柜台BA	GT6BA	password(1)				
-20	柜台BA	GT7BA	password(1)				
-21	柜台BA	GT8BA	password(1)				
-22	供应商管理员	GYSGLY1	password(1)				
-23	供应商管理员	GYSGLY2	password(1)				
-24	供应商管理员	GYSGLY3	password(1)				
-25	供应商管理员	GYSGLY4	password(1)				
-26	供应商管理员	GYSGLY5	password(1)				
-27	供应商管理员	GYSGLY6	password(1)				
-28	安装公司管理员	AZGSGLY1	password(1)				
-29	安装公司管理员	AZGSGLY2	password(1)				
-30	安装公司管理员	AZGSGLY3	password(1)				
-31	安装公司管理员	AZGSGLY4	password(1)				
-32	安装公司管理员	AZGSGLY5	password(1)				
-33	安装公司管理员	AZGSGLY6	password(1)				
-34	装货员	ZHY1	password(1)				
-35	装货员	ZHY2	password(1)				
-36	装货员	ZHY3	password(1)				
-37	装货员	ZHY4	password(1)				
-38	装货员	ZHY5	password(1)				
-39	装货员	ZHY6	password(1)				
-40	安装工	AZG1	password(1)				
-41	安装工	AZG2	password(1)				
-42	安装工	AZG3	password(1)				
-43	安装工	AZG4	password(1)				
-44	安装工	AZG5	password(1)				
-45	安装工	AZG6	password(1)				
-							
-[PPJL_PP]							
-UserId	PPId						
-2	1						
-3	2						
-							
-[KFJL_PP]							
-UserId	PPId						
-4	1						
-5	2						
 							
 [GLY_AZGS]							
 UserId	AZGSId						
-28	1						
-29	2						
-30	3						
-31	4						
-32	5						
-33	6						
+25	1						
+26	2						
 							
-[GLY_GYS]							
-UserId	GYSId						
-22	1						
-23	2						
-24	3						
-25	4						
-26	5						
-27	6						
-							
-[GZ_PP]							
-UserId	PPId						
-6	1						
-7	1						
-8	1						
-9	1						
-10	1						
-11	1						
-12	2						
-13	2						
-							
-[ZHY_GYS]							
-UserId	GYSId						
-34	1						
-35	1						
-36	2						
-37	2						
-38	3						
-39	3						
-							
-[AZG_AZGS]							
-UserId	AZGSId						
-40	1						
-41	1						
-42	1						
-43	2						
-44	2						
-45	2						
-							
-[GT]							
-id	name	code	PPId	QY	GTBAUserId	GZUserId	CS
-1	GT1	GT1Code	1	东区	14	6	上海
-2	GT2	GT2Code	1	东区	15	6	上海
-3	GT3	GT3Code	1	北区	16	7	北京
-4	GT4	GT4Code	1	北区	17	7	北京
-5	GT5	GT5Code	1	南区	18	8	广州
-6	GT6	GT6Code	1	南区	19	8	广州
-7	GT7	GT7Code	2	东区	20	12	上海
-8	GT8	GT8Code	2	东区	21	13	上海
-							
+// 灯片							
 [DP]							
 id	name	PPId	GYSId				
 1	DP1	1	1				
-2	DP2	1	1				
-3	DP3	1	2				
-4	DP4	1	2				
-5	DP5	2	1				
+2	DP2	1	2				
+3	DP3	1	1				
+4	DP4	2	1				
+5	DP5	2	2				
 6	DP6	2	1				
-7	DP7	2	2				
-8	DP8	2	2				
 							
+// 灯位							
 [DW]							
 id	name	GTId	DPId				
 1	DW1	1	1				
-2	DW2	1	1				
+2	DW2	1	2				
 3	DW3	1	2				
-4	DW4	2	1				
-5	DW5	2	2				
-6	DW6	2	2				
-7	DW7	7	5				
-8	DW8	7	6				
-9	DW9	8	7				
-10	DW10	8	8				
+4	DW1	2	1				
+5	DW2	2	2				
+6	DW4	2	3				
+7	DW1	5	4				
+8	DW2	5	5				
+9	DW3	5	5				
+10	DW1	6	4				
+11	DW2	6	5				
+12	DW5	6	6				
 							
 [FG]							
 id	name	PPId	note				
-1	FG1	1	FG1Note				
-2	FG2	1	FG2Note				
-3	FG3	1	FG3Note				
-4	FG4	1	FG4Note				
-5	FG5	2	FG5Note				
-6	FG6	2	FG6Note				
+1	FG1	1	NoteFG1				
+2	FG2	1	NoteFG2				
+3	FG3	1	NoteFG3				
+4	FG4	2	NoteFG4				
+5	FG5	2	NoteFG5				
+6	FG6	2	NoteFG6				
 							
 [Tester]							
 id	name	PPId					
 1	Tester1	1					
 2	Tester2	1					
 3	Tester3	1					
-4	Tester4	1					
-5	Tester5	2					
-6	Tester6	2					
+4	Tester5	2					
+5	Tester6	2					
+6	Tester7	2					
 							
 [FG_Tester]							
 id	FGId	TesterId	PPId				
 1	1	1	1				
-2	1	2	1				
-3	1	3	1				
-4	1	4	1				
-5	2	1	1				
-6	2	2	1				
-7	5	5	2				
-8	5	6	2				
-9	6	5	2				
-10	6	6	2				
+2	2	2	1				
+3	2	3	1				
+4	3	1	1				
+5	4	4	2				
+6	5	5	2				
+7	5	6	2				
+8	6	4	2				
 							
+// 物料							
 [WL]							
-id	name	code	level	PPId	GYSId		
-1	WL1_1	WL1_1Code	1	1	1		
-2	WL1_2	WL1_2Code	1	1	1		
-3	WL1_3	WL1_3Code	1	1	2		
-4	WL1_4	WL1_4Code	1	1	2		
-5	WL1_5	WL1_5Code	1	1	3		
-6	WL1_6	WL1_6Code	1	1	3		
-7	WL2_1	WL2_1Code	2	1	1		
-8	WL2_2	WL2_2Code	2	1	1		
-9	WL2_3	WL2_3Code	2	1	2		
-10	WL2_4	WL2_4Code	2	1	2		
-11	WL2_5	WL2_5Code	2	1	3		
-12	WL2_6	WL2_6Code	2	1	3		
-13	WL3_1	WL3_1Code	3	1	1		
-14	WL3_2	WL3_2Code	3	1	1		
-15	WL3_3	WL3_3Code	3	1	2		
-16	WL3_4	WL3_4Code	3	1	2		
-17	WL3_5	WL3_5Code	3	1	3		
-18	WL3_6	WL3_6Code	3	1	3		
-19	WL4_1	WL4_1Code	1	2	1		
-20	WL4_2	WL4_2Code	1	2	1		
-21	WL4_3	WL4_3Code	1	2	2		
-22	WL4_4	WL4_4Code	1	2	2		
-23	WL4_5	WL4_5Code	1	2	3		
-24	WL4_6	WL4_6Code	1	2	3		
-25	WL5_1	WL5_1Code	2	2	1		
-26	WL5_2	WL5_2Code	2	2	1		
-27	WL5_3	WL5_3Code	2	2	2		
-28	WL5_4	WL5_4Code	2	2	2		
-29	WL5_5	WL5_5Code	2	2	3		
-30	WL5_6	WL5_6Code	2	2	3		
-31	WL6_1	WL6_1Code	3	2	1		
-32	WL6_2	WL6_2Code	3	2	1		
-33	WL6_3	WL6_3Code	3	2	2		
-34	WL6_4	WL6_4Code	3	2	2		
-35	WL6_5	WL6_5Code	3	2	3		
-36	WL6_6	WL6_6Code	3	2	3		
+id	name	code	level	PPId	GYSId	imageUrl	
+1	WL3_1	1_3_1	3	1	1	UrlWL3_1	
+2	WL3_2	1_3_2	3	1	1	UrlWL3_2	
+3	WL3_3	1_3_3	3	1	2	UrlWL3_3	
+4	WL3_4	1_3_4	3	1	2	UrlWL3_4	
+5	WL2_1	1_2_1	2	1	1	UrlWL2_1	
+6	WL2_2	1_2_2	2	1	1	UrlWL2_2	
+7	WL2_3	1_2_3	2	1	1	UrlWL2_3	
+8	WL2_4	1_2_4	2	1	2	UrlWL2_4	
+9	WL2_5	1_2_5	2	1	2	UrlWL2_5	
+10	WL2_6	1_2_6	2	1	2	UrlWL2_6	
+11	WL1_1	1_1_1	1	1	1	UrlWL1_1	
+12	WL1_2	1_1_2	1	1	1	UrlWL1_2	
+13	WL1_3	1_1_3	1	1	1	UrlWL1_3	
+14	WL1_4	1_1_4	1	1	2	UrlWL1_4	
+15	WL1_5	1_1_5	1	1	2	UrlWL1_5	
+16	WL1_6	1_1_6	1	1	2	UrlWL1_6	
+17	WL3_1	2_3_1	3	2	1	UrlWL3_1	
+18	WL3_2	2_3_2	3	2	1	UrlWL3_2	
+19	WL3_3	2_3_3	3	2	2	UrlWL3_3	
+20	WL3_4	2_3_4	3	2	2	UrlWL3_4	
+21	WL2_1	2_2_1	2	2	1	UrlWL2_1	
+22	WL2_2	2_2_2	2	2	1	UrlWL2_2	
+23	WL2_3	2_2_3	2	2	1	UrlWL2_3	
+24	WL2_4	2_2_4	2	2	2	UrlWL2_4	
+25	WL2_5	2_2_5	2	2	2	UrlWL2_5	
+26	WL2_6	2_2_6	2	2	2	UrlWL2_6	
+27	WL1_1	2_1_1	1	2	1	UrlWL1_1	
+28	WL1_2	2_1_2	1	2	1	UrlWL1_2	
+29	WL1_3	2_1_3	1	2	1	UrlWL1_3	
+30	WL1_4	2_1_4	1	2	2	UrlWL1_4	
+31	WL1_5	2_1_5	1	2	2	UrlWL1_5	
+32	WL1_6	2_1_6	1	2	2	UrlWL1_6	
+33	WL3_5	1_3_5	3	1	1	UrlWL3_5	
+34	WL3_6	1_3_6	3	1	1	UrlWL3_6	
+35	WL3_7	1_3_7	3	1	1	UrlWL3_7	
+36	WL3_8	1_3_8	3	1	1	UrlWL3_8	
+37	WL2_7	1_2_7	2	1	1	UrlWL2_7	
+38	WL2_8	1_2_8	2	1	1	UrlWL2_8	
+39	WL2_9	1_2_9	2	1	1	UrlWL2_9	
+40	WL2_10	1_2_10	2	1	1	UrlWL2_10	
+41	WL2_11	1_2_11	2	1	1	UrlWL2_11	
+42	WL2_12	1_2_12	2	1	1	UrlWL2_12	
+43	WL1_7	1_1_7	1	1	1	UrlWL1_7	
+44	WL1_8	1_1_8	1	1	1	UrlWL1_8	
+45	WL1_9	1_1_9	1	1	1	UrlWL1_9	
+46	WL1_10	1_1_10	1	1	1	UrlWL1_10	
+47	WL1_11	1_1_11	1	1	1	UrlWL1_11	
+48	WL1_12	1_1_12	1	1	1	UrlWL1_12	
+49	WL3_5	2_3_5	3	2	2	UrlWL3_5	
+50	WL3_6	2_3_6	3	2	2	UrlWL3_6	
+51	WL3_7	2_3_7	3	2	2	UrlWL3_7	
+52	WL3_8	2_3_8	3	2	2	UrlWL3_8	
+53	WL2_7	2_2_7	2	2	2	UrlWL2_7	
+54	WL2_8	2_2_8	2	2	2	UrlWL2_8	
+55	WL2_9	2_2_9	2	2	2	UrlWL2_9	
+56	WL2_10	2_2_10	2	2	2	UrlWL2_10	
+57	WL2_11	2_2_11	2	2	2	UrlWL2_11	
+58	WL2_12	2_2_12	2	2	2	UrlWL2_12	
+59	WL1_7	2_1_7	1	2	2	UrlWL1_7	
+60	WL1_8	2_1_8	1	2	2	UrlWL1_8	
+61	WL1_9	2_1_9	1	2	2	UrlWL1_9	
+62	WL1_10	2_1_10	1	2	2	UrlWL1_10	
+63	WL1_11	2_1_11	1	2	2	UrlWL1_11	
+64	WL1_12	2_1_12	1	2	2	UrlWL1_12	
 							
-							
-							
-							
+// 二级组合							
 [EJZH]							
 id	name	WLId	PPId	imageUrl			
-1	EJZH1	7	1	imageUrl1			
-2	EJZH2	7	1	imageUrl2			
-3	EJZH3	9	1	imageUrl3			
-4	EJZH4	25	2	imageUrl4			
-5	EJZH5	26	2	imageUrl5			
-6	EJZH6	27	2	imageUrl6			
+1	EJZH1	5	1	imageUrlEJZH1			
+2	EJZH2	6	1	imageUrlEJZH2			
+3	EJZH3	7	1	imageUrlEJZH3			
+4	EJZH4	8	1	imageUrlEJZH4			
+5	EJZH5	9	1	imageUrlEJZH5			
+6	EJZH6	10	1	imageUrlEJZH6			
+7	EJZH7	21	2	imageUrlEJZH7			
+8	EJZH8	22	2	imageUrlEJZH8			
+9	EJZH9	23	2	imageUrlEJZH9			
+10	EJZH10	24	2	imageUrlEJZH10			
+11	EJZH11	25	2	imageUrlEJZH11			
+12	EJZH12	26	2	imageUrlEJZH12			
+13	EJZH13	37	1	imageUrlEJZH13			
+14	EJZH14	38	1	imageUrlEJZH14			
+15	EJZH15	39	1	imageUrlEJZH15			
+16	EJZH16	40	1	imageUrlEJZH16			
+17	EJZH17	41	1	imageUrlEJZH17			
+18	EJZH18	42	1	imageUrlEJZH18			
+19	EJZH19	53	2	imageUrlEJZH19			
+20	EJZH20	54	2	imageUrlEJZH20			
+21	EJZH21	55	2	imageUrlEJZH21			
+22	EJZH22	56	2	imageUrlEJZH22			
+23	EJZH23	57	2	imageUrlEJZH23			
+24	EJZH24	58	2	imageUrlEJZH24			
 							
+// 二级组合_FGTester							
 [EJZH_FGTester]							
 EJZHId	FGTesterId	number					
-1	1	1					
-1	2	2					
-1	3	3					
-1	4	1					
-1	5	2					
-1	6	3					
-4	7	1					
-4	8	2					
-4	9	3					
-4	10	4					
+1	1	2					
+2	2	2					
+2	3	2					
+3	1	2					
+7	5	2					
+8	6	2					
+8	7	2					
+9	5	2					
 							
+// 二级组合三级物料							
 [EJZH_SJWL]							
 EJZHId	WLId	number					
-1	13	1					
-1	14	2					
-1	15	3					
-1	16	1					
-1	17	2					
-1	18	3					
-2	13	2					
-2	14	3					
-4	31	1					
-4	32	2					
-4	33	3					
-4	34	4					
+2	1	2					
+3	2	2					
+3	3	2					
+4	1	2					
+5	4	2					
+8	17	2					
+9	18	2					
+9	19	2					
+10	17	2					
+11	20	2					
 							
+// 一级组合							
 [YJZH]							
 id	name	WLId	PPId	imageUrl			
-1	YJZH1	1	1	imageUrl1			
-2	YJZH2	2	1	imageUrl2			
-3	YJZH3	1	2	imageUrl3			
-4	YJZH4	19	2	imageUrl4			
-5	YJZH5	20	2	imageUrl5			
+1	YJZH1	11	1	imageUrlYJZH1			
+2	YJZH2	12	1	imageUrlYJZH2			
+3	YJZH3	13	1	imageUrlYJZH3			
+4	YJZH4	14	1	imageUrlYJZH4			
+5	YJZH5	15	1	imageUrlYJZH5			
+6	YJZH6	16	1	imageUrlYJZH6			
+7	YJZH7	27	2	imageUrlYJZH7			
+8	YJZH8	28	2	imageUrlYJZH8			
+9	YJZH9	29	2	imageUrlYJZH9			
+10	YJZH10	30	2	imageUrlYJZH10			
+11	YJZH11	31	2	imageUrlYJZH11			
+12	YJZH12	32	2	imageUrlYJZH12			
+13	YJZH13	43	1	imageUrlYJZH13			
+14	YJZH14	44	1	imageUrlYJZH14			
+15	YJZH15	45	1	imageUrlYJZH15			
+16	YJZH16	46	1	imageUrlYJZH16			
+17	YJZH17	47	1	imageUrlYJZH17			
+18	YJZH18	48	1	imageUrlYJZH18			
+19	YJZH19	59	2	imageUrlYJZH19			
+20	YJZH20	60	2	imageUrlYJZH20			
+21	YJZH21	61	2	imageUrlYJZH21			
+22	YJZH22	62	2	imageUrlYJZH22			
+23	YJZH23	63	2	imageUrlYJZH23			
+24	YJZH24	64	2	imageUrlYJZH24			
 							
+// 一级组合二级组合							
 [YJZH_EJZH]							
 YJZHId	EJZHId	number					
-1	1	1					
-1	2	2					
-1	3	3					
-2	3	3					
+1	1	2					
 2	2	2					
-2	1	1					
-4	4	1					
-4	5	2					
-4	6	3					
-5	6	3					
-5	5	2					
-5	4	1					
+2	3	2					
+3	1	2					
+4	4	2					
+5	6	2					
+7	7	2					
+8	8	2					
+8	9	2					
+9	7	2					
+10	10	2					
+11	12	2					
 							
+// 柜台一级组合 							
 [GT_YJZH]							
 GTId	YJZHId	number					
 1	1	2					
-1	2	3					
-1	3	2					
-2	1	3					
-3	2	3					
-4	1	2					
-5	2	1					
-6	1	1					
-7	4	2					
-8	5	3					
+2	2	2					
+2	3	2					
+3	1	2					
+4	4	2					
+4	5	2					
+4	6	2					
+5	7	2					
+6	8	2					
+6	9	2					
+7	7	2					
+8	10	2					
+8	11	2					
 							
+// 一级组合相关图							
 [YJZHXGT]							
 id	imageUrl	YJZHId					
-1	YJZH_XGT1	1					
-2	YJZH_XGT2	1					
-3	YJZH_XGT3	2					
-4	YJZH_XGT4	2					
-5	YJZH_XGT5	3					
-6	YJZH_XGT6	3					
-7	YJZH_XGT7	4					
-8	YJZH_XGT8	4					
+1	YJZH1Url1	1					
+2	YJZH2Url1	2					
+3	YJZH2Url2	2					
+4	YJZH4Url1	4					
+5	YJZH5Url1	5					
+6	YJZH5Url2	5					
 							
+// 二级组合相关图							
 [EJZHXGT]							
 id	imageUrl	EJZHId					
-1	EJZH_XGT1	1					
-2	EJZH_XGT2	1					
-3	EJZH_XGT3	2					
-4	EJZH_XGT4	2					
-5	EJZH_XGT5	3					
-6	EJZH_XGT6	3					
-7	EJZH_XGT7	4					
-8	EJZH_XGT8	4					
+1	EJZH1Url1	1					
+2	EJZH2Url1	2					
+3	EJZH2Url2	2					
+4	EJZH4Url1	4					
+5	EJZH5Url1	5					
+6	EJZH5Url2	5					
 							
 [end]							
+							
+							
