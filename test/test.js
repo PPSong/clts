@@ -1231,7 +1231,7 @@ describe('测试案例', () => {
       const KDDCode = 'T_KDDCode1';
 
       await post(
-        'guanLiangKuaiDi',
+        'guanLianKuaiDi',
         {
           KDXEWMs,
           KDDCode,
@@ -1253,7 +1253,7 @@ describe('测试案例', () => {
       const KDDCode = 'T_KDDCode2';
 
       await post(
-        'guanLiangKuaiDi',
+        'guanLianKuaiDi',
         {
           KDXEWMs,
           KDDCode,
@@ -1278,7 +1278,7 @@ describe('测试案例', () => {
       ];
 
       await post(
-        'jieChuGuanLiangKuaiDi',
+        'jieChuGuanLianKuaiDi',
         {
           KDXEWMs,
         },
