@@ -1112,5 +1112,179 @@ describe('测试案例', () => {
 
       assert.deepEqual(EWMs.map(item => JSON.stringify(item)), tmpWYDPs.map(item => item.EWM));
     });
+
+    it('ZHY 装箱WL', async () => {
+      const DDId = 1;
+      const GTId = 1;
+      const HWEWMs = [
+        {
+          type: 'WL',
+          typeId: 13,
+          uuid: 'T_uuid1',
+        },
+        {
+          type: 'WL',
+          typeId: 14,
+          uuid: 'T_uuid2',
+        },
+      ];
+      const KDXEWM = {
+        type: 'KDX',
+        uuid: 'T_uuid3',
+      };
+
+      await post(
+        'zhuangXiang',
+        {
+          DDId,
+          GTId,
+          HWEWMs,
+          KDXEWM,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('ZHY 装箱DP', async () => {
+      const DDId = 1;
+      const GTId = 2;
+      const HWEWMs = [
+        {
+          type: 'DP',
+          typeId: 2,
+          uuid: 'T_uuid4',
+        },
+        {
+          type: 'DP',
+          typeId: 2,
+          uuid: 'T_uuid5',
+        },
+      ];
+      const KDXEWM = {
+        type: 'KDX',
+        uuid: 'T_uuid6',
+      };
+
+      await post(
+        'zhuangXiang',
+        {
+          DDId,
+          GTId,
+          HWEWMs,
+          KDXEWM,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it.skip('ZHY 出箱', async () => {
+      const HWEWMs = [
+        {
+          type: 'WL',
+          typeId: 13,
+          uuid: 'T_uuid1',
+        },
+        {
+          type: 'WL',
+          typeId: 14,
+          uuid: 'T_uuid2',
+        },
+        {
+          type: 'DP',
+          typeId: 2,
+          uuid: 'T_uuid4',
+        },
+        {
+          type: 'DP',
+          typeId: 2,
+          uuid: 'T_uuid5',
+        },
+      ];
+
+      await post(
+        'chuXiang',
+        {
+          HWEWMs,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('ZHY 关联快递WL', async () => {
+      const KDXEWMs = [
+        {
+          type: 'KDX',
+          uuid: 'T_uuid3',
+        },
+      ];
+      const KDDCode = 'T_KDDCode1';
+
+      await post(
+        'guanLiangKuaiDi',
+        {
+          KDXEWMs,
+          KDDCode,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('ZHY 关联快递DP', async () => {
+      const KDXEWMs = [
+        {
+          type: 'KDX',
+          uuid: 'T_uuid6',
+        },
+      ];
+      const KDDCode = 'T_KDDCode2';
+
+      await post(
+        'guanLiangKuaiDi',
+        {
+          KDXEWMs,
+          KDDCode,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('ZHY 解除关联快递', async () => {
+      const KDXEWMs = [
+        {
+          type: 'KDX',
+          uuid: 'T_uuid3',
+        },
+        {
+          type: 'KDX',
+          uuid: 'T_uuid6',
+        },
+      ];
+
+      await post(
+        'jieChuGuanLiangKuaiDi',
+        {
+          KDXEWMs,
+        },
+        ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
   });
 });

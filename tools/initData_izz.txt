@@ -47,13 +47,11 @@ id	name
 UserId	PPId						
 2	1						
 3	2						
-4	3						
 							
 [KFJL_PP]							
 UserId	PPId						
 6	1						
 7	2						
-8	3						
 							
 [GZ_PP]							
 UserId	PPId						
@@ -122,6 +120,12 @@ id	name	PPId	GYSId
 4	DP4	2	1				
 5	DP5	2	2				
 6	DP6	2	1				
+7	DP7	1	1				
+8	DP8	1	1				
+9	DP9	1	1				
+10	DP10	2	2				
+11	DP11	2	2				
+12	DP12	2	2				
 							
 // 灯位							
 [DW]							
@@ -139,6 +143,22 @@ id	name	GTId	DPId
 11	DW2	6	5				
 12	DW5	6	6				
 							
+[DW]							
+id	name	GTId					
+13	DW1	3					
+14	DW2	3					
+15	DW3	3					
+16	DW1	4					
+17	DW2	4					
+18	DW3	4					
+19	DW1	7					
+20	DW2	7					
+21	DW3	7					
+22	DW1	8					
+23	DW2	8					
+24	DW3	8					
+							
+							
 [FG]							
 id	name	PPId	note				
 1	FG1	1	NoteFG1				
@@ -147,15 +167,22 @@ id	name	PPId	note
 4	FG4	2	NoteFG4				
 5	FG5	2	NoteFG5				
 6	FG6	2	NoteFG6				
+7	FG7	1	NoteFG7				
+8	FG8	2	NoteFG8				
+							
+							
+							
 							
 [Tester]							
 id	name	PPId					
 1	Tester1	1					
 2	Tester2	1					
 3	Tester3	1					
-4	Tester5	2					
-5	Tester6	2					
-6	Tester7	2					
+4	Tester4	2					
+5	Tester5	2					
+6	Tester6	2					
+7	Tester7	1					
+8	Tester8	2					
 							
 [FG_Tester]							
 id	FGId	TesterId	PPId				
@@ -167,6 +194,8 @@ id	FGId	TesterId	PPId
 6	5	5	2				
 7	5	6	2				
 8	6	4	2				
+9	7	7	1				
+10	8	8	2				
 							
 // 物料							
 [WL]							
@@ -251,18 +280,6 @@ id	name	WLId	PPId	imageUrl
 10	EJZH10	24	2	imageUrlEJZH10			
 11	EJZH11	25	2	imageUrlEJZH11			
 12	EJZH12	26	2	imageUrlEJZH12			
-13	EJZH13	37	1	imageUrlEJZH13			
-14	EJZH14	38	1	imageUrlEJZH14			
-15	EJZH15	39	1	imageUrlEJZH15			
-16	EJZH16	40	1	imageUrlEJZH16			
-17	EJZH17	41	1	imageUrlEJZH17			
-18	EJZH18	42	1	imageUrlEJZH18			
-19	EJZH19	53	2	imageUrlEJZH19			
-20	EJZH20	54	2	imageUrlEJZH20			
-21	EJZH21	55	2	imageUrlEJZH21			
-22	EJZH22	56	2	imageUrlEJZH22			
-23	EJZH23	57	2	imageUrlEJZH23			
-24	EJZH24	58	2	imageUrlEJZH24			
 							
 // 二级组合_FGTester							
 [EJZH_FGTester]							
@@ -305,18 +322,6 @@ id	name	WLId	PPId	imageUrl
 10	YJZH10	30	2	imageUrlYJZH10			
 11	YJZH11	31	2	imageUrlYJZH11			
 12	YJZH12	32	2	imageUrlYJZH12			
-13	YJZH13	43	1	imageUrlYJZH13			
-14	YJZH14	44	1	imageUrlYJZH14			
-15	YJZH15	45	1	imageUrlYJZH15			
-16	YJZH16	46	1	imageUrlYJZH16			
-17	YJZH17	47	1	imageUrlYJZH17			
-18	YJZH18	48	1	imageUrlYJZH18			
-19	YJZH19	59	2	imageUrlYJZH19			
-20	YJZH20	60	2	imageUrlYJZH20			
-21	YJZH21	61	2	imageUrlYJZH21			
-22	YJZH22	62	2	imageUrlYJZH22			
-23	YJZH23	63	2	imageUrlYJZH23			
-24	YJZH24	64	2	imageUrlYJZH24			
 							
 // 一级组合二级组合							
 [YJZH_EJZH]							

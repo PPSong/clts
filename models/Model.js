@@ -1032,6 +1032,13 @@ User.prototype.checkGYSId = async function (id, transaction) {
         throw new Error('没有权限!');
       }
       break;
+    case JS.ZHY:
+      tmpGYSs = await this.getZHYGYSs({ transaction });
+      tmpGYSIds = tmpGYSs.map(item => item.id);
+      if (!tmpGYSIds.includes(id)) {
+        throw new Error('没有权限!');
+      }
+      break;
     default:
       throw new Error('没有权限!');
   }
@@ -2572,6 +2579,54 @@ KDX.belongsTo(GT, {
 GT.hasMany(KDX, {
   as: 'KDXs',
   foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// KDXCZ
+export const KDXCZ = sequelize.define(
+  'KDXCZ',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    KDXId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(KDXStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+KDXCZ.belongsTo(KDX, {
+  as: 'KDX',
+  foreignKey: 'KDXId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+KDX.hasMany(KDXCZ, {
+  as: 'KDXCZs',
+  foreignKey: 'KDXId',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });

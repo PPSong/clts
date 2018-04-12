@@ -9,7 +9,8 @@
     "cjs": "cjs-to-es6",
     "genData": "yarn run babel-node -- ./tools/initData.js",
     "genData_izz": "yarn run babel-node -- ./tools/initData_izz.js",
-    "test": "mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome"
+    "test_izz": "mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome",
+    "test": "mocha --exit --compilers js:babel-core/register test --reporter mochawesome"
   },
   "dependencies": {
     "babel-plugin-wildcard": "^4.0.0",

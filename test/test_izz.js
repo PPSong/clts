@@ -37,6 +37,13 @@ import {
   KFJL_PP,
   GZ_PP,
   GLY_AZGS,
+  EJZH_FGTester,
+  EJZH_SJWL,
+  YJZH_EJZH,
+  QY,
+  GYSType,
+  GLY_GYS,
+  GT_YJZH,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -172,13 +179,13 @@ describe('SPRT测试案例', () => {
 
     adminToken = await getToken('admin', '123456');
     PPJLToken = await getToken('PPJL1', '123456');
-    KFJLToken = await getToken('KFJL1', '1');
-    GZToken = await getToken('GZ1', '1');
-    GTBAToken = await getToken('GTBA1', '1');
-    GYSGLYToken = await getToken('GYSGLY1', '1');
-    AZGSGLYToken = await getToken('AZGSGLY1', '1');
-    ZHYToken = await getToken('ZHY1', '1');
-    AZGToken = await getToken('AZG1', '1');
+    KFJLToken = await getToken('KFJL1', '123456');
+    GZToken = await getToken('GZ1', '123456');
+    GTBAToken = await getToken('GTBA1', '123456');
+    GYSGLYToken = await getToken('GYSGLY1', '123456');
+    AZGSGLYToken = await getToken('AZGSGLY1', '123456');
+    ZHYToken = await getToken('ZHY1', '123456');
+    AZGToken = await getToken('AZG1', '123456');
 
   });
 
@@ -372,6 +379,7 @@ describe('SPRT测试案例', () => {
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
+        
 
         const gt = await GT.findOne({ where: { name: name } });
         assert.notEqual(gt, null);
@@ -432,7 +440,7 @@ describe('SPRT测试案例', () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('KFJL编辑不属于自己管理的PP的GT图片', async () => {
-          const GTId = 4;
+          const GTId = 5;
           const imageUrl = 'imageUrl_T'
           const response = await post(
             'setGT_IMAGE',
@@ -623,7 +631,7 @@ describe('SPRT测试案例', () => {
         const user = await User.findOne({ where: { username: username } });
         assert.notEqual(user, null);
 
-        const r = await GLY_AZGS.findAll({ where: { GYSId: azgs.dataValues.id } });
+        const r = await GLY_AZGS.findAll({ where: { AZGSId: azgs.dataValues.id } });
         const userList = await getUserIdList(r);
         assert.include(userList, user.dataValues.id);
       });
@@ -645,14 +653,14 @@ describe('SPRT测试案例', () => {
         const response = await post(
           'setDP_DWs',
           {
-            id: DPIds,
+            id: DPId,
             DWIds: DWIds,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        DWIds.forEach(item => {
+        DWIds.forEach(async (item) => {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
         });
@@ -664,14 +672,14 @@ describe('SPRT测试案例', () => {
         const response = await post(
           'setDP_DWs',
           {
-            id: DPIds,
+            id: DPId,
             DWIds: DWIds,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        DWIds.forEach(item => {
+        DWIds.forEach(async (item) => {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
         });
@@ -683,14 +691,14 @@ describe('SPRT测试案例', () => {
         const response = await post(
           'setDP_DWs',
           {
-            id: DPIds,
+            id: DPId,
             DWIds: DWIds,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        DWIds.forEach(item => {
+        DWIds.forEach(async (item) => {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
         });
@@ -708,122 +716,932 @@ describe('SPRT测试案例', () => {
   // KFJL 创建 FG, Tester, FGTester
   describe('/createFG_Tester_FGTester', async () => {
     describe('成功', async () => {
-      it('KFJL1 创建 FG1 Tester1 & Tester2', async () => {
+      it('KFJL创建系统中均不存在的FG、Tester组合', async () => {
+        const PPId = 1;
+        const FGPayload = {
+          name: 'FG_T',
+          note: 'note_T',
+          Testers: ['Tester_T1', 'Tester_T2'],
+        };
 
-      });//前置条件：Tester1&Tester2数据库中不存在
+        const response = await post(
+          'createFG_Tester_FGTester',
+          {
+            PPId: PPId,
+            FG: FGPayload,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
 
-      it('KFJL1 创建 FG1 Tester2 & Tester3', async () => {
+        const fg = await FG.findOne({ where: { name: 'FG_T' } });
+        assert.notEqual(fg, null);
 
-      });//前置条件：Tester2数据中存在&Tester3数据库不中存在
+        FGPayload.Testers.forEach(async (item) => {
+          const tester = await Tester.findOne({ where: { name: item } });
+          assert.notEqual(tester, null);
+        });
 
-      it('KFJL1 创建 FG2 Tester2 & Tester3', async () => {
+        const r = await FG_Tester.findAll({ where: { PPId: 1 } });
+        r.forEach(async (item) => {
+          assert.include(item.dataValues, FGPayload);
+        });
+      });//前置条件：FG_T,Tester1&Tester2数据库中不存在
 
-      });//前置条件：Tester2&Tester3数据库中存在
+      it('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
+        const PPId = 1;
+        const FGPayload = {
+          name: 'FG1',
+          note: 'note_T',
+          Testers: ['Tester_T1', 'Tester_T2'],
+        };
+        const response = await post(
+          'createFG_Tester_FGTester',
+          {
+            PPId: PPId,
+            FG: FGPayload,
+          },
+          KFJLToken,
+        );
+        console.log(response);
+        assert.equal(response.data.code, 1);
+
+        const fg = await FG.findOne({ where: { name: 'FG1' } });
+        assert.notEqual(fg, null);
+
+        FGPayload.Testers.forEach(async (item) => {
+          const tester = await Tester.findOne({ where: { name: item } });
+          assert.notEqual(tester, null);
+        });
+
+        const r = await FG_Tester.findAll({ where: { PPId: 1 } });
+        r.forEach(async (item) => {
+          assert.include(item.dataValues, FGPayload);
+        });
+
+      });//前置条件：FG_T存在，Tester1&Tester2数据库中不存在
+
+      it('KFJL创建FG不存在，Tester存在的组合', async () => {
+        const PPId = 1;
+        const FGPayload = {
+          name: 'FG_T',
+          note: 'note_T',
+          Testers: ['Tester1', 'Tester2'],
+        };
+
+        const response = await post(
+          'createFG_Tester_FGTester',
+          {
+            PPId: PPId,
+            FG: FGPayload,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const fg = await FG.findOne({ where: { name: 'FG_T' } });
+        assert.notEqual(fg, null);
+
+        FGPayload.Testers.forEach(async (item) => {
+          const tester = await Tester.findOne({ where: { name: item } });
+          assert.notEqual(tester, null);
+        });
+
+        const r = await FG_Tester.findAll({ where: { PPId: 1 } });
+        r.forEach(async (item) => {
+          assert.include(item.dataValues, FGPayload);
+        });
+      });//前置条件：FG_T不存在，Tester1&Tester2数据库中存在
+    });
+    describe.skip('失败', async () => {
+      describe('数据不合法', async () => {
+      });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => {
+      });
+    });
+  });
+
+  // KFJL 创建 EJZH id, WLId, imageUrl, XGTs, FGTesters, SJWLs,
+  describe('/createEJZH', async () => {
+    describe('成功', async () => {
+      it('KFJL创建不包含WL和FGTester的EJZH', async () => {
+        const PPId = 1;
+        const name = 'EJZH_T';
+        const WLId = 38;
+        const imageUrl = 'imageUrl_T';
+        const XGTs = ['XGT_T1', 'XGT_T2'];
+        const FGTesters = [];
+        const SJWLs = [];
+
+        const response = await post(
+          'createEJZH',
+          {
+            PPId: PPId,
+            name: name,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        assert.notEqual(ejzh, null);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_fg_tester.length, 0);
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_sjwl.length, 0);
+      });//WL和FGTester均没有
+      it('KFJL创建仅包含FGTester的EJZH', async () => {
+        const PPId = 1;
+        const name = 'EJZH_T';
+        const WLId = 38;
+        const imageUrl = 'imageUrl_T';
+        const XGTs = ['XGT_T1', 'XGT_T2'];
+        const FGTesters = [
+          {
+            id: 2,
+            number: 2,
+          },
+          {
+            id: 3,
+            number: 2,
+          }
+        ];
+        const SJWLs = [];
+
+        const response = await post(
+          'createEJZH',
+          {
+            PPId: PPId,
+            name: name,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        assert.notEqual(ejzh, null);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.notEqual(ejzh_fg_tester, null);
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_sjwl.length, 0);
+      });//仅FGTesters
+      it('KFJL创建仅包含SJWL的EJZH', async () => {
+        const PPId = 1;
+        const name = 'EJZH_T';
+        const WLId = 38;
+        const imageUrl = 'imageUrl_T';
+        const XGTs = ['XGT_T1', 'XGT_T2'];
+        const FGTesters = [];
+        const SJWLs = [
+          {
+            id: 1,
+            number: 2
+          },
+        ];
+
+        const response = await post(
+          'createEJZH',
+          {
+            PPId: PPId,
+            name: name,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        assert.notEqual(ejzh, null);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_fg_tester.length, 0);
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.notEqual(ejzh_sjwl.length, 0);
+      });//仅SJWLs
+      it('KFJL创建包含FGTester和SJWL的EJZH-1', async () => {
+        const PPId = 1;
+        const name = 'EJZH_T';
+        const WLId = 38;
+        const imageUrl = 'imageUrl_T';
+        const XGTs = ['XGT_T1', 'XGT_T2'];
+        const FGTesters = [
+          {
+            id: 2,
+            number: 2,
+          },
+          {
+            id: 3,
+            number: 2,
+          }
+        ];
+        const SJWLs = [
+          {
+            id: 1,
+            number: 2
+          },
+        ];
+
+        const response = await post(
+          'createEJZH',
+          {
+            PPId: PPId,
+            name: name,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        assert.notEqual(ejzh, null);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_fg_tester.length, 2);
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_sjwl.length, 1);
+      });//FGTesters&SJWLs
+
+      it('KFJL创建包含FGTester和SJWL的EJZH-2', async () => {
+        const PPId = 1;
+        const name = 'EJZH_T';
+        const WLId = 38;
+        const imageUrl = 'imageUrl_T';
+        const XGTs = ['XGT_T1', 'XGT_T2'];
+        const FGTesters = [
+          {
+            id: 1,
+            number: 2,
+          }
+        ];
+        const SJWLs = [
+          {
+            id: 2,
+            number: 2
+          },
+          {
+            id: 3,
+            number: 2
+          },
+        ];
+
+        const response = await post(
+          'createEJZH',
+          {
+            PPId: PPId,
+            name: name,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        assert.notEqual(ejzh, null);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_fg_tester.length, 1);
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_sjwl.length, 2);
+      });//FGTesters&SJWLs
+
+      it('KFJL创建EJZH-WL&FG没有与任何组合有关联', async () => {
+        const PPId = 1;
+        const name = 'EJZH_T';
+        const WLId = 38;
+        const imageUrl = 'imageUrl_T';
+        const XGTs = ['XGT_T1', 'XGT_T2'];
+        const FGTesters = [
+          {
+            id: 9,
+            number: 2,
+          }
+        ];
+        const SJWLs = [
+          {
+            id: 33,
+            number: 2
+          }
+        ];
+
+        const response = await post(
+          'createEJZH',
+          {
+            PPId: PPId,
+            name: name,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        assert.notEqual(ejzh, null);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_fg_tester.length, 1);
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        assert.equal(ejzh_sjwl.length, 1);
+      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => {
+        it('KFJL创建EJZH，选择SJWLId', async () => {
+          const PPId = 1;
+          const name = 'EJZH_T';
+          const WLId = 33;
+          const imageUrl = 'imageUrl_T';
+          const XGTs = ['XGT_T1', 'XGT_T2'];
+          const FGTesters = [];
+          const SJWLs = [];
+
+          const response = await post(
+            'createEJZH',
+            {
+              PPId: PPId,
+              name: name,
+              WLId: WLId,
+              imageUrl: imageUrl,
+              XGTs: XGTs,
+              FGTesters: FGTesters,
+              SJWLs: SJWLs,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+        });
+
+        it('KFJL创建EJZH，关联EJWL', async () => {
+          const PPId = 1;
+          const name = 'EJZH_T';
+          const WLId = 38;
+          const imageUrl = 'imageUrl_T';
+          const XGTs = ['XGT_T1', 'XGT_T2'];
+          const FGTesters = [];
+          const SJWLs = [
+            {
+              id: 38,
+              number: 2
+            },
+          ];
+
+          const response = await post(
+            'createEJZH',
+            {
+              PPId: PPId,
+              name: name,
+              WLId: WLId,
+              imageUrl: imageUrl,
+              XGTs: XGTs,
+              FGTesters: FGTesters,
+              SJWLs: SJWLs,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+        });
       });
+      describe.skip('没有权限', async () => { });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 编辑 EJZH
+  describe('/editEJZH', async () => {
+    describe('成功', async () => {
+      it('KFJL编辑EJZH-将FGTester关联关系清空', async () => {
+        const EJZHId = 1;
+        const WLId = 5;
+        const imageUrl = 'imageUrlEJZH1';
+        const XGTs = ['EJZH1Url1'];
+        const FGTesters = [];
+        const SJWLs = [];
+
+        const response = await post(
+          'editEJZH',
+          {
+            id: EJZHId,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: EJZHId } });
+        assert.equal(ejzh_fg_tester.length, 0);
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: EJZHId } });
+        assert.equal(ejzh_sjwl.length, 0);
+      });
+
+      it('KFJL编辑EJZH-修改EJWL&imageUrl&XGTs', async () => {
+        const EJZHId = 1;
+        const WLId = 6;
+        const imageUrl = 'imageUrlEJZH_T1';
+        const XGTs = ['EJZH1Url_T1'];
+        const FGTesters = [
+          {
+            id: 1,
+            number: 2,
+          },
+        ];
+        const SJWLs = [];
+
+        const response = await post(
+          'editEJZH',
+          {
+            id: EJZHId,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh = await EJZH.findOne({ where: { id: EJZHId } });
+        assert.equal(ejzh.dataValues.WLId, WLId);
+        assert.equal(ejzh.dataValues.imageUrl, imageUrl);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: EJZHId } });
+        assert.notEqual(ejzh_fg_tester, null);
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: EJZHId } });
+        assert.equal(ejzh_sjwl.length, 0);
+
+        const ejzhxgt = await EJZHXGT.findOne({ where: { EJZHId: EJZHId } });
+        assert.equal(ejzhxgt.dataValues.imageUrl, XGTs[0]);
+      });
+
+      it('KFJL编辑EJZH-新增一组FGTester&SJWL', async () => {
+        const EJZHId = 2;
+        const WLId = 6;
+        const imageUrl = 'imageUrlEJZH1';
+        const XGTs = ['EJZH1Url1'];
+        const FGTesters = [
+          {
+            id: 2,
+            number: 2,
+          },
+          {
+            id: 3,
+            number: 2,
+          },
+          {
+            id: 1,
+            number: 2,
+          },
+        ];
+        const SJWLs = [
+          {
+            id: 1,
+            number: 2,
+          },
+          {
+            id: 2,
+            number: 2,
+          },
+        ];
+
+        const response = await post(
+          'editEJZH',
+          {
+            id: EJZHId,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: EJZHId } });
+        let FGTesterIdList = [];
+        ejzh_fg_tester.forEach(item => {
+          FGTesterIdList.push(item.dataValues.FGTesterId);
+        });
+        assert.equal(FGTesterIdList.length, 3);
+        FGTesters.forEach(item => {
+          assert.include(FGTesterIdList, item.id);
+        });
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: EJZHId } });
+        let SJWLIdList = [];
+        ejzh_sjwl.forEach(item => {
+          SJWLIdList.push(item.dataValues.WLId);
+        });
+        assert.equal(SJWLIdList.length, 2);
+        SJWLs.forEach(item => {
+          assert.include(SJWLIdList, item.id);
+        });
+      });
+
+      it('KFJL编辑EJZH-将原FGTester&SJWL修改成新的', async () => {
+        const EJZHId = 2;
+        const WLId = 6;
+        const imageUrl = 'imageUrlEJZH_T1';
+        const XGTs = ['EJZH1Url_T1'];
+        const FGTesters = [
+          {
+            id: 1,
+            number: 2,
+          },
+        ];
+        const SJWLs = [
+          {
+            id: 2,
+            number: 2,
+          },
+        ];
+        
+        const response = await post(
+          'editEJZH',
+          {
+            id: EJZHId,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            FGTesters: FGTesters,
+            SJWLs: SJWLs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: EJZHId } });
+        let FGTesterIdList = [];
+        ejzh_fg_tester.forEach(item => {
+          FGTesterIdList.push(item.dataValues.FGTesterId);
+        });
+        assert.equal(FGTesterIdList.length, 1);
+        FGTesters.forEach(item => {
+          assert.include(FGTesterIdList, item.id);
+        });
+
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: EJZHId } });
+        let SJWLIdList = [];
+        ejzh_sjwl.forEach(item => {
+          SJWLIdList.push(item.dataValues.WLId);
+        });
+        assert.equal(SJWLIdList.length, 1);
+        SJWLs.forEach(item => {
+          assert.include(SJWLIdList, item.id);
+        });
+      });
+    });
+    describe.skip('失败', async () => {
+      describe('数据不合法', async () => { });
       describe('没有权限', async () => { });
       describe('操作状态不正确', async () => { });
       describe('唯一性校验', async () => { });
     });
   });
 
-  // // KFJL 创建 EJZH id, WLId, imageUrl, XGTs, FGTesters, SJWLs,
-  // describe('/createEJZH', async () => {
-  //   describe('成功', async () => {
-  //     it('KFJL1 创建 EJZH1 ', async () => {
-  //       //没有物料
-  //     });
-  //     it('KFJL1 创建 EJZH2 ', async () => {
-  //       //仅FGTesters
-  //     });
-  //     it('KFJL1 创建 EJZH3 ', async () => {
-  //       //仅SJWLs
-  //     });
-  //     it('KFJL1 创建 EJZH4 ', async () => {
-  //       //FGTesters&SJWLs
-  //     });
-  //     it('KFJL1 创建 EJZH5 ', async () => {
-  //       //与EJZH4相同
-  //     });
-  //     it('KFJL1 创建 EJZH6 ', async () => {
-  //       //与EJZH4不同的FGTesters&SJWLs
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => { });
-  //     describe('没有权限', async () => { });
-  //     describe('操作状态不正确', async () => { });
-  //     describe('唯一性校验', async () => { });
-  //   });
-  // });
+  // KFJL 创建 YJZH
+  describe('/createYJZH', async () => {
+    describe('成功', async () => {
+      it('KFJL创建YJZH-不包含EJZH', async () => {
+        const PPId = 1;
+        const name = 'YJZH_T';
+        const WLId = 43;
+        const imageUrl = 'imageUrlYJZH';
+        const XGTs = ['YJZH1Url'];
+        const EJZHs = [];
 
-  // // KFJL 编辑 EJZH
-  // describe('/editEJZH', async () => {
-  //   describe('成功', async () => {
-  //     it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
+        const response = await post(
+          'createYJZH',
+          {
+            PPId: PPId,
+            name: name,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            EJZHs: EJZHs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => { });
-  //     describe('没有权限', async () => { });
-  //     describe('操作状态不正确', async () => { });
-  //     describe('唯一性校验', async () => { });
-  //   });
-  // });
+        const yjzh = await YJZH.findOne({ where: { WLId: WLId } });
+        assert.notEqual(yjzh, null);
 
-  // // KFJL 创建 YJZH
-  // describe('/createYJZH', async () => {
-  //   describe('成功', async () => {
-  //     it('KFJL1 创建 YJZH1 ', async () => {
-  //       //没有EJZH
-  //     });
-  //     it('KFJL1 创建 YJZH2 ', async () => {
-  //       //EJZH1
-  //     });
-  //     it('KFJL1 创建 YJZH3 ', async () => {
-  //       //EJZH1
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => { });
-  //     describe('没有权限', async () => { });
-  //     describe('操作状态不正确', async () => { });
-  //     describe('唯一性校验', async () => { });
-  //   });
-  // });
+        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: yjzh.dataValues.id } });
+        assert.equal(yjzh_ejzh.length, 0);
+      });//没有EJZH
 
-  // // KFJL 编辑 YJZH
-  // describe('/editYJZH', async () => {
-  //   describe('成功', async () => {
-  //     it('KFJL1 编辑 EJZH1 XGT1&XGT2', async () => {
+      it('KFJL创建YJZH-包含多组EJZH', async () => {
+        const PPId = 1;
+        const name = 'YJZH_T';
+        const WLId = 43;
+        const imageUrl = 'imageUrlYJZH';
+        const XGTs = ['YJZH1Url'];
+        const EJZHs = [
+          {
+            id: 2,
+            number: 2,
+          },
+          {
+            id: 3,
+            number: 2,
+          },
+        ];
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => { });
-  //     describe('没有权限', async () => { });
-  //     describe('操作状态不正确', async () => { });
-  //     describe('唯一性校验', async () => { });
-  //   });
-  // });
+        const response = await post(
+          'createYJZH',
+          {
+            PPId: PPId,
+            name: name,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            EJZHs: EJZHs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
 
-  // // KFJL 配置YJZH_GTs
-  // describe('/setYJZH_GTs', async () => {
-  //   describe('成功', async () => {
-  //     it('KFJL1 将 EJZH1 配置到GT1&GT2', async () => {
+        const yjzh = await YJZH.findOne({ where: { WLId: WLId } });
+        assert.notEqual(yjzh, null);
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => { });
-  //     describe('没有权限', async () => { });
-  //     describe('操作状态不正确', async () => { });
-  //     describe('唯一性校验', async () => { });
-  //   });
-  // });
+        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: yjzh.dataValues.id } });
+        assert.notEqual(yjzh_ejzh, null);
+      }); //EJZH1
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => {
+        it('KFJL创建YJZH，选择SJWLId', async () => {
+          const PPId = 1;
+          const name = 'YJZH_T';
+          const WLId = 33;
+          const imageUrl = 'imageUrlYJZH';
+          const XGTs = ['YJZH1Url'];
+          const EJZHs = [];
+
+          const response = await post(
+            'createYJZH',
+            {
+              PPId: PPId,
+              name: name,
+              WLId: WLId,
+              imageUrl: imageUrl,
+              XGTs: XGTs,
+              EJZHs: EJZHs,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+
+        });
+      });
+      describe.skip('没有权限', async () => { });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 编辑 YJZH
+  describe('/editYJZH', async () => {
+    describe('成功', async () => {
+      it('KFJL编辑YJZH-清空EJZH关联关系', async () => {
+        const YJZHId = 1;
+        const WLId = 11;
+        const imageUrl = 'imageUrlYJZH1';
+        const XGTs = ['YJZH1Url1'];
+        const EJZHs = [];
+
+        console.log('1---->',YJZHId);
+
+        const response = await post(
+          'editYJZH',
+          {
+            id: YJZHId,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            EJZHs: EJZHs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const yjzh_ejzh = await YJZH_EJZH.findOne({ where: { YJZHId: YJZHId } });
+        assert.equal(yjzh_ejzh, null);
+      });
+
+      it('KFJL编辑YJZH-修改YJWL&imageUrl&XGTs', async () => {
+        const YJZHId = 1;
+        const WLId = 12;
+        const imageUrl = 'imageUrlYJZH_T1';
+        const XGTs = ['YJZH1Url_T1'];
+        const EJZHs = [
+          {
+            id: 1,
+            number: 2,
+          },
+        ];
+
+        const response = await post(
+          'editYJZH',
+          {
+            id: YJZHId,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            EJZHs: EJZHs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const yjzh = await YJZH.findOne({ where: { id: YJZHId } });
+        assert.equal(yjzh.dataValues.WLId, WLId);
+        assert.equal(yjzh.dataValues.imageUrl, imageUrl);
+
+        const yjzh_ejzh = await YJZH_EJZH.findOne({ where: { YJZHId: YJZHId } });
+        assert.notEqual(yjzh_ejzh, null);
+
+        const yjzhxgt = await YJZHXGT.findOne({ where: { YJZHId: YJZHId } });
+        assert.equal(yjzhxgt.dataValues.imageUrl, XGTs[0]);
+      });
+
+      it('KFJL编辑YJZH-新增EJZH', async () => {
+        const YJZHId = 1;
+        const WLId = 12;
+        const imageUrl = 'imageUrlYJZH2';
+        const XGTs = ['YJZH1Url2'];
+        const EJZHs = [
+          {
+            id: 2,
+            number: 2,
+          },
+          {
+            id: 3,
+            number: 2,
+          },
+          {
+            id: 1,
+            number: 2,
+          },
+        ];
+
+        const response = await post(
+          'editYJZH',
+          {
+            id: YJZHId,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            EJZHs: EJZHs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: YJZHId } });
+        
+        let EJZHIdList = [];
+        yjzh_ejzh.forEach(item => {
+          EJZHIdList.push(item.dataValues.EJZHId);
+        });
+        assert.equal(EJZHIdList.length, 3);
+        EJZHs.forEach(item => {
+          assert.include(EJZHIdList, item.id);
+        });
+      });
+
+      it('KFJL编辑YJZH-替换原EJZH', async () => {
+        const YJZHId = 1;
+        const WLId = 12;
+        const imageUrl = 'imageUrlYJZH_T1';
+        const XGTs = ['YJZH1Url_T1'];
+        const EJZHs = [
+          {
+            id: 1,
+            number: 2,
+          },
+        ];
+        
+        const response = await post(
+          'editYJZH',
+          {
+            id: YJZHId,
+            WLId: WLId,
+            imageUrl: imageUrl,
+            XGTs: XGTs,
+            EJZHs: EJZHs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: YJZHId } });
+        
+        let EJZHIdList = [];
+        yjzh_ejzh.forEach(item => {
+          EJZHIdList.push(item.dataValues.EJZHId);
+        });
+        assert.equal(EJZHIdList.length, 1);
+        EJZHs.forEach(item => {
+          assert.include(EJZHIdList, item.id);
+        });
+      });
+    });
+    describe.skip('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // KFJL 配置YJZH_GTs
+  describe('/setYJZH_GTs', async () => {
+    describe('成功', async () => {
+      it('KFJL将YJZH配置到GT', async () => {
+        const YJZHId = 1;
+        const GTs = [
+          {
+            id: 2,
+            number: 2
+          },
+          {
+            id: 3,
+            number: 2
+          },
+        ];
+
+        const response = await post(
+          'setYJZH_GTs',
+          {
+            id: YJZHId,
+            GTs: GTs,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const gt_yjzh = await GT_YJZH.findAll({ where: { YJZHId: YJZHId } });
+        let GTIdList = [];
+        gt_yjzh.forEach(item => {
+          GTIdList.push(item.dataValues.GTId);
+        });
+        assert.equal(GTIdList.length, 2);
+        GTs.forEach(item => {
+          assert.include(GTIdList, item.id);
+        });
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
+  });
 
   // // KFJL 生成订单
   // describe('/createDD', async () => {
