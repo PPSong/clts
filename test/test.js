@@ -5,6 +5,7 @@ import axios from 'axios';
 import debug from 'debug';
 import fs from 'fs';
 import _ from 'lodash';
+import { PP_DDOperationLock } from '../routes/business_apis/CreateDD';
 
 import {
   init,
@@ -33,6 +34,7 @@ import {
   DD_DW_DP,
   WYWL,
   WYDP,
+  Tester,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -800,7 +802,7 @@ describe('测试案例', () => {
       const GTs = [{ id: tmpGT0.id, number: 3 }];
 
       await post(
-        'setYJZH_GTs',
+        'setYJZHGTs',
         {
           id,
           GTs,
@@ -847,7 +849,7 @@ describe('测试案例', () => {
       const GTIds = [1, 2];
 
       await post(
-        'setDD_GTFXs',
+        'setDDGTFXs',
         {
           id,
           GTIds,
@@ -884,14 +886,14 @@ describe('测试案例', () => {
     });
 
     it('PPJL 批量设置订单柜台物料的安装公司', async () => {
-      const id = 1;
+      const AZGSId = 1;
       const DD_GT_WLIds = [128, 129];
 
       await post(
-        'setDDGTWLs_AZGS',
+        'setDDGTWLs0AZGS',
         {
-          id,
           DD_GT_WLIds,
+          AZGSId,
         },
         PPJLToken,
       );
@@ -904,17 +906,17 @@ describe('测试案例', () => {
         },
       });
 
-      assert.deepEqual([id, id], tmpDD_GT_WLs.map(item => item.AZGSId));
+      assert.deepEqual([AZGSId, AZGSId], tmpDD_GT_WLs.map(item => item.AZGSId));
     });
 
     it('PPJL 批量设置订单灯位灯片的安装公司', async () => {
-      const id = 1;
+      const AZGSId = 1;
       const DD_DW_DPIds = [16, 17];
 
       await post(
-        'setDDDWDPs_AZGS',
+        'setDDDWDPs0AZGS',
         {
-          id,
+          AZGSId,
           DD_DW_DPIds,
         },
         PPJLToken,
@@ -928,7 +930,7 @@ describe('测试案例', () => {
         },
       });
 
-      assert.deepEqual([id, id], tmpDD_DW_DPs.map(item => item.AZGSId));
+      assert.deepEqual([AZGSId, AZGSId], tmpDD_DW_DPs.map(item => item.AZGSId));
     });
 
     it('PPJL审批通过DD', async () => {
@@ -956,7 +958,7 @@ describe('测试案例', () => {
       const GYSId = 6;
 
       await post(
-        'setDDGTWLs_GYS',
+        'setDDGTWLs0GYS',
         {
           DD_GT_WLIds,
           GYSId,
@@ -980,7 +982,7 @@ describe('测试案例', () => {
       const GYSId = 6;
 
       await post(
-        'setDDDWDPs_GYS',
+        'setDDDWDPs0GYS',
         {
           DD_DW_DPIds,
           GYSId,
@@ -1004,7 +1006,7 @@ describe('测试案例', () => {
       const AZGUserId = 40;
 
       await post(
-        'setDDGTWLs_AZG',
+        'setDDGTWLs0AZG',
         {
           DD_GT_WLIds,
           AZGUserId,
@@ -1028,7 +1030,7 @@ describe('测试案例', () => {
       const AZGUserId = 40;
 
       await post(
-        'setDDDWDPs_AZG',
+        'setDDDWDPs0AZG',
         {
           DD_DW_DPIds,
           AZGUserId,

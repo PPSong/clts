@@ -214,7 +214,7 @@ post.editYJZH
 }
 
 KFJL1 配置 YJZH_GTs
-post.setYJZH_GTs
+post.setYJZHGTs
 {
     id,
     GTs: [{

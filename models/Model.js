@@ -1735,6 +1735,10 @@ export const Tester = sequelize.define(
   },
 );
 
+Tester.prototype.toString = function () {
+  return `[id: ${this.id}, name: ${this.name}]`;
+};
+
 Tester.belongsTo(PP, {
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
@@ -1770,6 +1774,10 @@ export const FG_Tester = sequelize.define(
     freezeTableName: true,
   },
 );
+
+FG.prototype.toString = function () {
+  return `[id: ${this.id}, name: ${this.name}]`;
+};
 
 FG.belongsToMany(Tester, {
   through: 'FG_Tester',
@@ -1840,6 +1848,10 @@ export const WL = sequelize.define(
     freezeTableName: true,
   },
 );
+
+WL.prototype.toString = function () {
+  return `[id: ${this.id}, name: ${this.name}]`;
+};
 
 WL.belongsTo(PP, {
   onDelete: 'RESTRICT',
@@ -2173,6 +2185,10 @@ export const DD = sequelize.define(
   },
 );
 
+DD.prototype.toString = function () {
+  return `[id: ${this.id}, name: ${this.name}]`;
+};
+
 // DD_GT_WLSnapshot
 export const DD_GT_WLSnapshot = sequelize.define(
   'DD_GT_WLSnapshot',
@@ -2392,6 +2408,10 @@ export const DD_GT_WL = sequelize.define(
     freezeTableName: true,
   },
 );
+
+DD_GT_WL.prototype.toString = function () {
+  return `[id: ${this.id}, DD_GT_WL: ${this.DDId}_${this.GTId}_${this.WLId}]`;
+};
 
 DD_GT_WL.belongsTo(DD, {
   as: 'DD',
