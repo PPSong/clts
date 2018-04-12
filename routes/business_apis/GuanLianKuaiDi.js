@@ -20,7 +20,7 @@ export default class GuanLianKuaiDi extends BusinessApiBase {
     // end 检查KDXEWMs都存在
 
     // 检查KDXEWMs是属于ZX状态, 而且属于同一个GT
-    await ppUtils.checkRecordStatus(tmpKDXs, DBTables.KDXStatus.ZX, '不能绑定快递', transaction);
+    await ppUtils.checkRecordsStatus(tmpKDXs, DBTables.KDXStatus.ZX, '不能绑定快递', transaction);
     await ppUtils.checkSameGTAndGetGTId(tmpKDXs);
     // end 检查KDXEWMs是属于ZX状态, 而且属于同一个GT
 
@@ -71,7 +71,7 @@ export default class GuanLianKuaiDi extends BusinessApiBase {
 
     // 改变KDX中WL/DP的状态位FH, 并添加WYWLCZ/WYDPCZ
     await ppUtils.changeWYWLsInKDXsStatus(KDXEWMs, DBTables.WYWLStatus.FH, user, transaction);
-    await ppUtils.changeWYDPsInKDXsStatus(KDXEWMs, DBTables.WYWLStatus.FH, user, transaction);
+    await ppUtils.changeWYDPsInKDXsStatus(KDXEWMs, DBTables.WYDPStatus.FH, user, transaction);
     // end 改变KDX中WL/DP的状态位FH, 并添加WYWLCZ/WYDPCZ
   }
 }

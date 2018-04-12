@@ -20,7 +20,12 @@ export async function checkEWMsExistanceAndGetRecords(tableName, EWMs, transacti
   return tmpRecords;
 }
 
-export async function checkRecordStatus(records, targetStatus, errorMsg = '操作不能继续', transaction) {
+export async function checkRecordsStatus(
+  records,
+  targetStatus,
+  errorMsg = '操作不能继续',
+  transaction,
+) {
   const tmpFailedStatusRecords = records.filter(item => item.status !== targetStatus);
 
   // todo: arr toString()
@@ -61,34 +66,11 @@ export async function changeWYWLsInKDXsStatus(KDXEWMs, status, user, transaction
     transaction,
     replacements: { KDXEWMs: KDXEWMStrings },
   });
-  const tmpWYWLIds = tmpWYWLCZSqlR[0];
+  const tmpWYWLIds = tmpWYWLCZSqlR[0].map(item => item.id);
 
-  // 更改相关WYWL状态为FH
-  await DBTables.WYWL.update(
-    {
-      status,
-    },
-    {
-      where: {
-        id: {
-          $in: tmpWYWLIds.map(item => item.id),
-        },
-      },
-      transaction,
-    },
-  );
-  // end 更改相关WYWL状态为FH
-
-  // 新建相关WYWLCZ
-  const tmpWYWLCZs = tmpWYWLIds.map(item => ({
-    WYWLId: item.id,
-    status,
-    UserId: user.id,
-  }));
-  await DBTables.WYWLCZ.bulkCreate(tmpWYWLCZs, {
-    transaction,
-  });
-  // end 新建相关WYWLCZ
+  // 更改相关WYWL状态为FH, 新建相关WYWLCZ
+  await changeWYWLsStatus(tmpWYWLIds, status, user, transaction);
+  // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
 }
 
 export async function changeWYDPsInKDXsStatus(KDXEWMs, status, user, transaction) {
@@ -109,9 +91,41 @@ export async function changeWYDPsInKDXsStatus(KDXEWMs, status, user, transaction
     transaction,
     replacements: { KDXEWMs: KDXEWMStrings },
   });
-  const tmpWYDPIds = tmpWYDPCZSqlR[0];
+  const tmpWYDPIds = tmpWYDPCZSqlR[0].map(item => item.id);
 
-  // 更改相关WYDP状态为FH
+  // 更改相关WYWL状态为FH, 新建相关WYWLCZ
+  await changeWYDPsStatus(tmpWYDPIds, status, user, transaction);
+  // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
+}
+
+export async function changeWYWLsStatus(ids, status, user, transaction) {
+  await DBTables.WYWL.update(
+    {
+      status,
+    },
+    {
+      where: {
+        id: {
+          $in: ids,
+        },
+      },
+      transaction,
+    },
+  );
+
+  // 新建相关WYWLCZ
+  const tmpWYWLCZs = ids.map(item => ({
+    WYWLId: item,
+    status,
+    UserId: user.id,
+  }));
+  await DBTables.WYWLCZ.bulkCreate(tmpWYWLCZs, {
+    transaction,
+  });
+  // end 新建相关WYWLCZ
+}
+
+export async function changeWYDPsStatus(ids, status, user, transaction) {
   await DBTables.WYDP.update(
     {
       status,
@@ -119,7 +133,7 @@ export async function changeWYDPsInKDXsStatus(KDXEWMs, status, user, transaction
     {
       where: {
         id: {
-          $in: tmpWYDPIds.map(item => item.id),
+          $in: ids,
         },
       },
       transaction,
@@ -128,8 +142,8 @@ export async function changeWYDPsInKDXsStatus(KDXEWMs, status, user, transaction
   // end 更改相关WYDP状态为FH
 
   // 新建相关WYDPCZ
-  const tmpWYDPCZs = tmpWYDPIds.map(item => ({
-    WYDPId: item.id,
+  const tmpWYDPCZs = ids.map(item => ({
+    WYDPId: item,
     status,
     UserId: user.id,
   }));

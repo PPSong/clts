@@ -21,7 +21,7 @@ export default class BusinessApiBase {
         transaction = await sequelize.transaction();
 
         this.checkApiAccess(user);
-        this.validateParamsFormat();
+        this.validateParamsFormat(req, res, next);
         await this.mainProcess(req, res, next, user, transaction);
 
         // commit
@@ -55,7 +55,7 @@ export default class BusinessApiBase {
   }
 
   // 单纯校验参数格式, 不做数据库查询
-  static validateParamsFormat() {}
+  static validateParamsFormat(req, res, next) {}
 
   static async mainProcess(req, res, next, user, transaction) {
     throw new Error('mainProcess需要被实现!');

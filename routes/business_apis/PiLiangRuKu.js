@@ -38,63 +38,63 @@ export default class PiLiangRuKu extends BusinessApiBase {
     const tmpGYSId = await user.getGYSId(transaction);
 
     if (tmpType === DBTables.EWMType.WL) {
-      await this.processWL(EWMs, tmpId, tmpGYSId, user, transaction);
+      await processWL(EWMs, tmpId, tmpGYSId, user, transaction);
     } else {
-      await this.processDP(EWMs, tmpId, tmpGYSId, user, transaction);
+      await processDP(EWMs, tmpId, tmpGYSId, user, transaction);
     }
   }
+}
 
-  static async processWL(EWMs, WLId, GYSId, user, transaction) {
-    const newRecords = EWMs.map(item => ({
-      EWM: JSON.stringify(item),
-      status: DBTables.WYWLStatus.RK,
-      WLId,
-      GYSId,
-    }));
+async function processWL(EWMs, WLId, GYSId, user, transaction) {
+  const newRecords = EWMs.map(item => ({
+    EWM: JSON.stringify(item),
+    status: DBTables.WYWLStatus.RK,
+    WLId,
+    GYSId,
+  }));
 
-    // 批量新建WYWLs
-    const tmpWYWLs = await DBTables.WYWL.bulkCreate(newRecords, {
-      transaction,
-    });
-    // end 批量新建WYWLs
+  // 批量新建WYWLs
+  const tmpWYWLs = await DBTables.WYWL.bulkCreate(newRecords, {
+    transaction,
+  });
+  // end 批量新建WYWLs
 
-    const tmpWYWLCZs = tmpWYWLs.map(item => ({
-      WYWLId: item.id,
-      status: DBTables.WYWLStatus.RK,
-      UserId: user.id,
-    }));
+  const tmpWYWLCZs = tmpWYWLs.map(item => ({
+    WYWLId: item.id,
+    status: DBTables.WYWLStatus.RK,
+    UserId: user.id,
+  }));
 
-    // 新建相关WYWLCZ
-    await DBTables.WYWLCZ.bulkCreate(tmpWYWLCZs, {
-      transaction,
-    });
-    // end 新建相关WYWLCZ
-  }
+  // 新建相关WYWLCZ
+  await DBTables.WYWLCZ.bulkCreate(tmpWYWLCZs, {
+    transaction,
+  });
+  // end 新建相关WYWLCZ
+}
 
-  static async processDP(EWMs, DPId, GYSId, user, transaction) {
-    const newRecords = EWMs.map(item => ({
-      EWM: JSON.stringify(item),
-      status: DBTables.WYDPStatus.RK,
-      DPId,
-      GYSId,
-    }));
+async function processDP(EWMs, DPId, GYSId, user, transaction) {
+  const newRecords = EWMs.map(item => ({
+    EWM: JSON.stringify(item),
+    status: DBTables.WYDPStatus.RK,
+    DPId,
+    GYSId,
+  }));
 
-    // 批量新建WYDPs
-    const tmpWYDPs = await DBTables.WYDP.bulkCreate(newRecords, {
-      transaction,
-    });
-    // end 批量新建WYDPs
+  // 批量新建WYDPs
+  const tmpWYDPs = await DBTables.WYDP.bulkCreate(newRecords, {
+    transaction,
+  });
+  // end 批量新建WYDPs
 
-    const tmpWYDPCZs = tmpWYDPs.map(item => ({
-      WYDPId: item.id,
-      status: DBTables.WYDPStatus.RK,
-      UserId: user.id,
-    }));
+  const tmpWYDPCZs = tmpWYDPs.map(item => ({
+    WYDPId: item.id,
+    status: DBTables.WYDPStatus.RK,
+    UserId: user.id,
+  }));
 
-    // 新建相关WYDPCZ
-    await DBTables.WYDPCZ.bulkCreate(tmpWYDPCZs, {
-      transaction,
-    });
-    // end 新建相关WYDPCZ
-  }
+  // 新建相关WYDPCZ
+  await DBTables.WYDPCZ.bulkCreate(tmpWYDPCZs, {
+    transaction,
+  });
+  // end 新建相关WYDPCZ
 }
