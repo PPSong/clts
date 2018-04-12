@@ -64,7 +64,7 @@ export default class ZhuangXiang extends BusinessApiBase {
     } else if (tmpWLGYSId || tmpDPGYSId) {
       // tmpWLGYSId, tmpDPGYSId存在一个且属于操作者同一GYS
       const tmpGYSId = tmpWLGYSId || tmpDPGYSId;
-      await user.checkGYSId(tmpGYSId);
+      await user.checkGYSId(tmpGYSId, transaction);
     } else {
       // tmpWLGYSId, tmpDPGYSId都不存在
       throw new Error('必须要有发货供应商!');
@@ -133,7 +133,7 @@ export default class ZhuangXiang extends BusinessApiBase {
         // 如果预订数额已满则报错
         throw new Error(`${tmpWYWLEWMs[i]}数额已满!`);
       }
-      await this.zhuangXiangWLEWM(
+      await zhuangXiangWLEWM(
         tmpDDGTWL,
         tmpWYWLEWMs[i],
         tmpWLGYSId,
@@ -175,7 +175,7 @@ export default class ZhuangXiang extends BusinessApiBase {
         // 如果预订数额已满则报错
         throw new Error(`${tmpWYDPEWMs[i]}数额已满!`);
       }
-      await this.zhuangXiangDPEWM(
+      await zhuangXiangDPEWM(
         tmpDDDWDP,
         tmpWYDPEWMs[i],
         tmpDPGYSId,
