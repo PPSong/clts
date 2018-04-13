@@ -137,12 +137,13 @@ AS
 SELECT
 	aa.GTId,
     aa.WLId,
-    count(aa.WLId) WLTotal
+    sum(aa.WLIdNumber) WLTotal
 FROM
 	(
 	SELECT
 		a.GTId,
-		b.WLId
+		b.WLId,
+		1 * a.EJZHTotal WLIdNumber
 	FROM
 		V_GT_EJZH AS a
 	LEFT JOIN
