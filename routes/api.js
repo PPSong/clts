@@ -185,9 +185,9 @@ router.post('/shenQingShangShiWLBuHuo', async (req, res, next) => {
 
     transaction = await sequelize.transaction();
 
-    const {
-      DDId(optional), GTId, WLId, imageUrl, note,
-    } = req.body;
+    // const {
+    //   DDId(optional), GTId, WLId, imageUrl, note,
+    // } = req.body;
 
     // 检查操作记录权限
 
@@ -314,9 +314,6 @@ router.post('/shenQingShangShiWLBuHuo', async (req, res, next) => {
 // 反馈
 
 // 反馈图
-
-
-
 
 
 // 常规RESTFUL API
