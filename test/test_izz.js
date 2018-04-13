@@ -41,6 +41,10 @@ import {
   KDD,
 } from '../models/Model';
 
+const isArrayEqual = function (x, y) {
+  return _(x).differenceWith(y, _.isEqual).isEmpty();
+}
+
 const readFile = (path, opts = 'utf8') =>
   new Promise((res, rej) => {
     fs.readFile(path, opts, (err, data) => {
@@ -129,7 +133,7 @@ describe('SPRT测试', () => {
     });
 
     await con.connect();
-    await con.query('DROP DATABASE cltp');
+    await con.query('DROP DATABASE IF EXISTS cltp');
     await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
 
     const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
@@ -931,7 +935,7 @@ describe('SPRT测试', () => {
         });
       });//前置条件：FG_T,Tester1&Tester2数据库中不存在
 
-      it('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
+      it.only('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
         const PPId = 1;
         const FGPayload = {
           name: 'FG1',
@@ -939,10 +943,10 @@ describe('SPRT测试', () => {
           Testers: ['Tester_T1', 'Tester_T2'],
         };
         const response = await post(
-          'createFG_Tester_FGTester',
+          'createFGAndTesterAndFGTester',
           {
             PPId: PPId,
-            FG: FGPayload,
+            FGPayload: FGPayload,
           },
           KFJLToken,
         );
@@ -2003,7 +2007,7 @@ describe('SPRT测试', () => {
   // KFJL 生成订单
   describe('/createDD', async () => {
     describe('成功', async () => {
-      it.only('KFJL创建DD', async () => {
+      it('KFJL创建DD', async () => {
         const PPId = 1;
         const name = 'DD_PP1';
 
@@ -2022,44 +2026,40 @@ describe('SPRT测试', () => {
 
         const dd_gt_wl = await DD_GT_WL.findAll({ where: { DDId: dd.dataValues.id } });
         let ddgtwlList = [];
-        let ddgtwlObj = {};
-
         ddgtwlList = dd_gt_wl.map(item => ({
           GTId: item.dataValues.GTId,
           WLId: item.dataValues.WLId,
           number: item.dataValues.number,
         }));
+        const tureddgtwlList = [
+          { GTId: 1, WLId: 11, number: 2 },
+          { GTId: 1, WLId: 5, number: 4 },
+          { GTId: 2, WLId: 12, number: 2 },
+          { GTId: 2, WLId: 13, number: 2 },
+          { GTId: 2, WLId: 5, number: 4 },
+          { GTId: 2, WLId: 6, number: 4 },
+          { GTId: 2, WLId: 7, number: 4 },
+          { GTId: 2, WLId: 1, number: 8 },
+          { GTId: 2, WLId: 2, number: 8 },
+          { GTId: 2, WLId: 3, number: 8 },
+          { GTId: 3, WLId: 11, number: 2 },
+          { GTId: 3, WLId: 5, number: 4 },
+          { GTId: 4, WLId: 14, number: 2 },
+          { GTId: 4, WLId: 15, number: 2 },
+          { GTId: 4, WLId: 16, number: 2 },
+          { GTId: 4, WLId: 8, number: 4 },
+          { GTId: 4, WLId: 10, number: 4 },
+          { GTId: 4, WLId: 1, number: 8 }
+        ];
+        assert.equal(isArrayEqual(ddgtwlList, tureddgtwlList), true);
 
-        const ppTest1 = ddgtwlList //.sort();
-        console.log(ppTest1);
-        const ppTest2 = [{ GTId: 1, WLId: 11, number: 2 },
-        { GTId: 1, WLId: 5, number: 4 },
-        { GTId: 2, WLId: 12, number: 2 },
-        { GTId: 2, WLId: 13, number: 2 },
-        { GTId: 2, WLId: 5, number: 4 },
-        { GTId: 2, WLId: 6, number: 4 },
-        { GTId: 2, WLId: 7, number: 4 },
-        { GTId: 2, WLId: 1, number: 8 },
-        { GTId: 2, WLId: 2, number: 8 },
-        { GTId: 2, WLId: 3, number: 8 },
-        { GTId: 3, WLId: 11, number: 2 },
-        { GTId: 3, WLId: 5, number: 4 },
-        { GTId: 4, WLId: 14, number: 2 },
-        { GTId: 4, WLId: 15, number: 2 },
-        { GTId: 4, WLId: 16, number: 2 },
-        { GTId: 4, WLId: 8, number: 4 },
-        { GTId: 4, WLId: 10, number: 4 },
-        { GTId: 4, WLId: 1, number: 8 }];
-        // dd_gt_wl.forEach(item => {
-        //   ddgtwlList.push(item.dataValues);
-        //   // ddgtwlObj[item.dataValues.GTId] = { {item.dataValues.WLId: item.dataValues}};
-        // });
-        // console.log('dd_gt_wl----->', ddgtwlList, ddgtwlList.length);
-          const sortFun = (item1, item2) => (`${item1.GTId}_${item1.WLId}_${item1.number}` > `${item2.GTId}_${item2.WLId}_${item2.number}`)
-
-        assert.deepEqual(ppTest1.sort(sortFun), ppTest2.sort(sortFun));
-
-
+        const dddwdp = await DD_DW_DP.findAll({ where: { DDId: dd.dataValues.id } });
+        let dddwdpList = [];
+        dddwdpList = dddwdp.map(item => ({
+          GTId: item.dataValues.GTId,
+          WLId: item.dataValues.WLId,
+          number: item.dataValues.number,
+        }));
       });
     });
     describe('失败', async () => {
@@ -2083,7 +2083,17 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('该品牌已有未审批通过订单', async () => {
+          const PPId = 1;
+          const name = 'DD_PP1';
 
+          await post(
+            'createDD',
+            {
+              PPId: PPId,
+              name: name,
+            },
+            KFJLToken,
+          );
         });
       });
       describe.skip('唯一性校验', async () => { });
