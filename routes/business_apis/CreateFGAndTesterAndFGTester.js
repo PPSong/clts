@@ -8,15 +8,15 @@ export default class CreateFGAndTesterAndFGTester extends BusinessApiBase {
 
   static async mainProcess(req, res, next, user, transaction) {
     const { PPId, FGPayload } = req.body;
-
+    const { name } = FGPayload;
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     await user.checkPPId(PPId, transaction);
 
     // 检查FG如果在对应PP中已存在, 应该是enable状态
-    const tmpFG = await DBTables.FG.findOne({
+    let tmpFG = await DBTables.FG.findOne({
       where: {
         PPId,
-        name: DBTables.FG.name,
+        name,
       },
       transaction,
     });
@@ -49,16 +49,8 @@ export default class CreateFGAndTesterAndFGTester extends BusinessApiBase {
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 如不存在则创建FG
-    let tmpFG2 = await DBTables.FG.findOne({
-      where: {
-        PPId,
-        name: DBTables.FG.name,
-      },
-      transaction,
-    });
-
-    if (!tmpFG2) {
-      tmpFG2 = await DBTables.FG.create(
+    if (!tmpFG) {
+      tmpFG = await DBTables.FG.create(
         {
           name: FGPayload.name,
           PPId,
@@ -95,7 +87,7 @@ export default class CreateFGAndTesterAndFGTester extends BusinessApiBase {
     // end 如不存在则创建Tester
 
     // 把Testers配置到FG上
-    await tmpFG2.setTesters(TesterIds, { through: { PPId }, transaction });
+    await tmpFG.setTesters(TesterIds, { through: { PPId }, transaction });
     // end 把Testers配置到FG上
   }
 }
