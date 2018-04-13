@@ -115,56 +115,9 @@ router.post('/shouXiang', businessApis.ShouXiang.getApi());
 router.post('/shouHuo', businessApis.ShouHuo.getApi());
 // 安装反馈状态 [GTBA, AZG]
 router.post('/anZhuangFanKuiZhuangTai', businessApis.AnZhuangFanKuiZhuangTai.getApi());
+// 安装反馈图片 [GTBA, AZG]
+router.post('/anZhuangFanKuiTuPian', businessApis.AnZhuangFanKuiTuPian.getApi());
 
-
-// AZG 安装反馈状态
-router.post('/anZhuangFanKuiZhuangTai1', async (req, res, next) => {
-  let transaction;
-  const { user } = req;
-
-  try {
-    // 检查api调用权限
-    if (![JS.GTBA].includes(user.JS)) {
-      throw new Error('没有权限!');
-    }
-    // end 检查api调用权限
-
-    transaction = await sequelize.transaction();
-
-    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
-    const { HWEWMs } = req.body;
-
-    // 检查操作记录权限
-
-    // 检查HWEWMs是属于SH状态
-    // end 检查HWEWMs是属于SH状态
-
-    // 检查HWEWMs所属AZGUserId是和这个操作员一致
-    // end 检查HWEWMs所属AZGUserId是和这个操作员一致
-
-    // end 检查操作记录权限
-
-    // HWEWMs状态转为FK
-    // end HWEWMs状态转为FK
-
-    // 新建相关WYWLCZ/WYDPCZ
-    // end 新建相关WYWLCZ/WYDPCZ
-
-    // end 新建相关记录
-
-    await transaction.commit();
-
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
-  } catch (err) {
-    // Rollback
-    await (transaction && transaction.rollback());
-    ppLog(err);
-    next(err);
-  }
-});
 
 // AZG 安装WL反馈图片
 router.post('/anZhuangWLFanKuiTuPian', async (req, res, next) => {

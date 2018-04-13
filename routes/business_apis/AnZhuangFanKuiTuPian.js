@@ -3,7 +3,7 @@ import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 import * as ppUtils from './ppUtils';
 
-export default class AnZhuangFanKuiZhuangTai extends BusinessApiBase {
+export default class AnZhuangFanKuiTuPian extends BusinessApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.GTBA, DBTables.JS.AZG];
   }

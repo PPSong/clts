@@ -49,7 +49,7 @@ export const sequelize = new Sequelize('cltp', 'root', 'tcltcl', {
   dialectOptions: {
     multipleStatements: true,
   },
-  logging: true,
+  logging: false,
   operatorsAliases,
 });
 
@@ -2376,12 +2376,6 @@ export const DD_GT_WL = sequelize.define(
     ZXNumber: {
       type: Sequelize.INTEGER,
     },
-    SHNumber: {
-      type: Sequelize.INTEGER,
-    },
-    FKNumber: {
-      type: Sequelize.INTEGER,
-    },
     AZGSId: {
       type: Sequelize.INTEGER,
     },
@@ -2473,12 +2467,6 @@ export const DD_DW_DP = sequelize.define(
       type: Sequelize.INTEGER,
     },
     ZXNumber: {
-      type: Sequelize.INTEGER,
-    },
-    SHNumber: {
-      type: Sequelize.INTEGER,
-    },
-    FKNumber: {
       type: Sequelize.INTEGER,
     },
     AZGSId: {
@@ -3077,6 +3065,70 @@ WYDP.hasMany(WYDPCZ, {
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
+
+// WLQJFKT
+export const WLQJFKT = sequelize.define(
+  'WLQJFKT',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// DPQJFKT
+export const DPQJFKT = sequelize.define(
+  'DPQJFKT',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 
