@@ -91,12 +91,13 @@ AS
 SELECT 
 	aa.GTId,
     aa.WLId,
-    count(aa.WLId) WLTotal
+    count(aa.WLIdNumber) WLTotal
 FROM
 	(
 	SELECT
 		a.GTId,
-		b.WLId
+		b.WLId,
+        1 * a.YJZHTotal WLIdNumber
 		
 	FROM
 		V_GT_YJZH AS a
