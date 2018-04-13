@@ -9,19 +9,19 @@ export default class AnZhuangFanKuiTuPian extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    // HWPayloads = [{id: 1, AZFK: 'XX'}]
+    // HWPayloads = [{id: 1, imageUrl: 'XX'}]
     const {
-      DDId, GTId, EWMType, HWPayloads,
+      DDId, GTId, EWMType, QJTs, HWPayloads,
     } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     if (EWMType === DBTables.EWMType.WL) {
-      await processWYWLs(DDId, GTId, HWPayloads, user, transaction);
+      await processWYWLs(DDId, GTId, QJTs, HWPayloads, user, transaction);
     } else if (EWMType === DBTables.EWMType.DP) {
-      await processWYDPs(DDId, GTId, HWPayloads, user, transaction);
+      await processWYDPs(DDId, GTId, QJTs, HWPayloads, user, transaction);
     } else {
-      throw new Error('二维码必须都是物料或灯片!');
+      throw new Error('必须都是物料或灯片!');
     }
   }
 }
@@ -57,9 +57,9 @@ async function processWYWLs(DDId, GTId, WYWLPayloads, user, transaction) {
   });
 
   // 检查是否已有过FK
-  const hasFKRecords = targetWYWLs.filter(item => item.AZFK !== null);
+  const hasFKRecords = targetWYWLs.filter(item => item.status === DBTables.WYWLStatus.FKT);
   if (hasFKRecords.length !== 0) {
-    throw new Error('已有安装反馈, 不能再反馈了!');
+    throw new Error('已有反馈图, 不能再上传反馈图了!');
   }
   // end 检查是否已有过FK
 
@@ -67,33 +67,27 @@ async function processWYWLs(DDId, GTId, WYWLPayloads, user, transaction) {
   const tmpWYWLIds = WYWLPayloads.map(item => item.id);
   const isSame = _.isEqual(targetWYWLIds.sort(), tmpWYWLIds.sort());
   if (!isSame) {
-    throw new Error('反馈必须包含所有在本订单在本柜台的物料安装任务!');
+    throw new Error('反馈图必须包含所有在本订单在本柜台的物料安装任务!');
   }
   // end 检查是否是操作者在本DD_GT的所有任务
 
-  // 检查HWEWMs不是属于SH状态的只可以填非安装成功类型的AZFKType
-  const tmpUnReceivedWYWLs = targetWYWLs.filter(item => item.status !== DBTables.WYWLStatus.SH);
-  const tmpUnReceivedWYWLIds = tmpUnReceivedWYWLs.map(item => item.id);
-
-  const tmpFailedPayloads = WYWLPayloads.filter(item => tmpUnReceivedWYWLIds.includes(item.id) && item.AZFK === DBTables.AZFKType.AZCG);
-  if (tmpFailedPayloads.length > 0) {
-    throw new Error(`${tmpFailedPayloads}不是${DBTables.WYWLStatus.SH}状态, 不能反馈为:${DBTables.AZFKType.AZCG}`);
-  }
-  // end 检查HWEWMs不是属于SH状态的只可以填非安装成功类型的AZFKType
-
   // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-  // HWEWMs状态转为FK, 同时填写AZFK, 新建相关WYWLCZ/WYDPCZ
+  // 新建WLQJFKT
+  // end 新建WLQJFKT
+
+  // HWEWMs状态转为FKT, 新建相关WYWLCZ/WYDPCZ
   for (let i = 0; i < WYWLPayloads.length; i++) {
     await ppUtils.changeWYWLsStatus(
       [WYWLPayloads[i].id],
-      DBTables.WYWLStatus.FK,
+      DBTables.WYWLStatus.FKT,
       user,
       transaction,
-      WYWLPayloads[i].AZFK,
+      null,
+      WYWLPayloads[i].imageUrl,
     );
   }
-  // end HWEWMs状态转为FK, 同时填写AZFK, 新建相关WYWLCZ/WYDPCZ
+  // end HWEWMs状态转为FKT, 新建相关WYWLCZ/WYDPCZ
 }
 
 async function processWYDPs(DDId, GTId, WYDPPayloads, user, transaction) {
@@ -159,6 +153,9 @@ async function processWYDPs(DDId, GTId, WYDPPayloads, user, transaction) {
   // end 检查HWEWMs不是属于SH状态的只可以填非安装成功类型的AZFKType
 
   // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+
+  // 新建DPQJFKT
+  // end 新建DPQJFKT
 
   // HWEWMs状态转为FK, 同时填写AZFK, 新建相关WYWLCZ/WYDPCZ
   for (let i = 0; i < WYDPPayloads.length; i++) {

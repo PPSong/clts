@@ -98,18 +98,30 @@ export async function changeWYDPsInKDXsStatus(KDXEWMs, status, user, transaction
   // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
 }
 
-export async function changeWYWLsStatus(ids, status, user, transaction, AZFK = null) {
-  let updateObj;
+export async function changeWYWLsStatus(
+  ids,
+  status,
+  user,
+  transaction,
+  AZFK = null,
+  imageUrl = null,
+) {
+  let updateObj = {
+    status,
+  };
   if (AZFK) {
     updateObj = {
-      status,
+      ...updateObj,
       AZFK,
     };
-  } else {
+  }
+  if (imageUrl) {
     updateObj = {
-      status,
+      ...updateObj,
+      imageUrl,
     };
   }
+
   await DBTables.WYWL.update(updateObj, {
     where: {
       id: {
@@ -131,16 +143,27 @@ export async function changeWYWLsStatus(ids, status, user, transaction, AZFK = n
   // end 新建相关WYWLCZ
 }
 
-export async function changeWYDPsStatus(ids, status, user, transaction, AZFK = null) {
-  let updateObj;
+export async function changeWYDPsStatus(
+  ids,
+  status,
+  user,
+  transaction,
+  AZFK = null,
+  imageUrl = null,
+) {
+  let updateObj = {
+    status,
+  };
   if (AZFK) {
     updateObj = {
-      status,
+      ...updateObj,
       AZFK,
     };
-  } else {
+  }
+  if (imageUrl) {
     updateObj = {
-      status,
+      ...updateObj,
+      imageUrl,
     };
   }
   await DBTables.WYDP.update(updateObj, {

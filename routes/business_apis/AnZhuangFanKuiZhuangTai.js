@@ -21,7 +21,7 @@ export default class AnZhuangFanKuiZhuangTai extends BusinessApiBase {
     } else if (EWMType === DBTables.EWMType.DP) {
       await processWYDPs(DDId, GTId, HWPayloads, user, transaction);
     } else {
-      throw new Error('二维码必须都是物料或灯片!');
+      throw new Error('必须都是物料或灯片!');
     }
   }
 }

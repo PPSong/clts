@@ -122,6 +122,20 @@ export const EWMType = {
   KDX: 'KDX',
 };
 
+export const WLBHStatus = {
+  DKFJLSP: '待客服经理审批',
+  DPPJLSP: '待品牌经理审批',
+  BH: '驳回',
+  TG: '通过',
+};
+
+export const DPBHStatus = {
+  DKFJLSP: '待客服经理审批',
+  DPPJLSP: '待品牌经理审批',
+  BH: '驳回',
+  TG: '通过',
+};
+
 export const CS = ['北京', '上海', '广州', '深圳'];
 
 const getBasicTable = str =>
