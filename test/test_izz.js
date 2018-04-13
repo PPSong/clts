@@ -33,17 +33,12 @@ import {
   WYDP,
   WYWLStatus,
   WYDPStatus,
-  PPJL_PP,
-  KFJL_PP,
-  GZ_PP,
-  GLY_AZGS,
-  EJZH_FGTester,
-  EJZH_SJWL,
-  YJZH_EJZH,
-  QY,
-  GYSType,
-  GLY_GYS,
-  GT_YJZH,
+  WYWLCZ,
+  WYDPCZ,
+  KDX,
+  KDXStatus,
+  KDXCZ,
+  KDD,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -125,7 +120,7 @@ let AZGSGLYToken;
 let ZHYToken;
 let AZGToken;
 
-describe('SPRT测试案例', () => {
+describe('SPRT测试', () => {
   beforeEach(async () => {
     const con = mysql.createConnection({
       host: 'localhost',
@@ -136,18 +131,6 @@ describe('SPRT测试案例', () => {
     await con.connect();
     await con.query('DROP DATABASE cltp');
     await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
-
-    // // Drop all tables
-    // await sequelize.drop();
-    // await sequelize.sync({ force: true });
-    // await User.create({
-    //   id: '1',
-    //   JS: '系统管理员',
-    //   username: 'admin',
-    //   password: '$2a$08$L0.LfGHcX4CsXP1H5DBmlustuUNWoFGhwVUcxLjHDkfWAO6M0MCxq',
-    //   createdAt: '2018-04-07 20:11:04.108',
-    //   updatedAt: '2018-04-07 20:11:04.108'
-    // });
 
     const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
 
@@ -197,15 +180,55 @@ describe('SPRT测试案例', () => {
 
   // 格式说明
   // describe('API名称', async () => {
-  //   describe('成功案例', async () => {
+  //   describe('成功', async () => {
   //   });
-  //   describe('失败案例', async () => {
+  //   describe('失败', async () => {
   //     describe('数据不合法', async () => { });
   //     describe('没有权限', async () => { });
   //     describe('操作状态不正确', async () => { });
   //     describe('唯一性校验', async () => { });
   //   });
   // });
+
+  // 新建PP [ADMIN]
+  describe('PP', async () => {
+    describe('成功', async () => {
+      it('admin新建PP', async () => {
+        const name = 'PP_T';
+
+        const response = await post(
+          'PP',
+          {
+            name: name,
+          },
+          adminToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const pp = await PP.findOne({ where: { name: name } });
+        assert.notEqual(pp, null);
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => {
+        it('admin新建重复的PP', async () => {
+          const name = 'PP1';
+
+          const response = await post(
+            'PP',
+            {
+              name: name,
+            },
+            adminToken,
+          );
+          assert.equal(response.data.code, -1);
+        });
+      });
+    });
+  });
 
   // 新建PPJL [ADMIN]
   describe('/createPPJL', async () => {
@@ -255,7 +278,6 @@ describe('SPRT测试案例', () => {
         assert.include(userList, user.dataValues.id);
 
         const user1 = await User.findOne({ where: { username: 'PPJL1' } });
-        console.log('userList', userList);
         assert.notInclude(userList, user1.dataValues.id);
       });
     });
@@ -269,7 +291,6 @@ describe('SPRT测试案例', () => {
 
   // 新建KFJL [PPJL]
   describe('/createKFJL', async () => {
-
     describe('成功', async () => {
       it('PPJL创建KFJL', async () => {
         let tempPPJLToken;
@@ -379,7 +400,6 @@ describe('SPRT测试案例', () => {
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
-        
 
         const gt = await GT.findOne({ where: { name: name } });
         assert.notEqual(gt, null);
@@ -409,6 +429,7 @@ describe('SPRT测试案例', () => {
             KFJLToken,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe.skip('操作状态不正确', async () => { });
@@ -451,6 +472,7 @@ describe('SPRT测试案例', () => {
             KFJLToken,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe.skip('操作状态不正确', async () => { });
@@ -501,6 +523,7 @@ describe('SPRT测试案例', () => {
             KFJLToken,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe.skip('操作状态不正确', async () => { });
@@ -539,7 +562,7 @@ describe('SPRT测试案例', () => {
       describe('没有权限', async () => {
         it('KFJL为不属于自己管理的GT分配GZ', async () => {
           const GZId = 12;
-          const GTIds = [13, 14];
+          const GTIds = [5, 6];
           const response = await post(
             'setGZ_GTs',
             {
@@ -549,11 +572,12 @@ describe('SPRT测试案例', () => {
             KFJLToken,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
 
         it('KFJL为GT分配不属于自己管理的PP的GZ', async () => {
           const GZId = 10;
-          const GTIds = [13, 14];
+          const GTIds = [5, 6];
           const response = await post(
             'setGZ_GTs',
             {
@@ -563,6 +587,7 @@ describe('SPRT测试案例', () => {
             KFJLToken,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe.skip('操作状态不正确', async () => { });
@@ -644,6 +669,134 @@ describe('SPRT测试案例', () => {
     });
   });
 
+  // 创建 DW [KFJL]
+  describe('DW', async () => {
+    describe.skip('成功', async () => {
+      it('KFJL新建DW', async () => {
+        const name = 'DW_T';
+        const GTId = 1;
+
+        const response = await post(
+          'DW',
+          {
+            name: name,
+            GTId: GTId,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const dw = await DW.findOne({ where: { name: name } });
+        assert.notEqual(dw, null);
+      });
+    });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('KFJL创建不属于自己管理的GT的DW', async () => {
+          const name = 'DW_T';
+          const GTId = 5;
+
+          const response = await post(
+            'DW',
+            {
+              name: name,
+              GTId: GTId,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe.skip('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => {
+        it('KFJL创建GT已经存在的DW', async () => {
+          const name = 'DW1';
+          const GTId = 1;
+
+          const response = await post(
+            'DW',
+            {
+              name: name,
+              GTId: GTId,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          console.log('data.msg-->', response.data.msg);
+          // assert.include(response.data.msg, '没有权限');
+        });
+      });
+    });
+  });
+
+  // 创建 DP [KFJL]
+  describe('DP', async () => {
+    describe.skip('成功', async () => {
+      it('KFJL创建DP', async () => {
+        const name = 'DP_T';
+        const PPId = 1;
+        const GYSId = 1;
+
+        const response = await post(
+          'DP',
+          {
+            name: name,
+            PPId: PPId,
+            GYSId: GYSId
+          },
+          KFJLToke,
+        );
+        assert.equal(response.data.code, 1);
+
+        const dp = await DP.findOne({ where: { name: name } });
+        assert.notEqual(dp, null);
+      });
+    });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('KFJL新建不属于自己管理的PP的DP', async () => {
+          const name = 'DP_T';
+          const PPId = 2;
+          const GYSId = 1;
+
+          const response = await post(
+            'DP',
+            {
+              name: name,
+              PPId: PPId,
+              GYSId: GYSId
+            },
+            KFJLToke,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe.skip('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => {
+        it('KFJL新建已经存在的DP', async () => {
+          const name = 'DP1';
+          const PPId = 1;
+          const GYSId = 1;
+
+          const response = await post(
+            'DP',
+            {
+              name: name,
+              PPId: PPId,
+              GYSId: GYSId
+            },
+            KFJLToke,
+          );
+          assert.equal(response.data.code, -1);
+        });
+      });
+    });
+  });
+
   // 配置 DP_DWs [KFJL]
   describe('/setDP_DWs', async () => {
     describe('成功', async () => {
@@ -704,12 +857,42 @@ describe('SPRT测试案例', () => {
         });
       });
     });
-    describe.skip('失败', async () => {
-      describe('数据不合法', async () => {
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => {
       });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('没有权限', async () => {
+        it('KFJL配置不属于自己管理的PP的DP', async () => {
+          const DPId = 4;
+          const DWIds = [1];
+          const response = await post(
+            'setDP_DWs',
+            {
+              id: DPId,
+              DWIds: DWIds,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+
+        it('KFJL配置不属于自己管理的PP的DW', async () => {
+          const DPId = 1;
+          const DWIds = [19];
+          const response = await post(
+            'setDP_DWs',
+            {
+              id: DPId,
+              DWIds: DWIds,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
     });
   });
 
@@ -813,12 +996,32 @@ describe('SPRT测试案例', () => {
         });
       });//前置条件：FG_T不存在，Tester1&Tester2数据库中存在
     });
-    describe.skip('失败', async () => {
-      describe('数据不合法', async () => {
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => {
       });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => {
+      describe('没有权限', async () => {
+        it('KFJL创建不属于自己管理的PP的FGTester', async () => {
+          const PPId = 2;
+          const FGPayload = {
+            name: 'FG_T',
+            note: 'note_T',
+            Testers: ['Tester_T1', 'Tester_T2'],
+          };
+
+          const response = await post(
+            'createFG_Tester_FGTester',
+            {
+              PPId: PPId,
+              FG: FGPayload,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => {
       });
     });
   });
@@ -859,6 +1062,7 @@ describe('SPRT测试案例', () => {
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
         assert.equal(ejzh_sjwl.length, 0);
       });//WL和FGTester均没有
+
       it('KFJL创建仅包含FGTester的EJZH', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
@@ -901,6 +1105,7 @@ describe('SPRT测试案例', () => {
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
         assert.equal(ejzh_sjwl.length, 0);
       });//仅FGTesters
+
       it('KFJL创建仅包含SJWL的EJZH', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
@@ -939,6 +1144,7 @@ describe('SPRT测试案例', () => {
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
         assert.notEqual(ejzh_sjwl.length, 0);
       });//仅SJWLs
+
       it('KFJL创建包含FGTester和SJWL的EJZH-1', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
@@ -1104,6 +1310,7 @@ describe('SPRT测试案例', () => {
             KFJLToken,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '不是二级物料');
         });
 
         it('KFJL创建EJZH，关联EJWL', async () => {
@@ -1136,7 +1343,59 @@ describe('SPRT测试案例', () => {
           assert.equal(response.data.code, -1);
         });
       });
-      describe.skip('没有权限', async () => { });
+      describe('没有权限', async () => {
+        it('KFJL创建不属于自己管理的PP的EJZH', async () => {
+          const PPId = 2;
+          const name = 'EJZH_T';
+          const WLId = 53;
+          const imageUrl = 'imageUrl_T';
+          const XGTs = ['XGT_T1', 'XGT_T2'];
+          const FGTesters = [];
+          const SJWLs = [];
+
+          const response = await post(
+            'createEJZH',
+            {
+              PPId: PPId,
+              name: name,
+              WLId: WLId,
+              imageUrl: imageUrl,
+              XGTs: XGTs,
+              FGTesters: FGTesters,
+              SJWLs: SJWLs,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+
+        it('KFJL创建EJZH中EJWL不属于自己管理的PP', async () => {
+          const PPId = 1;
+          const name = 'EJZH_T';
+          const WLId = 53;
+          const imageUrl = 'imageUrl_T';
+          const XGTs = ['XGT_T1', 'XGT_T2'];
+          const FGTesters = [];
+          const SJWLs = [];
+
+          const response = await post(
+            'createEJZH',
+            {
+              PPId: PPId,
+              name: name,
+              WLId: WLId,
+              imageUrl: imageUrl,
+              XGTs: XGTs,
+              FGTesters: FGTesters,
+              SJWLs: SJWLs,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
       describe.skip('操作状态不正确', async () => { });
       describe.skip('唯一性校验', async () => { });
     });
@@ -1297,7 +1556,7 @@ describe('SPRT测试案例', () => {
             number: 2,
           },
         ];
-        
+
         const response = await post(
           'editEJZH',
           {
@@ -1333,11 +1592,61 @@ describe('SPRT测试案例', () => {
         });
       });
     });
-    describe.skip('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => {
+
+      });
+      describe('没有权限', async () => {
+        it('KFJL编辑不属于自己管理的EJZH', async () => {
+          const EJZHId = 7;
+          const WLId = 5;
+          const imageUrl = 'imageUrlEJZH1';
+          const XGTs = ['EJZH1Url1'];
+          const FGTesters = [];
+          const SJWLs = [];
+
+          const response = await post(
+            'editEJZH',
+            {
+              id: EJZHId,
+              WLId: WLId,
+              imageUrl: imageUrl,
+              XGTs: XGTs,
+              FGTesters: FGTesters,
+              SJWLs: SJWLs,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+
+        it('KFJL编辑EJZH中的EJWL不属于自己管理的PP', async () => {
+          const EJZHId = 1;
+          const WLId = 21;
+          const imageUrl = 'imageUrlEJZH1';
+          const XGTs = ['EJZH1Url1'];
+          const FGTesters = [];
+          const SJWLs = [];
+
+          const response = await post(
+            'editEJZH',
+            {
+              id: EJZHId,
+              WLId: WLId,
+              imageUrl: imageUrl,
+              XGTs: XGTs,
+              FGTesters: FGTesters,
+              SJWLs: SJWLs,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
     });
   });
 
@@ -1434,7 +1743,7 @@ describe('SPRT测试案例', () => {
             KFJLToken,
           );
           assert.equal(response.data.code, -1);
-
+          assert.include(response.data.msg, '不是一级物料');
         });
       });
       describe.skip('没有权限', async () => { });
@@ -1452,8 +1761,6 @@ describe('SPRT测试案例', () => {
         const imageUrl = 'imageUrlYJZH1';
         const XGTs = ['YJZH1Url1'];
         const EJZHs = [];
-
-        console.log('1---->',YJZHId);
 
         const response = await post(
           'editYJZH',
@@ -1542,7 +1849,7 @@ describe('SPRT测试案例', () => {
         assert.equal(response.data.code, 1);
 
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: YJZHId } });
-        
+
         let EJZHIdList = [];
         yjzh_ejzh.forEach(item => {
           EJZHIdList.push(item.dataValues.EJZHId);
@@ -1564,7 +1871,7 @@ describe('SPRT测试案例', () => {
             number: 2,
           },
         ];
-        
+
         const response = await post(
           'editYJZH',
           {
@@ -1579,7 +1886,7 @@ describe('SPRT测试案例', () => {
         assert.equal(response.data.code, 1);
 
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: YJZHId } });
-        
+
         let EJZHIdList = [];
         yjzh_ejzh.forEach(item => {
           EJZHIdList.push(item.dataValues.EJZHId);
@@ -1636,23 +1943,848 @@ describe('SPRT测试案例', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('KFJL将YJZH配置到不属于自己管理的GT', async () => {
+          const YJZHId = 1;
+          const GTs = [
+            {
+              id: 5,
+              number: 2
+            },
+            {
+              id: 6,
+              number: 2
+            },
+          ];
+
+          const response = await post(
+            'setYJZH_GTs',
+            {
+              id: YJZHId,
+              GTs: GTs,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+
+        it('KFJL配置不属于自己管理的YJZH', async () => {
+          const YJZHId = 7;
+          const GTs = [
+            {
+              id: 1,
+              number: 2
+            },
+            {
+              id: 2,
+              number: 2
+            },
+          ];
+
+          const response = await post(
+            'setYJZH_GTs',
+            {
+              id: YJZHId,
+              GTs: GTs,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe.skip('操作状态不正确', async () => { });
+      describe.skip('唯一性校验', async () => { });
     });
   });
 
-  // // KFJL 生成订单
-  // describe('/createDD', async () => {
+  // KFJL 生成订单
+  describe('/createDD', async () => {
+    describe('成功', async () => {
+      it.only('KFJL创建DD', async () => {
+        const PPId = 1;
+        const name = 'DD_PP1';
+
+        const response = await post(
+          'createDD',
+          {
+            PPId: PPId,
+            name: name,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        const dd = await DD.findOne({ where: { name: name } });
+        assert.notEqual(dd, null);
+
+        const dd_gt_wl = await DD_GT_WL.findAll({ where: { DDId: dd.dataValues.id } });
+        let ddgtwlList = [];
+        let ddgtwlObj = {};
+
+        ddgtwlList = dd_gt_wl.map(item => ({
+          GTId: item.dataValues.GTId,
+          WLId: item.dataValues.WLId,
+          number: item.dataValues.number,
+        }));
+
+        const ppTest1 = ddgtwlList //.sort();
+        console.log(ppTest1);
+        const ppTest2 = [{ GTId: 1, WLId: 11, number: 2 },
+        { GTId: 1, WLId: 5, number: 4 },
+        { GTId: 2, WLId: 12, number: 2 },
+        { GTId: 2, WLId: 13, number: 2 },
+        { GTId: 2, WLId: 5, number: 4 },
+        { GTId: 2, WLId: 6, number: 4 },
+        { GTId: 2, WLId: 7, number: 4 },
+        { GTId: 2, WLId: 1, number: 8 },
+        { GTId: 2, WLId: 2, number: 8 },
+        { GTId: 2, WLId: 3, number: 8 },
+        { GTId: 3, WLId: 11, number: 2 },
+        { GTId: 3, WLId: 5, number: 4 },
+        { GTId: 4, WLId: 14, number: 2 },
+        { GTId: 4, WLId: 15, number: 2 },
+        { GTId: 4, WLId: 16, number: 2 },
+        { GTId: 4, WLId: 8, number: 4 },
+        { GTId: 4, WLId: 10, number: 4 },
+        { GTId: 4, WLId: 1, number: 8 }];
+        // dd_gt_wl.forEach(item => {
+        //   ddgtwlList.push(item.dataValues);
+        //   // ddgtwlObj[item.dataValues.GTId] = { {item.dataValues.WLId: item.dataValues}};
+        // });
+        // console.log('dd_gt_wl----->', ddgtwlList, ddgtwlList.length);
+        assert.deepEqual(ppTest1.sort(), ppTest2.sort());
+
+
+      });
+    });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe.skip('没有权限', async () => {
+        it('KFJL创建不属于自己管理的PP的DD', async () => {
+          const PPId = 2;
+          const name = 'DD_PP1';
+
+          const response = await post(
+            'createDD',
+            {
+              PPId: PPId,
+              name: name,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('该品牌已有未审批通过订单', async () => {
+
+        });
+      });
+      describe.skip('唯一性校验', async () => { });
+    });
+  });
+
+  // describe('/reCreateDD', async () => {
   //   describe('成功', async () => {
+  //     it('客服经理成功重新生成订单', async () => {
+  //       //订单内数据有效；
+  //     });
   //   });
   //   describe('失败', async () => {
-  //     describe('数据不合法', async () => { });
-  //     describe('没有权限', async () => { });
-  //     describe('操作状态不正确', async () => { });
-  //     describe('唯一性校验', async () => { });
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非客服经理登入', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('该订单非待审核状态', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
   //   });
   // });
-});
+  // describe('/setDD_GTFXs', async () => {
+  //   describe('成功', async () => {
+  //     it('客服经理成功翻新柜台', async () => {
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
 
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非客服经理登入', async () => {
+
+  //       });
+  //       it('该柜台非客服经理所属品牌下柜台', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('当前品牌有正在进行的订单', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/setDDGTWLs_AZGS', async () => {
+  //   describe('成功', async () => {
+  //     it('品牌经理批量设置订单柜台物料的安装公司', async () => {
+
+  //     });
+  //   });
+
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非品牌经理登入', async () => {
+
+  //       });
+  //       it('安装公司不存在', async () => {
+
+  //       });
+  //       it('品牌经理非该订单所属品牌的品牌经理', async () => {
+
+  //       });
+  //       it('柜台订单物料不属于同一个订单', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('当前品牌订单状态非待审批', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/setDDDWDPs_AZGS', async () => {
+  //   describe('成功', async () => {
+  //     it('品牌经理批量设置订单灯位灯片的安装公司', async () => {
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非品牌经理登入', async () => {
+
+  //       });
+  //       it('安装公司不存在', async () => {
+
+  //       });
+  //       it('品牌经理非订单所属品牌的品牌经理', async () => {
+
+  //       });
+  //       it('订单灯位灯片不属于同一个订单', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('当前品牌订单状态非待审批', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/approveDD', async () => {
+  //   describe('成功', async () => {
+  //     it('品牌经理审批通过订单', async () => {
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非品牌经理登入', async () => {
+
+  //       });
+  //       it('品牌经理非订单所属品牌的品牌经理', async () => {
+
+  //       });
+  //       it('订单内物料/灯片不属于同一订单', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('当前品牌订单状态非待审批', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/setDDGTWLs_GYS', async () => {
+  //   describe('成功', async () => {
+  //     it('供应商管理员批量设置订单柜台物料的发货供应商', async () => {
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非供应商管理员登入', async () => {
+
+  //       });
+  //       it('订单柜台物料不属于同一个订单', async () => {
+
+  //       });
+  //       it('订单柜台物料供应商非当前操作者所属供应商', async () => {
+
+  //       });
+
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('当前品牌订单状态非已审批', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/setDDDWDPs_GYS', async () => {
+  //   describe('成功', async () => {
+  //     it('供应商管理员批量设置订单灯位灯片的发货供应商', async () => {
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非供应商管理员登入', async () => {
+
+  //       });
+  //       it('订单灯位灯片不属于同一个订单', async () => {
+
+  //       });
+  //       it('订单灯位灯片供应商非当前操作者所属供应商', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('当前品牌订单状态非已审批', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+
+  // describe('/setDDGTWLs_AZG', async () => {
+  //   describe('成功', async () => {
+  //     it('安装公司管理员批量设置订单柜台物料的安装工', async () => {
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非安装工管理员登入', async () => {
+
+  //       });
+  //       it('订单柜台物料不属于同一个订单', async () => {
+
+  //       });
+  //       it('订单柜台物料对应安装公司不属于同一个安装公司', async () => {
+
+  //       });
+  //       it('订单中安装公司非安装工管理员所属安装公司', async () => {
+
+  //       });
+  //       it('所分配安装工非安装工管理员所属安装公司下的安装工', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('当前品牌订单状态非已审批', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/setDDDWDPs_AZG', async () => {
+  //   describe('成功', async () => {
+  //     it('安装公司管理员批量设置订单灯位灯片的安装工', async () => {
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非安装工管理员登入', async () => {
+
+  //       });
+  //       it('订单灯位灯片不属于同一个订单', async () => {
+
+  //       });
+  //       it('订单灯位灯片对应安装公司不属于同一个安装公司', async () => {
+
+  //       });
+  //       it('该安装公司非安装工管理员所属安装公司', async () => {
+
+  //       });
+  //       it('所分配安装工非安装工管理员所属安装公司下的安装工', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('当前品牌订单状态非已审批', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/piLiangRuKu', async () => {
+  //   describe('成功', async () => {
+  //     it('装货员批量入库成功', async () => {
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非装货员登入', async () => {
+
+  //       });
+  //       it('二维码信息非物料/灯片', async () => {
+
+  //       });
+  //       it('二维码中物料/灯片不属于装货员所属的供应商/中转供应商', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('二维码状态为已入库之后的状态', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/zhuangXiang', async () => {
+  //   describe('成功', async () => {
+  //     it('装货员装箱成功', async () => {
+  //       //箱子如果不存在，要新建箱子；
+  //       //装箱成功后物料待装箱数量相应减少；
+  //       //装箱后货物状态更改为装箱；
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非装货员登入', async () => {
+
+  //       });
+  //       it('货物二维码信息非物料/灯片', async () => {
+
+  //       });
+  //       it('货物二维码组信息非同属于物料/灯片', async () => {
+
+  //       });
+  //       it('货物二维码组物料/灯片不属于同一个装货员所属的供应商/中转供应商', async () => {
+
+  //       });
+  //       it('货物二维码信息非同属于同一个订单_柜台', async () => {
+
+  //       });
+  //       it('货物已装箱后箱内未增加唯一二维码记录，箱中对应物料应装数未减少', async () => {
+
+  //       });
+  //       it('如快递箱已存在，快递箱二维码信息非快递箱', async () => {
+
+  //       });
+  //       it('快递箱未存在且无法新建', async () => {
+
+  //       });
+  //       it('如快递箱已存在，快递箱所属柜台非当前柜台', async () => {
+
+  //       });
+
+
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('未装箱前，货物二维码状态为已入库之后的状态', async () => {
+
+  //       });
+  //       it('未装箱前，已有快递箱状态非装箱状态', async () => {
+
+  //       });
+  //       it('货物装箱数量超出该柜台应装数量', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/chuXiang', async () => {
+  //   describe('成功', async () => {
+  //     it('装货员出箱成功', async () => {
+  //       //出箱货物需为同一个装货员，但无需为同一个柜台；      
+  //       //出箱后货物待装箱数量增加；
+  //       //出箱后货物状态更改为待入库状态； 
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非装货员登入', async () => {
+
+  //       });
+  //       it('货物二维码信息非物料/灯片', async () => {
+
+  //       });
+  //       it('货物二维码组物料/灯片不属于同一个装货员所属的供应商/中转供应商', async () => {
+
+  //       });
+  //       it('出箱后箱内该货物唯一二维码记录未从箱中清除，货物应装数量未相应增加', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('未出箱前，货物二维码状态非装箱状态', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/guanLianKuaiDi', async () => {
+  //   describe('成功', async () => {
+  //     it('装货员关联快递成功', async () => {
+  //       //快递箱成功关联后，快递箱状态转为发货状态；
+  //       //快递箱成功关联后，箱中物料/灯片状态更改为发货状态      
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非装货员登入', async () => {
+
+  //       });
+  //       it('快递箱二维码信息非快递箱', async () => {
+
+  //       });
+  //       it('快递箱二维码不属于同一个柜台', async () => {
+
+  //       });
+  //       it('快递单未存在且无法新建', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('未关联快递前，快递箱二维码状态非装箱状态', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/jieChuGuanLianKuaiDi', async () => {
+  //   describe('成功', async () => {
+  //     it('装货员解除关联快递成功', async () => {
+  //       //解除关联后，快递箱状态更改为装箱状态；     
+  //       //解除关联后，箱中货物状态更改为装箱状态；
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非装货员登入', async () => {
+
+  //       });
+  //       it('快递箱二维码信息非快递箱', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('未解除关联快递前，快递箱二维码状态非发货状态', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/shouXiang', async () => {
+  //   describe('成功', async () => {
+  //     it('柜台BA收箱成功', async () => {
+  //       //收箱后，快递箱及箱内货物状态更改为收箱状态；
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非柜台BA登入', async () => {
+
+  //       });
+  //       it('快递箱二维码信息非快递箱', async () => {
+
+  //       });
+  //       it('快递箱所属柜台非该柜台BA对应的柜台', async () => {
+
+  //       });
+  //       it('快递箱内货物对应柜台非该柜台BA对应的柜台', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('未收箱前，快递箱二维码状态非发货状态', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/shouHuo', async () => {
+  //   describe('成功', async () => {
+  //     it('柜台BA/安装工收货成功', async () => {
+  //       //收货后，货物状态更改为收货状态；
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非柜台BA/安装工登入', async () => {
+
+  //       });
+  //       it('货物二维码信息非货物', async () => {
+
+  //       });
+  //       it('货物二维码所属柜台BA/安装工非该柜台BA/安装工', async () => {
+
+  //       });
+  //       it('货物二维码属于该安装工，并不属于该柜台', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('若货物未被修改描述，未收货前，货物二维码状态非收箱状态', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+
+  // describe('/anZhuangFanKuiZhuangTai', async () => {
+  //   describe('成功', async () => {
+  //     it('柜台BA/安装工安装反馈状态成功', async () => {
+  //       //反馈状态后，货物状态更改为反馈状态；
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非柜台BA/安装工登入', async () => {
+
+  //       });
+  //       it('货物二维码所属柜台BA/安装工非该柜台BA/安装工', async () => {
+
+  //       });
+  //       it('货物二维码所属订单_柜台任务未全部展现', async () => {
+
+  //       });
+  //       it('订单_柜台任务展现范围超过该安装工/BA的任务范围', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('未反馈前，已收货货物二维码状态非收货状态', async () => {
+
+  //       });
+  //       it('未反馈前，未收货货物二维码状态非装箱/发货状态', async () => {
+
+  //       });
+  //       it('反馈时，所有货物二维码安装描述未全部反馈', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/anZhuangWLFanKuiTuPian', async () => {
+  //   describe('成功', async () => {
+  //     it('安装工安装物料反馈图片成功', async () => {
+  //       //反馈图片后，货物状态更改为反馈图状态；
+  //       //反馈图片后，该BA/安装工的该订单_柜台全景反馈图重置为最新的全景反馈图；
+
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非柜台BA/安装工登入', async () => {
+
+  //       });
+  //       it('该订单_柜台所有属于该柜台BA/安装工的任务未全部展现', async () => {
+
+  //       });
+  //       it('订单_柜台任务展现范围超过该安装工/BA的任务范围', async () => {
+
+  //       });
+
+  //       it('该订单_柜台属于该柜台BA/安装工的全景反馈图未重置', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+  //       it('未反馈前，货物二维码状态非反馈状态', async () => {
+
+  //       });
+  //       it('反馈时，该订单_柜台所有属于该柜台BA/安装工的任务的反馈图未全部上传', async () => {
+
+  //       });
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/shenQingRiChangWLBuHuo', async () => {
+  //   describe('成功', async () => {
+  //     it('柜台BA、柜长申请日常补货成功', async () => {
+  //       //申请成功后，生成补货记录；
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非柜台BA/柜长登入', async () => {
+
+  //       });
+  //       it('该柜台非操作者权限范围内柜台', async () => {
+
+  //       });
+
+  //       it('该物料ID在该柜台不存在', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+  // describe('/shenQingShangShiWLBuHuo', async () => {
+  //   describe('成功', async () => {
+  //     it('柜台BA、安装工、柜长申请上市补货成功', async () => {
+  //       //申请成功后，生成补货记录；
+  //     });
+  //   });
+  //   describe('失败', async () => {
+  //     describe('数据不合法', async () => {
+
+  //     });
+  //     describe('没有权限', async () => {
+  //       it('非柜台BA/柜长/安装工登入', async () => {
+
+  //       });
+
+  //       it('该柜台非操作者权限范围内柜台', async () => {
+
+  //       });
+  //       it('如果是安装工补货，该物料不属于该安装工安装', async () => {
+
+  //       });
+
+  //       it('该物料ID在该柜台不存在', async () => {
+
+  //       });
+  //     });
+  //     describe('操作状态不正确', async () => {
+
+  //     });
+  //     describe('唯一性校验', async () => {
+
+  //     });
+  //   });
+  // });
+
+
+});
