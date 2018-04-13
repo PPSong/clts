@@ -2060,6 +2060,15 @@ describe('SPRT测试', () => {
           WLId: item.dataValues.WLId,
           number: item.dataValues.number,
         }));
+        const truedddwdpList = [
+          { DWId: 1, DPId: 1 },
+          { DWId: 2, DPId: 2 },
+          { DWId: 3, DPId: 2 },
+          { DWId: 4, DPId: 1 },
+          { DWId: 5, DPId: 2 },
+          { DWId: 6, DPId: 3 }
+        ];
+        assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
     });
     describe('失败', async () => {
