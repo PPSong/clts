@@ -88,11 +88,7 @@ export const WYWLStatus = {
   FH: '发货',
   SX: '收箱',
   SH: '收货',
-  AZCG: '安装成功',
-  DS: '丢失',
-  CCBD: '尺寸不对',
-  PS: '破损',
-  QT: '其他',
+  FK: '反馈',
   FKT: '反馈图',
 };
 
@@ -102,11 +98,7 @@ export const WYDPStatus = {
   FH: '发货',
   SX: '收箱',
   SH: '收货',
-  AZCG: '安装成功',
-  DS: '丢失',
-  CCBD: '尺寸不对',
-  PS: '破损',
-  QT: '其他',
+  FK: '反馈',
   FKT: '反馈图',
 };
 
@@ -117,14 +109,31 @@ export const KDXStatus = {
 };
 
 export const AZFKType = {
-  OK: '成功',
-  SB: '失败',
+  AZCG: '安装成功',
+  DS: '丢失',
+  CCBD: '尺寸不对',
+  PS: '破损',
+  QT: '其他',
 };
 
 export const EWMType = {
   WL: 'WL',
   DP: 'DP',
   KDX: 'KDX',
+};
+
+export const WLBHStatus = {
+  DKFJLSP: '待客服经理审批',
+  DPPJLSP: '待品牌经理审批',
+  BH: '驳回',
+  TG: '通过',
+};
+
+export const DPBHStatus = {
+  DKFJLSP: '待客服经理审批',
+  DPPJLSP: '待品牌经理审批',
+  BH: '驳回',
+  TG: '通过',
 };
 
 export const CS = ['北京', '上海', '广州', '深圳'];
@@ -2381,12 +2390,6 @@ export const DD_GT_WL = sequelize.define(
     ZXNumber: {
       type: Sequelize.INTEGER,
     },
-    SHNumber: {
-      type: Sequelize.INTEGER,
-    },
-    FKNumber: {
-      type: Sequelize.INTEGER,
-    },
     AZGSId: {
       type: Sequelize.INTEGER,
     },
@@ -2478,12 +2481,6 @@ export const DD_DW_DP = sequelize.define(
       type: Sequelize.INTEGER,
     },
     ZXNumber: {
-      type: Sequelize.INTEGER,
-    },
-    SHNumber: {
-      type: Sequelize.INTEGER,
-    },
-    FKNumber: {
       type: Sequelize.INTEGER,
     },
     AZGSId: {
@@ -3082,6 +3079,70 @@ WYDP.hasMany(WYDPCZ, {
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
+
+// WLQJFKT
+export const WLQJFKT = sequelize.define(
+  'WLQJFKT',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+// DPQJFKT
+export const DPQJFKT = sequelize.define(
+  'DPQJFKT',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 

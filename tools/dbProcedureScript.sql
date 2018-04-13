@@ -46,7 +46,7 @@ BEGIN
 END; 
 
 DROP PROCEDURE IF EXISTS genDDRelatedData; 
-CREATE PROCEDURE genDDRelatedData(IN v_DDId INT, IN v_lastDDId INT, IN v_now DATETIME(3))
+CREATE PROCEDURE genDDRelatedData(IN v_PPId INT, IN v_DDId INT, IN v_lastDDId INT, IN v_now DATETIME(3))
 BEGIN
 	-- 创建和订单相关的Snapshot
 	INSERT
@@ -55,14 +55,24 @@ BEGIN
         (DDId, DWId, DPId, createdAt, updatedAt)
     SELECT
 		v_DDId,
-        DWId, 
-        DPId, 
+        a.DWId, 
+        a.DPId, 
         v_now, 
         v_now
 	FROM 
-		V_DW_DP
+		V_DW_DP a
+	JOIN
+		DW b
+	ON
+		a.DWId = b.id
+	JOIN
+		GT c
+	ON
+		b.GTId = c.id
     WHERE
-		DPId IS NOT NULL;
+		c.PPId = v_PPId
+	AND
+		a.DPId IS NOT NULL;
     
 	INSERT
     INTO
@@ -70,15 +80,21 @@ BEGIN
         (DDId, GTId, FGTesterId, number, createdAt, updatedAt)
     SELECT
 		v_DDId,
-        GTId, 
-        FGTesterId,
-        FGTesterTotal number,
+        a.GTId, 
+        a.FGTesterId,
+        a.FGTesterTotal number,
         v_now, 
         v_now
 	FROM 
-		V_GT_FGTester
+		V_GT_FGTester a
+	JOIN
+		GT b
+	ON
+		a.GTId = b.id
 	WHERE
-		FGTesterId IS NOT NULL;
+		b.PPId = v_PPId
+	AND
+		a.FGTesterId IS NOT NULL;
     
     INSERT
     INTO
@@ -86,16 +102,21 @@ BEGIN
         (DDId, GTId, WLId, number, createdAt, updatedAt)
     SELECT
 		v_DDId,
-        GTId, 
-        WLId,
-        WLTotal number,
+        a.GTId, 
+        a.WLId,
+        a.WLTotal number,
         v_now, 
         v_now
 	FROM 
-		V_GT_WL
+		V_GT_WL a
+	JOIN
+		GT b
+	ON
+		a.GTId = b.id
 	WHERE
-		WLId IS NOT NULL;
-        
+		b.PPId = v_PPId
+	AND
+		WLId IS NOT NULL;   
         
 	-- 创建和订单相关的DP
     INSERT
@@ -305,7 +326,7 @@ BEGIN
 	AND
 		a.status = v_end_status;
     
-    CALL genDDRelatedData(v_DDId, v_lastDDId, v_now);
+    CALL genDDRelatedData(v_PPId, v_DDId, v_lastDDId, v_now);
     
     SELECT 
 		1 code,
@@ -373,7 +394,7 @@ BEGIN
 		a.status = v_end_status;
     
     CALL clearSnapShotAndDDRelatedData(v_DDId);
-    CALL genDDRelatedData(v_DDId, v_lastDDId, v_now);
+    CALL genDDRelatedData(v_PPId, v_DDId, v_lastDDId, v_now);
     
 	SELECT 
 		1 code,

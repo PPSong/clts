@@ -113,56 +113,11 @@ router.post('/jieChuGuanLianKuaiDi', businessApis.JieChuGuanLianKuaiDi.getApi())
 router.post('/shouXiang', businessApis.ShouXiang.getApi());
 // 收货 [GTBA, AZG]
 router.post('/shouHuo', businessApis.ShouHuo.getApi());
+// 安装反馈状态 [GTBA, AZG]
+router.post('/anZhuangFanKuiZhuangTai', businessApis.AnZhuangFanKuiZhuangTai.getApi());
+// 安装反馈图片 [GTBA, AZG]
+router.post('/anZhuangFanKuiTuPian', businessApis.AnZhuangFanKuiTuPian.getApi());
 
-
-// AZG 安装反馈状态
-router.post('/anZhuangFanKuiZhuangTai', async (req, res, next) => {
-  let transaction;
-  const { user } = req;
-
-  try {
-    // 检查api调用权限
-    if (![JS.GTBA].includes(user.JS)) {
-      throw new Error('没有权限!');
-    }
-    // end 检查api调用权限
-
-    transaction = await sequelize.transaction();
-
-    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
-    const { HWEWMs } = req.body;
-
-    // 检查操作记录权限
-
-    // 检查HWEWMs是属于SH状态
-    // end 检查HWEWMs是属于SH状态
-
-    // 检查HWEWMs所属AZGUserId是和这个操作员一致
-    // end 检查HWEWMs所属AZGUserId是和这个操作员一致
-
-    // end 检查操作记录权限
-
-    // HWEWMs状态转为FK
-    // end HWEWMs状态转为FK
-
-    // 新建相关WYWLCZ/WYDPCZ
-    // end 新建相关WYWLCZ/WYDPCZ
-
-    // end 新建相关记录
-
-    await transaction.commit();
-
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
-  } catch (err) {
-    // Rollback
-    await (transaction && transaction.rollback());
-    ppLog(err);
-    next(err);
-  }
-});
 
 // AZG 安装WL反馈图片
 router.post('/anZhuangWLFanKuiTuPian', async (req, res, next) => {
@@ -230,17 +185,17 @@ router.post('/shenQingShangShiWLBuHuo', async (req, res, next) => {
 
     transaction = await sequelize.transaction();
 
-    const {
-      DDId, GTId, WYId, imageUrl, note,
-    } = req.body;
+    // const {
+    //   DDId(optional), GTId, WLId, imageUrl, note,
+    // } = req.body;
 
     // 检查操作记录权限
 
     // 检查这个GT是否在操作员权限范围
     // end 检查这个GT是否在操作员权限范围
 
-    // 检查这个WLId是否在这个柜台, 如果是AZG, 是否这个WL的安装工
-    // end 检查这个WLId是否在这个柜台, 如果是AZG, 是否这个WL的安装工
+    // 如果是带有DDId的上市补货, 操作者是AZG, 查看是否他有权限
+    // end 如果是带有DDId的上市补货, 操作者是AZG, 查看是否他有权限
 
     // end 检查操作记录权限
 
@@ -266,55 +221,100 @@ router.post('/shenQingShangShiWLBuHuo', async (req, res, next) => {
   }
 });
 
-// AZG, GTBA, GZ 申请日常物料补货
-router.post('/shenQingRiChangWLBuHuo', async (req, res, next) => {
-  let transaction;
-  const { user } = req;
+//--
+// 批量审批通过物料补货 [KFJL]
+// ids
+// 检查操作记录权限
+// end 检查操作记录权限
 
-  try {
-    // 检查api调用权限
-    if (![JS.AZG, JS.GTBA, JS.GZ].includes(user.JS)) {
-      throw new Error('没有权限!');
-    }
-    // end 检查api调用权限
+// 修改状态, 新建相关WLBHCZ
+// end 修改状态, 新建相关WLBHCZ
 
-    transaction = await sequelize.transaction();
+//--
+// 单独审批通过物料补货 [KFJL]
+// id note(optional)
+// 检查操作记录权限
+// end 检查操作记录权限
 
-    const {
-      GTId, WYId, imageUrl, note,
-    } = req.body;
+// 修改状态, 新建相关WLBHCZ
+// end 修改状态, 新建相关WLBHCZ
 
-    // 检查操作记录权限
+//--
+// 单独审批驳回物料补货 [KFJL]
+// id note(must)
+// 检查操作记录权限
+// end 检查操作记录权限
 
-    // 检查这个GT是否在操作员权限范围
-    // end 检查这个GT是否在操作员权限范围
+// 修改状态, 新建相关WLBHCZ
+// end 修改状态, 新建相关WLBHCZ
 
-    // 检查这个WLId是否在这个柜台, 如果是AZG, 是否这个WL的安装工
-    // end 检查这个WLId是否在这个柜台, 如果是AZG, 是否这个WL的安装工
+//--
+// 为物料补货w分配AZGS [PPJL]
+// ids, AZGSId
 
-    // end 检查操作记录权限
+//--
+// 批量审批通过物料补货 [PPJL]
+// ids
+// 检查操作记录权限
+// end 检查操作记录权限
 
-    // 创建WLBH
-    // end 创建WLBH
+// 修改状态, 新建相关WLBHCZ
+// end 修改状态, 新建相关WLBHCZ
 
-    // 新建相关WLBHCZ
-    // end 新建相关WLBHCZ
+//--
+// 单独审批通过物料补货 [PJJL]
+// id note(optional)
+// 检查操作记录权限
+// end 检查操作记录权限
 
-    // end 新建相关记录
+// 修改状态, 新建相关WLBHCZ
+// end 修改状态, 新建相关WLBHCZ
 
-    await transaction.commit();
+//--
+// 单独审批驳回物料补货 [PPJL]
+// id note(must)
+// 检查操作记录权限
+// end 检查操作记录权限
 
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
-  } catch (err) {
-    // Rollback
-    await (transaction && transaction.rollback());
-    ppLog(err);
-    next(err);
-  }
-});
+// 修改状态, 新建相关WLBHCZ
+// end 修改状态, 新建相关WLBHCZ
+
+//--
+// 为物料补货分配发货GYS [生产GYS]
+// ids GYSId
+// 检查操作记录权限
+// 如果ZZGYS, 要检查是否库存足够
+// end 检查操作记录权限
+
+// 修改状态, 新建相关WLBHCZ
+// end 修改状态, 新建相关WLBHCZ
+
+//--
+// 并单 [生产GYS]
+// ids
+// 检查属于同一个发货GYS
+
+//--
+// 分配AZG [AZGSGLY]
+// HBTime, GTId, WLIds, AZGUserId
+
+// 装箱 [ZHY]
+// HBTime, GTId, WLEWMs, KDXEWM
+
+// 出箱--修改原来的出箱函数 [ZHY]
+
+// 关联KDD-修改原来的
+
+// 取消关联-修改原来的
+
+// 收箱-修改原来的
+
+// 收货-修改原来的
+
+// 反馈
+
+// 反馈图
+
 
 // ZHY 出箱
 router.post('/chuXiang', async (req, res, next) => {

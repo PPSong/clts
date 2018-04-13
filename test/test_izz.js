@@ -2055,7 +2055,9 @@ describe('SPRT测试', () => {
         //   // ddgtwlObj[item.dataValues.GTId] = { {item.dataValues.WLId: item.dataValues}};
         // });
         // console.log('dd_gt_wl----->', ddgtwlList, ddgtwlList.length);
-        assert.deepEqual(ppTest1.sort(), ppTest2.sort());
+          const sortFun = (item1, item2) => (`${item1.GTId}_${item1.WLId}_${item1.number}` > `${item2.GTId}_${item2.WLId}_${item2.number}`)
+
+        assert.deepEqual(ppTest1.sort(sortFun), ppTest2.sort(sortFun));
 
 
       });
