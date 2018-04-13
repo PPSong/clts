@@ -98,20 +98,26 @@ export async function changeWYDPsInKDXsStatus(KDXEWMs, status, user, transaction
   // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
 }
 
-export async function changeWYWLsStatus(ids, status, user, transaction) {
-  await DBTables.WYWL.update(
-    {
+export async function changeWYWLsStatus(ids, status, user, transaction, AZFK = null) {
+  let updateObj;
+  if (AZFK) {
+    updateObj = {
       status,
-    },
-    {
-      where: {
-        id: {
-          $in: ids,
-        },
+      AZFK,
+    };
+  } else {
+    updateObj = {
+      status,
+    };
+  }
+  await DBTables.WYWL.update(updateObj, {
+    where: {
+      id: {
+        $in: ids,
       },
-      transaction,
     },
-  );
+    transaction,
+  });
 
   // 新建相关WYWLCZ
   const tmpWYWLCZs = ids.map(item => ({
@@ -125,20 +131,26 @@ export async function changeWYWLsStatus(ids, status, user, transaction) {
   // end 新建相关WYWLCZ
 }
 
-export async function changeWYDPsStatus(ids, status, user, transaction) {
-  await DBTables.WYDP.update(
-    {
+export async function changeWYDPsStatus(ids, status, user, transaction, AZFK = null) {
+  let updateObj;
+  if (AZFK) {
+    updateObj = {
       status,
-    },
-    {
-      where: {
-        id: {
-          $in: ids,
-        },
+      AZFK,
+    };
+  } else {
+    updateObj = {
+      status,
+    };
+  }
+  await DBTables.WYDP.update(updateObj, {
+    where: {
+      id: {
+        $in: ids,
       },
-      transaction,
     },
-  );
+    transaction,
+  });
   // end 更改相关WYDP状态为FH
 
   // 新建相关WYDPCZ
@@ -151,4 +163,15 @@ export async function changeWYDPsStatus(ids, status, user, transaction) {
     transaction,
   });
   // end 新建相关WYDPCZ
+}
+
+export function checkSameEWMTypeAndGetTheType(EWMs) {
+  const tmpTypes = EWMs.map(item => item.type);
+  const tmpUniqueTypes = [...new Set(tmpTypes)];
+
+  if (tmpUniqueTypes.length === 1) {
+    return tmpUniqueTypes[0];
+  }
+
+  return false;
 }

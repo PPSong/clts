@@ -35,6 +35,8 @@ import {
   WYWL,
   WYDP,
   Tester,
+  AZFKType,
+  EWMType,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -1331,6 +1333,36 @@ describe('测试案例', () => {
         'shouHuo',
         {
           HWEWMs,
+        },
+        GTBAToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('GTBA 反馈', async () => {
+      const HWPayloads = [
+        {
+          id: 3,
+          AZFK: AZFKType.AZCG,
+        },
+        {
+          id: 4,
+          AZFK: AZFKType.DS,
+        },
+      ];
+      const DDId = 1;
+      const GTId = 1;
+      const tmpEWMType = EWMType.WL;
+
+      await post(
+        'anZhuangFanKuiZhuangTai',
+        {
+          DDId,
+          GTId,
+          EWMType: tmpEWMType,
+          HWPayloads,
         },
         GTBAToken,
       );

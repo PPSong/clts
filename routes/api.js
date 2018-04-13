@@ -113,10 +113,12 @@ router.post('/jieChuGuanLianKuaiDi', businessApis.JieChuGuanLianKuaiDi.getApi())
 router.post('/shouXiang', businessApis.ShouXiang.getApi());
 // 收货 [GTBA, AZG]
 router.post('/shouHuo', businessApis.ShouHuo.getApi());
+// 安装反馈状态 [GTBA, AZG]
+router.post('/anZhuangFanKuiZhuangTai', businessApis.AnZhuangFanKuiZhuangTai.getApi());
 
 
 // AZG 安装反馈状态
-router.post('/anZhuangFanKuiZhuangTai', async (req, res, next) => {
+router.post('/anZhuangFanKuiZhuangTai1', async (req, res, next) => {
   let transaction;
   const { user } = req;
 

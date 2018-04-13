@@ -49,7 +49,7 @@ export const sequelize = new Sequelize('cltp', 'root', 'tcltcl', {
   dialectOptions: {
     multipleStatements: true,
   },
-  logging: false,
+  logging: true,
   operatorsAliases,
 });
 
@@ -88,11 +88,7 @@ export const WYWLStatus = {
   FH: '发货',
   SX: '收箱',
   SH: '收货',
-  AZCG: '安装成功',
-  DS: '丢失',
-  CCBD: '尺寸不对',
-  PS: '破损',
-  QT: '其他',
+  FK: '反馈',
   FKT: '反馈图',
 };
 
@@ -102,11 +98,7 @@ export const WYDPStatus = {
   FH: '发货',
   SX: '收箱',
   SH: '收货',
-  AZCG: '安装成功',
-  DS: '丢失',
-  CCBD: '尺寸不对',
-  PS: '破损',
-  QT: '其他',
+  FK: '反馈',
   FKT: '反馈图',
 };
 
@@ -117,8 +109,11 @@ export const KDXStatus = {
 };
 
 export const AZFKType = {
-  OK: '成功',
-  SB: '失败',
+  AZCG: '安装成功',
+  DS: '丢失',
+  CCBD: '尺寸不对',
+  PS: '破损',
+  QT: '其他',
 };
 
 export const EWMType = {
