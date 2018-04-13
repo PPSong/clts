@@ -5,6 +5,7 @@ import axios from 'axios';
 import debug from 'debug';
 import fs from 'fs';
 import _ from 'lodash';
+import { PP_DDOperationLock } from '../routes/business_apis/CreateDD';
 
 import {
   init,
@@ -33,6 +34,7 @@ import {
   DD_DW_DP,
   WYWL,
   WYDP,
+  Tester,
 } from '../models/Model';
 
 const readFile = (path, opts = 'utf8') =>
@@ -138,7 +140,7 @@ describe('测试案例', () => {
     PPJLToken = await getToken('PPJL1', '1');
     KFJLToken = await getToken('KFJL1', '1');
     GZToken = await getToken('GZ1', '1');
-    GTBAToken = await getToken('GTBA1', '1');
+    GTBAToken = await getToken('GT1BA', '1');
     GYSGLYToken = await getToken('GYSGLY1', '1');
     AZGSGLYToken = await getToken('AZGSGLY1', '1');
     ZHYToken = await getToken('ZHY1', '1');
@@ -227,7 +229,7 @@ describe('测试案例', () => {
       const tmpQY = QY.EAST;
       const tmpCS = '上海';
       await post(
-        'createGT_GTBA',
+        'createGTWithGTBA',
         {
           PPId,
           name,
@@ -255,7 +257,7 @@ describe('测试案例', () => {
       const id = tmpGT.id;
       const imageUrl = 'T_imageUrl';
       await post(
-        'setGT_IMAGE',
+        'setGTImage',
         {
           id,
           imageUrl,
@@ -296,7 +298,7 @@ describe('测试案例', () => {
       const GTId = tmpGT.id;
       const GTIds = [GTId];
       await post(
-        'setGZ_GTs',
+        'setGZGTs',
         {
           GZUserId,
           GTIds,
@@ -314,7 +316,7 @@ describe('测试案例', () => {
       const password = '1';
       const type = GYSType.SC;
       await post(
-        'createGYSAndGLY',
+        'createGYSWithGLY',
         {
           name,
           username,
@@ -336,7 +338,7 @@ describe('测试案例', () => {
       const username = 'T_AZGSGLY';
       const password = '1';
       await post(
-        'createAZGSAndGLY',
+        'createAZGSWithGLY',
         {
           name,
           username,
@@ -424,7 +426,7 @@ describe('测试案例', () => {
       const DWIds = [11];
 
       await post(
-        'setDP_DWs',
+        'setDPDWs',
         {
           id,
           DWIds,
@@ -510,10 +512,10 @@ describe('测试案例', () => {
       };
 
       await post(
-        'createFG_Tester_FGTester',
+        'createFGAndTesterAndFGTester',
         {
           PPId,
-          FG: FGPayload,
+          FGPayload,
         },
         KFJLToken,
       );
@@ -800,7 +802,7 @@ describe('测试案例', () => {
       const GTs = [{ id: tmpGT0.id, number: 3 }];
 
       await post(
-        'setYJZH_GTs',
+        'setYJZHGTs',
         {
           id,
           GTs,
@@ -847,7 +849,7 @@ describe('测试案例', () => {
       const GTIds = [1, 2];
 
       await post(
-        'setDD_GTFXs',
+        'setDDGTFXs',
         {
           id,
           GTIds,
@@ -884,14 +886,14 @@ describe('测试案例', () => {
     });
 
     it('PPJL 批量设置订单柜台物料的安装公司', async () => {
-      const id = 1;
+      const AZGSId = 1;
       const DD_GT_WLIds = [128, 129];
 
       await post(
-        'setDDGTWLs_AZGS',
+        'setDDGTWLs0AZGS',
         {
-          id,
           DD_GT_WLIds,
+          AZGSId,
         },
         PPJLToken,
       );
@@ -904,17 +906,17 @@ describe('测试案例', () => {
         },
       });
 
-      assert.deepEqual([id, id], tmpDD_GT_WLs.map(item => item.AZGSId));
+      assert.deepEqual([AZGSId, AZGSId], tmpDD_GT_WLs.map(item => item.AZGSId));
     });
 
     it('PPJL 批量设置订单灯位灯片的安装公司', async () => {
-      const id = 1;
+      const AZGSId = 1;
       const DD_DW_DPIds = [16, 17];
 
       await post(
-        'setDDDWDPs_AZGS',
+        'setDDDWDPs0AZGS',
         {
-          id,
+          AZGSId,
           DD_DW_DPIds,
         },
         PPJLToken,
@@ -928,7 +930,7 @@ describe('测试案例', () => {
         },
       });
 
-      assert.deepEqual([id, id], tmpDD_DW_DPs.map(item => item.AZGSId));
+      assert.deepEqual([AZGSId, AZGSId], tmpDD_DW_DPs.map(item => item.AZGSId));
     });
 
     it('PPJL审批通过DD', async () => {
@@ -956,7 +958,7 @@ describe('测试案例', () => {
       const GYSId = 6;
 
       await post(
-        'setDDGTWLs_GYS',
+        'setDDGTWLs0GYS',
         {
           DD_GT_WLIds,
           GYSId,
@@ -980,7 +982,7 @@ describe('测试案例', () => {
       const GYSId = 6;
 
       await post(
-        'setDDDWDPs_GYS',
+        'setDDDWDPs0GYS',
         {
           DD_DW_DPIds,
           GYSId,
@@ -1004,7 +1006,7 @@ describe('测试案例', () => {
       const AZGUserId = 40;
 
       await post(
-        'setDDGTWLs_AZG',
+        'setDDGTWLs0AZG',
         {
           DD_GT_WLIds,
           AZGUserId,
@@ -1028,7 +1030,7 @@ describe('测试案例', () => {
       const AZGUserId = 40;
 
       await post(
-        'setDDDWDPs_AZG',
+        'setDDDWDPs0AZG',
         {
           DD_DW_DPIds,
           AZGUserId,
@@ -1229,7 +1231,7 @@ describe('测试案例', () => {
       const KDDCode = 'T_KDDCode1';
 
       await post(
-        'guanLiangKuaiDi',
+        'guanLianKuaiDi',
         {
           KDXEWMs,
           KDDCode,
@@ -1251,7 +1253,7 @@ describe('测试案例', () => {
       const KDDCode = 'T_KDDCode2';
 
       await post(
-        'guanLiangKuaiDi',
+        'guanLianKuaiDi',
         {
           KDXEWMs,
           KDDCode,
@@ -1263,7 +1265,7 @@ describe('测试案例', () => {
       assert.equal(1, 1);
     });
 
-    it('ZHY 解除关联快递', async () => {
+    it.skip('ZHY 解除关联快递', async () => {
       const KDXEWMs = [
         {
           type: 'KDX',
@@ -1276,11 +1278,61 @@ describe('测试案例', () => {
       ];
 
       await post(
-        'jieChuGuanLiangKuaiDi',
+        'jieChuGuanLianKuaiDi',
         {
           KDXEWMs,
         },
         ZHYToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('GTBA 收箱', async () => {
+      const KDXEWMs = [
+        {
+          type: 'KDX',
+          uuid: 'T_uuid3',
+        },
+        // {
+        //   type: 'KDX',
+        //   uuid: 'T_uuid6',
+        // },
+      ];
+
+      await post(
+        'shouXiang',
+        {
+          KDXEWMs,
+        },
+        GTBAToken,
+      );
+
+      // todo:
+      assert.equal(1, 1);
+    });
+
+    it('AZG 收货', async () => {
+      const HWEWMs = [
+        {
+          type: 'WL',
+          typeId: 13,
+          uuid: 'T_uuid1',
+        },
+        {
+          type: 'WL',
+          typeId: 14,
+          uuid: 'T_uuid2',
+        },
+      ];
+
+      await post(
+        'shouHuo',
+        {
+          HWEWMs,
+        },
+        GTBAToken,
       );
 
       // todo:

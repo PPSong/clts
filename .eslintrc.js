@@ -22,5 +22,6 @@ module.exports = {
     'no-await-in-loop': 'off',
     'prefer-destructuring': 'off',
     'func-names': 'off',
+    'no-empty-function': 'off',
   },
 };
