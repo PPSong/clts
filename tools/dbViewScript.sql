@@ -91,7 +91,7 @@ AS
 SELECT 
 	aa.GTId,
     aa.WLId,
-    count(aa.WLIdNumber) WLTotal
+    sum(aa.WLIdNumber) WLTotal
 FROM
 	(
 	SELECT
