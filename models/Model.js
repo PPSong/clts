@@ -321,6 +321,13 @@ User.prototype.checkGTId = async function (id, transaction) {
         throw new Error('没有权限!');
       }
       break;
+    case JS.GZ:
+      const tmpGTs = await this.getGTs({ transaction });
+      const tmpGTIds = tmpGTs.map(item => item.id);
+      if (!tmpGTIds.includes(id)) {
+        throw new Error('没有权限!');
+      }
+      break;
     case JS.GTBA:
       if (tmpGT.GTBAUserId !== this.id) {
         throw new Error('没有权限!');
@@ -421,7 +428,6 @@ User.prototype.checkDD_GT_WLId = async function (id, transaction) {
 
   return tmpDD_GT_WL;
 };
-
 
 User.prototype.checkWYDPId = async function (id, transaction) {
   if (!transaction) {

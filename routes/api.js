@@ -117,61 +117,11 @@ router.post('/shouHuo', businessApis.ShouHuo.getApi());
 router.post('/anZhuangFanKuiZhuangTai', businessApis.AnZhuangFanKuiZhuangTai.getApi());
 // 安装反馈图片 [GTBA, AZG]
 router.post('/anZhuangFanKuiTuPian', businessApis.AnZhuangFanKuiTuPian.getApi());
+// 安装反馈图片 [GTBA, AZG]
+router.post('/shenQingShangShiWLBuHuo', businessApis.ShenQingShangShiWLBuHuo.getApi());
 
 
-// AZG 安装WL反馈图片
-router.post('/anZhuangWLFanKuiTuPian', async (req, res, next) => {
-  let transaction;
-  const { user } = req;
-
-  try {
-    // 检查api调用权限
-    if (![JS.GTBA].includes(user.JS)) {
-      throw new Error('没有权限!');
-    }
-    // end 检查api调用权限
-
-    transaction = await sequelize.transaction();
-
-    // WYWLs: [{id: 1, imageUrl: 'xxx'}]
-    const { GTId, WYWLs, QJTImageUrl } = req.body;
-
-    // 检查操作记录权限
-
-    // 检查这个DD_GT属于这个AZG的任务都在这里了
-    // end 检查这个DD_GT属于这个AZG的任务都在这里了
-
-    // WYWLs状态为FK
-    // end WYWLs状态为FK
-
-    // end 检查操作记录权限
-
-    // WYWLs状态转为FKT, 加上反馈图
-    // end WYWLs状态转为FKT, 加上反馈图
-
-    // 重置WLQJFKT
-    // end 重置WLQJFKT
-
-    // 新建相关WYWLCZ/WYDPCZ
-    // end 新建相关WYWLCZ/WYDPCZ
-
-    // end 新建相关记录
-
-    await transaction.commit();
-
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
-  } catch (err) {
-    // Rollback
-    await (transaction && transaction.rollback());
-    ppLog(err);
-    next(err);
-  }
-});
-
-// AZG, GTBA, GZ 申请上市物料补货
+// 申请上市物料补货 [GZ, GTBA, AZG]
 router.post('/shenQingShangShiWLBuHuo', async (req, res, next) => {
   let transaction;
   const { user } = req;
