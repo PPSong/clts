@@ -2788,7 +2788,7 @@ export const WYWL = sequelize.define(
     DDGTWLId: {
       type: Sequelize.INTEGER,
     },
-    BHId: {
+    WLBHId: {
       type: Sequelize.INTEGER,
     },
     KDXId: {
@@ -2955,7 +2955,7 @@ export const WYDP = sequelize.define(
     DDDWDPId: {
       type: Sequelize.INTEGER,
     },
-    BHId: {
+    DPBHId: {
       type: Sequelize.INTEGER,
     },
     KDXId: {
