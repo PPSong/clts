@@ -69,9 +69,9 @@ export default class GuanLianKuaiDi extends BusinessApiBase {
     });
     // end 新建相关KDXCZ
 
-    // 改变KDX中WL/DP的状态位FH, 并添加WYWLCZ/WYDPCZ
+    // 改变KDX中WL/DP的状态为FH(对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败), 并添加WYWLCZ/WYDPCZ
     await ppUtils.changeWYWLsInKDXsStatus(KDXEWMs, DBTables.WYWLStatus.FH, user, transaction);
     await ppUtils.changeWYDPsInKDXsStatus(KDXEWMs, DBTables.WYDPStatus.FH, user, transaction);
-    // end 改变KDX中WL/DP的状态位FH, 并添加WYWLCZ/WYDPCZ
+    // end 改变KDX中WL/DP的状态为FH(对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败), 并添加WYWLCZ/WYDPCZ
   }
 }

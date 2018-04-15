@@ -56,12 +56,12 @@ async function processWYWLs(DDId, GTId, WYWLPayloads, user, transaction) {
     transaction,
   });
 
-  // 检查是否已有过FK
-  const hasFKRecords = targetWYWLs.filter(item => item.AZFK !== null);
+  // 检查是否已有过AZFK
+  const hasFKRecords = targetWYWLs.filter(item => item.AZFKType !== null);
   if (hasFKRecords.length !== 0) {
     throw new Error('已有安装反馈, 不能再反馈了!');
   }
-  // end 检查是否已有过FK
+  // end 检查是否已有过AZFK
 
   const targetWYWLIds = targetWYWLs.map(item => item.id);
   const tmpWYWLIds = WYWLPayloads.map(item => item.id);
@@ -75,7 +75,7 @@ async function processWYWLs(DDId, GTId, WYWLPayloads, user, transaction) {
   const tmpUnReceivedWYWLs = targetWYWLs.filter(item => item.status !== DBTables.WYWLStatus.SH);
   const tmpUnReceivedWYWLIds = tmpUnReceivedWYWLs.map(item => item.id);
 
-  const tmpFailedPayloads = WYWLPayloads.filter(item => tmpUnReceivedWYWLIds.includes(item.id) && item.AZFK === DBTables.AZFKType.AZCG);
+  const tmpFailedPayloads = WYWLPayloads.filter(item => tmpUnReceivedWYWLIds.includes(item.id) && item.AZFKType === DBTables.AZFKType.AZCG);
   if (tmpFailedPayloads.length > 0) {
     throw new Error(`${tmpFailedPayloads}不是${DBTables.WYWLStatus.SH}状态, 不能反馈为:${DBTables.AZFKType.AZCG}`);
   }
@@ -90,7 +90,7 @@ async function processWYWLs(DDId, GTId, WYWLPayloads, user, transaction) {
       DBTables.WYWLStatus.FK,
       user,
       transaction,
-      WYWLPayloads[i].AZFK,
+      WYWLPayloads[i].AZFKType,
     );
   }
   // end HWEWMs状态转为FK, 同时填写AZFK, 新建相关WYWLCZ/WYDPCZ
@@ -134,7 +134,7 @@ async function processWYDPs(DDId, GTId, WYDPPayloads, user, transaction) {
   });
 
   // 检查是否已有过FK
-  const hasFKRecords = targetWYDPs.filter(item => item.AZFK !== null);
+  const hasFKRecords = targetWYDPs.filter(item => item.AZFKType !== null);
   if (hasFKRecords.length !== 0) {
     throw new Error('已有安装反馈, 不能再反馈了!');
   }
@@ -152,7 +152,7 @@ async function processWYDPs(DDId, GTId, WYDPPayloads, user, transaction) {
   const tmpUnReceivedWYDPs = tmpWYDPIds.filter(item => item.status !== DBTables.WYDPStatus.SH);
   const tmpUnReceivedWYDPIds = tmpUnReceivedWYDPs.map(item => item.id);
 
-  const tmpFailedPayloads = WYDPPayloads.filter(item => tmpUnReceivedWYDPIds.includes(item.id) && item.AZFK === DBTables.AZFKType.AZCG);
+  const tmpFailedPayloads = WYDPPayloads.filter(item => tmpUnReceivedWYDPIds.includes(item.id) && item.AZFKType === DBTables.AZFKType.AZCG);
   if (tmpFailedPayloads.length > 0) {
     throw new Error(`${tmpFailedPayloads}不是${DBTables.WYDPStatus.SH}状态, 不能反馈为:${DBTables.AZFKType.AZCG}`);
   }
@@ -167,7 +167,7 @@ async function processWYDPs(DDId, GTId, WYDPPayloads, user, transaction) {
       DBTables.WYDPStatus.FK,
       user,
       transaction,
-      WYDPPayloads[i].AZFK,
+      WYDPPayloads[i].AZFKType,
     );
   }
   // end HWEWMs状态转为FK, 同时填写AZFK, 新建相关WYWLCZ/WYDPCZ

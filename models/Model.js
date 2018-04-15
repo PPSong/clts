@@ -2788,7 +2788,7 @@ export const WYWL = sequelize.define(
     KDXId: {
       type: Sequelize.INTEGER,
     },
-    AZFK: {
+    AZFKType: {
       type: Sequelize.STRING,
       validate: {
         enumCheck(val) {
@@ -2955,7 +2955,7 @@ export const WYDP = sequelize.define(
     KDXId: {
       type: Sequelize.INTEGER,
     },
-    AZFK: {
+    AZFKType: {
       type: Sequelize.STRING,
       validate: {
         enumCheck(val) {
