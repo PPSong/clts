@@ -1,5 +1,6 @@
 import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
+import * as ppUtils from './ppUtils';
 
 export default class ShenQingShangShiWLBuHuo extends BusinessApiBase {
   static getAllowAccessJSs() {
@@ -38,6 +39,7 @@ export default class ShenQingShangShiWLBuHuo extends BusinessApiBase {
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 新建物料补货
+    await ppUtils.createWLBH(GTId, WLId, imageUrl, note, user, transaction, DDId);
     // end新建物料补货
   }
 }

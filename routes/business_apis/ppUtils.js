@@ -206,3 +206,74 @@ export function checkSameEWMTypeAndGetTheType(EWMs) {
 
   return false;
 }
+
+export async function createWLBH(GTId, WLId, imageUrl, note, user, transaction, DDId = null) {
+  const tmpWLBH = await DBTables.WLBH.create(
+    {
+      GTId,
+      WLId,
+      imageUrl,
+      note,
+      DDId,
+      status: DBTables.WLBHStatus.DKFJLSP,
+    },
+    { transaction },
+  );
+
+  // 新建相关WLBHCZ
+  await DBTables.WLBHCZ.create(
+    {
+      WLBHId: tmpWLBH.id,
+      status: tmpWLBH.status,
+      userId: user.id,
+    },
+    {
+      transaction,
+    },
+  );
+  // end 新建相关WLBHCZ
+}
+
+export async function changeWLBHsStatus(
+  ids,
+  status,
+  user,
+  transaction,
+  KFJLNote = null,
+  PPJLNote = null,
+) {
+  let updateObj = {
+    status,
+  };
+  if (KFJLNote) {
+    updateObj = {
+      ...updateObj,
+      KFJLNote,
+    };
+  }
+  if (PPJLNote) {
+    updateObj = {
+      ...updateObj,
+      PPJLNote,
+    };
+  }
+  await DBTables.WLBH.update(updateObj, {
+    where: {
+      id: {
+        $in: ids,
+      },
+    },
+    transaction,
+  });
+
+  // 新建相关WLBHCZ
+  const tmpWLBHCZs = ids.map(item => ({
+    WLBHId: item,
+    status,
+    UserId: user.id,
+  }));
+  await DBTables.WLBHCZ.bulkCreate(tmpWLBHCZs, {
+    transaction,
+  });
+  // end 新建相关WLBHCZ
+}
