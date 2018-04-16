@@ -1998,7 +1998,7 @@ describe('SPRT测试', () => {
   });
 
   // KFJL 生成订单
-  describe.only('/createDD', async () => {
+  describe('/createDD', async () => {
     describe('成功', async () => {
       it('KFJL创建DD', async () => {
         const PPId = 1;
@@ -2084,7 +2084,7 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        it.only('该品牌已有未审批通过订单', async () => {
+        it('该品牌已有未审批通过订单', async () => {
           let KFJL2Token = await getToken('KFJL2', '123456');
           const PPId = 2;
           const name = 'DD_PP1';
@@ -2099,7 +2099,7 @@ describe('SPRT测试', () => {
           );
           console.log('izzlog', response.data);
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '订单相关操作正在进行中');
+          // assert.include(response.data.msg, '订单相关操作正在进行中');
         });
       });
       describe.skip('唯一性校验', async () => { });
@@ -2114,6 +2114,7 @@ describe('SPRT测试', () => {
         const DDId = 1;
 
         const response = await post(
+          'reCreateDD',
           {
             DDId,
           },
@@ -2132,10 +2133,11 @@ describe('SPRT测试', () => {
           const DDId = 3;
 
           const response = await post(
+            'reCreateDD',
             {
               DDId,
             },
-            KFJL2Token,
+            KFJL4Token,
           );
           assert.equal(response.data.code, -1);
         });
@@ -2228,9 +2230,10 @@ describe('SPRT测试', () => {
               DD_GT_WLIds,
               AZGSId,
             },
-            PPJLToken,
+            PPJL4Token,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '不能指定安装公司');
         });
       });
       describe.skip('唯一性校验', async () => { });
@@ -2241,18 +2244,19 @@ describe('SPRT测试', () => {
   describe('/setDDDWDPs0AZGS', async () => {
     describe('成功', async () => {
       it('PPJL配置DD_DW_DP的AZGS', async () => {
-        let PPJL3Token = await getToken('PPJL3', '123456');
+        let PPJL2Token = await getToken('PPJL2', '123456');
         const AZGSId = 5;
         const DD_DW_DPIds = [1, 2];
 
         const response = await post(
-          'setDDGTWLs0AZGS',
+          'setDDDWDPs0AZGS',
           {
             DD_DW_DPIds,
             AZGSId,
           },
-          PPJL3Token,
+          PPJL2Token,
         );
+        console.log('izzlog', response.data, PPJL2Token);
         assert.equal(response.data.code, 1);
 
         DD_DW_DPIds.forEach(async (item) => {
@@ -2269,7 +2273,7 @@ describe('SPRT测试', () => {
           const DD_DW_DPIds = [1, 2];
 
           const response = await post(
-            'setDDGTWLs0AZGS',
+            'setDDDWDPs0AZGS',
             {
               DD_DW_DPIds,
               AZGSId,
@@ -2284,10 +2288,10 @@ describe('SPRT测试', () => {
         it('PPJL为已经审批通过的DD配置AZGS', async () => {
           let PPJL4Token = await getToken('PPJL4', '123456');
           const AZGSId = 5;
-          const DD_DW_DPIds = [3, 4];
+          const DD_DW_DPIds = [5, 6];
 
           const response = await post(
-            'setDDGTWLs0AZGS',
+            'setDDDWDPs0AZGS',
             {
               DD_DW_DPIds,
               AZGSId,
@@ -2295,6 +2299,7 @@ describe('SPRT测试', () => {
             PPJL4Token,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '不能指定安装公司');
         });
       });
       describe.skip('唯一性校验', async () => { });
@@ -2351,6 +2356,7 @@ describe('SPRT测试', () => {
             PPJL4Token,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '不能被审批');
         });
       });
       describe('唯一性校验', async () => { });

@@ -3150,6 +3150,190 @@ export const DPQJFKT = sequelize.define(
   },
 );
 
+// WLBH
+export const WLBH = sequelize.define(
+  'WLBH',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    WLId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(WLBHStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    note: {
+      type: Sequelize.TEXT,
+    },
+    KFJLNote: {
+      type: Sequelize.TEXT,
+    },
+    PPJLNote: {
+      type: Sequelize.TEXT,
+    },
+    AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+    AZGUserId: {
+      type: Sequelize.INTEGER,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
+    HBUUID: {
+      type: Sequelize.UUID,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+WLBH.belongsTo(GT, {
+  as: 'GT',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GT.hasMany(WLBH, {
+  as: 'WLBHs',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WLBH.belongsTo(WL, {
+  as: 'WL',
+  foreignKey: 'WLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WL.hasMany(WLBH, {
+  as: 'WLBHs',
+  foreignKey: 'WLId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WLBH.belongsTo(DD, {
+  as: 'DD',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD.hasMany(WLBH, {
+  as: 'WLBHs',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WLBH.belongsTo(AZGS, {
+  as: 'AZGS',
+  foreignKey: 'AZGSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+AZGS.hasMany(WLBH, {
+  as: 'WLBHs',
+  foreignKey: 'AZGSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WLBH.belongsTo(User, {
+  as: 'AZG',
+  foreignKey: 'AZGUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+User.hasMany(WLBH, {
+  as: 'WLBHs',
+  foreignKey: 'AZGUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WLBH.belongsTo(GYS, {
+  as: 'GYS',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GYS.hasMany(WLBH, {
+  as: 'WLBHs',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// WLBHCZ
+export const WLBHCZ = sequelize.define(
+  'WLBHCZ',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    WLBHId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(WLBHStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+WLBHCZ.belongsTo(WLBH, {
+  as: 'WLBH',
+  foreignKey: 'WLBHId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+WLBH.hasMany(WLBHCZ, {
+  as: 'WLBHCZs',
+  foreignKey: 'WLBHId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 
 const initData = (str, num = 200) =>

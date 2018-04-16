@@ -117,89 +117,20 @@ router.post('/shouHuo', businessApis.ShouHuo.getApi());
 router.post('/anZhuangFanKuiZhuangTai', businessApis.AnZhuangFanKuiZhuangTai.getApi());
 // 安装反馈图片 [GTBA, AZG]
 router.post('/anZhuangFanKuiTuPian', businessApis.AnZhuangFanKuiTuPian.getApi());
-// 安装反馈图片 [GTBA, AZG]
-router.post('/shenQingShangShiWLBuHuo', businessApis.ShenQingShangShiWLBuHuo.getApi());
-
-
-// 申请上市物料补货 [GZ, GTBA, AZG]
-router.post('/shenQingShangShiWLBuHuo', async (req, res, next) => {
-  let transaction;
-  const { user } = req;
-
-  try {
-    // 检查api调用权限
-    if (![JS.AZG, JS.GTBA, JS.GZ].includes(user.JS)) {
-      throw new Error('没有权限!');
-    }
-    // end 检查api调用权限
-
-    transaction = await sequelize.transaction();
-
-    // const {
-    //   DDId(optional), GTId, WLId, imageUrl, note,
-    // } = req.body;
-
-    // 检查操作记录权限
-
-    // 检查这个GT是否在操作员权限范围
-    // end 检查这个GT是否在操作员权限范围
-
-    // 如果是带有DDId的上市补货, 操作者是AZG, 查看是否他有权限
-    // end 如果是带有DDId的上市补货, 操作者是AZG, 查看是否他有权限
-
-    // end 检查操作记录权限
-
-    // 创建WLBH
-    // end 创建WLBH
-
-    // 新建相关WLBHCZ
-    // end 新建相关WLBHCZ
-
-    // end 新建相关记录
-
-    await transaction.commit();
-
-    res.json({
-      code: 1,
-      data: 'ok',
-    });
-  } catch (err) {
-    // Rollback
-    await (transaction && transaction.rollback());
-    ppLog(err);
-    next(err);
-  }
-});
-
-//--
+// 申请上市物料补货 [GZ, GTBA, AZG]
+router.post('/shenQingShangShiWLBH', businessApis.ShenQingShangShiWLBH.getApi());
 // 批量审批通过物料补货 [KFJL]
-// ids
-// 检查操作记录权限
-// end 检查操作记录权限
-
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
-
-//--
+router.post('/piLiangShengPiTongGuoWLBHa', businessApis.PiLiangShengPiTongGuoWLBHa.getApi());
 // 单独审批通过物料补货 [KFJL]
-// id note(optional)
-// 检查操作记录权限
-// end 检查操作记录权限
-
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
-
-//--
+router.post('/danDuShengPiTongGuoWLBHa', businessApis.DanDuShengPiTongGuoWLBHa.getApi());
 // 单独审批驳回物料补货 [KFJL]
-// id note(must)
-// 检查操作记录权限
-// end 检查操作记录权限
+router.post('/danDuShengPiBoHuiWLBHa', businessApis.DanDuShengPiBoHuiWLBHa.getApi());
+// 为物料补货分配AZGS [PPJL]
+router.post('/setWLBH0AZGS', businessApis.SetWLBH0AZGS.getApi());
 
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
 
 //--
-// 为物料补货w分配AZGS [PPJL]
+// 为物料补货分配AZGS [PPJL]
 // ids, AZGSId
 
 //--

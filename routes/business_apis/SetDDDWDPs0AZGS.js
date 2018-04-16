@@ -8,7 +8,7 @@ export default class SetDDDWDPs0AZGS extends BusinessApiBase {
 
   static async mainProcess(req, res, next, user, transaction) {
     const { DD_DW_DPIds, AZGSId } = req.body;
-
+    
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 检查DD_DW_DP是否属于同一个DD
