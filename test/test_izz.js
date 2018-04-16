@@ -43,6 +43,18 @@ import {
   KDD,
   DD_GT_WLSnapshot,
   DD_DW_DPSnapshot,
+  PPJL_PP,
+  KFJL_PP,
+  QY,
+  CS,
+  GZ_PP,
+  GYSType,
+  GLY_AZGS,
+  EJZH_FGTester,
+  GLY_GYS,
+  EJZH_SJWL,
+  YJZH_EJZH,
+  GT_YJZH,
 } from '../models/Model';
 
 const isArrayEqual = function (x, y) {
@@ -130,63 +142,57 @@ let AZGToken;
 
 describe('SPRT测试', () => {
   beforeEach(async () => {
-    try {
-      const con = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'tcltcl',
-      });
-  
-      await con.connect();
-      await con.query('DROP DATABASE IF EXISTS cltp');
-      await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
-  
-      const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
-  
-      const scriptArr = data.split(';');
-  
-      await sequelize.sync({ force: true });
-  
-      for (let i = 0; i < scriptArr.length; i++) {
-        if (scriptArr[i].trim().length > 0) {
-          const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
-        }
+    const con = mysql.createConnection({
+      host: 'localhost',
+      user: 'root',
+      password: 'tcltcl',
+    });
+
+    await con.connect();
+    await con.query('DROP DATABASE IF EXISTS cltp');
+    await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
+
+    const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
+
+    const scriptArr = data.split(';');
+
+    await sequelize.sync({ force: true });
+
+    for (let i = 0; i < scriptArr.length; i++) {
+      if (scriptArr[i].trim().length > 0) {
+        const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
       }
-  
-      // 创建View
-      const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
-      await sequelize.query(viewSql, {
-        type: sequelize.QueryTypes.SELECT,
-      });
-      // end 创建View
-  
-      // 创建Procedure
-      const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
-      const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
-      const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
-      await sequelize.query(procedureSql2, {
-        type: sequelize.QueryTypes.SELECT,
-      });
-      // end 创建创建Procedure
-  
-      adminToken = await getToken('admin', '123456');
-      PPJLToken = await getToken('PPJL1', '123456');
-      KFJLToken = await getToken('KFJL1', '123456');
-      GZToken = await getToken('GZ1', '123456');
-      GTBAToken = await getToken('GTBA1', '123456');
-      GYSGLYToken = await getToken('GYSGLY1', '123456');
-      AZGSGLYToken = await getToken('AZGSGLY1', '123456');
-      ZHYToken = await getToken('ZHY1', '123456');
-      AZGToken = await getToken('AZG1', '123456');
-    }
-    catch(err) {
-      console.log('ppLog:', err);
     }
 
+    // 创建View
+    const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
+    await sequelize.query(viewSql, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // end 创建View
+
+    // 创建Procedure
+    const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
+    const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
+    const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
+    await sequelize.query(procedureSql2, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+    // end 创建创建Procedure
+
+    adminToken = await getToken('admin', '123456');
+    PPJLToken = await getToken('PPJL1', '123456');
+    KFJLToken = await getToken('KFJL1', '123456');
+    GZToken = await getToken('GZ1', '123456');
+    GTBAToken = await getToken('GTBA1', '123456');
+    GYSGLYToken = await getToken('GYSGLY1', '123456');
+    AZGSGLYToken = await getToken('AZGSGLY1', '123456');
+    ZHYToken = await getToken('ZHY1', '123456');
+    AZGToken = await getToken('AZG1', '123456');
   });
 
   describe('test', async () => {
-    it.only('small test', async () => {
+    it('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -247,7 +253,7 @@ describe('SPRT测试', () => {
   describe('/createPPJL', async () => {
     describe('成功', async () => {
       it('admin为品牌创建PPJL', async () => {
-        const PPId = 3;
+        const PPId = 7;
         const username = 'PPJL_T';
         const password = '123456';
         const response = await post(
@@ -310,7 +316,7 @@ describe('SPRT测试', () => {
         await post(
           'createPPJL',
           {
-            PPId: 3,
+            PPId: 7,
             username: 'PPJL_T',
             password: '123456',
           },
@@ -318,7 +324,7 @@ describe('SPRT测试', () => {
         );
         tempPPJLToken = await getToken('PPJL_T', '123456');
 
-        const PPId = 3;
+        const PPId = 7;
         const username = 'KFJL_T';
         const password = '123456';
 
@@ -370,7 +376,7 @@ describe('SPRT测试', () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('PPJL为不属于自己管理的PP创建PPJL', async () => {
-          const PPId = 3;
+          const PPId = 7;
           const username = 'KFJL_T1';
           const password = '123456';
 
@@ -393,7 +399,7 @@ describe('SPRT测试', () => {
   });
 
   // 新建GT, GTBA [KFJL]
-  describe('/createGT_GTBA', async () => {
+  describe('/createGTWithGTBA', async () => {
     describe('成功', async () => {
       it('KFJL创建GT', async () => {
         const PPId = 1;
@@ -402,7 +408,7 @@ describe('SPRT测试', () => {
         const tmpQY = QY.EAST;
         const tmpCS = '上海';
         const response = await post(
-          'createGT_GTBA',
+          'createGTWithGTBA',
           {
             PPId: PPId,
             name: name,
@@ -412,6 +418,7 @@ describe('SPRT测试', () => {
           },
           KFJLToken,
         );
+        console.log('izzlog',response);
         assert.equal(response.data.code, 1);
 
         const gt = await GT.findOne({ where: { name: name } });
@@ -431,7 +438,7 @@ describe('SPRT测试', () => {
           const tmpQY = QY.EAST;
           const tmpCS = '上海';
           const response = await post(
-            'createGT_GTBA',
+            'createGTWithGTBA',
             {
               PPId: PPId,
               name: name,
@@ -451,13 +458,13 @@ describe('SPRT测试', () => {
   });
 
   // 编辑柜台图 [KFJL]
-  describe('/setGT_IMAGE', async () => {
+  describe('/setGTImage', async () => {
     describe('成功', async () => {
       it('KFJL编辑GT图片', async () => {
         const GTId = 1;
         const imageUrl = 'imageUrl_T'
         const response = await post(
-          'setGT_IMAGE',
+          'setGTImage',
           {
             id: GTId,
             imageUrl: imageUrl,
@@ -477,7 +484,7 @@ describe('SPRT测试', () => {
           const GTId = 5;
           const imageUrl = 'imageUrl_T'
           const response = await post(
-            'setGT_IMAGE',
+            'setGTImage',
             {
               id: GTId,
               imageUrl: imageUrl,
@@ -545,13 +552,13 @@ describe('SPRT测试', () => {
   });
 
   // 配置 GZ 负责柜台 [KFJL]
-  describe('/setGZ_GTs', async () => {
+  describe('/setGZGTs', async () => {
     describe('成功', async () => {
       it('KFJL为多个GT分配GZ', async () => {
         const GZId = 15;
         const GTIds = [1, 2];
         const response = await post(
-          'setGZ_GTs',
+          'setGZGTs',
           {
             GZUserId: GZId,
             GTIds: GTIds,
@@ -577,7 +584,7 @@ describe('SPRT测试', () => {
           const GZId = 42;
           const GTIds = [10, 11];
           const response = await post(
-            'setGZ_GTs',
+            'setGZGTs',
             {
               GZUserId: GZId,
               GTIds: GTIds,
@@ -592,7 +599,7 @@ describe('SPRT测试', () => {
           const GZId = 15;
           const GTIds = [10, 11];
           const response = await post(
-            'setGZ_GTs',
+            'setGZGTs',
             {
               GZUserId: GZId,
               GTIds: GTIds,
@@ -609,7 +616,7 @@ describe('SPRT测试', () => {
   });
 
   // 新建GYS, GLY
-  describe('/createGYSAndGLY', async () => {
+  describe('/createGYSWithGLY', async () => {
     describe('成功', async () => {
       it('KFJ创建GYSGLY', async () => {
         const name = 'GYS_T';
@@ -617,7 +624,7 @@ describe('SPRT测试', () => {
         const password = '123456';
         const type = GYSType.SC;
         const response = await post(
-          'createGYSAndGLY',
+          'createGYSWithGLY',
           {
             name: name,
             username: username,
@@ -647,14 +654,14 @@ describe('SPRT测试', () => {
   });
 
   // 新建AZGS, GLY
-  describe('/createAZGSAndGLY', async () => {
+  describe('/createAZGSWithGLY', async () => {
     describe('成功', async () => {
       it('KFJL创建AZGSGLY和AZGS', async () => {
         const name = 'AZGS_T';
         const username = 'AZGSGLY_T';
         const password = '123456';
         const response = await post(
-          'createAZGSAndGLY',
+          'createAZGSWithGLY',
           {
             name: name,
             username: username,
@@ -759,7 +766,7 @@ describe('SPRT测试', () => {
             PPId: PPId,
             GYSId: GYSId
           },
-          KFJLToke,
+          KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
@@ -782,7 +789,7 @@ describe('SPRT测试', () => {
               PPId: PPId,
               GYSId: GYSId
             },
-            KFJLToke,
+            KFJLToken,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
@@ -802,7 +809,7 @@ describe('SPRT测试', () => {
               PPId: PPId,
               GYSId: GYSId
             },
-            KFJLToke,
+            KFJLToken,
           );
           assert.equal(response.data.code, -1);
         });
@@ -811,14 +818,14 @@ describe('SPRT测试', () => {
   });
 
   // 配置 DP_DWs [KFJL]
-  describe('/setDP_DWs', async () => {
+  describe('/setDPDWs', async () => {
     describe('成功', async () => {
       it('KFJL将DP关联1个GT的多个DW', async () => {
         let KFJL2Token = await getToken('KFJL2', '123456');
         const DPId = 4;
         const DWIds = [7, 8];
         const response = await post(
-          'setDP_DWs',
+          'setDPDWs',
           {
             id: DPId,
             DWIds: DWIds,
@@ -834,11 +841,30 @@ describe('SPRT测试', () => {
       });
 
       it('KFJL将DP关联多个GT的DW', async () => {
+        await post(
+          'createPPJL',
+          {
+            PPId: 7,
+            username: 'PPJL7',
+            password: '123456',
+          },
+          adminToken,
+        );
+        let PPJL7Token = await getToken('PPJL7', '123456');
+        await post(
+          'createKFJL',
+          {
+            PPId: 7,
+            username: 'KFJL7',
+            password: '123456',
+          },
+          PPJL7Token,
+        );
         let KFJL7Token = await getToken('KFJL7', '123456');
         const DPId = 14;
         const DWIds = [18, 19];
         const response = await post(
-          'setDP_DWs',
+          'setDPDWs',
           {
             id: DPId,
             DWIds: DWIds,
@@ -857,7 +883,7 @@ describe('SPRT测试', () => {
         const DPId = 2;
         const DWIds = [1];
         const response = await post(
-          'setDP_DWs',
+          'setDPDWs',
           {
             id: DPId,
             DWIds: DWIds,
@@ -880,7 +906,7 @@ describe('SPRT测试', () => {
           const DPId = 4;
           const DWIds = [1];
           const response = await post(
-            'setDP_DWs',
+            'setDPDWs',
             {
               id: DPId,
               DWIds: DWIds,
@@ -895,7 +921,7 @@ describe('SPRT测试', () => {
           const DPId = 1;
           const DWIds = [7];
           const response = await post(
-            'setDP_DWs',
+            'setDPDWs',
             {
               id: DPId,
               DWIds: DWIds,
@@ -912,7 +938,7 @@ describe('SPRT测试', () => {
   });
 
   // KFJL 创建 FG, Tester, FGTester
-  describe('/createFG_Tester_FGTester', async () => {
+  describe.only('/createFGAndTesterAndFGTester', async () => {
     describe('成功', async () => {
       it('KFJL创建系统中均不存在的FG、Tester组合', async () => {
         const PPId = 1;
@@ -923,10 +949,10 @@ describe('SPRT测试', () => {
         };
 
         const response = await post(
-          'createFG_Tester_FGTester',
+          'createFGAndTesterAndFGTester',
           {
             PPId: PPId,
-            FG: FGPayload,
+            FGPayload: FGPayload,
           },
           KFJLToken,
         );
@@ -946,7 +972,7 @@ describe('SPRT测试', () => {
         });
       });//前置条件：FG_T,Tester1&Tester2数据库中不存在
 
-      it('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
+      it.only('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
         const PPId = 1;
         const FGPayload = {
           name: 'FG1',
@@ -961,7 +987,7 @@ describe('SPRT测试', () => {
           },
           KFJLToken,
         );
-        console.log(response);
+        console.log('izzlog',response.data);
         assert.equal(response.data.code, 1);
 
         const fg = await FG.findOne({ where: { name: 'FG1' } });
@@ -988,10 +1014,10 @@ describe('SPRT测试', () => {
         };
 
         const response = await post(
-          'createFG_Tester_FGTester',
+          'createFGAndTesterAndFGTester',
           {
             PPId: PPId,
-            FG: FGPayload,
+            FGPayload: FGPayload,
           },
           KFJLToken,
         );
@@ -1024,10 +1050,10 @@ describe('SPRT测试', () => {
           };
 
           const response = await post(
-            'createFG_Tester_FGTester',
+            'createFGAndTesterAndFGTester',
             {
               PPId: PPId,
-              FG: FGPayload,
+              FGPayload: FGPayload,
             },
             KFJLToken,
           );
@@ -1068,7 +1094,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        const ejzh = await EJZH.findOne({ where: { name: name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1111,7 +1137,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        const ejzh = await EJZH.findOne({ where: { name: name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1150,7 +1176,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        const ejzh = await EJZH.findOne({ where: { name: name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1198,7 +1224,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        const ejzh = await EJZH.findOne({ where: { name: name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1246,7 +1272,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
+        const ejzh = await EJZH.findOne({ where: { name: name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1293,7 +1319,7 @@ describe('SPRT测试', () => {
           const FGTesters = [];
           const SJWLs = [
             {
-              id: 1,
+              id: 5,
               number: 2
             },
           ];
@@ -1646,7 +1672,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const yjzh = await YJZH.findOne({ where: { WLId: WLId } });
+        const yjzh = await YJZH.findOne({ where: { name: name } });
         assert.notEqual(yjzh, null);
 
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: yjzh.dataValues.id } });
@@ -1684,7 +1710,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const yjzh = await YJZH.findOne({ where: { WLId: WLId } });
+        const yjzh = await YJZH.findOne({ where: { name: name } });
         assert.notEqual(yjzh, null);
 
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: yjzh.dataValues.id } });
@@ -1877,7 +1903,7 @@ describe('SPRT测试', () => {
   });
 
   // KFJL 配置YJZH_GTs
-  describe('/setYJZH_GTs', async () => {
+  describe('/setYJZHGTs', async () => {
     describe('成功', async () => {
       it('KFJL将YJZH配置到GT', async () => {
         const YJZHId = 1;
@@ -1893,7 +1919,7 @@ describe('SPRT测试', () => {
         ];
 
         const response = await post(
-          'setYJZH_GTs',
+          'setYJZHGTs',
           {
             id: YJZHId,
             GTs: GTs,
@@ -1930,7 +1956,7 @@ describe('SPRT测试', () => {
           ];
 
           const response = await post(
-            'setYJZH_GTs',
+            'setYJZHGTs',
             {
               id: YJZHId,
               GTs: GTs,
@@ -1955,7 +1981,7 @@ describe('SPRT测试', () => {
           ];
 
           const response = await post(
-            'setYJZH_GTs',
+            'setYJZHGTs',
             {
               id: YJZHId,
               GTs: GTs,
@@ -2338,7 +2364,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
         });
       });
-      describe('唯一性校验', async () => {});
+      describe('唯一性校验', async () => { });
     });
   });
 
@@ -2354,14 +2380,14 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => {});
+      describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('GYSGLY设置不属于自己管理的DD_GT_WL的发货GYS', async () => {
 
         });
       });
-      describe('操作状态不正确', async () => {});
-      describe('唯一性校验', async () => {});
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
     });
   });
 
@@ -2377,14 +2403,14 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => {});
+      describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('GYSGLY设置不属于自己管理的DD_DW_DP的发货GYS', async () => {
 
         });
       });
-      describe('操作状态不正确', async () => {});
-      describe('唯一性校验', async () => {});
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
     });
   });
 
@@ -2400,7 +2426,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => {});
+      describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的DD_GT_WL的AZG', async () => {
 
@@ -2409,8 +2435,8 @@ describe('SPRT测试', () => {
 
         });
       });
-      describe('操作状态不正确', async () => {});
-      describe('唯一性校验', async () => {});
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
     });
   });
 
