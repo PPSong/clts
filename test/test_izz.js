@@ -141,6 +141,7 @@ let ZHYToken;
 let AZGToken;
 
 describe('SPRT测试', () => {
+
   beforeEach(async () => {
     const con = mysql.createConnection({
       host: 'localhost',
@@ -418,7 +419,6 @@ describe('SPRT测试', () => {
           },
           KFJLToken,
         );
-        console.log('izzlog',response);
         assert.equal(response.data.code, 1);
 
         const gt = await GT.findOne({ where: { name: name } });
@@ -744,7 +744,6 @@ describe('SPRT测试', () => {
             KFJLToken,
           );
           assert.equal(response.data.code, -1);
-          console.log('data.msg-->', response.data.msg);
           // assert.include(response.data.msg, '没有权限');
         });
       });
@@ -987,7 +986,6 @@ describe('SPRT测试', () => {
           },
           KFJLToken,
         );
-        console.log('izzlog',response.data);
         assert.equal(response.data.code, 1);
 
         const fg = await FG.findOne({ where: { name: 'FG1' } });
@@ -1942,7 +1940,7 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL将YJZH配置到不属于自己管理的GT', async () => {
+        it.only('KFJL将YJZH配置到不属于自己管理的GT', async () => {
           const YJZHId = 1;
           const GTs = [
             {
@@ -1963,6 +1961,7 @@ describe('SPRT测试', () => {
             },
             KFJLToken,
           );
+
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
         });
@@ -2060,7 +2059,6 @@ describe('SPRT测试', () => {
           { DWId: 5, DPId: 2 },
           { DWId: 6, DPId: 3 }
         ];
-        console.log('izzlog', dddwdpList);
         assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
     });
@@ -2097,7 +2095,6 @@ describe('SPRT测试', () => {
             },
             KFJL2Token,
           );
-          console.log('izzlog', response.data);
           assert.equal(response.data.code, -1);
           // assert.include(response.data.msg, '订单相关操作正在进行中');
         });
@@ -2256,7 +2253,6 @@ describe('SPRT测试', () => {
           },
           PPJL2Token,
         );
-        console.log('izzlog', response.data, PPJL2Token);
         assert.equal(response.data.code, 1);
 
         DD_DW_DPIds.forEach(async (item) => {
