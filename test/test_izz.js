@@ -59,7 +59,7 @@ import {
 
 const isArrayEqual = function (x, y) {
   return _(x).differenceWith(y, _.isEqual).isEmpty();
-}
+};
 
 const readFile = (path, opts = 'utf8') =>
   new Promise((res, rej) => {
@@ -81,13 +81,12 @@ const post = async (path, body, token) => {
   try {
     const r = await axios.post(`${api}/${path}`, body, {
       headers: {
-        Authorization: `bearer ${token}`
+        Authorization: `bearer ${token}`,
       },
     });
 
     return r;
   } catch (err) {
-
     return err;
   }
 };
@@ -95,7 +94,7 @@ const post = async (path, body, token) => {
 const put = async (path, body, token) => {
   const r = await axios.put(`${api}/${path}`, body, {
     headers: {
-      Authorization: `bearer ${token}`
+      Authorization: `bearer ${token}`,
     },
   });
 
@@ -106,7 +105,7 @@ const get = async (path, params, token) => {
   const r = await axios.get(`${api}/${path}`, {
     params,
     headers: {
-      Authorization: `bearer ${token}`
+      Authorization: `bearer ${token}`,
     },
   });
 
@@ -114,13 +113,13 @@ const get = async (path, params, token) => {
 };
 
 const getUserIdList = (r) => {
-  let userIdList = [];
+  const userIdList = [];
   for (let i = 0; i < r.length; i++) {
     userIdList.push(r[i].dataValues.UserId);
   }
 
   return userIdList;
-}
+};
 
 const replaceAll = (str, target, replacement) => str.replace(new RegExp(target, 'g'), replacement);
 
@@ -152,7 +151,7 @@ describe('SPRT测试', () => {
     await con.query('DROP DATABASE IF EXISTS cltp');
     await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
 
-    const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
+    const data = await readFile(`${__dirname}/../tools_izz/initDataScript_izz.sql`);
 
     const scriptArr = data.split(';');
 
@@ -218,13 +217,13 @@ describe('SPRT测试', () => {
         const response = await post(
           'PP',
           {
-            name: name,
+            name,
           },
           adminToken,
         );
         assert.equal(response.data.code, 1);
 
-        const pp = await PP.findOne({ where: { name: name } });
+        const pp = await PP.findOne({ where: { name } });
         assert.notEqual(pp, null);
       });
     });
@@ -239,7 +238,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'PP',
             {
-              name: name,
+              name,
             },
             adminToken,
           );
@@ -266,10 +265,10 @@ describe('SPRT测试', () => {
           adminToken,
         );
         assert.equal(response.data.code, 1);
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
 
-        const r = await PPJL_PP.findAll({ where: { PPId: PPId } });
+        const r = await PPJL_PP.findAll({ where: { PPId } });
         const userList = await getUserIdList(r);
         assert.include(userList, user.dataValues.id);
       });
@@ -289,10 +288,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
 
-        const r = await PPJL_PP.findAll({ where: { PPId: PPId } });
+        const r = await PPJL_PP.findAll({ where: { PPId } });
         const userList = await getUserIdList(r);
         assert.include(userList, user.dataValues.id);
 
@@ -331,17 +330,17 @@ describe('SPRT测试', () => {
         const response = await post(
           'createKFJL',
           {
-            PPId: PPId,
-            username: username,
-            password: password,
+            PPId,
+            username,
+            password,
           },
           tempPPJLToken,
         );
         assert.equal(response.data.code, 1);
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
 
-        const r = await KFJL_PP.findAll({ where: { PPId: PPId } });
+        const r = await KFJL_PP.findAll({ where: { PPId } });
         const userList = await getUserIdList(r);
         assert.include(userList, user.dataValues.id);
       });
@@ -354,23 +353,23 @@ describe('SPRT测试', () => {
         const response = await post(
           'createKFJL',
           {
-            PPId: PPId,
-            username: username,
-            password: password,
+            PPId,
+            username,
+            password,
           },
           PPJLToken,
         );
         assert.equal(response.data.code, 1);
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
 
-        const r = await KFJL_PP.findAll({ where: { PPId: PPId } });
+        const r = await KFJL_PP.findAll({ where: { PPId } });
         const userList = await getUserIdList(r);
         assert.include(userList, user.dataValues.id);
 
         const user1 = await User.findOne({ where: { username: 'KFJL1' } });
         assert.notInclude(userList, user1.dataValues.id);
-      });//PP1的KFJL_T变成KFJL1
+      });// PP1的KFJL_T变成KFJL1
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
@@ -383,9 +382,9 @@ describe('SPRT测试', () => {
           const response = await post(
             'createKFJL',
             {
-              PPId: PPId,
-              username: username,
-              password: password,
+              PPId,
+              username,
+              password,
             },
             PPJLToken,
           );
@@ -410,18 +409,17 @@ describe('SPRT测试', () => {
         const response = await post(
           'createGTWithGTBA',
           {
-            PPId: PPId,
-            name: name,
-            code: code,
+            PPId,
+            name,
+            code,
             QY: tmpQY,
             CS: tmpCS,
           },
           KFJLToken,
         );
-        console.log('izzlog',response);
         assert.equal(response.data.code, 1);
 
-        const gt = await GT.findOne({ where: { name: name } });
+        const gt = await GT.findOne({ where: { name } });
         assert.notEqual(gt, null);
 
         const user = await User.findOne({ where: { id: gt.dataValues.GTBAUserId } });
@@ -440,9 +438,9 @@ describe('SPRT测试', () => {
           const response = await post(
             'createGTWithGTBA',
             {
-              PPId: PPId,
-              name: name,
-              code: code,
+              PPId,
+              name,
+              code,
               QY: tmpQY,
               CS: tmpCS,
             },
@@ -462,12 +460,12 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('KFJL编辑GT图片', async () => {
         const GTId = 1;
-        const imageUrl = 'imageUrl_T'
+        const imageUrl = 'imageUrl_T';
         const response = await post(
           'setGTImage',
           {
             id: GTId,
-            imageUrl: imageUrl,
+            imageUrl,
           },
           KFJLToken,
         );
@@ -482,12 +480,12 @@ describe('SPRT测试', () => {
       describe('没有权限', async () => {
         it('KFJL编辑不属于自己管理的PP的GT图片', async () => {
           const GTId = 5;
-          const imageUrl = 'imageUrl_T'
+          const imageUrl = 'imageUrl_T';
           const response = await post(
             'setGTImage',
             {
               id: GTId,
-              imageUrl: imageUrl,
+              imageUrl,
             },
             KFJLToken,
           );
@@ -510,18 +508,18 @@ describe('SPRT测试', () => {
         const response = await post(
           'createGZ',
           {
-            PPId: PPId,
-            username: username,
-            password: password,
+            PPId,
+            username,
+            password,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
 
-        const r = await GZ_PP.findAll({ where: { PPId: PPId } });
+        const r = await GZ_PP.findAll({ where: { PPId } });
         const userList = await getUserIdList(r);
         assert.include(userList, user.dataValues.id);
       });
@@ -536,9 +534,9 @@ describe('SPRT测试', () => {
           const response = await post(
             'createGZ',
             {
-              PPId: PPId,
-              username: username,
-              password: password,
+              PPId,
+              username,
+              password,
             },
             KFJLToken,
           );
@@ -561,18 +559,18 @@ describe('SPRT测试', () => {
           'setGZGTs',
           {
             GZUserId: GZId,
-            GTIds: GTIds,
+            GTIds,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
         const gt = await GT.findAll({ where: { GZUserId: GZId } });
-        let GTIdList = [];
+        const GTIdList = [];
         for (let i = 0; i < gt.length; i++) {
           GTIdList.push(gt[i].dataValues.id);
         }
-        GTIds.forEach(item => {
+        GTIds.forEach((item) => {
           assert.include(GTIdList, item);
         });
       });
@@ -587,7 +585,7 @@ describe('SPRT测试', () => {
             'setGZGTs',
             {
               GZUserId: GZId,
-              GTIds: GTIds,
+              GTIds,
             },
             KFJLToken,
           );
@@ -602,7 +600,7 @@ describe('SPRT测试', () => {
             'setGZGTs',
             {
               GZUserId: GZId,
-              GTIds: GTIds,
+              GTIds,
             },
             KFJLToken,
           );
@@ -626,18 +624,18 @@ describe('SPRT测试', () => {
         const response = await post(
           'createGYSWithGLY',
           {
-            name: name,
-            username: username,
-            password: password,
-            type: type,
+            name,
+            username,
+            password,
+            type,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
-        const gys = await GYS.findOne({ where: { name: name } });
+        const gys = await GYS.findOne({ where: { name } });
         assert.notEqual(gys, null);
 
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
 
         const r = await GLY_GYS.findAll({ where: { GYSId: gys.dataValues.id } });
@@ -663,17 +661,17 @@ describe('SPRT测试', () => {
         const response = await post(
           'createAZGSWithGLY',
           {
-            name: name,
-            username: username,
-            password: password,
+            name,
+            username,
+            password,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
-        const azgs = await AZGS.findOne({ where: { name: name } });
+        const azgs = await AZGS.findOne({ where: { name } });
         assert.notEqual(azgs, null);
 
-        const user = await User.findOne({ where: { username: username } });
+        const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
 
         const r = await GLY_AZGS.findAll({ where: { AZGSId: azgs.dataValues.id } });
@@ -699,14 +697,14 @@ describe('SPRT测试', () => {
         const response = await post(
           'DW',
           {
-            name: name,
-            GTId: GTId,
+            name,
+            GTId,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const dw = await DW.findOne({ where: { name: name } });
+        const dw = await DW.findOne({ where: { name } });
         assert.notEqual(dw, null);
       });
     });
@@ -720,8 +718,8 @@ describe('SPRT测试', () => {
           const response = await post(
             'DW',
             {
-              name: name,
-              GTId: GTId,
+              name,
+              GTId,
             },
             KFJLToken,
           );
@@ -738,13 +736,12 @@ describe('SPRT测试', () => {
           const response = await post(
             'DW',
             {
-              name: name,
-              GTId: GTId,
+              name,
+              GTId,
             },
             KFJLToken,
           );
           assert.equal(response.data.code, -1);
-          console.log('data.msg-->', response.data.msg);
           // assert.include(response.data.msg, '没有权限');
         });
       });
@@ -762,15 +759,15 @@ describe('SPRT测试', () => {
         const response = await post(
           'DP',
           {
-            name: name,
-            PPId: PPId,
-            GYSId: GYSId
+            name,
+            PPId,
+            GYSId,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const dp = await DP.findOne({ where: { name: name } });
+        const dp = await DP.findOne({ where: { name } });
         assert.notEqual(dp, null);
       });
     });
@@ -785,9 +782,9 @@ describe('SPRT测试', () => {
           const response = await post(
             'DP',
             {
-              name: name,
-              PPId: PPId,
-              GYSId: GYSId
+              name,
+              PPId,
+              GYSId,
             },
             KFJLToken,
           );
@@ -805,9 +802,9 @@ describe('SPRT测试', () => {
           const response = await post(
             'DP',
             {
-              name: name,
-              PPId: PPId,
-              GYSId: GYSId
+              name,
+              PPId,
+              GYSId,
             },
             KFJLToken,
           );
@@ -821,14 +818,14 @@ describe('SPRT测试', () => {
   describe('/setDPDWs', async () => {
     describe('成功', async () => {
       it('KFJL将DP关联1个GT的多个DW', async () => {
-        let KFJL2Token = await getToken('KFJL2', '123456');
+        const KFJL2Token = await getToken('KFJL2', '123456');
         const DPId = 4;
         const DWIds = [7, 8];
         const response = await post(
           'setDPDWs',
           {
             id: DPId,
-            DWIds: DWIds,
+            DWIds,
           },
           KFJL2Token,
         );
@@ -850,7 +847,7 @@ describe('SPRT测试', () => {
           },
           adminToken,
         );
-        let PPJL7Token = await getToken('PPJL7', '123456');
+        const PPJL7Token = await getToken('PPJL7', '123456');
         await post(
           'createKFJL',
           {
@@ -860,14 +857,14 @@ describe('SPRT测试', () => {
           },
           PPJL7Token,
         );
-        let KFJL7Token = await getToken('KFJL7', '123456');
+        const KFJL7Token = await getToken('KFJL7', '123456');
         const DPId = 14;
         const DWIds = [18, 19];
         const response = await post(
           'setDPDWs',
           {
             id: DPId,
-            DWIds: DWIds,
+            DWIds,
           },
           KFJL7Token,
         );
@@ -886,7 +883,7 @@ describe('SPRT测试', () => {
           'setDPDWs',
           {
             id: DPId,
-            DWIds: DWIds,
+            DWIds,
           },
           KFJLToken,
         );
@@ -909,7 +906,7 @@ describe('SPRT测试', () => {
             'setDPDWs',
             {
               id: DPId,
-              DWIds: DWIds,
+              DWIds,
             },
             KFJLToken,
           );
@@ -924,7 +921,7 @@ describe('SPRT测试', () => {
             'setDPDWs',
             {
               id: DPId,
-              DWIds: DWIds,
+              DWIds,
             },
             KFJLToken,
           );
@@ -951,8 +948,8 @@ describe('SPRT测试', () => {
         const response = await post(
           'createFGAndTesterAndFGTester',
           {
-            PPId: PPId,
-            FGPayload: FGPayload,
+            PPId,
+            FGPayload,
           },
           KFJLToken,
         );
@@ -970,7 +967,7 @@ describe('SPRT测试', () => {
         r.forEach(async (item) => {
           assert.include(item.dataValues, FGPayload);
         });
-      });//前置条件：FG_T,Tester1&Tester2数据库中不存在
+      });// 前置条件：FG_T,Tester1&Tester2数据库中不存在
 
       it('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
         const PPId = 1;
@@ -982,12 +979,11 @@ describe('SPRT测试', () => {
         const response = await post(
           'createFGAndTesterAndFGTester',
           {
-            PPId: PPId,
-            FGPayload: FGPayload,
+            PPId,
+            FGPayload,
           },
           KFJLToken,
         );
-        console.log('izzlog',response.data);
         assert.equal(response.data.code, 1);
 
         const fg = await FG.findOne({ where: { name: 'FG1' } });
@@ -1002,8 +998,7 @@ describe('SPRT测试', () => {
         r.forEach(async (item) => {
           assert.include(item.dataValues, FGPayload);
         });
-
-      });//前置条件：FG_T存在，Tester1&Tester2数据库中不存在
+      });// 前置条件：FG_T存在，Tester1&Tester2数据库中不存在
 
       it('KFJL创建FG不存在，Tester存在的组合', async () => {
         const PPId = 1;
@@ -1016,8 +1011,8 @@ describe('SPRT测试', () => {
         const response = await post(
           'createFGAndTesterAndFGTester',
           {
-            PPId: PPId,
-            FGPayload: FGPayload,
+            PPId,
+            FGPayload,
           },
           KFJLToken,
         );
@@ -1035,7 +1030,7 @@ describe('SPRT测试', () => {
         r.forEach(async (item) => {
           assert.include(item.dataValues, FGPayload);
         });
-      });//前置条件：FG_T不存在，Tester1&Tester2数据库中存在
+      });// 前置条件：FG_T不存在，Tester1&Tester2数据库中存在
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => {
@@ -1052,8 +1047,8 @@ describe('SPRT测试', () => {
           const response = await post(
             'createFGAndTesterAndFGTester',
             {
-              PPId: PPId,
-              FGPayload: FGPayload,
+              PPId,
+              FGPayload,
             },
             KFJLToken,
           );
@@ -1082,19 +1077,19 @@ describe('SPRT测试', () => {
         const response = await post(
           'createEJZH',
           {
-            PPId: PPId,
-            name: name,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
+            PPId,
+            name,
+            WLId,
+            imageUrl,
+            XGTs,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { name: name } });
+        const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1102,7 +1097,7 @@ describe('SPRT测试', () => {
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
         assert.equal(ejzh_sjwl.length, 0);
-      });//WL和FGTester均没有
+      });// WL和FGTester均没有
 
       it('KFJL创建仅包含FGTester的EJZH', async () => {
         const PPId = 1;
@@ -1118,26 +1113,26 @@ describe('SPRT测试', () => {
           {
             id: 3,
             number: 2,
-          }
+          },
         ];
         const SJWLs = [];
 
         const response = await post(
           'createEJZH',
           {
-            PPId: PPId,
-            name: name,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
+            PPId,
+            name,
+            WLId,
+            imageUrl,
+            XGTs,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { name: name } });
+        const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1145,7 +1140,7 @@ describe('SPRT测试', () => {
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
         assert.equal(ejzh_sjwl.length, 0);
-      });//仅FGTesters
+      });// 仅FGTesters
 
       it('KFJL创建仅包含SJWL的EJZH', async () => {
         const PPId = 1;
@@ -1157,26 +1152,26 @@ describe('SPRT测试', () => {
         const SJWLs = [
           {
             id: 1,
-            number: 2
+            number: 2,
           },
         ];
 
         const response = await post(
           'createEJZH',
           {
-            PPId: PPId,
-            name: name,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
+            PPId,
+            name,
+            WLId,
+            imageUrl,
+            XGTs,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { name: name } });
+        const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1184,7 +1179,7 @@ describe('SPRT测试', () => {
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
         assert.notEqual(ejzh_sjwl.length, 0);
-      });//仅SJWLs
+      });// 仅SJWLs
 
       it('KFJL创建包含FGTester和SJWL的EJZH-1', async () => {
         const PPId = 1;
@@ -1200,31 +1195,31 @@ describe('SPRT测试', () => {
           {
             id: 3,
             number: 2,
-          }
+          },
         ];
         const SJWLs = [
           {
             id: 1,
-            number: 2
+            number: 2,
           },
         ];
 
         const response = await post(
           'createEJZH',
           {
-            PPId: PPId,
-            name: name,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
+            PPId,
+            name,
+            WLId,
+            imageUrl,
+            XGTs,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { name: name } });
+        const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1232,7 +1227,7 @@ describe('SPRT测试', () => {
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
         assert.equal(ejzh_sjwl.length, 1);
-      });//FGTesters&SJWLs
+      });// FGTesters&SJWLs
 
       it('KFJL创建包含FGTester和SJWL的EJZH-2', async () => {
         const PPId = 1;
@@ -1244,35 +1239,35 @@ describe('SPRT测试', () => {
           {
             id: 1,
             number: 2,
-          }
+          },
         ];
         const SJWLs = [
           {
             id: 2,
-            number: 2
+            number: 2,
           },
           {
             id: 3,
-            number: 2
+            number: 2,
           },
         ];
 
         const response = await post(
           'createEJZH',
           {
-            PPId: PPId,
-            name: name,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
+            PPId,
+            name,
+            WLId,
+            imageUrl,
+            XGTs,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh = await EJZH.findOne({ where: { name: name } });
+        const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
@@ -1280,7 +1275,7 @@ describe('SPRT测试', () => {
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
         assert.equal(ejzh_sjwl.length, 2);
-      });//FGTesters&SJWLs
+      });// FGTesters&SJWLs
     });
     describe('失败', async () => {
       describe('数据不合法', async () => {
@@ -1296,13 +1291,13 @@ describe('SPRT测试', () => {
           const response = await post(
             'createEJZH',
             {
-              PPId: PPId,
-              name: name,
-              WLId: WLId,
-              imageUrl: imageUrl,
-              XGTs: XGTs,
-              FGTesters: FGTesters,
-              SJWLs: SJWLs,
+              PPId,
+              name,
+              WLId,
+              imageUrl,
+              XGTs,
+              FGTesters,
+              SJWLs,
             },
             KFJLToken,
           );
@@ -1320,20 +1315,20 @@ describe('SPRT测试', () => {
           const SJWLs = [
             {
               id: 5,
-              number: 2
+              number: 2,
             },
           ];
 
           const response = await post(
             'createEJZH',
             {
-              PPId: PPId,
-              name: name,
-              WLId: WLId,
-              imageUrl: imageUrl,
-              XGTs: XGTs,
-              FGTesters: FGTesters,
-              SJWLs: SJWLs,
+              PPId,
+              name,
+              WLId,
+              imageUrl,
+              XGTs,
+              FGTesters,
+              SJWLs,
             },
             KFJLToken,
           );
@@ -1353,13 +1348,13 @@ describe('SPRT测试', () => {
           const response = await post(
             'createEJZH',
             {
-              PPId: PPId,
-              name: name,
-              WLId: WLId,
-              imageUrl: imageUrl,
-              XGTs: XGTs,
-              FGTesters: FGTesters,
-              SJWLs: SJWLs,
+              PPId,
+              name,
+              WLId,
+              imageUrl,
+              XGTs,
+              FGTesters,
+              SJWLs,
             },
             KFJLToken,
           );
@@ -1379,13 +1374,13 @@ describe('SPRT测试', () => {
           const response = await post(
             'createEJZH',
             {
-              PPId: PPId,
-              name: name,
-              WLId: WLId,
-              imageUrl: imageUrl,
-              XGTs: XGTs,
-              FGTesters: FGTesters,
-              SJWLs: SJWLs,
+              PPId,
+              name,
+              WLId,
+              imageUrl,
+              XGTs,
+              FGTesters,
+              SJWLs,
             },
             KFJLToken,
           );
@@ -1413,20 +1408,20 @@ describe('SPRT测试', () => {
           'editEJZH',
           {
             id: EJZHId,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
+            WLId,
+            imageUrl,
+            XGTs,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: EJZHId } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
         assert.equal(ejzh_fg_tester.length, 0);
 
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: EJZHId } });
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
         assert.equal(ejzh_sjwl.length, 0);
       });
 
@@ -1447,11 +1442,11 @@ describe('SPRT测试', () => {
           'editEJZH',
           {
             id: EJZHId,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
+            WLId,
+            imageUrl,
+            XGTs,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
@@ -1461,13 +1456,13 @@ describe('SPRT测试', () => {
         assert.equal(ejzh.dataValues.WLId, WLId);
         assert.equal(ejzh.dataValues.imageUrl, imageUrl);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: EJZHId } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
         assert.notEqual(ejzh_fg_tester, null);
 
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: EJZHId } });
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
         assert.equal(ejzh_sjwl.length, 0);
 
-        const ejzhxgt = await EJZHXGT.findOne({ where: { EJZHId: EJZHId } });
+        const ejzhxgt = await EJZHXGT.findOne({ where: { EJZHId } });
         assert.equal(ejzhxgt.dataValues.imageUrl, XGTs[0]);
       });
 
@@ -1505,33 +1500,33 @@ describe('SPRT测试', () => {
           'editEJZH',
           {
             id: EJZHId,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
+            WLId,
+            imageUrl,
+            XGTs,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: EJZHId } });
-        let FGTesterIdList = [];
-        ejzh_fg_tester.forEach(item => {
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
+        const FGTesterIdList = [];
+        ejzh_fg_tester.forEach((item) => {
           FGTesterIdList.push(item.dataValues.FGTesterId);
         });
         assert.equal(FGTesterIdList.length, 3);
-        FGTesters.forEach(item => {
+        FGTesters.forEach((item) => {
           assert.include(FGTesterIdList, item.id);
         });
 
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: EJZHId } });
-        let SJWLIdList = [];
-        ejzh_sjwl.forEach(item => {
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
+        const SJWLIdList = [];
+        ejzh_sjwl.forEach((item) => {
           SJWLIdList.push(item.dataValues.WLId);
         });
         assert.equal(SJWLIdList.length, 2);
-        SJWLs.forEach(item => {
+        SJWLs.forEach((item) => {
           assert.include(SJWLIdList, item.id);
         });
       });
@@ -1558,33 +1553,33 @@ describe('SPRT测试', () => {
           'editEJZH',
           {
             id: EJZHId,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
+            WLId,
+            imageUrl,
+            XGTs,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: EJZHId } });
-        let FGTesterIdList = [];
-        ejzh_fg_tester.forEach(item => {
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
+        const FGTesterIdList = [];
+        ejzh_fg_tester.forEach((item) => {
           FGTesterIdList.push(item.dataValues.FGTesterId);
         });
         assert.equal(FGTesterIdList.length, 1);
-        FGTesters.forEach(item => {
+        FGTesters.forEach((item) => {
           assert.include(FGTesterIdList, item.id);
         });
 
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: EJZHId } });
-        let SJWLIdList = [];
-        ejzh_sjwl.forEach(item => {
+        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
+        const SJWLIdList = [];
+        ejzh_sjwl.forEach((item) => {
           SJWLIdList.push(item.dataValues.WLId);
         });
         assert.equal(SJWLIdList.length, 1);
-        SJWLs.forEach(item => {
+        SJWLs.forEach((item) => {
           assert.include(SJWLIdList, item.id);
         });
       });
@@ -1606,11 +1601,11 @@ describe('SPRT测试', () => {
             'editEJZH',
             {
               id: EJZHId,
-              WLId: WLId,
-              imageUrl: imageUrl,
-              XGTs: XGTs,
-              FGTesters: FGTesters,
-              SJWLs: SJWLs,
+              WLId,
+              imageUrl,
+              XGTs,
+              FGTesters,
+              SJWLs,
             },
             KFJLToken,
           );
@@ -1630,11 +1625,11 @@ describe('SPRT测试', () => {
             'editEJZH',
             {
               id: EJZHId,
-              WLId: WLId,
-              imageUrl: imageUrl,
-              XGTs: XGTs,
-              FGTesters: FGTesters,
-              SJWLs: SJWLs,
+              WLId,
+              imageUrl,
+              XGTs,
+              FGTesters,
+              SJWLs,
             },
             KFJLToken,
           );
@@ -1661,23 +1656,23 @@ describe('SPRT测试', () => {
         const response = await post(
           'createYJZH',
           {
-            PPId: PPId,
-            name: name,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            EJZHs: EJZHs,
+            PPId,
+            name,
+            WLId,
+            imageUrl,
+            XGTs,
+            EJZHs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const yjzh = await YJZH.findOne({ where: { name: name } });
+        const yjzh = await YJZH.findOne({ where: { name } });
         assert.notEqual(yjzh, null);
 
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: yjzh.dataValues.id } });
         assert.equal(yjzh_ejzh.length, 0);
-      });//没有EJZH
+      });// 没有EJZH
 
       it('KFJL创建YJZH-包含多组EJZH', async () => {
         const PPId = 1;
@@ -1699,23 +1694,23 @@ describe('SPRT测试', () => {
         const response = await post(
           'createYJZH',
           {
-            PPId: PPId,
-            name: name,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            EJZHs: EJZHs,
+            PPId,
+            name,
+            WLId,
+            imageUrl,
+            XGTs,
+            EJZHs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const yjzh = await YJZH.findOne({ where: { name: name } });
+        const yjzh = await YJZH.findOne({ where: { name } });
         assert.notEqual(yjzh, null);
 
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: yjzh.dataValues.id } });
         assert.notEqual(yjzh_ejzh, null);
-      }); //EJZH1
+      }); // EJZH1
     });
     describe('失败', async () => {
       describe('数据不合法', async () => {
@@ -1730,12 +1725,12 @@ describe('SPRT测试', () => {
           const response = await post(
             'createYJZH',
             {
-              PPId: PPId,
-              name: name,
-              WLId: WLId,
-              imageUrl: imageUrl,
-              XGTs: XGTs,
-              EJZHs: EJZHs,
+              PPId,
+              name,
+              WLId,
+              imageUrl,
+              XGTs,
+              EJZHs,
             },
             KFJLToken,
           );
@@ -1763,16 +1758,16 @@ describe('SPRT测试', () => {
           'editYJZH',
           {
             id: YJZHId,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            EJZHs: EJZHs,
+            WLId,
+            imageUrl,
+            XGTs,
+            EJZHs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const yjzh_ejzh = await YJZH_EJZH.findOne({ where: { YJZHId: YJZHId } });
+        const yjzh_ejzh = await YJZH_EJZH.findOne({ where: { YJZHId } });
         assert.equal(yjzh_ejzh, null);
       });
 
@@ -1792,10 +1787,10 @@ describe('SPRT测试', () => {
           'editYJZH',
           {
             id: YJZHId,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            EJZHs: EJZHs,
+            WLId,
+            imageUrl,
+            XGTs,
+            EJZHs,
           },
           KFJLToken,
         );
@@ -1805,10 +1800,10 @@ describe('SPRT测试', () => {
         assert.equal(yjzh.dataValues.WLId, WLId);
         assert.equal(yjzh.dataValues.imageUrl, imageUrl);
 
-        const yjzh_ejzh = await YJZH_EJZH.findOne({ where: { YJZHId: YJZHId } });
+        const yjzh_ejzh = await YJZH_EJZH.findOne({ where: { YJZHId } });
         assert.notEqual(yjzh_ejzh, null);
 
-        const yjzhxgt = await YJZHXGT.findOne({ where: { YJZHId: YJZHId } });
+        const yjzhxgt = await YJZHXGT.findOne({ where: { YJZHId } });
         assert.equal(yjzhxgt.dataValues.imageUrl, XGTs[0]);
       });
 
@@ -1836,23 +1831,23 @@ describe('SPRT测试', () => {
           'editYJZH',
           {
             id: YJZHId,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            EJZHs: EJZHs,
+            WLId,
+            imageUrl,
+            XGTs,
+            EJZHs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: YJZHId } });
+        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId } });
 
-        let EJZHIdList = [];
-        yjzh_ejzh.forEach(item => {
+        const EJZHIdList = [];
+        yjzh_ejzh.forEach((item) => {
           EJZHIdList.push(item.dataValues.EJZHId);
         });
         assert.equal(EJZHIdList.length, 3);
-        EJZHs.forEach(item => {
+        EJZHs.forEach((item) => {
           assert.include(EJZHIdList, item.id);
         });
       });
@@ -1873,23 +1868,23 @@ describe('SPRT测试', () => {
           'editYJZH',
           {
             id: YJZHId,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            EJZHs: EJZHs,
+            WLId,
+            imageUrl,
+            XGTs,
+            EJZHs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: YJZHId } });
+        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId } });
 
-        let EJZHIdList = [];
-        yjzh_ejzh.forEach(item => {
+        const EJZHIdList = [];
+        yjzh_ejzh.forEach((item) => {
           EJZHIdList.push(item.dataValues.EJZHId);
         });
         assert.equal(EJZHIdList.length, 1);
-        EJZHs.forEach(item => {
+        EJZHs.forEach((item) => {
           assert.include(EJZHIdList, item.id);
         });
       });
@@ -1910,11 +1905,11 @@ describe('SPRT测试', () => {
         const GTs = [
           {
             id: 2,
-            number: 2
+            number: 2,
           },
           {
             id: 3,
-            number: 2
+            number: 2,
           },
         ];
 
@@ -1922,19 +1917,19 @@ describe('SPRT测试', () => {
           'setYJZHGTs',
           {
             id: YJZHId,
-            GTs: GTs,
+            GTs,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const gt_yjzh = await GT_YJZH.findAll({ where: { YJZHId: YJZHId } });
-        let GTIdList = [];
-        gt_yjzh.forEach(item => {
+        const gt_yjzh = await GT_YJZH.findAll({ where: { YJZHId } });
+        const GTIdList = [];
+        gt_yjzh.forEach((item) => {
           GTIdList.push(item.dataValues.GTId);
         });
         assert.equal(GTIdList.length, 2);
-        GTs.forEach(item => {
+        GTs.forEach((item) => {
           assert.include(GTIdList, item.id);
         });
       });
@@ -1942,16 +1937,16 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL将YJZH配置到不属于自己管理的GT', async () => {
+        it.only('KFJL将YJZH配置到不属于自己管理的GT', async () => {
           const YJZHId = 1;
           const GTs = [
             {
               id: 5,
-              number: 2
+              number: 2,
             },
             {
               id: 6,
-              number: 2
+              number: 2,
             },
           ];
 
@@ -1959,10 +1954,11 @@ describe('SPRT测试', () => {
             'setYJZHGTs',
             {
               id: YJZHId,
-              GTs: GTs,
+              GTs,
             },
             KFJLToken,
           );
+
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
         });
@@ -1972,11 +1968,11 @@ describe('SPRT测试', () => {
           const GTs = [
             {
               id: 1,
-              number: 2
+              number: 2,
             },
             {
               id: 2,
-              number: 2
+              number: 2,
             },
           ];
 
@@ -1984,7 +1980,7 @@ describe('SPRT测试', () => {
             'setYJZHGTs',
             {
               id: YJZHId,
-              GTs: GTs,
+              GTs,
             },
             KFJLToken,
           );
@@ -1998,7 +1994,7 @@ describe('SPRT测试', () => {
   });
 
   // KFJL 生成订单
-  describe.only('/createDD', async () => {
+  describe('/createDD', async () => {
     describe('成功', async () => {
       it('KFJL创建DD', async () => {
         const PPId = 1;
@@ -2007,14 +2003,14 @@ describe('SPRT测试', () => {
         const response = await post(
           'createDD',
           {
-            PPId: PPId,
-            name: name,
+            PPId,
+            name,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const dd = await DD.findOne({ where: { name: name } });
+        const dd = await DD.findOne({ where: { name } });
         assert.notEqual(dd, null);
 
         const dd_gt_wl = await DD_GT_WL.findAll({ where: { DDId: dd.dataValues.id } });
@@ -2042,7 +2038,7 @@ describe('SPRT测试', () => {
           { GTId: 4, WLId: 16, number: 2 },
           { GTId: 4, WLId: 8, number: 4 },
           { GTId: 4, WLId: 10, number: 4 },
-          { GTId: 4, WLId: 1, number: 8 }
+          { GTId: 4, WLId: 1, number: 8 },
         ];
         assert.equal(isArrayEqual(ddgtwlList, tureddgtwlList), true);
 
@@ -2058,9 +2054,8 @@ describe('SPRT测试', () => {
           { DWId: 3, DPId: 2 },
           { DWId: 4, DPId: 1 },
           { DWId: 5, DPId: 2 },
-          { DWId: 6, DPId: 3 }
+          { DWId: 6, DPId: 3 },
         ];
-        console.log('izzlog', dddwdpList);
         assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
     });
@@ -2074,8 +2069,8 @@ describe('SPRT测试', () => {
           const response = await post(
             'createDD',
             {
-              PPId: PPId,
-              name: name,
+              PPId,
+              name,
             },
             KFJLToken,
           );
@@ -2084,22 +2079,21 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        it.only('该品牌已有未审批通过订单', async () => {
-          let KFJL2Token = await getToken('KFJL2', '123456');
+        it('该品牌已有未审批通过订单', async () => {
+          const KFJL2Token = await getToken('KFJL2', '123456');
           const PPId = 2;
           const name = 'DD_PP1';
 
           const response = await post(
             'createDD',
             {
-              PPId: PPId,
-              name: name,
+              PPId,
+              name,
             },
             KFJL2Token,
           );
-          console.log('izzlog', response.data);
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '订单相关操作正在进行中');
+          // assert.include(response.data.msg, '订单相关操作正在进行中');
         });
       });
       describe.skip('唯一性校验', async () => { });
@@ -2110,17 +2104,18 @@ describe('SPRT测试', () => {
   describe('/reCreateDD', async () => {
     describe('成功', async () => {
       it('KFJL重新生成DD', async () => {
-        let KFJL2Token = await getToken('KFJL2', '123456');
+        const KFJL2Token = await getToken('KFJL2', '123456');
         const DDId = 1;
 
         const response = await post(
+          'reCreateDD',
           {
             DDId,
           },
           KFJL2Token,
         );
         assert.equal(response.data.code, 1);
-        //订单内数据有效；
+        // 订单内数据有效；
       });
     });
     describe('失败', async () => {
@@ -2128,14 +2123,15 @@ describe('SPRT测试', () => {
       describe.skip('没有权限', async () => { });
       describe('操作状态不正确', async () => {
         it('KFJL重新生成已经审批通过的DD', async () => {
-          let KFJL4Token = await getToken('KFJL4', '123456');
+          const KFJL4Token = await getToken('KFJL4', '123456');
           const DDId = 3;
 
           const response = await post(
+            'reCreateDD',
             {
               DDId,
             },
-            KFJL2Token,
+            KFJL4Token,
           );
           assert.equal(response.data.code, -1);
         });
@@ -2177,7 +2173,7 @@ describe('SPRT测试', () => {
   describe('/setDDGTWLs0AZGS', async () => {
     describe('成功', async () => {
       it('PPJL配置DD_GT_WL的AZGS', async () => {
-        let PPJL2Token = await getToken('PPJL2', '123456');
+        const PPJL2Token = await getToken('PPJL2', '123456');
         const AZGSId = 5;
         const DD_GT_WLIds = [1, 2, 3];
 
@@ -2218,7 +2214,7 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('PPJL为已经审批通过的DD的WL配置AZGS', async () => {
-          let PPJL4Token = await getToken('PPJL4', '123456');
+          const PPJL4Token = await getToken('PPJL4', '123456');
           const AZGSId = 5;
           const DD_GT_WLIds = [7, 8, 9];
 
@@ -2228,30 +2224,31 @@ describe('SPRT测试', () => {
               DD_GT_WLIds,
               AZGSId,
             },
-            PPJLToken,
+            PPJL4Token,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '不能指定安装公司');
         });
       });
       describe.skip('唯一性校验', async () => { });
     });
   });
 
-  //批量设置DD_DW_DP的AZGS[PPJL]
+  // 批量设置DD_DW_DP的AZGS[PPJL]
   describe('/setDDDWDPs0AZGS', async () => {
     describe('成功', async () => {
       it('PPJL配置DD_DW_DP的AZGS', async () => {
-        let PPJL3Token = await getToken('PPJL3', '123456');
+        const PPJL2Token = await getToken('PPJL2', '123456');
         const AZGSId = 5;
         const DD_DW_DPIds = [1, 2];
 
         const response = await post(
-          'setDDGTWLs0AZGS',
+          'setDDDWDPs0AZGS',
           {
             DD_DW_DPIds,
             AZGSId,
           },
-          PPJL3Token,
+          PPJL2Token,
         );
         assert.equal(response.data.code, 1);
 
@@ -2269,7 +2266,7 @@ describe('SPRT测试', () => {
           const DD_DW_DPIds = [1, 2];
 
           const response = await post(
-            'setDDGTWLs0AZGS',
+            'setDDDWDPs0AZGS',
             {
               DD_DW_DPIds,
               AZGSId,
@@ -2277,17 +2274,17 @@ describe('SPRT测试', () => {
             PPJLToken,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '没有权限')
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe('操作状态不正确', async () => {
         it('PPJL为已经审批通过的DD配置AZGS', async () => {
-          let PPJL4Token = await getToken('PPJL4', '123456');
+          const PPJL4Token = await getToken('PPJL4', '123456');
           const AZGSId = 5;
-          const DD_DW_DPIds = [3, 4];
+          const DD_DW_DPIds = [5, 6];
 
           const response = await post(
-            'setDDGTWLs0AZGS',
+            'setDDDWDPs0AZGS',
             {
               DD_DW_DPIds,
               AZGSId,
@@ -2295,6 +2292,7 @@ describe('SPRT测试', () => {
             PPJL4Token,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '不能指定安装公司');
         });
       });
       describe.skip('唯一性校验', async () => { });
@@ -2308,7 +2306,7 @@ describe('SPRT测试', () => {
         const PPJL2Token = await getToken('PPJL2', '123456');
         const id = 1;
 
-        let response = await post(
+        const response = await post(
           'approveDD',
           {
             id,
@@ -2317,7 +2315,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const dd = await DD.findOne({ where: { id: id } });
+        const dd = await DD.findOne({ where: { id } });
         assert.equal(dd.dataValues.status, DDStatus.YSP);
       });
     });
@@ -2340,7 +2338,7 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('PPJL审批审批通过的DD', async () => {
-          let PPJL4Token = await getToken('PPJL4', '123456');
+          const PPJL4Token = await getToken('PPJL4', '123456');
           const id = 3;
 
           const response = await post(
@@ -2351,6 +2349,7 @@ describe('SPRT测试', () => {
             PPJL4Token,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '不能被审批');
         });
       });
       describe('唯一性校验', async () => { });
@@ -2567,9 +2566,9 @@ describe('SPRT测试', () => {
   // describe('/chuXiang', async () => {
   //   describe('成功', async () => {
   //     it('装货员出箱成功', async () => {
-  //       //出箱货物需为同一个装货员，但无需为同一个柜台；      
+  //       //出箱货物需为同一个装货员，但无需为同一个柜台；
   //       //出箱后货物待装箱数量增加；
-  //       //出箱后货物状态更改为待入库状态； 
+  //       //出箱后货物状态更改为待入库状态；
   //     });
   //   });
   //   describe('失败', async () => {
@@ -2606,7 +2605,7 @@ describe('SPRT测试', () => {
   //   describe('成功', async () => {
   //     it('装货员关联快递成功', async () => {
   //       //快递箱成功关联后，快递箱状态转为发货状态；
-  //       //快递箱成功关联后，箱中物料/灯片状态更改为发货状态      
+  //       //快递箱成功关联后，箱中物料/灯片状态更改为发货状态
   //     });
   //   });
   //   describe('失败', async () => {
@@ -2642,7 +2641,7 @@ describe('SPRT测试', () => {
   // describe('/jieChuGuanLianKuaiDi', async () => {
   //   describe('成功', async () => {
   //     it('装货员解除关联快递成功', async () => {
-  //       //解除关联后，快递箱状态更改为装箱状态；     
+  //       //解除关联后，快递箱状态更改为装箱状态；
   //       //解除关联后，箱中货物状态更改为装箱状态；
   //     });
   //   });
@@ -2891,6 +2890,4 @@ describe('SPRT测试', () => {
   //     });
   //   });
   // });
-
-
 });
