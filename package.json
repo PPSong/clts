@@ -9,7 +9,9 @@
     "cjs": "cjs-to-es6",
     "initData": "nodemon --exec yarn run babel-node -- ./tools/initData.js",
     "genData": "yarn run babel-node -- ./tools/initData.js",
-    "test": "mocha --exit --compilers js:babel-core/register test --reporter mochawesome"
+    "test": "mocha --exit --compilers js:babel-core/register test --reporter mochawesome",
+    "genData_izz": "yarn run babel-node -- ./tools/initData_izz.js",
+    "test_izz": "mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000"
   },
   "dependencies": {
     "babel-plugin-wildcard": "^4.0.0",
