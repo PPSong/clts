@@ -1,381 +1,729 @@
-// 用户							
-[User]							
-Id	username	password	JS				
-1	admin	password(123456)	系统管理员				
-2	PPJL1	password(123456)	品牌经理				
-3	PPJL2	password(123456)	品牌经理				
-4	PPJL3	password(123456)	品牌经理				
-5	PPJL4	password(123456)	品牌经理				
-6	KFJL1	password(123456)	客服经理				
-7	KFJL2	password(123456)	客服经理				
-8	KFJL3	password(123456)	客服经理				
-9	KFJL4	password(123456)	客服经理				
-10	GZ1	password(123456)	柜长				
-11	GZ2	password(123456)	柜长				
-12	GZ3	password(123456)	柜长				
-13	GZ4	password(123456)	柜长				
-14	GTBA1	password(123456)	柜台BA				
-15	GTBA2	password(123456)	柜台BA				
-16	GTBA3	password(123456)	柜台BA				
-17	GTBA4	password(123456)	柜台BA				
-18	GTBA5	password(123456)	柜台BA				
-19	GTBA6	password(123456)	柜台BA				
-20	GTBA7	password(123456)	柜台BA				
-21	GTBA8	password(123456)	柜台BA				
-22	GYSGLY1	password(123456)	供应商管理员				
-23	GYSGLY2	password(123456)	供应商管理员				
-24	GYSGLY3	password(123456)	供应商管理员				
-25	AZGSGLY1	password(123456)	安装公司管理员				
-26	AZGSGLY2	password(123456)	安装公司管理员				
-27	GTBA9	password(123456)	柜台BA				
-28	GTBA10	password(123456)	柜台BA				
-29	GTBA11	password(123456)	柜台BA				
-30	GTBA12	password(123456)	柜台BA				
-31	GTBA13	password(123456)	柜台BA				
-32	GTBA14	password(123456)	柜台BA				
-33	GTBA15	password(123456)	柜台BA				
-34	GTBA16	password(123456)	柜台BA				
-							
-// 品牌							
-[PP]							
-id	name						
-1	PP1						
-2	PP2						
-3	PP3						
-							
-[PPJL_PP]							
-UserId	PPId						
-2	1						
-3	2						
-							
-[KFJL_PP]							
-UserId	PPId						
-6	1						
-7	2						
-							
-[GZ_PP]							
-UserId	PPId						
-10	1						
-11	1						
-12	2						
-13	2						
-							
-// 柜台							
-[GT]							
-id	name	code	PPId	QY	GTBAUserId	GZUserId	CS
-1	GT1	1	1	东区	14	10	上海
-2	GT2	2	1	东区	15	10	上海
-3	GT3	3	1	北区	16	11	北京
-4	GT4	4	1	北区	17	11	北京
-5	GT5	5	2	东区	18	12	广州
-6	GT6	6	2	东区	19	12	广州
-7	GT7	7	2	北区	20	13	深圳
-8	GT8	8	2	北区	21	13	深圳
-							
-[GT]							
-id	name	code	PPId	QY	GTBAUserId	CS	
-9	GT9	9	1	东区	27	上海	
-10	GT10	10	1	东区	28	上海	
-11	GT11	11	1	北区	29	北京	
-12	GT12	12	1	北区	30	北京	
-13	GT13	13	2	东区	31	广州	
-14	GT14	14	2	东区	32	广州	
-15	GT15	15	2	北区	33	深圳	
-16	GT16	16	2	北区	34	深圳	
-							
-							
-							
-// 供应商							
-[GYS]							
-id	Name	type					
-1	GYS1	生产					
-2	GYS2	生产					
-3	GYS3	中转					
-4	GYS4	生产					
-							
-[GLY_GYS]							
-UserId	GYSId						
-22	1						
-23	2						
-							
-							
-// 安装公司							
-[AZGS]							
-id	name						
-1	AZGS1						
-2	AZGS2						
-							
-							
-[GLY_AZGS]							
-UserId	AZGSId						
-25	1						
-26	2						
-							
-// 灯片							
-[DP]							
-id	name	PPId	GYSId				
-1	DP1	1	1				
-2	DP2	1	2				
-3	DP3	1	1				
-4	DP4	2	1				
-5	DP5	2	2				
-6	DP6	2	1				
-7	DP7	1	1				
-8	DP8	1	1				
-9	DP9	1	1				
-10	DP10	2	2				
-11	DP11	2	2				
-12	DP12	2	2				
-							
-// 灯位							
-[DW]							
-id	name	GTId	DPId				
-1	DW1	1	1				
-2	DW2	1	2				
-3	DW3	1	2				
-4	DW1	2	1				
-5	DW2	2	2				
-6	DW4	2	3				
-7	DW1	5	4				
-8	DW2	5	5				
-9	DW3	5	5				
-10	DW1	6	4				
-11	DW2	6	5				
-12	DW5	6	6				
-							
-[DW]							
-id	name	GTId					
-13	DW1	3					
-14	DW2	3					
-15	DW3	3					
-16	DW1	4					
-17	DW2	4					
-18	DW3	4					
-19	DW1	7					
-20	DW2	7					
-21	DW3	7					
-22	DW1	8					
-23	DW2	8					
-24	DW3	8					
-							
-							
-[FG]							
-id	name	PPId	note				
-1	FG1	1	NoteFG1				
-2	FG2	1	NoteFG2				
-3	FG3	1	NoteFG3				
-4	FG4	2	NoteFG4				
-5	FG5	2	NoteFG5				
-6	FG6	2	NoteFG6				
-7	FG7	1	NoteFG7				
-8	FG8	2	NoteFG8				
-							
-							
-							
-							
-[Tester]							
-id	name	PPId					
-1	Tester1	1					
-2	Tester2	1					
-3	Tester3	1					
-4	Tester4	2					
-5	Tester5	2					
-6	Tester6	2					
-7	Tester7	1					
-8	Tester8	2					
-							
-[FG_Tester]							
-id	FGId	TesterId	PPId				
-1	1	1	1				
-2	2	2	1				
-3	2	3	1				
-4	3	1	1				
-5	4	4	2				
-6	5	5	2				
-7	5	6	2				
-8	6	4	2				
-9	7	7	1				
-10	8	8	2				
-							
-// 物料							
-[WL]							
-id	name	code	level	PPId	GYSId	imageUrl	
-1	WL3_1	1_3_1	3	1	1	UrlWL3_1	
-2	WL3_2	1_3_2	3	1	1	UrlWL3_2	
-3	WL3_3	1_3_3	3	1	2	UrlWL3_3	
-4	WL3_4	1_3_4	3	1	2	UrlWL3_4	
-5	WL2_1	1_2_1	2	1	1	UrlWL2_1	
-6	WL2_2	1_2_2	2	1	1	UrlWL2_2	
-7	WL2_3	1_2_3	2	1	1	UrlWL2_3	
-8	WL2_4	1_2_4	2	1	2	UrlWL2_4	
-9	WL2_5	1_2_5	2	1	2	UrlWL2_5	
-10	WL2_6	1_2_6	2	1	2	UrlWL2_6	
-11	WL1_1	1_1_1	1	1	1	UrlWL1_1	
-12	WL1_2	1_1_2	1	1	1	UrlWL1_2	
-13	WL1_3	1_1_3	1	1	1	UrlWL1_3	
-14	WL1_4	1_1_4	1	1	2	UrlWL1_4	
-15	WL1_5	1_1_5	1	1	2	UrlWL1_5	
-16	WL1_6	1_1_6	1	1	2	UrlWL1_6	
-17	WL3_1	2_3_1	3	2	1	UrlWL3_1	
-18	WL3_2	2_3_2	3	2	1	UrlWL3_2	
-19	WL3_3	2_3_3	3	2	2	UrlWL3_3	
-20	WL3_4	2_3_4	3	2	2	UrlWL3_4	
-21	WL2_1	2_2_1	2	2	1	UrlWL2_1	
-22	WL2_2	2_2_2	2	2	1	UrlWL2_2	
-23	WL2_3	2_2_3	2	2	1	UrlWL2_3	
-24	WL2_4	2_2_4	2	2	2	UrlWL2_4	
-25	WL2_5	2_2_5	2	2	2	UrlWL2_5	
-26	WL2_6	2_2_6	2	2	2	UrlWL2_6	
-27	WL1_1	2_1_1	1	2	1	UrlWL1_1	
-28	WL1_2	2_1_2	1	2	1	UrlWL1_2	
-29	WL1_3	2_1_3	1	2	1	UrlWL1_3	
-30	WL1_4	2_1_4	1	2	2	UrlWL1_4	
-31	WL1_5	2_1_5	1	2	2	UrlWL1_5	
-32	WL1_6	2_1_6	1	2	2	UrlWL1_6	
-33	WL3_5	1_3_5	3	1	1	UrlWL3_5	
-34	WL3_6	1_3_6	3	1	1	UrlWL3_6	
-35	WL3_7	1_3_7	3	1	1	UrlWL3_7	
-36	WL3_8	1_3_8	3	1	1	UrlWL3_8	
-37	WL2_7	1_2_7	2	1	1	UrlWL2_7	
-38	WL2_8	1_2_8	2	1	1	UrlWL2_8	
-39	WL2_9	1_2_9	2	1	1	UrlWL2_9	
-40	WL2_10	1_2_10	2	1	1	UrlWL2_10	
-41	WL2_11	1_2_11	2	1	1	UrlWL2_11	
-42	WL2_12	1_2_12	2	1	1	UrlWL2_12	
-43	WL1_7	1_1_7	1	1	1	UrlWL1_7	
-44	WL1_8	1_1_8	1	1	1	UrlWL1_8	
-45	WL1_9	1_1_9	1	1	1	UrlWL1_9	
-46	WL1_10	1_1_10	1	1	1	UrlWL1_10	
-47	WL1_11	1_1_11	1	1	1	UrlWL1_11	
-48	WL1_12	1_1_12	1	1	1	UrlWL1_12	
-49	WL3_5	2_3_5	3	2	2	UrlWL3_5	
-50	WL3_6	2_3_6	3	2	2	UrlWL3_6	
-51	WL3_7	2_3_7	3	2	2	UrlWL3_7	
-52	WL3_8	2_3_8	3	2	2	UrlWL3_8	
-53	WL2_7	2_2_7	2	2	2	UrlWL2_7	
-54	WL2_8	2_2_8	2	2	2	UrlWL2_8	
-55	WL2_9	2_2_9	2	2	2	UrlWL2_9	
-56	WL2_10	2_2_10	2	2	2	UrlWL2_10	
-57	WL2_11	2_2_11	2	2	2	UrlWL2_11	
-58	WL2_12	2_2_12	2	2	2	UrlWL2_12	
-59	WL1_7	2_1_7	1	2	2	UrlWL1_7	
-60	WL1_8	2_1_8	1	2	2	UrlWL1_8	
-61	WL1_9	2_1_9	1	2	2	UrlWL1_9	
-62	WL1_10	2_1_10	1	2	2	UrlWL1_10	
-63	WL1_11	2_1_11	1	2	2	UrlWL1_11	
-64	WL1_12	2_1_12	1	2	2	UrlWL1_12	
-							
-// 二级组合							
-[EJZH]							
-id	name	WLId	PPId	imageUrl			
-1	EJZH1	5	1	imageUrlEJZH1			
-2	EJZH2	6	1	imageUrlEJZH2			
-3	EJZH3	7	1	imageUrlEJZH3			
-4	EJZH4	8	1	imageUrlEJZH4			
-5	EJZH5	9	1	imageUrlEJZH5			
-6	EJZH6	10	1	imageUrlEJZH6			
-7	EJZH7	21	2	imageUrlEJZH7			
-8	EJZH8	22	2	imageUrlEJZH8			
-9	EJZH9	23	2	imageUrlEJZH9			
-10	EJZH10	24	2	imageUrlEJZH10			
-11	EJZH11	25	2	imageUrlEJZH11			
-12	EJZH12	26	2	imageUrlEJZH12			
-							
-// 二级组合_FGTester							
-[EJZH_FGTester]							
-EJZHId	FGTesterId	number					
-1	1	2					
-2	2	2					
-2	3	2					
-3	1	2					
-7	5	2					
-8	6	2					
-8	7	2					
-9	5	2					
-							
-// 二级组合三级物料							
-[EJZH_SJWL]							
-EJZHId	WLId	number					
-2	1	2					
-3	2	2					
-3	3	2					
-4	1	2					
-5	4	2					
-8	17	2					
-9	18	2					
-9	19	2					
-10	17	2					
-11	20	2					
-							
-// 一级组合							
-[YJZH]							
-id	name	WLId	PPId	imageUrl			
-1	YJZH1	11	1	imageUrlYJZH1			
-2	YJZH2	12	1	imageUrlYJZH2			
-3	YJZH3	13	1	imageUrlYJZH3			
-4	YJZH4	14	1	imageUrlYJZH4			
-5	YJZH5	15	1	imageUrlYJZH5			
-6	YJZH6	16	1	imageUrlYJZH6			
-7	YJZH7	27	2	imageUrlYJZH7			
-8	YJZH8	28	2	imageUrlYJZH8			
-9	YJZH9	29	2	imageUrlYJZH9			
-10	YJZH10	30	2	imageUrlYJZH10			
-11	YJZH11	31	2	imageUrlYJZH11			
-12	YJZH12	32	2	imageUrlYJZH12			
-							
-// 一级组合二级组合							
-[YJZH_EJZH]							
-YJZHId	EJZHId	number					
-1	1	2					
-2	2	2					
-2	3	2					
-3	1	2					
-4	4	2					
-5	6	2					
-7	7	2					
-8	8	2					
-8	9	2					
-9	7	2					
-10	10	2					
-11	12	2					
-							
-// 柜台一级组合 							
-[GT_YJZH]							
-GTId	YJZHId	number					
-1	1	2					
-2	2	2					
-2	3	2					
-3	1	2					
-4	4	2					
-4	5	2					
-4	6	2					
-5	7	2					
-6	8	2					
-6	9	2					
-7	7	2					
-8	10	2					
-8	11	2					
-							
-// 一级组合相关图							
-[YJZHXGT]							
-id	imageUrl	YJZHId					
-1	YJZH1Url1	1					
-2	YJZH2Url1	2					
-3	YJZH2Url2	2					
-4	YJZH4Url1	4					
-5	YJZH5Url1	5					
-6	YJZH5Url2	5					
-							
-// 二级组合相关图							
-[EJZHXGT]							
-id	imageUrl	EJZHId					
-1	EJZH1Url1	1					
-2	EJZH2Url1	2					
-3	EJZH2Url2	2					
-4	EJZH4Url1	4					
-5	EJZH5Url1	5					
-6	EJZH5Url2	5					
-							
-[end]							
-							
-							
+// 用户												
+[User]												
+Id	username	password	JS									
+1	admin	password(123456)	系统管理员									
+2	PPJL1	password(123456)	品牌经理									
+3	PPJL2	password(123456)	品牌经理									
+4	PPJL3	password(123456)	品牌经理									
+5	PPJL4	password(123456)	品牌经理									
+6	PPJL5	password(123456)	品牌经理									
+7	PPJL6	password(123456)	品牌经理									
+8	KFJL1	password(123456)	客服经理									
+9	KFJL2	password(123456)	客服经理									
+10	KFJL3	password(123456)	客服经理									
+11	KFJL4	password(123456)	客服经理									
+12	KFJL5	password(123456)	客服经理									
+13	KFJL6	password(123456)	客服经理									
+14	GZ1	password(123456)	柜长									
+15	GZ2	password(123456)	柜长									
+16	GZ3	password(123456)	柜长									
+17	GTBA1	password(123456)	柜台BA									
+18	GTBA2	password(123456)	柜台BA									
+19	GTBA3	password(123456)	柜台BA									
+20	GTBA4	password(123456)	柜台BA									
+21	GTBA5	password(123456)	柜台BA									
+22	GTBA6	password(123456)	柜台BA									
+23	GTBA7	password(123456)	柜台BA									
+24	GTBA8	password(123456)	柜台BA									
+25	GTBA9	password(123456)	柜台BA									
+26	GYSGLY1	password(123456)	供应商管理员									
+27	GYSGLY2	password(123456)	供应商管理员									
+28	GYSGLY3	password(123456)	供应商管理员									
+29	ZHY1	password(123456)	装货员									
+30	ZHY2	password(123456)	装货员									
+31	ZHY3	password(123456)	装货员									
+32	AZGSGLY1	password(123456)	安装公司管理员									
+33	AZGSGLY2	password(123456)	安装公司管理员									
+34	AZG1	password(123456)	安装工									
+35	AZG2	password(123456)	安装工									
+36	AZG3	password(123456)	安装工									
+37	AZG4	password(123456)	安装工									
+38	AZG5	password(123456)	安装工									
+39	AZG6	password(123456)	安装工									
+40	ZHY4	password(123456)	装货员									
+41	GTBA10	password(123456)	柜台BA									
+42	GZ4	password(123456)	柜长									
+43	GTBA11	password(123456)	柜台BA									
+												
+												
+												
+// 品牌												
+[PP]												
+id	name											
+1	PP1											
+2	PP2											
+3	PP3											
+4	PP4											
+5	PP5											
+6	PP6											
+7	PP7											
+												
+[PPJL_PP]												
+UserId	PPId											
+2	1											
+3	2											
+5	4											
+6	5											
+7	6											
+												
+[KFJL_PP]												
+UserId	PPId											
+8	1											
+9	2											
+11	4											
+12	5											
+13	6											
+												
+[GZ_PP]												
+UserId	PPId											
+14	1											
+15	1											
+16	2											
+42	7											
+												
+// 柜台												
+[GT]												
+id	name	code	PPId	QY	GTBAUserId	GZUserId	CS					
+1	GT1	1	1	东区	17	14	上海					
+2	GT2	2	1	东区	18	14	上海					
+3	GT3	3	1	北区	19	15	北京					
+4	GT4	4	1	北区	20	15	北京					
+5	GT5	5	2	东区	21	16	广州					
+												
+[GT]												
+id	name	code	PPId	QY	GTBAUserId	CS						
+6	GT6	6	3	东区	22	上海						
+7	GT7	7	4	东区	23	上海						
+8	GT8	8	5	东区	24	上海						
+9	GT9	9	6	东区	25	上海						
+10	GT10	10	7	东区	41	上海						
+11	GT11	11	7	东区	43	上海						
+												
+// 供应商												
+[GYS]												
+id	Name	type										
+1	GYS1	生产										
+2	GYS2	生产										
+3	GYS3	生产										
+4	GYS4	生产										
+5	GYS5	中转										
+6	GYS6	生产										
+												
+[GLY_GYS]												
+UserId	GYSId											
+26	1											
+27	1											
+28	2											
+												
+[ZHY_GYS]												
+UserId	GYSId											
+29	1											
+30	2											
+31	3											
+40	6											
+												
+// 安装公司												
+[AZGS]												
+id	name											
+1	AZGS1											
+2	AZGS2											
+3	AZGS3											
+4	AZGS4											
+5	AZGS5											
+												
+[GLY_AZGS]												
+UserId	AZGSId											
+32	1											
+33	2											
+												
+[AZG_AZGS]												
+UserId	AZGSId											
+34	1											
+35	1											
+36	2											
+37	3											
+38	4											
+39	5											
+												
+// 灯片												
+[DP]												
+id	name	PPId	GYSId									
+1	DP1	1	3									
+2	DP2	1	4									
+3	DP3	1	3									
+4	DP4	2	3									
+5	DP5	2	3									
+6	DP6	3	3									
+7	DP7	3	3									
+8	DP8	4	6									
+9	DP9	4	6									
+10	DP10	5	6									
+11	DP11	5	6									
+12	DP12	6	6									
+13	DP13	6	6									
+14	DP14	7	6									
+												
+// 灯位												
+[DW]												
+id	name	GTId	DPId									
+1	DW1	1	1									
+2	DW2	1	2									
+3	DW3	1	2									
+4	DW1	2	1									
+5	DW2	2	2									
+6	DW4	2	3									
+9	DW1	6	6									
+10	DW2	6	7									
+11	DW1	7	8									
+12	DW2	7	9									
+13	DW1	8	10									
+14	DW2	8	11									
+15	DW1	9	12									
+16	DW2	9	13									
+17	DW1	10	14									
+20	DW3	5	4									
+21	DW4	5	5									
+22	DW3	7	8									
+												
+[DW]												
+id	name	GTId										
+7	DW1	5										
+8	DW2	5										
+18	DW2	10										
+19	DW1	11										
+												
+[FG]												
+id	name	PPId	note									
+1	FG1	1	NoteFG1									
+2	FG2	1	NoteFG2									
+3	FG3	1	NoteFG3									
+												
+[Tester]												
+id	name	PPId										
+1	Tester1	1										
+2	Tester2	1										
+3	Tester3	1										
+												
+[FG_Tester]												
+id	FGId	TesterId	PPId									
+1	1	1	1									
+2	2	2	1									
+3	2	3	1									
+4	3	1	1									
+												
+// 物料												
+[WL]												
+id	name	code	level	PPId	GYSId	imageUrl						
+1	WL3_1	1_3_1	3	1	1	UrlWL3_1						
+2	WL3_2	1_3_2	3	1	1	UrlWL3_2						
+3	WL3_3	1_3_3	3	1	2	UrlWL3_3						
+4	WL3_4	1_3_4	3	1	2	UrlWL3_4						
+5	WL2_1	1_2_1	2	1	1	UrlWL2_1						
+6	WL2_2	1_2_2	2	1	1	UrlWL2_2						
+7	WL2_3	1_2_3	2	1	1	UrlWL2_3						
+8	WL2_4	1_2_4	2	1	2	UrlWL2_4						
+9	WL2_5	1_2_5	2	1	2	UrlWL2_5						
+10	WL2_6	1_2_6	2	1	2	UrlWL2_6						
+11	WL1_1	1_1_1	1	1	1	UrlWL1_1						
+12	WL1_2	1_1_2	1	1	1	UrlWL1_2						
+13	WL1_3	1_1_3	1	1	1	UrlWL1_3						
+14	WL1_4	1_1_4	1	1	2	UrlWL1_4						
+15	WL1_5	1_1_5	1	1	2	UrlWL1_5						
+16	WL1_6	1_1_6	1	1	2	UrlWL1_6						
+17	WL3_1	2_3_1	3	2	1	UrlWL3_1						
+18	WL2_1	2_2_1	2	2	1	UrlWL2_1						
+19	WL1_1	2_1_1	1	2	1	UrlWL1_1						
+20	WL3_1	3_3_1	3	3	6	UrlWL3_1						
+21	WL2_1	3_2_1	2	3	6	UrlWL2_1						
+22	WL1_1	3_1_1	1	3	6	UrlWL1_1						
+23	WL3_1	4_3_1	3	4	6	UrlWL3_1						
+24	WL2_1	4_2_1	2	4	6	UrlWL2_1						
+25	WL1_1	4_1_1	1	4	6	UrlWL1_1						
+26	WL3_1	5_3_1	3	5	6	UrlWL3_1						
+27	WL2_1	5_2_1	2	5	6	UrlWL2_1						
+28	WL1_1	5_1_1	1	5	6	UrlWL1_1						
+29	WL3_1	6_3_1	3	6	6	UrlWL3_1						
+30	WL2_1	6_2_1	2	6	6	UrlWL2_1						
+31	WL1_1	6_1_1	1	6	6	UrlWL1_1						
+32	WL1_1	7_1_1	1	7	6	UrlWL1_1						
+												
+// 二级组合												
+[EJZH]												
+id	name	WLId	PPId	imageUrl								
+1	EJZH1	5	1	imageUrlEJZH1								
+2	EJZH2	6	1	imageUrlEJZH2								
+3	EJZH3	7	1	imageUrlEJZH3								
+4	EJZH4	8	1	imageUrlEJZH4								
+5	EJZH5	9	1	imageUrlEJZH5								
+6	EJZH6	10	1	imageUrlEJZH6								
+7	EJZH7	18	2	imageUrlEJZH7								
+8	EJZH8	21	3	imageUrlEJZH8								
+9	EJZH9	24	4	imageUrlEJZH9								
+10	EJZH10	27	5	imageUrlEJZH10								
+11	EJZH11	30	6	imageUrlEJZH11								
+												
+// 二级组合_FGTester												
+[EJZH_FGTester]												
+EJZHId	FGTesterId	number										
+1	1	2										
+2	2	2										
+2	3	2										
+3	1	2										
+												
+// 二级组合三级物料												
+[EJZH_SJWL]												
+EJZHId	WLId	number										
+2	1	2										
+3	2	2										
+3	3	2										
+4	1	2										
+5	4	2										
+7	17	2										
+8	20	2										
+9	23	2										
+10	26	2										
+11	29	2										
+												
+// 一级组合												
+[YJZH]												
+id	name	WLId	PPId	imageUrl								
+1	YJZH1	11	1	imageUrlYJZH1								
+2	YJZH2	12	1	imageUrlYJZH2								
+3	YJZH3	13	1	imageUrlYJZH3								
+4	YJZH4	14	1	imageUrlYJZH4								
+5	YJZH5	15	1	imageUrlYJZH5								
+6	YJZH6	16	1	imageUrlYJZH6								
+7	YJZH7	19	2	imageUrlYJZH7								
+8	YJZH8	22	3	imageUrlYJZH8								
+9	YJZH9	25	4	imageUrlYJZH9								
+10	YJZH10	28	5	imageUrlYJZH10								
+11	YJZH11	31	6	imageUrlYJZH11								
+12	YJZH12	32	7	imageUrlYJZH12								
+												
+// 一级组合二级组合												
+[YJZH_EJZH]												
+YJZHId	EJZHId	number										
+1	1	2										
+2	2	2										
+2	3	2										
+3	1	2										
+4	4	2										
+5	6	2										
+7	7	2										
+8	8	2										
+9	9	2										
+10	10	2										
+11	11	2										
+												
+// 柜台一级组合 												
+[GT_YJZH]												
+GTId	YJZHId	number										
+1	1	2										
+2	2	2										
+2	3	2										
+3	1	2										
+4	4	2										
+4	5	2										
+4	6	2										
+5	7	2										
+6	8	2										
+7	9	2										
+8	10	2										
+9	11	2										
+10	12	2										
+												
+// 一级组合相关图												
+[YJZHXGT]												
+id	imageUrl	YJZHId										
+1	YJZH1Url1	1										
+2	YJZH2Url1	2										
+3	YJZH2Url2	2										
+4	YJZH4Url1	4										
+5	YJZH5Url1	5										
+6	YJZH5Url2	5										
+												
+// 二级组合相关图												
+[EJZHXGT]												
+id	imageUrl	EJZHId										
+1	EJZH1Url1	1										
+2	EJZH2Url1	2										
+3	EJZH2Url2	2										
+4	EJZH4Url1	4										
+5	EJZH5Url1	5										
+6	EJZH5Url2	5										
+												
+// 订单信息												
+[DD]												
+id	name	status	PPId									
+1	DD_PP2	待审批	2									
+2	DD_PP3	待审批	3									
+3	DD_PP4	已审批	4									
+4	DD_PP5	已审批	5									
+5	DD_PP6	已审批	6									
+6	DD_PP7	已审批	7									
+												
+// 订单柜台物料												
+[DD_GT_WL]												
+id	DDId	GTId	WLId	number	GYSId							
+1	1	5	17	8	1							
+2	1	5	18	4	1							
+3	1	5	19	2	1							
+4	2	6	20	8	6							
+5	2	6	21	4	6							
+6	2	6	22	2	6							
+												
+// 订单柜台物料快照												
+[DD_GT_WLSnapshot]												
+id	DDId	GTId	WLId	number								
+1	1	5	17	8								
+2	1	5	18	4								
+3	1	5	19	2								
+4	2	6	20	8								
+5	2	6	21	4								
+6	2	6	22	2								
+7	3	7	23	8								
+8	3	7	24	4								
+9	3	7	25	2								
+10	4	8	26	8								
+11	4	8	27	4								
+12	4	8	28	2								
+13	5	9	29	8								
+14	5	9	30	4								
+15	5	9	31	2								
+16	6	10	32	2								
+												
+[DD_GT_WL]												
+id	DDId	GTId	WLId	number	GYSId	ZXNumber	AZGSId					
+7	3	7	23	8	6	3	5					
+8	3	7	24	4	6	2	5					
+9	3	7	25	2	6	1	5					
+												
+[DD_GT_WL]												
+id	DDId	GTId	WLId	number	GYSId	ZXNumber	AZGSId	AZGUserId	YJRKDate	YJZXDate	YJAZDate	
+10	4	8	26	8	6	8	5	39	2018-06-01	2018-06-18	2018-06-25	
+11	4	8	27	4	6	4	5	39	2018-06-01	2018-06-18	2018-06-25	
+12	4	8	28	2	6	2	5	39	2018-06-01	2018-06-18	2018-06-25	
+13	5	9	29	8	6	8	5	39	2018-06-01	2018-06-18	2018-06-25	
+14	5	9	30	4	6	4	5	39	2018-06-01	2018-06-18	2018-06-25	
+15	5	9	31	2	6	2	5	39	2018-06-01	2018-06-18	2018-06-25	
+16	6	10	32	2	6	2	5	39	2018-06-01	2018-06-18	2018-06-25	
+												
+// 订单灯位灯片												
+[DD_DW_DP]												
+id	DDId	DWId	DPId	GYSId								
+1	1	20	4	3								
+2	1	21	5	3								
+3	2	9	6	3								
+4	2	10	7	3								
+												
+// 订单灯位灯片快照												
+[DD_DW_DPSnapshot]												
+id	DDId	DWId	DPId									
+1	1	20	4									
+2	1	21	5									
+3	2	9	6									
+4	2	10	7									
+5	3	11	8									
+6	3	12	9									
+7	4	13	10									
+8	4	14	11									
+9	5	15	12									
+10	5	16	13									
+11	6	17	14									
+												
+[DD_DW_DP]												
+id	DDId	DWId	DPId	GYSId	ZXNumber	AZGSId						
+5	3	11	8	6	1	5						
+6	3	12	9	6	0	5						
+												
+[DD_DW_DP]												
+id	DDId	DWId	DPId	GYSId	ZXNumber	AZGSId	AZGUserId	YJRKDate	YJZXDate	YJAZDate		
+7	3	22	8	6	1	5	39	2018-06-01	2018-06-18	2018-06-25		
+8	4	13	10	6	1	5	39	2018-06-01	2018-06-18	2018-06-25		
+9	4	14	11	6	1	5	39	2018-06-01	2018-06-18	2018-06-25		
+10	5	15	12	6	1	5	39	2018-06-01	2018-06-18	2018-06-25		
+11	5	16	13	6	1	5	39	2018-06-01	2018-06-18	2018-06-25		
+12	6	17	14	6	1	5	39	2018-06-01	2018-06-18	2018-06-25		
+												
+// 快递单												
+[KDD]												
+id	code											
+1	KDD1											
+2	KDD2											
+3	KDD3											
+4	KDD4											
+5	KDD5											
+6	KDD6											
+7	KDD7											
+8	KDD8											
+9	KDD9											
+												
+// 快递箱												
+[KDX]												
+id	EWM	GTId	KDDId	status								
+2	KDX2	7	1	发货								
+3	KDX3	8	2	发货								
+4	KDX4	8	3	收箱								
+5	KDX5	9	4	收箱								
+6	KDX6	9	4	收箱								
+8	KDX8	8	5	发货								
+9	KDX9	8	6	收箱								
+10	KDX10	9	7	收箱								
+11	KDX11	9	7	收箱								
+12	KDX12	10	8	收箱								
+13	KDX13	10	9	收箱								
+												
+[KDX]												
+id	EWM	GTId	status									
+1	KDX1	7	装箱									
+7	KDX7	7	装箱									
+14	KDX14	7	装箱									
+												
+// 唯一物料												
+[WYWL]												
+id	EWM	status	WLId	GYSId	DDGTWLId							
+1	WL23_1	入库	23	6	7							
+2	WL23_2	入库	23	6	7							
+												
+[WYWL]												
+id	EWM	status	WLId	GYSId	DDGTWLId	KDXId						
+3	WL23_3	装箱	23	6	7	1						
+4	WL23_4	装箱	23	6	7	1						
+5	WL23_5	装箱	23	6	7	1						
+6	WL24_1	装箱	24	6	8	1						
+7	WL24_2	装箱	24	6	8	1						
+10	WL25_1	发货	25	6	9	2						
+12	WL26_1	发货	26	6	10	3						
+13	WL26_2	发货	26	6	10	3						
+14	WL26_3	发货	26	6	10	3						
+15	WL26_4	发货	26	6	10	3						
+16	WL26_5	发货	26	6	10	3						
+17	WL26_6	发货	26	6	10	3						
+18	WL26_7	发货	26	6	10	3						
+19	WL26_8	发货	26	6	10	3						
+20	WL27_1	收箱	27	6	11	4						
+21	WL27_2	收箱	27	6	11	4						
+22	WL27_3	收箱	27	6	11	4						
+23	WL27_4	收箱	27	6	11	4						
+24	WL28_1	收货	28	6	12	4						
+25	WL28_2	收货	28	6	12	4						
+												
+[WYWL]												
+id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFK	imageUrl				
+26	WL29_1	反馈图	29	6	13	5	安装成功	UrlWL29_1				
+27	WL29_2	反馈图	29	6	13	5	安装成功	UrlWL29_2				
+28	WL29_3	反馈图	29	6	13	5	安装成功	UrlWL29_3				
+29	WL29_4	反馈图	29	6	13	5	安装成功	UrlWL29_4				
+30	WL29_5	反馈图	29	6	13	5	安装成功	UrlWL29_5				
+31	WL29_6	反馈图	29	6	13	5	安装成功	UrlWL29_6				
+32	WL29_7	反馈图	29	6	13	5	安装成功	UrlWL29_7				
+33	WL29_8	反馈图	29	6	13	5	安装成功	UrlWL29_8				
+34	WL30_1	反馈图	30	6	14	6	安装成功	UrlWL30_1				
+35	WL30_2	反馈图	30	6	14	6	安装成功	UrlWL30_2				
+36	WL30_3	反馈图	30	6	14	6	安装成功	UrlWL30_3				
+37	WL30_4	反馈图	30	6	14	6	安装成功	UrlWL30_4				
+38	WL31_1	反馈图	31	6	15	6	丢失	UrlWL31_1				
+39	WL31_2	反馈图	31	6	15	6	丢失	UrlWL31_2				
+												
+[WYWL]												
+id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFK					
+40	WL32_1	反馈	32	6	16	12	安装成功					
+41	WL32_2	反馈	32	6	16	12	安装成功					
+												
+// 唯一物料状态												
+[WYWLCZ]												
+id	WYWLId	status	UserId									
+1	1	入库	40									
+2	2	入库	40									
+3	3	装箱	40									
+4	4	装箱	40									
+5	5	装箱	40									
+6	6	装箱	40									
+7	7	装箱	40									
+8	10	装箱	40									
+9	10	发货	40									
+10	12	装箱	40									
+11	13	装箱	40									
+12	14	装箱	40									
+13	15	装箱	40									
+14	16	装箱	40									
+15	17	装箱	40									
+16	18	装箱	40									
+17	19	装箱	40									
+18	12	发货	40									
+19	13	发货	40									
+20	14	发货	40									
+21	15	发货	40									
+22	16	发货	40									
+23	17	发货	40									
+24	18	发货	40									
+25	19	发货	40									
+26	20	装箱	40									
+27	21	装箱	40									
+28	22	装箱	40									
+29	23	装箱	40									
+30	20	发货	40									
+31	21	发货	40									
+32	22	发货	40									
+33	23	发货	40									
+34	20	收箱	24									
+35	21	收箱	24									
+36	22	收箱	24									
+37	23	收箱	24									
+38	24	装箱	40									
+39	25	装箱	40									
+40	24	发货	40									
+41	25	发货	40									
+42	24	收箱	24									
+43	25	收箱	24									
+44	24	收货	39									
+45	25	收货	39									
+46	26	装箱	40									
+47	27	装箱	40									
+48	28	装箱	40									
+49	29	装箱	40									
+50	30	装箱	40									
+51	31	装箱	40									
+52	32	装箱	40									
+53	33	装箱	40									
+54	34	装箱	40									
+55	35	装箱	40									
+56	36	装箱	40									
+57	37	装箱	40									
+58	38	装箱	40									
+59	39	装箱	40									
+60	26	发货	40									
+61	27	发货	40									
+62	28	发货	40									
+63	29	发货	40									
+64	30	发货	40									
+65	31	发货	40									
+66	32	发货	40									
+67	33	发货	40									
+68	34	发货	40									
+69	35	发货	40									
+70	36	发货	40									
+71	37	发货	40									
+72	38	发货	40									
+73	39	发货	40									
+74	26	收箱	25									
+75	27	收箱	25									
+76	28	收箱	25									
+77	29	收箱	25									
+78	30	收箱	25									
+79	31	收箱	25									
+80	32	收箱	25									
+81	33	收箱	25									
+82	34	收箱	25									
+83	35	收箱	25									
+84	36	收箱	25									
+85	37	收箱	25									
+86	38	收箱	25									
+87	39	收箱	25									
+88	26	收货	39									
+89	27	收货	39									
+90	28	收货	39									
+91	29	收货	39									
+92	30	收货	39									
+93	31	收货	39									
+94	32	收货	39									
+95	33	收货	39									
+96	34	收货	39									
+97	35	收货	39									
+98	36	收货	39									
+99	37	收货	39									
+100	38	收货	39									
+101	39	收货	39									
+102	26	反馈	39									
+103	27	反馈	39									
+104	28	反馈	39									
+105	29	反馈	39									
+106	30	反馈	39									
+107	31	反馈	39									
+108	32	反馈	39									
+109	33	反馈	39									
+110	34	反馈	39									
+111	35	反馈	39									
+112	36	反馈	39									
+113	37	反馈	39									
+114	38	反馈	39									
+115	39	反馈	39									
+116	26	反馈图	39									
+117	27	反馈图	39									
+118	28	反馈图	39									
+119	29	反馈图	39									
+120	30	反馈图	39									
+121	31	反馈图	39									
+122	32	反馈图	39									
+123	33	反馈图	39									
+124	34	反馈图	39									
+125	35	反馈图	39									
+126	36	反馈图	39									
+127	37	反馈图	39									
+128	38	反馈图	39									
+129	39	反馈图	39									
+130	40	入库	40									
+131	41	入库	40									
+132	40	装箱	40									
+133	41	装箱	40									
+134	40	发货	40									
+135	41	发货	40									
+136	40	收箱	41									
+137	41	收箱	41									
+138	40	收货	39									
+139	41	收货	39									
+140	40	反馈	39									
+141	41	反馈	39									
+												
+// 唯一灯片												
+[WYDP]												
+id	EWM	status	DPId	GYSId	DDDWDPId	KDXId						
+1	DP9	装箱	8	6	7	14						
+2	DP8	发货	8	6	5	7						
+3	DP10	收箱	10	6	7	8						
+4	DP11	收货	11	6	8	9						
+												
+[WYDP]												
+id	EWM	status	DPId	GYSId	DDDWDPId	KDXId	AZFK	imageUrl				
+5	DP12	反馈图	12	6	9	10	安装成功	UrlDP12				
+6	DP13	反馈图	13	6	10	11	尺寸不对	UrlDP13				
+												
+[WYDP]												
+id	EWM	status	DPId	GYSId	DDDWDPId	KDXId	AZFK					
+7	DP14	反馈	14	6	11	13	安装成功					
+												
+// 唯一灯片状态												
+[WYDPCZ]												
+id	WYDPId	status	UserId									
+1	1	装箱	40									
+2	2	装箱	40									
+3	2	发货	40									
+4	3	装箱	40									
+5	3	发货	40									
+6	3	收箱	23									
+7	4	装箱	40									
+8	4	发货	40									
+9	4	收箱	24									
+10	4	收货	39									
+11	5	装箱	40									
+12	6	装箱	40									
+13	5	发货	40									
+14	6	发货	40									
+15	5	收箱	25									
+16	6	收箱	25									
+17	5	收货	39									
+18	6	收货	39									
+19	5	反馈	39									
+20	6	反馈	39									
+21	5	反馈图	39									
+22	6	反馈图	39									
+23	7	装箱	40									
+24	7	发货	40									
+25	7	收箱	41									
+26	7	收货	39									
+27	7	反馈	39									
+												
+												
+[end]												
+												
+												

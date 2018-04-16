@@ -15,7 +15,9 @@ import {
   PP,
   GT,
   GYS,
+  ZHY_GYS,
   AZGS,
+  AZG_AZGS,
   DP,
   DW,
   WL,
@@ -39,6 +41,8 @@ import {
   KDXStatus,
   KDXCZ,
   KDD,
+  DD_GT_WLSnapshot,
+  DD_DW_DPSnapshot,
 } from '../models/Model';
 
 const isArrayEqual = function (x, y) {
@@ -126,58 +130,63 @@ let AZGToken;
 
 describe('SPRT测试', () => {
   beforeEach(async () => {
-    const con = mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: 'tcltcl',
-    });
-
-    await con.connect();
-    await con.query('DROP DATABASE IF EXISTS cltp');
-    await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
-
-    const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
-
-    const scriptArr = data.split(';');
-
-    await sequelize.sync({ force: true });
-
-    for (let i = 0; i < scriptArr.length; i++) {
-      if (scriptArr[i].trim().length > 0) {
-        const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
+    try {
+      const con = mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: 'tcltcl',
+      });
+  
+      await con.connect();
+      await con.query('DROP DATABASE IF EXISTS cltp');
+      await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
+  
+      const data = await readFile(`${__dirname}/../tools/initDataScript_izz.sql`);
+  
+      const scriptArr = data.split(';');
+  
+      await sequelize.sync({ force: true });
+  
+      for (let i = 0; i < scriptArr.length; i++) {
+        if (scriptArr[i].trim().length > 0) {
+          const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
+        }
       }
+  
+      // 创建View
+      const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
+      await sequelize.query(viewSql, {
+        type: sequelize.QueryTypes.SELECT,
+      });
+      // end 创建View
+  
+      // 创建Procedure
+      const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
+      const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
+      const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
+      await sequelize.query(procedureSql2, {
+        type: sequelize.QueryTypes.SELECT,
+      });
+      // end 创建创建Procedure
+  
+      adminToken = await getToken('admin', '123456');
+      PPJLToken = await getToken('PPJL1', '123456');
+      KFJLToken = await getToken('KFJL1', '123456');
+      GZToken = await getToken('GZ1', '123456');
+      GTBAToken = await getToken('GTBA1', '123456');
+      GYSGLYToken = await getToken('GYSGLY1', '123456');
+      AZGSGLYToken = await getToken('AZGSGLY1', '123456');
+      ZHYToken = await getToken('ZHY1', '123456');
+      AZGToken = await getToken('AZG1', '123456');
     }
-
-    // 创建View
-    const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
-    await sequelize.query(viewSql, {
-      type: sequelize.QueryTypes.SELECT,
-    });
-    // end 创建View
-
-    // 创建Procedure
-    const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
-    const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
-    const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
-    await sequelize.query(procedureSql2, {
-      type: sequelize.QueryTypes.SELECT,
-    });
-    // end 创建创建Procedure
-
-    adminToken = await getToken('admin', '123456');
-    PPJLToken = await getToken('PPJL1', '123456');
-    KFJLToken = await getToken('KFJL1', '123456');
-    GZToken = await getToken('GZ1', '123456');
-    GTBAToken = await getToken('GTBA1', '123456');
-    GYSGLYToken = await getToken('GYSGLY1', '123456');
-    AZGSGLYToken = await getToken('AZGSGLY1', '123456');
-    ZHYToken = await getToken('ZHY1', '123456');
-    AZGToken = await getToken('AZG1', '123456');
+    catch(err) {
+      console.log('ppLog:', err);
+    }
 
   });
 
   describe('test', async () => {
-    it('small test', async () => {
+    it.only('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -539,8 +548,8 @@ describe('SPRT测试', () => {
   describe('/setGZ_GTs', async () => {
     describe('成功', async () => {
       it('KFJL为多个GT分配GZ', async () => {
-        const GZId = 10;
-        const GTIds = [9, 10];
+        const GZId = 15;
+        const GTIds = [1, 2];
         const response = await post(
           'setGZ_GTs',
           {
@@ -565,8 +574,8 @@ describe('SPRT测试', () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('KFJL为不属于自己管理的GT分配GZ', async () => {
-          const GZId = 12;
-          const GTIds = [5, 6];
+          const GZId = 42;
+          const GTIds = [10, 11];
           const response = await post(
             'setGZ_GTs',
             {
@@ -580,8 +589,8 @@ describe('SPRT测试', () => {
         });
 
         it('KFJL为GT分配不属于自己管理的PP的GZ', async () => {
-          const GZId = 10;
-          const GTIds = [5, 6];
+          const GZId = 15;
+          const GTIds = [10, 11];
           const response = await post(
             'setGZ_GTs',
             {
@@ -805,15 +814,16 @@ describe('SPRT测试', () => {
   describe('/setDP_DWs', async () => {
     describe('成功', async () => {
       it('KFJL将DP关联1个GT的多个DW', async () => {
-        const DPId = 7;
-        const DWIds = [13, 14];
+        let KFJL2Token = await getToken('KFJL2', '123456');
+        const DPId = 4;
+        const DWIds = [7, 8];
         const response = await post(
           'setDP_DWs',
           {
             id: DPId,
             DWIds: DWIds,
           },
-          KFJLToken,
+          KFJL2Token,
         );
         assert.equal(response.data.code, 1);
 
@@ -824,15 +834,16 @@ describe('SPRT测试', () => {
       });
 
       it('KFJL将DP关联多个GT的DW', async () => {
-        const DPId = 8;
-        const DWIds = [15, 16];
+        let KFJL7Token = await getToken('KFJL7', '123456');
+        const DPId = 14;
+        const DWIds = [18, 19];
         const response = await post(
           'setDP_DWs',
           {
             id: DPId,
             DWIds: DWIds,
           },
-          KFJLToken,
+          KFJL7Token,
         );
         assert.equal(response.data.code, 1);
 
@@ -882,7 +893,7 @@ describe('SPRT测试', () => {
 
         it('KFJL配置不属于自己管理的PP的DW', async () => {
           const DPId = 1;
-          const DWIds = [19];
+          const DWIds = [7];
           const response = await post(
             'setDP_DWs',
             {
@@ -935,7 +946,7 @@ describe('SPRT测试', () => {
         });
       });//前置条件：FG_T,Tester1&Tester2数据库中不存在
 
-      it.only('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
+      it('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
         const PPId = 1;
         const FGPayload = {
           name: 'FG1',
@@ -1036,7 +1047,7 @@ describe('SPRT测试', () => {
       it('KFJL创建不包含WL和FGTester的EJZH', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 38;
+        const WLId = 5;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [];
@@ -1070,7 +1081,7 @@ describe('SPRT测试', () => {
       it('KFJL创建仅包含FGTester的EJZH', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 38;
+        const WLId = 5;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [
@@ -1113,7 +1124,7 @@ describe('SPRT测试', () => {
       it('KFJL创建仅包含SJWL的EJZH', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 38;
+        const WLId = 5;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [];
@@ -1152,7 +1163,7 @@ describe('SPRT测试', () => {
       it('KFJL创建包含FGTester和SJWL的EJZH-1', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 38;
+        const WLId = 5;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [
@@ -1200,7 +1211,7 @@ describe('SPRT测试', () => {
       it('KFJL创建包含FGTester和SJWL的EJZH-2', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 38;
+        const WLId = 5;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [
@@ -1244,57 +1255,13 @@ describe('SPRT测试', () => {
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
         assert.equal(ejzh_sjwl.length, 2);
       });//FGTesters&SJWLs
-
-      it('KFJL创建EJZH-WL&FG没有与任何组合有关联', async () => {
-        const PPId = 1;
-        const name = 'EJZH_T';
-        const WLId = 38;
-        const imageUrl = 'imageUrl_T';
-        const XGTs = ['XGT_T1', 'XGT_T2'];
-        const FGTesters = [
-          {
-            id: 9,
-            number: 2,
-          }
-        ];
-        const SJWLs = [
-          {
-            id: 33,
-            number: 2
-          }
-        ];
-
-        const response = await post(
-          'createEJZH',
-          {
-            PPId: PPId,
-            name: name,
-            WLId: WLId,
-            imageUrl: imageUrl,
-            XGTs: XGTs,
-            FGTesters: FGTesters,
-            SJWLs: SJWLs,
-          },
-          KFJLToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const ejzh = await EJZH.findOne({ where: { WLId: WLId } });
-        assert.notEqual(ejzh, null);
-
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
-        assert.equal(ejzh_fg_tester.length, 1);
-
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
-        assert.equal(ejzh_sjwl.length, 1);
-      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => {
         it('KFJL创建EJZH，选择SJWLId', async () => {
           const PPId = 1;
           const name = 'EJZH_T';
-          const WLId = 33;
+          const WLId = 1;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
           const FGTesters = [];
@@ -1320,13 +1287,13 @@ describe('SPRT测试', () => {
         it('KFJL创建EJZH，关联EJWL', async () => {
           const PPId = 1;
           const name = 'EJZH_T';
-          const WLId = 38;
+          const WLId = 5;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
           const FGTesters = [];
           const SJWLs = [
             {
-              id: 38,
+              id: 1,
               number: 2
             },
           ];
@@ -1351,7 +1318,7 @@ describe('SPRT测试', () => {
         it('KFJL创建不属于自己管理的PP的EJZH', async () => {
           const PPId = 2;
           const name = 'EJZH_T';
-          const WLId = 53;
+          const WLId = 18;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
           const FGTesters = [];
@@ -1377,7 +1344,7 @@ describe('SPRT测试', () => {
         it('KFJL创建EJZH中EJWL不属于自己管理的PP', async () => {
           const PPId = 1;
           const name = 'EJZH_T';
-          const WLId = 53;
+          const WLId = 18;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
           const FGTesters = [];
@@ -1627,7 +1594,7 @@ describe('SPRT测试', () => {
 
         it('KFJL编辑EJZH中的EJWL不属于自己管理的PP', async () => {
           const EJZHId = 1;
-          const WLId = 21;
+          const WLId = 18;
           const imageUrl = 'imageUrlEJZH1';
           const XGTs = ['EJZH1Url1'];
           const FGTesters = [];
@@ -1660,7 +1627,7 @@ describe('SPRT测试', () => {
       it('KFJL创建YJZH-不包含EJZH', async () => {
         const PPId = 1;
         const name = 'YJZH_T';
-        const WLId = 43;
+        const WLId = 11;
         const imageUrl = 'imageUrlYJZH';
         const XGTs = ['YJZH1Url'];
         const EJZHs = [];
@@ -1689,7 +1656,7 @@ describe('SPRT测试', () => {
       it('KFJL创建YJZH-包含多组EJZH', async () => {
         const PPId = 1;
         const name = 'YJZH_T';
-        const WLId = 43;
+        const WLId = 11;
         const imageUrl = 'imageUrlYJZH';
         const XGTs = ['YJZH1Url'];
         const EJZHs = [
@@ -1729,7 +1696,7 @@ describe('SPRT测试', () => {
         it('KFJL创建YJZH，选择SJWLId', async () => {
           const PPId = 1;
           const name = 'YJZH_T';
-          const WLId = 33;
+          const WLId = 1;
           const imageUrl = 'imageUrlYJZH';
           const XGTs = ['YJZH1Url'];
           const EJZHs = [];
@@ -2091,7 +2058,7 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        it('该品牌已有未审批通过订单', async () => {
+        before(async () => {
           const PPId = 1;
           const name = 'DD_PP1';
 
@@ -2104,265 +2071,351 @@ describe('SPRT测试', () => {
             KFJLToken,
           );
         });
+        it('该品牌已有未审批通过订单', async () => {
+          const PPId = 1;
+          const name = 'DD_PP1';
+
+          const response = await post(
+            'createDD',
+            {
+              PPId: PPId,
+              name: name,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '订单相关操作正在进行中');
+        });
       });
       describe.skip('唯一性校验', async () => { });
     });
   });
 
-  // describe('/reCreateDD', async () => {
-  //   describe('成功', async () => {
-  //     it('客服经理成功重新生成订单', async () => {
-  //       //订单内数据有效；
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+  // 重新生成DD [KFJL]
+  describe('/reCreateDD', async () => {
+    describe('成功', async () => {
+      it('KFJL重新生成DD', async () => {
+        let KFJL2Token = await getToken('KFJL2', '123456');
+        const DDId = 1;
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非客服经理登入', async () => {
+        const response = await post(
+          {
+            DDId,
+          },
+          KFJL2Token,
+        );
+        assert.equal(response.data.code, 1);
+        //订单内数据有效；
+      });
+    });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe.skip('没有权限', async () => { });
+      describe('操作状态不正确', async () => {
+        it('KFJL重新生成已经审批通过的DD', async () => {
+          let KFJL4Token = await getToken('KFJL4', '123456');
+          const DDId = 3;
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('该订单非待审核状态', async () => {
+          const response = await post(
+            {
+              DDId,
+            },
+            KFJL2Token,
+          );
+          assert.equal(response.data.code, -1);
+        });
+      });
+      describe.skip('唯一性校验', async () => { });
+    });
+  });
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+  // 设置DD_GTFXs [KFJL]
+  describe.skip('/setDDGTFXs', async () => {
+    describe('成功', async () => {
+      it('客服经理成功翻新柜台', async () => {
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => {
 
-  //     });
-  //   });
-  // });
-  // describe('/setDD_GTFXs', async () => {
-  //   describe('成功', async () => {
-  //     it('客服经理成功翻新柜台', async () => {
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+      });
+      describe('没有权限', async () => {
+        it('非客服经理登入', async () => {
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非客服经理登入', async () => {
+        });
+        it('该柜台非客服经理所属品牌下柜台', async () => {
 
-  //       });
-  //       it('该柜台非客服经理所属品牌下柜台', async () => {
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('当前品牌有正在进行的订单', async () => {
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('当前品牌有正在进行的订单', async () => {
+        });
+      });
+      describe('唯一性校验', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+      });
+    });
+  });
 
-  //     });
-  //   });
-  // });
-  // describe('/setDDGTWLs_AZGS', async () => {
-  //   describe('成功', async () => {
-  //     it('品牌经理批量设置订单柜台物料的安装公司', async () => {
+  // 批量设置DD_GT_WL的AZGS [PPJL]
+  describe('/setDDGTWLs0AZGS', async () => {
+    describe('成功', async () => {
+      it('PPJL配置DD_GT_WL的AZGS', async () => {
+        let PPJL2Token = await getToken('PPJL2', '123456');
+        const AZGSId = 5;
+        const DD_GT_WLIds = [1, 2, 3];
 
-  //     });
-  //   });
+        const response = await post(
+          'setDDGTWLs0AZGS',
+          {
+            DD_GT_WLIds,
+            AZGSId,
+          },
+          PPJL2Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+        DD_GT_WLIds.forEach(async (item) => {
+          const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
+          assert.equal(ddgtwl.dataValues.AZGSId, AZGSId);
+        });
+      });
+    });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('PPJL为不属于自己管理的DD配置AZGS', async () => {
+          const AZGSId = 5;
+          const DD_GT_WLIds = [1, 2, 3];
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非品牌经理登入', async () => {
+          const response = await post(
+            'setDDGTWLs0AZGS',
+            {
+              DD_GT_WLIds,
+              AZGSId,
+            },
+            PPJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('PPJL为已经审批通过的DD的WL配置AZGS', async () => {
+          let PPJL4Token = await getToken('PPJL4', '123456');
+          const AZGSId = 5;
+          const DD_GT_WLIds = [7, 8, 9];
 
-  //       });
-  //       it('安装公司不存在', async () => {
+          const response = await post(
+            'setDDGTWLs0AZGS',
+            {
+              DD_GT_WLIds,
+              AZGSId,
+            },
+            PPJLToken,
+          );
+          assert.equal(response.data.code, -1);
+        });
+      });
+      describe.skip('唯一性校验', async () => { });
+    });
+  });
 
-  //       });
-  //       it('品牌经理非该订单所属品牌的品牌经理', async () => {
+  //批量设置DD_DW_DP的AZGS[PPJL]
+  describe('/setDDDWDPs0AZGS', async () => {
+    describe('成功', async () => {
+      it('PPJL配置DD_DW_DP的AZGS', async () => {
+        let PPJL3Token = await getToken('PPJL3', '123456');
+        const AZGSId = 5;
+        const DD_DW_DPIds = [1, 2];
 
-  //       });
-  //       it('柜台订单物料不属于同一个订单', async () => {
+        const response = await post(
+          'setDDGTWLs0AZGS',
+          {
+            DD_DW_DPIds,
+            AZGSId,
+          },
+          PPJL3Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('当前品牌订单状态非待审批', async () => {
+        DD_DW_DPIds.forEach(async (item) => {
+          const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
+          assert.equal(dddwdp.dataValues.AZGSId, AZGSId);
+        });
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('PPJL为不属于自己管理的DD配置AZGS', async () => {
+          const AZGSId = 5;
+          const DD_DW_DPIds = [1, 2];
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+          const response = await post(
+            'setDDGTWLs0AZGS',
+            {
+              DD_DW_DPIds,
+              AZGSId,
+            },
+            PPJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限')
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('PPJL为已经审批通过的DD配置AZGS', async () => {
+          let PPJL4Token = await getToken('PPJL4', '123456');
+          const AZGSId = 5;
+          const DD_DW_DPIds = [3, 4];
 
-  //     });
-  //   });
-  // });
-  // describe('/setDDDWDPs_AZGS', async () => {
-  //   describe('成功', async () => {
-  //     it('品牌经理批量设置订单灯位灯片的安装公司', async () => {
+          const response = await post(
+            'setDDGTWLs0AZGS',
+            {
+              DD_DW_DPIds,
+              AZGSId,
+            },
+            PPJL4Token,
+          );
+          assert.equal(response.data.code, -1);
+        });
+      });
+      describe.skip('唯一性校验', async () => { });
+    });
+  });
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+  // 审批通过DD [PPJL]
+  describe('/approveDD', async () => {
+    describe('成功', async () => {
+      it('PPJL审批通过DD', async () => {
+        const PPJL2Token = await getToken('PPJL2', '123456');
+        const id = 1;
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非品牌经理登入', async () => {
+        let response = await post(
+          'approveDD',
+          {
+            id,
+          },
+          PPJL2Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //       });
-  //       it('安装公司不存在', async () => {
+        const dd = await DD.findOne({ where: { id: id } });
+        assert.equal(dd.dataValues.status, DDStatus.YSP);
+      });
+    });
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('PPJL审批非自己管理的PP的DD', async () => {
+          const id = 1;
 
-  //       });
-  //       it('品牌经理非订单所属品牌的品牌经理', async () => {
+          const response = await post(
+            'approveDD',
+            {
+              id,
+            },
+            PPJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('PPJL审批审批通过的DD', async () => {
+          let PPJL4Token = await getToken('PPJL4', '123456');
+          const id = 3;
 
-  //       });
-  //       it('订单灯位灯片不属于同一个订单', async () => {
+          const response = await post(
+            'approveDD',
+            {
+              id,
+            },
+            PPJL4Token,
+          );
+          assert.equal(response.data.code, -1);
+        });
+      });
+      describe('唯一性校验', async () => {});
+    });
+  });
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('当前品牌订单状态非待审批', async () => {
+  // 批量设置DD_GT_WL的发货GYS [GYSGLY]
+  describe('/setDDGTWLs0GYS', async () => {
+    describe('成功', async () => {
+      it('GYSGLY设置DD_GT_WL的发货GYS', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+      });
 
-  //     });
-  //   });
-  // });
-  // describe('/approveDD', async () => {
-  //   describe('成功', async () => {
-  //     it('品牌经理审批通过订单', async () => {
+      it('GYSGLY设置还未审批通过的DD的DD_GT_WL', async () => {
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {
+        it('GYSGLY设置不属于自己管理的DD_GT_WL的发货GYS', async () => {
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非品牌经理登入', async () => {
+        });
+      });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
+    });
+  });
 
-  //       });
-  //       it('品牌经理非订单所属品牌的品牌经理', async () => {
+  // 批量设置DD_DW_DP的发货GYS [GYSGLY]
+  describe('/setDDDWDPs0GYS', async () => {
+    describe('成功', async () => {
+      it('GYSGLY设置DD_DW_DP的发货GYS', async () => {
 
-  //       });
-  //       it('订单内物料/灯片不属于同一订单', async () => {
+      });
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('当前品牌订单状态非待审批', async () => {
+      it('GYSGLY设置还未审批通过的DD的DD_DW_DP的发货GYS', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {
+        it('GYSGLY设置不属于自己管理的DD_DW_DP的发货GYS', async () => {
 
-  //     });
-  //   });
-  // });
-  // describe('/setDDGTWLs_GYS', async () => {
-  //   describe('成功', async () => {
-  //     it('供应商管理员批量设置订单柜台物料的发货供应商', async () => {
+        });
+      });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
+    });
+  });
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+  // 批量设置DD_GT_WL的AZG [AZGSGLY]
+  describe('/setDDGTWLs0AZG', async () => {
+    describe('成功', async () => {
+      it('AZGSGLY设置DD_GT_WL的AZG', async () => {
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非供应商管理员登入', async () => {
+      });
 
-  //       });
-  //       it('订单柜台物料不属于同一个订单', async () => {
+      it('AZGSGLY设置还未审批通过的DD的DD_DW_DP的发货AZG', async () => {
 
-  //       });
-  //       it('订单柜台物料供应商非当前操作者所属供应商', async () => {
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {
+        it('AZGSGLY设置不属于自己管理的DD_GT_WL的AZG', async () => {
 
-  //       });
+        });
+        it('AZGSGLY为DD_GT_WL设置不属于自己管理的AZG', async () => {
 
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('当前品牌订单状态非已审批', async () => {
+        });
+      });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
+    });
+  });
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
-
-  //     });
-  //   });
-  // });
-  // describe('/setDDDWDPs_GYS', async () => {
-  //   describe('成功', async () => {
-  //     it('供应商管理员批量设置订单灯位灯片的发货供应商', async () => {
-
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
-
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非供应商管理员登入', async () => {
-
-  //       });
-  //       it('订单灯位灯片不属于同一个订单', async () => {
-
-  //       });
-  //       it('订单灯位灯片供应商非当前操作者所属供应商', async () => {
-
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('当前品牌订单状态非已审批', async () => {
-
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
-
-  //     });
-  //   });
-  // });
-
-  // describe('/setDDGTWLs_AZG', async () => {
-  //   describe('成功', async () => {
-  //     it('安装公司管理员批量设置订单柜台物料的安装工', async () => {
-
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
-
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非安装工管理员登入', async () => {
-
-  //       });
-  //       it('订单柜台物料不属于同一个订单', async () => {
-
-  //       });
-  //       it('订单柜台物料对应安装公司不属于同一个安装公司', async () => {
-
-  //       });
-  //       it('订单中安装公司非安装工管理员所属安装公司', async () => {
-
-  //       });
-  //       it('所分配安装工非安装工管理员所属安装公司下的安装工', async () => {
-
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('当前品牌订单状态非已审批', async () => {
-
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
-
-  //     });
-  //   });
-  // });
-  // describe('/setDDDWDPs_AZG', async () => {
+  // 批量设置DD_DW_DP的AZG [AZGSGLY]
+  // describe('/setDDDWDPs0AZG', async () => {
   //   describe('成功', async () => {
   //     it('安装公司管理员批量设置订单灯位灯片的安装工', async () => {
 
@@ -2399,6 +2452,8 @@ describe('SPRT测试', () => {
   //     });
   //   });
   // });
+
+  // 批量入库 [ZHY]
   // describe('/piLiangRuKu', async () => {
   //   describe('成功', async () => {
   //     it('装货员批量入库成功', async () => {
@@ -2430,6 +2485,8 @@ describe('SPRT测试', () => {
   //     });
   //   });
   // });
+
+  // 装箱 [ZHY]
   // describe('/zhuangXiang', async () => {
   //   describe('成功', async () => {
   //     it('装货员装箱成功', async () => {
@@ -2490,6 +2547,8 @@ describe('SPRT测试', () => {
   //     });
   //   });
   // });
+
+  // 出箱 [ZHY]
   // describe('/chuXiang', async () => {
   //   describe('成功', async () => {
   //     it('装货员出箱成功', async () => {
@@ -2526,6 +2585,8 @@ describe('SPRT测试', () => {
   //     });
   //   });
   // });
+
+  // 关联快递 [ZHY]
   // describe('/guanLianKuaiDi', async () => {
   //   describe('成功', async () => {
   //     it('装货员关联快递成功', async () => {
@@ -2561,6 +2622,8 @@ describe('SPRT测试', () => {
   //     });
   //   });
   // });
+
+  // 解除关联快递 [ZHY]
   // describe('/jieChuGuanLianKuaiDi', async () => {
   //   describe('成功', async () => {
   //     it('装货员解除关联快递成功', async () => {
@@ -2590,6 +2653,8 @@ describe('SPRT测试', () => {
   //     });
   //   });
   // });
+
+  // 收箱 [GTBA]
   // describe('/shouXiang', async () => {
   //   describe('成功', async () => {
   //     it('柜台BA收箱成功', async () => {
@@ -2625,6 +2690,8 @@ describe('SPRT测试', () => {
   //     });
   //   });
   // });
+
+  // 收货 [GTBA, AZG]
   // describe('/shouHuo', async () => {
   //   describe('成功', async () => {
   //     it('柜台BA/安装工收货成功', async () => {
@@ -2661,6 +2728,7 @@ describe('SPRT测试', () => {
   //   });
   // });
 
+  // 安装反馈状态 [GTBA, AZG]
   // describe('/anZhuangFanKuiZhuangTai', async () => {
   //   describe('成功', async () => {
   //     it('柜台BA/安装工安装反馈状态成功', async () => {
@@ -2702,6 +2770,8 @@ describe('SPRT测试', () => {
   //     });
   //   });
   // });
+
+  // 安装反馈图片 [GTBA, AZG]
   // describe('/anZhuangWLFanKuiTuPian', async () => {
   //   describe('成功', async () => {
   //     it('安装工安装物料反馈图片成功', async () => {
