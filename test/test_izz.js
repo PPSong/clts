@@ -1959,6 +1959,7 @@ describe('SPRT测试', () => {
             KFJLToken,
           );
 
+          console.log('pairCoding_izz_test');
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
         });
@@ -2360,7 +2361,7 @@ describe('SPRT测试', () => {
   describe('/setDDGTWLs0GYS', async () => {
     describe('成功', async () => {
       it('GYSGLY设置DD_GT_WL的发货GYS', async () => {
-
+        
       });
 
       it('GYSGLY设置还未审批通过的DD的DD_GT_WL', async () => {
