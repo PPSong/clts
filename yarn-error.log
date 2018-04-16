@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run test
+  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run test_izz
 
 PATH: 
   /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools
@@ -25,7 +25,9 @@ npm manifest:
       "cjs": "cjs-to-es6",
       "initData": "nodemon --exec yarn run babel-node -- ./tools/initData.js",
       "genData": "yarn run babel-node -- ./tools/initData.js",
-      "test": "mocha --exit --compilers js:babel-core/register test --reporter mochawesome"
+      "test": "mocha --exit --compilers js:babel-core/register test --reporter mochawesome",
+      "genData_izz": "yarn run babel-node -- ./tools/initData_izz.js",
+      "test_izz": "mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000"
     },
     "dependencies": {
       "babel-plugin-wildcard": "^4.0.0",
@@ -4512,7 +4514,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c mocha --exit --compilers js:babel-core/register test --reporter mochawesome
+  Arguments: -c mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000
   Directory: /Users/penn/Desktop/clts
   Output:
   
