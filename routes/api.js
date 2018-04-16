@@ -127,38 +127,13 @@ router.post('/danDuShengPiTongGuoWLBHa', businessApis.DanDuShengPiTongGuoWLBHa.g
 router.post('/danDuShengPiBoHuiWLBHa', businessApis.DanDuShengPiBoHuiWLBHa.getApi());
 // 为物料补货分配AZGS [PPJL]
 router.post('/setWLBH0AZGS', businessApis.SetWLBH0AZGS.getApi());
-
-
-//--
-// 为物料补货分配AZGS [PPJL]
-// ids, AZGSId
-
-//--
 // 批量审批通过物料补货 [PPJL]
-// ids
-// 检查操作记录权限
-// end 检查操作记录权限
-
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
-
-//--
-// 单独审批通过物料补货 [PJJL]
-// id note(optional)
-// 检查操作记录权限
-// end 检查操作记录权限
-
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
-
-//--
+router.post('/danDuShengPiTongGuoWLBHb', businessApis.DanDuShengPiTongGuoWLBHb.getApi());
 // 单独审批驳回物料补货 [PPJL]
-// id note(must)
-// 检查操作记录权限
-// end 检查操作记录权限
+router.post('/danDuShengPiBoHuiWLBHb', businessApis.DanDuShengPiBoHuiWLBHb.getApi());
+// 为物料补货分配发货GYS [生产GYS]
+router.post('/fengPeiFaHuoGYS', businessApis.FengPeiFaHuoGYS.getApi());
 
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
 
 //--
 // 为物料补货分配发货GYS [生产GYS]
