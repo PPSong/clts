@@ -11,8 +11,8 @@ export default class SetYJZHGTs extends BusinessApiBase {
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     const tmpYJZH = await user.checkYJZHId(id, transaction);
-    for (let i = 0; i < GTs.lengths; i++) {
-      await user.checkGTId(GTs[i].id);
+    for (let i = 0; i < GTs.length; i++) {
+      await user.checkGTId(GTs[i].id, transaction);
     }
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
