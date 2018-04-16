@@ -86,8 +86,14 @@ export default class CreateFGAndTesterAndFGTester extends BusinessApiBase {
     }
     // end 如不存在则创建Tester
 
-    // 把Testers配置到FG上
-    await tmpFG.setTesters(TesterIds, { through: { PPId }, transaction });
-    // end 把Testers配置到FG上
+    // 获取需要新添加的TesterIds
+    const curTesters = await tmpFG.getTesters({ transaction });
+    const curTesterIds = curTesters.map(item => item.id);
+    const needToAddTesterIds = TesterIds.filter(item => !curTesterIds.includes(item));
+    // end 获取需要新添加的TesterIds
+
+    // 添加新的FG对应的Testers
+    await tmpFG.addTesters(needToAddTesterIds, { through: { PPId }, transaction });
+    // end reset FG对应的Tester
   }
 }

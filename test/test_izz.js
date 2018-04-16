@@ -938,7 +938,7 @@ describe('SPRT测试', () => {
   });
 
   // KFJL 创建 FG, Tester, FGTester
-  describe.only('/createFGAndTesterAndFGTester', async () => {
+  describe('/createFGAndTesterAndFGTester', async () => {
     describe('成功', async () => {
       it('KFJL创建系统中均不存在的FG、Tester组合', async () => {
         const PPId = 1;
@@ -972,7 +972,7 @@ describe('SPRT测试', () => {
         });
       });//前置条件：FG_T,Tester1&Tester2数据库中不存在
 
-      it.only('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
+      it('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
         const PPId = 1;
         const FGPayload = {
           name: 'FG1',
@@ -1998,7 +1998,7 @@ describe('SPRT测试', () => {
   });
 
   // KFJL 生成订单
-  describe('/createDD', async () => {
+  describe.only('/createDD', async () => {
     describe('成功', async () => {
       it('KFJL创建DD', async () => {
         const PPId = 1;
@@ -2049,9 +2049,8 @@ describe('SPRT测试', () => {
         const dddwdp = await DD_DW_DP.findAll({ where: { DDId: dd.dataValues.id } });
         let dddwdpList = [];
         dddwdpList = dddwdp.map(item => ({
-          GTId: item.dataValues.GTId,
-          WLId: item.dataValues.WLId,
-          number: item.dataValues.number,
+          DWId: item.dataValues.DWId,
+          DPId: item.dataValues.DPId,
         }));
         const truedddwdpList = [
           { DWId: 1, DPId: 1 },
@@ -2061,14 +2060,15 @@ describe('SPRT测试', () => {
           { DWId: 5, DPId: 2 },
           { DWId: 6, DPId: 3 }
         ];
+        console.log('izzlog', dddwdpList);
         assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
-      describe.skip('没有权限', async () => {
+      describe('没有权限', async () => {
         it('KFJL创建不属于自己管理的PP的DD', async () => {
-          const PPId = 2;
+          const PPId = 4;
           const name = 'DD_PP1';
 
           const response = await post(
@@ -2084,21 +2084,9 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        before(async () => {
-          const PPId = 1;
-          const name = 'DD_PP1';
-
-          await post(
-            'createDD',
-            {
-              PPId: PPId,
-              name: name,
-            },
-            KFJLToken,
-          );
-        });
-        it('该品牌已有未审批通过订单', async () => {
-          const PPId = 1;
+        it.only('该品牌已有未审批通过订单', async () => {
+          let KFJL2Token = await getToken('KFJL2', '123456');
+          const PPId = 2;
           const name = 'DD_PP1';
 
           const response = await post(
@@ -2107,8 +2095,9 @@ describe('SPRT测试', () => {
               PPId: PPId,
               name: name,
             },
-            KFJLToken,
+            KFJL2Token,
           );
+          console.log('izzlog', response.data);
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '订单相关操作正在进行中');
         });

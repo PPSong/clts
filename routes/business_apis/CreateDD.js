@@ -29,6 +29,7 @@ export default class CreateDD extends BusinessApiBase {
       transaction,
       replacements: { PPId, name },
     });
+    console.log('ppt111', r);
     const result = r[0];
     if (result.code <= 0) {
       throw Error(result.msg);

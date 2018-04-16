@@ -50,6 +50,7 @@ export async function checkSameGTAndGetGTId(
 
 export async function changeWYWLsInKDXsStatus(KDXEWMs, status, user, transaction) {
   const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
+  // 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
   const tmpWYWLSql = `
       SELECT
         a.id id
@@ -60,8 +61,11 @@ export async function changeWYWLsInKDXsStatus(KDXEWMs, status, user, transaction
       ON
         a.KDXId = b.id
       AND
-        b.EWM in (:KDXEWMs);
+        b.EWM in (:KDXEWMs)
+      WHERE
+        a.AZFKType IS NULL;
     `;
+  // end 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
   const tmpWYWLCZSqlR = await DBTables.sequelize.query(tmpWYWLSql, {
     transaction,
     replacements: { KDXEWMs: KDXEWMStrings },
@@ -75,6 +79,7 @@ export async function changeWYWLsInKDXsStatus(KDXEWMs, status, user, transaction
 
 export async function changeWYDPsInKDXsStatus(KDXEWMs, status, user, transaction) {
   const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
+  // 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
   const tmpWYDPSql = `
       SELECT
         a.id
@@ -85,8 +90,11 @@ export async function changeWYDPsInKDXsStatus(KDXEWMs, status, user, transaction
       ON
         a.KDXId = b.id
       AND
-        b.EWM in (:KDXEWMs);
+        b.EWM in (:KDXEWMs)
+      WHERE
+        a.AZFKType IS NULL;
     `;
+  // end 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
   const tmpWYDPCZSqlR = await DBTables.sequelize.query(tmpWYDPSql, {
     transaction,
     replacements: { KDXEWMs: KDXEWMStrings },

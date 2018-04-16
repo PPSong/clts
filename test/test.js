@@ -505,7 +505,7 @@ describe('测试案例', () => {
       assert.notEqual(tmpWL.code, code);
     });
 
-    it('KFJL 创建 FG, Tester, FGTester', async () => {
+    it('KFJL 创建 FG, Tester, FGTester1', async () => {
       const PPId = 1;
       const FGPayload = {
         name: 'T_FG',
@@ -531,6 +531,34 @@ describe('测试案例', () => {
       const Testers = await tmpFG.getTesters();
       const TesterNames = Testers.map(item => item.name);
       assert.deepEqual(TesterNames, FGPayload.Testers);
+    });
+
+    it('KFJL 创建 FG, Tester, FGTester2', async () => {
+      const PPId = 1;
+      const FGPayload = {
+        name: 'T_FG',
+        note: 'T_note',
+        Testers: ['Tester1', 'T_Tester1', 'T_Tester3'],
+      };
+
+      await post(
+        'createFGAndTesterAndFGTester',
+        {
+          PPId,
+          FGPayload,
+        },
+        KFJLToken,
+      );
+
+      const tmpFG = await FG.findOne({
+        where: {
+          name: FGPayload.name,
+        },
+      });
+
+      const Testers = await tmpFG.getTesters();
+      const TesterNames = Testers.map(item => item.name);
+      assert.deepEqual(TesterNames.sort(), ['T_Tester2', ...FGPayload.Testers].sort());
     });
 
     it('KFJL 创建 EJZH', async () => {

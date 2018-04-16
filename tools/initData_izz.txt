@@ -46,7 +46,6 @@ Id	username	password	JS
 43	GTBA11	password(123456)	柜台BA									
 												
 												
-												
 // 品牌												
 [PP]												
 id	name											
@@ -509,7 +508,7 @@ id	EWM	status	WLId	GYSId	DDGTWLId	KDXId
 25	WL28_2	收货	28	6	12	4						
 												
 [WYWL]												
-id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFK	imageUrl				
+id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFKType	imageUrl				
 26	WL29_1	反馈图	29	6	13	5	安装成功	UrlWL29_1				
 27	WL29_2	反馈图	29	6	13	5	安装成功	UrlWL29_2				
 28	WL29_3	反馈图	29	6	13	5	安装成功	UrlWL29_3				
@@ -526,7 +525,7 @@ id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFK	imageUrl
 39	WL31_2	反馈图	31	6	15	6	丢失	UrlWL31_2				
 												
 [WYWL]												
-id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFK					
+id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFKType					
 40	WL32_1	反馈	32	6	16	12	安装成功					
 41	WL32_2	反馈	32	6	16	12	安装成功					
 												
@@ -684,12 +683,12 @@ id	EWM	status	DPId	GYSId	DDDWDPId	KDXId
 4	DP11	收货	11	6	8	9						
 												
 [WYDP]												
-id	EWM	status	DPId	GYSId	DDDWDPId	KDXId	AZFK	imageUrl				
+id	EWM	status	DPId	GYSId	DDDWDPId	KDXId	AZFKType	imageUrl				
 5	DP12	反馈图	12	6	9	10	安装成功	UrlDP12				
 6	DP13	反馈图	13	6	10	11	尺寸不对	UrlDP13				
 												
 [WYDP]												
-id	EWM	status	DPId	GYSId	DDDWDPId	KDXId	AZFK					
+id	EWM	status	DPId	GYSId	DDDWDPId	KDXId	AZFKType					
 7	DP14	反馈	14	6	11	13	安装成功					
 												
 // 唯一灯片状态												
@@ -722,7 +721,6 @@ id	WYDPId	status	UserId
 25	7	收箱	41									
 26	7	收货	39									
 27	7	反馈	39									
-												
 												
 [end]												
 												
