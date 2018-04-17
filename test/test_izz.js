@@ -2706,7 +2706,7 @@ describe('SPRT测试', () => {
   // 出箱 [ZHY]
   describe('/chuXiang', async () => {
     describe('成功', async () => {
-      it('ZHY出箱货物', async () => {
+      it.only('ZHY出箱货物', async () => {
         let ZHY4Token = await getToken('ZHY4', '123456');
         const HWEWMs = [
           {
@@ -3169,7 +3169,7 @@ describe('SPRT测试', () => {
   // 安装反馈图片 [GTBA, AZG]
   describe('/anZhuangWLFanKuiTuPian', async () => {
     describe('成功', async () => {
-      it.only('AZG反馈安装反馈图', async () => {
+      it('AZG反馈安装反馈图', async () => {
         let AZG6Token = await getToken('AZG6', '123456');
         const DDId = 6;
         const GTId = 10;
