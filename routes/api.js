@@ -136,16 +136,6 @@ router.post('/fengPeiFaHuoGYS', businessApis.FengPeiFaHuoGYS.getApi());
 
 
 //--
-// 为物料补货分配发货GYS [生产GYS]
-// ids GYSId
-// 检查操作记录权限
-// 如果ZZGYS, 要检查是否库存足够
-// end 检查操作记录权限
-
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
-
-//--
 // 并单 [生产GYS]
 // ids
 // 检查属于同一个发货GYS

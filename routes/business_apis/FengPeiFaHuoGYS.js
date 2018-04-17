@@ -55,6 +55,13 @@ export default class FengPeiFaHuoGYS extends BusinessApiBase {
       // end 检查操作者是生产GYS
     }
 
+    // 检查是否已分配了发货GYS
+    const tmpHasGYSs = tmpWLBHs.filter(item => item.GYSId !== null);
+    if (tmpHasGYSs.length > 0) {
+      throw new Error(`${tmpHasGYSs}已分配过发货供应商!`);
+    }
+    // end 检查是否已分配了发货GYS
+
     // 检查中转GYS的库存是否足够
     if (tmpGYS.type === DBTables.GYSType.ZZ) {
       // 统计各个WL的个数
