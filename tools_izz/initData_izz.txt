@@ -44,7 +44,8 @@ Id	username	password	JS
 41	GTBA10	password(123456)	柜台BA									
 42	GZ4	password(123456)	柜长									
 43	GTBA11	password(123456)	柜台BA									
-												
+44	GYSGLY6	password(123456)	供应商管理员									
+45	AZGSGLY5	password(123456)	安装公司管理员									
 												
 // 品牌												
 [PP]												
@@ -113,6 +114,7 @@ UserId	GYSId
 26	1											
 27	1											
 28	2											
+44	6											
 												
 [ZHY_GYS]												
 UserId	GYSId											
@@ -134,6 +136,7 @@ id	name
 UserId	AZGSId											
 32	1											
 33	2											
+45	5											
 												
 [AZG_AZGS]												
 UserId	AZGSId											
@@ -424,11 +427,12 @@ id	DDId	DWId	DPId
 4	2	10	7									
 5	3	11	8									
 6	3	12	9									
-7	4	13	10									
-8	4	14	11									
-9	5	15	12									
-10	5	16	13									
-11	6	17	14									
+7	3	22	8									
+8	4	13	10									
+9	4	14	11									
+10	5	15	12									
+11	5	16	13									
+12	6	17	14									
 												
 [DD_DW_DP]												
 id	DDId	DWId	DPId	GYSId	ZXNumber	AZGSId						
@@ -677,8 +681,8 @@ id	WYWLId	status	UserId
 // 唯一灯片												
 [WYDP]												
 id	EWM	status	DPId	GYSId	DDDWDPId	KDXId						
-1	DP9	装箱	8	6	7	14						
-2	DP8	发货	8	6	5	7						
+1	DP9	装箱	8	6	7	7						
+2	DP8	发货	8	6	5	2						
 3	DP10	收箱	10	6	7	8						
 4	DP11	收货	11	6	8	9						
 												

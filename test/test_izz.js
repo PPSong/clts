@@ -55,6 +55,7 @@ import {
   EJZH_SJWL,
   YJZH_EJZH,
   GT_YJZH,
+  AZFKType,
 } from '../models/Model';
 
 const isArrayEqual = function (x, y) {
@@ -1937,7 +1938,7 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it.only('KFJL将YJZH配置到不属于自己管理的GT', async () => {
+        it('KFJL将YJZH配置到不属于自己管理的GT', async () => {
           const YJZHId = 1;
           const GTs = [
             {
@@ -2363,7 +2364,7 @@ describe('SPRT测试', () => {
       it('GYSGLY设置DD_GT_WL的发货GYS', async () => {
         let GYSGLY6Token = await getToken('GYSGLY6', '123456');
         const DD_GT_WLIds = [7, 8];
-        const GYSId = 4;
+        const GYSId = 5;
 
         const response = await post(
           'setDDGTWLs0GYS',
@@ -2376,7 +2377,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         DD_GT_WLIds.forEach(async (item) => {
-          const ddgtwl = DD_GT_WL.findOne({ where: { id: item } });
+          const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtw.dataValues.GYSId, GYSId);
         });
       });
@@ -2385,16 +2386,16 @@ describe('SPRT测试', () => {
 
       });
     });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => {
-        it('GYSGLY设置不属于自己管理的DD_GT_WL的发货GYS', async () => {
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => { });
+    //   describe('没有权限', async () => {
+    //     it('GYSGLY设置不属于自己管理的DD_GT_WL的发货GYS', async () => {
 
-        });
-      });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
-    });
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => { });
+    //   describe('唯一性校验', async () => { });
+    // });
   });
 
   // 批量设置DD_DW_DP的发货GYS [GYSGLY]
@@ -2403,10 +2404,10 @@ describe('SPRT测试', () => {
       it('GYSGLY设置DD_DW_DP的发货GYS', async () => {
         let GYSGLY6Token = await getToken('GYSGLY6', '123456');
         const DD_DW_DPIds = [5, 6];
-        const GYSId = 4;
+        const GYSId = 5;
 
         const response = await post(
-          'setDDGTWLs0GYS',
+          'setDDDWDPs0GYS',
           {
             DD_DW_DPIds,
             GYSId,
@@ -2425,16 +2426,16 @@ describe('SPRT测试', () => {
 
       });
     });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => {
-        it('GYSGLY设置不属于自己管理的DD_DW_DP的发货GYS', async () => {
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => { });
+    //   describe('没有权限', async () => {
+    //     it('GYSGLY设置不属于自己管理的DD_DW_DP的发货GYS', async () => {
 
-        });
-      });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
-    });
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => { });
+    //   describe('唯一性校验', async () => { });
+    // });
   });
 
   // 批量设置DD_GT_WL的AZG [AZGSGLY]
@@ -2456,7 +2457,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         DD_GT_WLIds.forEach(async (item) => {
-          const ddgtwl = DD_GT_WL.findOne({ where: { id: item } });
+          const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.AZGUserId, AZGUserId);
         });
       });
@@ -2465,52 +2466,69 @@ describe('SPRT测试', () => {
 
       });
     });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => {
-        it('AZGSGLY设置不属于自己管理的DD_GT_WL的AZG', async () => {
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => { });
+    //   describe('没有权限', async () => {
+    //     it('AZGSGLY设置不属于自己管理的DD_GT_WL的AZG', async () => {
 
-        });
-        it('AZGSGLY为DD_GT_WL设置不属于自己管理的AZG', async () => {
+    //     });
+    //     it('AZGSGLY为DD_GT_WL设置不属于自己管理的AZG', async () => {
 
-        });
-      });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
-    });
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => { });
+    //   describe('唯一性校验', async () => { });
+    // });
   });
 
   // 批量设置DD_DW_DP的AZG [AZGSGLY]
   describe('/setDDDWDPs0AZG', async () => {
     describe('成功', async () => {
       it('AZGSGLY设置DD_DW_DP的AZG', async () => {
+        let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
+        const DD_DW_DPIds = [5, 6];
+        const AZGUserId = 39;
 
+        const response = await post(
+          'setDDDWDPs0AZG',
+          {
+            DD_DW_DPIds,
+            AZGUserId,
+          },
+          AZGSGLY5Token,
+        );
+        assert.equal(response.data.code, 1);
+
+        DD_DW_DPIds.forEach(async (item) => {
+          const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
+          assert.equal(dddwdp.dataValues.AZGUserId, AZGUserId);
+        });
       });
 
       it('GYSGLY设置还未审批通过的DD的DD_DW_DP的AZG', async () => {
 
       });
     });
-    describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => {
-        it('AZGSGLY设置不属于自己管理的DD_DW_DP的AZG', async () => {
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => { });
+    //   describe('没有权限', async () => {
+    //     it('AZGSGLY设置不属于自己管理的DD_DW_DP的AZG', async () => {
 
-        });
+    //     });
 
-        it('AZGSGLY为DD_DW_DP设置不属于自己管理的AZG', async () => {
+    //     it('AZGSGLY为DD_DW_DP设置不属于自己管理的AZG', async () => {
 
-        });
-      });
-      describe('操作状态不正确', async () => {
-        it('当前品牌订单状态非已审批', async () => {
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => {
+    //     it('当前品牌订单状态非已审批', async () => {
 
-        });
-      });
-      describe('唯一性校验', async () => {
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
 
-      });
-    });
+    //   });
+    // });
   });
 
   // 批量入库 [ZHY]
@@ -2521,12 +2539,12 @@ describe('SPRT测试', () => {
         const EWMs = [
           {
             type: 'WL',
-            typeId: '23',
+            typeId: 23,
             uuid: 'WL23_6',
           },
           {
             type: 'WL',
-            typeId: '23',
+            typeId: 23,
             uuid: 'WL23_7',
           },
         ];
@@ -2540,9 +2558,17 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtwl = await DD_GT_WL.findOne({ where: {}});
+        EWMs.forEach(async (item) => {
+          const wywl = await WYWL.findOne({ where: { EWM: item.uuid } });
+          assert.notEqual(wywl, null);
+
+          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
+          assert.equal(wywlcz.length, 1);
+          assert.include(wywlcz, '入库');
+        });
       });
     });
+
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
 
@@ -2570,331 +2596,648 @@ describe('SPRT测试', () => {
   });
 
   // 装箱 [ZHY]
-  // describe('/zhuangXiang', async () => {
-  //   describe('成功', async () => {
-  //     it('装货员装箱成功', async () => {
-  //       //箱子如果不存在，要新建箱子；
-  //       //装箱成功后物料待装箱数量相应减少；
-  //       //装箱后货物状态更改为装箱；
+  describe('/zhuangXiang', async () => {
+    describe('成功', async () => {
+      it('ZHY装箱WL', async () => {
+        let ZHY4Token = await getToken('ZHY4', '123456');
+        const DDId = 3;
+        const GTId = 7;
+        const HWEWMs = [
+          {
+            type: 'WL',
+            typeId: 23,
+            uuid: 'WL23_6',
+          },
+          {
+            type: 'WL',
+            typeId: 23,
+            uuid: 'WL23_7',
+          },
+        ];
+        const KDXEWM = {
+          type: 'KDX',
+          uuid: 'KDX_T',
+        };
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+        const response = await post(
+          'zhuangXiang',
+          {
+            DDId,
+            GTId,
+            HWEWMs,
+            KDXEWM,
+          },
+          ZHY4Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非装货员登入', async () => {
+        const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: HWEWMs[0].typeId } });
+        assert.equal(ddgtwl.dataValues.ZXNumber, 5);
 
-  //       });
-  //       it('货物二维码信息非物料/灯片', async () => {
+        HWEWMs.forEach(async (item) => {
+          const wywl = await WYWL.findOne({ where: { EWM: item.uuid } });
+          assert.notEqual(wywl, null);
 
-  //       });
-  //       it('货物二维码组信息非同属于物料/灯片', async () => {
+          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
+          assert.equal(wywlcz.length, 1);
+          assert.include(wywlcz, '装箱');
+        });
 
-  //       });
-  //       it('货物二维码组物料/灯片不属于同一个装货员所属的供应商/中转供应商', async () => {
+        const kdx = await KDX.findOne({ where: { EWM: KDXEWM.uuid } });
+        console.log('izzlog---->',kdx);
+        assert.notEqual(kdx, null);
+        assert.equal(ddgtwl.dataValues.KDXId, kdx.dataValues.id);
+        //箱子如果不存在，要新建箱子；
+        //装箱成功后物料待装箱数量相应减少；
+        //装箱后货物状态更改为装箱；
+      });
+    });
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => {
 
-  //       });
-  //       it('货物二维码信息非同属于同一个订单_柜台', async () => {
+    //   });
+    //   describe('没有权限', async () => {
+    //     it('非装货员登入', async () => {
 
-  //       });
-  //       it('货物已装箱后箱内未增加唯一二维码记录，箱中对应物料应装数未减少', async () => {
+    //     });
+    //     it('货物二维码信息非物料/灯片', async () => {
 
-  //       });
-  //       it('如快递箱已存在，快递箱二维码信息非快递箱', async () => {
+    //     });
+    //     it('货物二维码组信息非同属于物料/灯片', async () => {
 
-  //       });
-  //       it('快递箱未存在且无法新建', async () => {
+    //     });
+    //     it('货物二维码组物料/灯片不属于同一个装货员所属的供应商/中转供应商', async () => {
 
-  //       });
-  //       it('如快递箱已存在，快递箱所属柜台非当前柜台', async () => {
+    //     });
+    //     it('货物二维码信息非同属于同一个订单_柜台', async () => {
 
-  //       });
+    //     });
+    //     it('货物已装箱后箱内未增加唯一二维码记录，箱中对应物料应装数未减少', async () => {
 
+    //     });
+    //     it('如快递箱已存在，快递箱二维码信息非快递箱', async () => {
 
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('未装箱前，货物二维码状态为已入库之后的状态', async () => {
+    //     });
+    //     it('快递箱未存在且无法新建', async () => {
 
-  //       });
-  //       it('未装箱前，已有快递箱状态非装箱状态', async () => {
+    //     });
+    //     it('如快递箱已存在，快递箱所属柜台非当前柜台', async () => {
 
-  //       });
-  //       it('货物装箱数量超出该柜台应装数量', async () => {
+    //     });
+    //   });
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+    //   describe('操作状态不正确', async () => {
+    //     it('未装箱前，货物二维码状态为已入库之后的状态', async () => {
 
-  //     });
-  //   });
-  // });
+    //     });
+    //     it('未装箱前，已有快递箱状态非装箱状态', async () => {
+
+    //     });
+    //     it('货物装箱数量超出该柜台应装数量', async () => {
+
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
+
+    //   });
+    // });
+  });
 
   // 出箱 [ZHY]
-  // describe('/chuXiang', async () => {
-  //   describe('成功', async () => {
-  //     it('装货员出箱成功', async () => {
-  //       //出箱货物需为同一个装货员，但无需为同一个柜台；
-  //       //出箱后货物待装箱数量增加；
-  //       //出箱后货物状态更改为待入库状态；
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+  describe('/chuXiang', async () => {
+    describe('成功', async () => {
+      it('ZHY出箱货物', async () => {
+        let ZHY4Token = await getToken('ZHY4', '123456');
+        const HWEWMs = [
+          {
+            type: 'WL',
+            typeId: 23,
+            uuid: 'WL23_3',
+          },
+          {
+            type: 'WL',
+            typeId: 23,
+            uuid: 'WL23_4',
+          },
+          {
+            type: 'DP',
+            typeId: 8,
+            uuid: 'DP9',
+          },
+        ];
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非装货员登入', async () => {
+        const response = await post(
+          'chuXiang',
+          {
+            HWEWMs,
+          },
+          ZHY4Token,
+        );
+        console.log('izz--->',response.data);
+        assert.equal(response.data.code, 1);
 
-  //       });
-  //       it('货物二维码信息非物料/灯片', async () => {
+        const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: HWEWMs[0].typeId } });
+        assert.equal(ddgtwl.dataValues.ZXNumber, 1);
+        assert.equal(ddgtwl.dataValues.KDXId, null);
 
-  //       });
-  //       it('货物二维码组物料/灯片不属于同一个装货员所属的供应商/中转供应商', async () => {
+        for (let i = 0; i < 2; i++) {
+          const wywl = await WYWL.findOne({ where: { EWM: HWEWMs[i].uuid } });
+          assert.notEqual(wywl, null);
 
-  //       });
-  //       it('出箱后箱内该货物唯一二维码记录未从箱中清除，货物应装数量未相应增加', async () => {
+          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
+          assert.equal(wywlcz.length, 2);
+          assert.include(wywlcz, '入库');
+        };
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('未出箱前，货物二维码状态非装箱状态', async () => {
+        const wydp = await WYDP.findOne({ where: { EWM: HWEWMs[2].uuid } });
+        assert.notEqual(wywl, null);
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+        const wydpcz = await WYDPCZ.findAll({ where: { WYDPId: wydp.dataValues.id } });
+        assert.equal(wydpcz.length, 2);
+        assert.include(wydpcz, '入库');
 
-  //     });
-  //   });
-  // });
+        const dddwdp = await DD_DW_DP.findOne({ where: { id: wydp.dataValues.DDDWDPId } });
+        assert.equal(dddwdp.dataValues.ZXNumber, 0);
+        assert.equal(dddwdp.dataValues.KDXId, null);
+        //出箱货物需为同一个装货员，但无需为同一个柜台；
+        //出箱后货物待装箱数量增加；
+        //出箱后货物状态更改为待入库状态；
+      });
+    });
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => {
+
+    //   });
+    //   describe('没有权限', async () => {
+    //     it('非装货员登入', async () => {
+
+    //     });
+    //     it('货物二维码信息非物料/灯片', async () => {
+
+    //     });
+    //     it('货物二维码组物料/灯片不属于同一个装货员所属的供应商/中转供应商', async () => {
+
+    //     });
+    //     it('出箱后箱内该货物唯一二维码记录未从箱中清除，货物应装数量未相应增加', async () => {
+
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => {
+    //     it('未出箱前，货物二维码状态非装箱状态', async () => {
+
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
+
+    //   });
+    // });
+  });
 
   // 关联快递 [ZHY]
-  // describe('/guanLianKuaiDi', async () => {
-  //   describe('成功', async () => {
-  //     it('装货员关联快递成功', async () => {
-  //       //快递箱成功关联后，快递箱状态转为发货状态；
-  //       //快递箱成功关联后，箱中物料/灯片状态更改为发货状态
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+  describe('/guanLianKuaiDi', async () => {
+    describe('成功', async () => {
+      it('ZHY关联快递', async () => {
+        let ZHY4Token = await getToken('ZHY4', '123456');
+        const KDXEWMs = [
+          {
+            type: 'KDX',
+            uuid: 'KDX1',
+          },
+        ];
+        const KDDCode = 'KDD_T';
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非装货员登入', async () => {
+        const response = await post(
+          'guanLianKuaiDi',
+          {
+            KDXEWMs,
+            KDDCode,
+          },
+          ZHY4Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //       });
-  //       it('快递箱二维码信息非快递箱', async () => {
+        const kdd = await KDD.findOne({ where: { name: KKDCode } });
+        assert.notEqual(kdd, null);
 
-  //       });
-  //       it('快递箱二维码不属于同一个柜台', async () => {
+        const kdx = await KDX.findOne({ where: { EWM: KDXEWMs[0].uuid } });
+        assert.equal(kdx.dataValues.status, '发货');
 
-  //       });
-  //       it('快递单未存在且无法新建', async () => {
+        const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+        let wywlList = wywl.map(item => ({
+          EWM: item.dataValues.EWM,
+          status: item.dataValues.status,
+        }));
+        let truewywlList = [
+          { EWM: WL23_3, status: 装箱 },
+          { EWM: WL23_4, status: 装箱 },
+          { EWM: WL23_5, status: 装箱 },
+          { EWM: WL24_1, status: 装箱 },
+          { EWM: WL24_2, status: 装箱 },
+        ];
+        assert.equal(isArrayEqual(wywlList, truewywlList), true);
+        //快递箱成功关联后，快递箱状态转为发货状态；
+        //快递箱成功关联后，箱中物料/灯片状态更改为发货状态
+      });
+    });
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => {
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('未关联快递前，快递箱二维码状态非装箱状态', async () => {
+    //   });
+    //   describe('没有权限', async () => {
+    //     it('非装货员登入', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+    //     });
+    //     it('快递箱二维码信息非快递箱', async () => {
 
-  //     });
-  //   });
-  // });
+    //     });
+    //     it('快递箱二维码不属于同一个柜台', async () => {
+
+    //     });
+    //     it('快递单未存在且无法新建', async () => {
+
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => {
+    //     it('未关联快递前，快递箱二维码状态非装箱状态', async () => {
+
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
+
+    //   });
+    // });
+  });
 
   // 解除关联快递 [ZHY]
-  // describe('/jieChuGuanLianKuaiDi', async () => {
-  //   describe('成功', async () => {
-  //     it('装货员解除关联快递成功', async () => {
-  //       //解除关联后，快递箱状态更改为装箱状态；
-  //       //解除关联后，箱中货物状态更改为装箱状态；
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+  describe('/jieChuGuanLianKuaiDi', async () => {
+    describe('成功', async () => {
+      it('ZHY解除快递关联', async () => {
+        let ZHY4Token = await getToken('ZHY4', '123456');
+        const KDXEWMs = [
+          {
+            type: 'KDX',
+            uuid: 'KDX2',
+          },
+        ];
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非装货员登入', async () => {
+        const response = await post(
+          'jieChuGuanLianKuaiDi',
+          {
+            KDXEWMs,
+          },
+          ZHY4Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //       });
-  //       it('快递箱二维码信息非快递箱', async () => {
+        const kdx = await KDX.findOne({ where: { EWM: KDXEWMs[0].uuid } });
+        assert.equal(kdx.dataValues.KDDId, null);
+        assert.equal(kdx.dataValues.status, '装箱');
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('未解除关联快递前，快递箱二维码状态非发货状态', async () => {
+        const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+        let wywlList = wywl.map(item => ({
+          EWM: item.dataValues.EWM,
+          status: item.dataValues.status,
+        }));
+        wywlList.forEach(item => {
+          assert.equal(item.status, '装箱');
+        });
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+        const wydp = await WYDP.findAll({ where: { KDXId: kdx.dataValues.id } });
+        let wydpList = wydp.map(item => ({
+          EWM: item.dataValues.EWM,
+          status: item.dataValues.status,
+        }));
+        wydpList.forEach(item => {
+          assert.equal(item.status, '装箱');
+        });
+        //解除关联后，快递箱状态更改为装箱状态；
+        //解除关联后，箱中货物状态更改为装箱状态；
+      });
+    });
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => {
 
-  //     });
-  //   });
-  // });
+    //   });
+    //   describe('没有权限', async () => {
+    //     it('非装货员登入', async () => {
+
+    //     });
+    //     it('快递箱二维码信息非快递箱', async () => {
+
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => {
+    //     it('未解除关联快递前，快递箱二维码状态非发货状态', async () => {
+
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
+
+    //   });
+    // });
+  });
 
   // 收箱 [GTBA]
-  // describe('/shouXiang', async () => {
-  //   describe('成功', async () => {
-  //     it('柜台BA收箱成功', async () => {
-  //       //收箱后，快递箱及箱内货物状态更改为收箱状态；
+  describe('/shouXiang', async () => {
+    describe('成功', async () => {
+      it('GTBA收箱', async () => {
+        let GTBA8Token = await getToken('GTBA8', '123456');
+        const KDXEWMs = [
+          {
+            type: 'KDX',
+            uuid: 'KDX3',
+          },
+        ];
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+        const response = await post(
+          'shouXiang',
+          {
+            KDXEWMs,
+          },
+          GTBA8Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非柜台BA登入', async () => {
+        const kdx = await KDX.findOne({ where: { EWM: KDXEWMs[0].uuid } });
+        assert.equal(kdx.dataValues.status, '收箱');
 
-  //       });
-  //       it('快递箱二维码信息非快递箱', async () => {
+        const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+        let wywlList = wywl.map(item => ({
+          EWM: item.dataValues.EWM,
+          status: item.dataValues.status,
+        }));
+        wywlList.forEach(item => {
+          assert.equal(item.status, '收箱');
+        });
+        //收箱后，快递箱及箱内货物状态更改为收箱状态；
+      });
+    });
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => {
 
-  //       });
-  //       it('快递箱所属柜台非该柜台BA对应的柜台', async () => {
+    //   });
+    //   describe('没有权限', async () => {
+    //     it('非柜台BA登入', async () => {
 
-  //       });
-  //       it('快递箱内货物对应柜台非该柜台BA对应的柜台', async () => {
+    //     });
+    //     it('快递箱二维码信息非快递箱', async () => {
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('未收箱前，快递箱二维码状态非发货状态', async () => {
+    //     });
+    //     it('快递箱所属柜台非该柜台BA对应的柜台', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+    //     });
+    //     it('快递箱内货物对应柜台非该柜台BA对应的柜台', async () => {
 
-  //     });
-  //   });
-  // });
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => {
+    //     it('未收箱前，快递箱二维码状态非发货状态', async () => {
+
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
+
+    //   });
+    // });
+  });
 
   // 收货 [GTBA, AZG]
-  // describe('/shouHuo', async () => {
-  //   describe('成功', async () => {
-  //     it('柜台BA/安装工收货成功', async () => {
-  //       //收货后，货物状态更改为收货状态；
+  describe('/shouHuo', async () => {
+    describe('成功', async () => {
+      it('AZG收货', async () => {
+        let AZG6Token = await getToken('AZG6', '123456');
+        const HWEWMs = [
+          {
+            type: 'WL',
+            typeId: 27,
+            uuid: 'WL27_1',
+          },
+          {
+            type: 'WL',
+            typeId: 27,
+            uuid: 'WL27_2',
+          },
+        ];
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+        const response = await post(
+          'shouHuo',
+          {
+            HWEWMs,
+          },
+          AZG6Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非柜台BA/安装工登入', async () => {
+        HWEWMs.forEach(async (item) => {
+          const wywl = await WYWL.findOne({ where: { EWM: item.uuid } });
+          assert.equal(wywl.dataValues.status, '收货');
+        });
+        //收货后，货物状态更改为收货状态；
+      });
+    });
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => {
 
-  //       });
-  //       it('货物二维码信息非货物', async () => {
+    //   });
+    //   describe('没有权限', async () => {
+    //     it('非柜台BA/安装工登入', async () => {
 
-  //       });
-  //       it('货物二维码所属柜台BA/安装工非该柜台BA/安装工', async () => {
+    //     });
+    //     it('货物二维码信息非货物', async () => {
 
-  //       });
-  //       it('货物二维码属于该安装工，并不属于该柜台', async () => {
+    //     });
+    //     it('货物二维码所属柜台BA/安装工非该柜台BA/安装工', async () => {
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('若货物未被修改描述，未收货前，货物二维码状态非收箱状态', async () => {
+    //     });
+    //     it('货物二维码属于该安装工，并不属于该柜台', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => {
+    //     it('若货物未被修改描述，未收货前，货物二维码状态非收箱状态', async () => {
 
-  //     });
-  //   });
-  // });
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
+
+    //   });
+    // });
+  });
 
   // 安装反馈状态 [GTBA, AZG]
-  // describe('/anZhuangFanKuiZhuangTai', async () => {
-  //   describe('成功', async () => {
-  //     it('柜台BA/安装工安装反馈状态成功', async () => {
-  //       //反馈状态后，货物状态更改为反馈状态；
+  describe('/anZhuangFanKuiZhuangTai', async () => {
+    describe('成功', async () => {
+      it('AZG反馈AZFKType', async () => {
+        let AZG6Token = await getToken('AZG6', '123456');
+        let GTBA8Token = await getToken('GTBA8', '123456');
+        const KDXEWMs = [
+          {
+            type: 'KDX',
+            uuid: 'KDX3',
+          },
+        ];
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+        let HWEWMs = [];
+        for (let i = 12; i < 24; i++) {
+          const wywl = await WYWL.findOne({ where: { id: i } });
+          HWEWMs.push({
+            type: 'WL',
+            typeId: wywl.dataValues.WLId,
+            uuid: wywl.dataValues.EWM,
+          });
+        };
+        await post(
+          'shouXiang',
+          {
+            KDXEWMs,
+          },
+          GTBA8Token,
+        );
+        await post(
+          'shouHuo',
+          {
+            HWEWMs,
+          },
+          AZG6Token,
+        );
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非柜台BA/安装工登入', async () => {
+        let HWPayloads = [];
+        for (let i = 13; i < 26; i++) {
+          HWPayloads.push({
+            id: i,
+            AZFK: AZFKType.AZCG,
+          })
+        }
+        const DDId = 4;
+        const GTId = 8;
+        const ewmType = EWMType.WL;
 
-  //       });
-  //       it('货物二维码所属柜台BA/安装工非该柜台BA/安装工', async () => {
+        const response = await post(
+          'anZhuangFanKuiZhuangTai',
+          {
+            DDId,
+            GTId,
+            EWMType: ewmType,
+            HWPayloads,
+          },
+          AZG6Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //       });
-  //       it('货物二维码所属订单_柜台任务未全部展现', async () => {
+        HWPayloads.forEach(async (item) => {
+          const wywl = await WYWL.findOne({ where: { id: item.id } });
+          assert.equal(wywl.dataValues.status, '反馈');
+        });
+        //反馈状态后，货物状态更改为反馈状态；
+      });
+    });
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => {
 
-  //       });
-  //       it('订单_柜台任务展现范围超过该安装工/BA的任务范围', async () => {
+    //   });
+    //   describe('没有权限', async () => {
+    //     it('非柜台BA/安装工登入', async () => {
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('未反馈前，已收货货物二维码状态非收货状态', async () => {
+    //     });
+    //     it('货物二维码所属柜台BA/安装工非该柜台BA/安装工', async () => {
 
-  //       });
-  //       it('未反馈前，未收货货物二维码状态非装箱/发货状态', async () => {
+    //     });
+    //     it('货物二维码所属订单_柜台任务未全部展现', async () => {
 
-  //       });
-  //       it('反馈时，所有货物二维码安装描述未全部反馈', async () => {
+    //     });
+    //     it('订单_柜台任务展现范围超过该安装工/BA的任务范围', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => {
+    //     it('未反馈前，已收货货物二维码状态非收货状态', async () => {
 
-  //     });
-  //   });
-  // });
+    //     });
+    //     it('未反馈前，未收货货物二维码状态非装箱/发货状态', async () => {
+
+    //     });
+    //     it('反馈时，所有货物二维码安装描述未全部反馈', async () => {
+
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
+
+    //   });
+    // });
+  });
 
   // 安装反馈图片 [GTBA, AZG]
-  // describe('/anZhuangWLFanKuiTuPian', async () => {
-  //   describe('成功', async () => {
-  //     it('安装工安装物料反馈图片成功', async () => {
-  //       //反馈图片后，货物状态更改为反馈图状态；
-  //       //反馈图片后，该BA/安装工的该订单_柜台全景反馈图重置为最新的全景反馈图；
+  describe('/anZhuangWLFanKuiTuPian', async () => {
+    describe('成功', async () => {
+      it.only('AZG反馈安装反馈图', async () => {
+        let AZG6Token = await getToken('AZG6', '123456');
+        const DDId = 6;
+        const GTId = 10;
+        const ewmType = EWMType.WL;
+        const HWPayloads = [
+          {
+            id: 40,
+            imageUrl: 'imageUrl_FK40'
+          },
+          {
+            id: 41,
+            imageUrl: 'imageUrl_FK41'
+          },
+        ];
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+        const response = await post(
+          'anZhuangFanKuiZhuangTai',
+          {
+            DDId,
+            GTId,
+            EWMType: ewmType,
+            HWPayloads,
+          },
+          AZG6Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非柜台BA/安装工登入', async () => {
+        HWPayloads.forEach(async (item) => {
+          const wywl = await WYWL.findOne({ where: { id: item.id } });
+          assert.equal(wywl.dataValues.status, '反馈图');
+        });
+        //反馈图片后，货物状态更改为反馈图状态；
+        //反馈图片后，该BA/安装工的该订单_柜台全景反馈图重置为最新的全景反馈图；
+      });
+    });
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => {
 
-  //       });
-  //       it('该订单_柜台所有属于该柜台BA/安装工的任务未全部展现', async () => {
+    //   });
+    //   describe('没有权限', async () => {
+    //     it('非柜台BA/安装工登入', async () => {
 
-  //       });
-  //       it('订单_柜台任务展现范围超过该安装工/BA的任务范围', async () => {
+    //     });
+    //     it('该订单_柜台所有属于该柜台BA/安装工的任务未全部展现', async () => {
 
-  //       });
+    //     });
+    //     it('订单_柜台任务展现范围超过该安装工/BA的任务范围', async () => {
 
-  //       it('该订单_柜台属于该柜台BA/安装工的全景反馈图未重置', async () => {
+    //     });
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('未反馈前，货物二维码状态非反馈状态', async () => {
+    //     it('该订单_柜台属于该柜台BA/安装工的全景反馈图未重置', async () => {
 
-  //       });
-  //       it('反馈时，该订单_柜台所有属于该柜台BA/安装工的任务的反馈图未全部上传', async () => {
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => {
+    //     it('未反馈前，货物二维码状态非反馈状态', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+    //     });
+    //     it('反馈时，该订单_柜台所有属于该柜台BA/安装工的任务的反馈图未全部上传', async () => {
 
-  //     });
-  //   });
-  // });
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
+
+    //   });
+    // });
+  });
+
   // describe('/shenQingRiChangWLBuHuo', async () => {
   //   describe('成功', async () => {
   //     it('柜台BA、柜长申请日常补货成功', async () => {
