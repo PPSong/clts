@@ -1014,6 +1014,17 @@ User.prototype.checkWLId = async function (id, transaction) {
       }
 
       break;
+    case JS.GYSGLY:
+      // 对于GYSGLY判断的是生产GYS
+      tmpGYSs = await this.getGLYGYSs({ transaction });
+      // 目前ZHY只能属于一个GYS, 所以只需要取第一个
+      const tmpSCGYS = tmpGYSs[0];
+
+      if (!(tmpSCGYS.id === tmpGYSId)) {
+        throw new Error('没有权限!');
+      }
+
+      break;
     default:
       throw new Error('没有权限!');
   }
@@ -3180,6 +3191,9 @@ export const WLBH = sequelize.define(
           }
         },
       },
+    },
+    ZXNumber: {
+      type: Sequelize.INTEGER,
     },
     imageUrl: {
       type: Sequelize.STRING,

@@ -127,60 +127,22 @@ router.post('/danDuShengPiTongGuoWLBHa', businessApis.DanDuShengPiTongGuoWLBHa.g
 router.post('/danDuShengPiBoHuiWLBHa', businessApis.DanDuShengPiBoHuiWLBHa.getApi());
 // 为物料补货分配AZGS [PPJL]
 router.post('/setWLBH0AZGS', businessApis.SetWLBH0AZGS.getApi());
-
-
-//--
-// 为物料补货分配AZGS [PPJL]
-// ids, AZGSId
-
-//--
 // 批量审批通过物料补货 [PPJL]
-// ids
-// 检查操作记录权限
-// end 检查操作记录权限
-
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
-
-//--
-// 单独审批通过物料补货 [PJJL]
-// id note(optional)
-// 检查操作记录权限
-// end 检查操作记录权限
-
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
-
-//--
+router.post('/danDuShengPiTongGuoWLBHb', businessApis.DanDuShengPiTongGuoWLBHb.getApi());
 // 单独审批驳回物料补货 [PPJL]
-// id note(must)
-// 检查操作记录权限
-// end 检查操作记录权限
-
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
-
-//--
+router.post('/danDuShengPiBoHuiWLBHb', businessApis.DanDuShengPiBoHuiWLBHb.getApi());
 // 为物料补货分配发货GYS [生产GYS]
-// ids GYSId
-// 检查操作记录权限
-// 如果ZZGYS, 要检查是否库存足够
-// end 检查操作记录权限
-
-// 修改状态, 新建相关WLBHCZ
-// end 修改状态, 新建相关WLBHCZ
-
-//--
+router.post('/fengPeiFaHuoGYS', businessApis.FengPeiFaHuoGYS.getApi());
 // 并单 [生产GYS]
-// ids
-// 检查属于同一个发货GYS
-
-//--
+router.post('/heBingWLBH', businessApis.HeBingWLBH.getApi());
 // 分配AZG [AZGSGLY]
-// HBTime, GTId, WLIds, AZGUserId
+router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
+// 装箱WLBH [ZHY]
+router.post('/zhuangXiangWLBH', businessApis.ZhuangXiangWLBH.getApi());
+
 
 // 装箱 [ZHY]
-// HBTime, GTId, WLEWMs, KDXEWM
+// HBUUID, GTId, WLEWMs, KDXEWM
 
 // 出箱--修改原来的出箱函数 [ZHY]
 
