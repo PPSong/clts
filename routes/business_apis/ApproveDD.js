@@ -11,11 +11,13 @@ export default class ApproveDD extends BusinessApiBase {
     const { id } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+
+    // 检查DDId
     const tmpDD = await user.checkDDId(id, transaction);
     if (tmpDD.status !== DBTables.DDStatus.DSP) {
       throw new Error(`${tmpDD}状态为:${tmpDD.status}, 不能被审批!`);
     }
-    // end 检查操作记录权限
+    // end 检查DDId
 
     // 检查PP_DDOperationLock
     if (PP_DDOperationLock[tmpDD.PPId]) {

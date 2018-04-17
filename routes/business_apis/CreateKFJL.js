@@ -23,8 +23,10 @@ export default class CreateKFJL extends BusinessApiBase {
       },
       { transaction },
     );
-
-    await tmpPP.setKFJLs([tmpUser], { transaction });
     // end 新建用户
+
+    // 重置PP的KFJL
+    await tmpPP.setKFJLs([tmpUser], { transaction });
+    // end 重置PP的KFJL
   }
 }

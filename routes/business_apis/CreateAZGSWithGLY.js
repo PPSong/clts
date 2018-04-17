@@ -33,6 +33,8 @@ export default class CreateAZGSWithGLY extends BusinessApiBase {
     );
     // end 新建AZGS
 
+    // 重置AZGS的GLY
     await tmpAZGS.setGLYs([tmpAZGSGLYUser], { transaction });
+    // end 重置AZGS的GLY
   }
 }

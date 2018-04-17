@@ -249,13 +249,16 @@ User.prototype.checkPPId = async function (id, transaction) {
   const tmpPP = await PP.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpPP) {
-    throw new Error('记录不合法!');
+    throw new Error(`品牌id:${id}不存在!`);
+  }
+
+  if (tmpPP.disabledAt !== null) {
+    throw new Error(`品牌id:${id}属于屏蔽状态!`);
   }
 
   switch (this.JS) {
@@ -292,13 +295,16 @@ User.prototype.checkGTId = async function (id, transaction) {
   const tmpGT = await GT.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpGT) {
-    throw new Error('记录不合法!');
+    throw new Error(`柜台id:${id}不存在!`);
+  }
+
+  if (tmpGT.disabledAt !== null) {
+    throw new Error(`柜台id:${id}属于屏蔽状态!`);
   }
 
   const tmpPPId = tmpGT.PPId;
@@ -353,7 +359,7 @@ User.prototype.checkWYWLId = async function (id, transaction) {
   });
 
   if (!tmpWYWL) {
-    throw new Error('记录不合法!');
+    throw new Error(`唯一物料id:${id}不存在!`);
   }
 
   const tmpDDGTWLId = tmpWYWL.DDGTWLId;
@@ -387,7 +393,7 @@ User.prototype.checkDD_GT_WLId = async function (id, transaction) {
   });
 
   if (!tmpDD_GT_WL) {
-    throw new Error('记录不合法!');
+    throw new Error(`订单_柜台_物料id:${id}不存在!`);
   }
 
   const tmpDD = await tmpDD_GT_WL.getDD({ transaction });
@@ -442,7 +448,7 @@ User.prototype.checkWYDPId = async function (id, transaction) {
   });
 
   if (!tmpWYDP) {
-    throw new Error('记录不合法!');
+    throw new Error(`唯一灯片id:${id}不存在!`);
   }
 
   const tmpDDDWDPId = tmpWYDP.DDDWDPId;
@@ -482,7 +488,7 @@ User.prototype.checkDD_DW_DPId = async function (id, transaction) {
   });
 
   if (!tmpDD_DW_DP) {
-    throw new Error('记录不合法!');
+    throw new Error(`订单_灯位_灯片id:${id}不存在!`);
   }
 
   const tmpDD = await tmpDD_DW_DP.getDD({ transaction });
@@ -539,7 +545,7 @@ User.prototype.checkDDId = async function (id, transaction) {
   });
 
   if (!tmpDD) {
-    throw new Error('记录不合法!');
+    throw new Error(`订单id:${id}不存在!`);
   }
 
   const tmpPPId = tmpDD.PPId;
@@ -582,13 +588,16 @@ User.prototype.checkGZUserId = async function (id, transaction) {
     where: {
       id,
       JS: JS.GZ,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpGZ) {
-    throw new Error('记录不合法!');
+    throw new Error(`柜长id:${id}不存在!`);
+  }
+
+  if (tmpGZ.disabledAt !== null) {
+    throw new Error(`柜长id:${id}在屏蔽状态!`);
   }
 
   tmpGZPPs = await tmpGZ.getGZPPs({ transaction });
@@ -634,13 +643,16 @@ User.prototype.checkDPId = async function (id, transaction) {
   const tmpDP = await DP.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpDP) {
-    throw new Error('记录不合法!');
+    throw new Error(`灯片id:${id}不存在!`);
+  }
+
+  if (tmpDP.disabledAt !== null) {
+    throw new Error(`灯片id:${id}在屏蔽状态!`);
   }
 
   const tmpPPId = tmpDP.PPId;
@@ -692,13 +704,16 @@ User.prototype.checkDWId = async function (id, transaction) {
   const tmpDW = await DW.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpDW) {
-    throw new Error('记录不合法!');
+    throw new Error(`灯位id:${id}不存在!`);
+  }
+
+  if (tmpDW.disabledAt !== null) {
+    throw new Error(`灯位id:${id}在屏蔽状态!`);
   }
 
   const tmpGT = await tmpDW.getGT({ transaction });
@@ -740,13 +755,16 @@ User.prototype.checkGYSId = async function (id, transaction) {
   const tmpGYS = await GYS.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpGYS) {
-    throw new Error('记录不合法!');
+    throw new Error(`供应商id:${id}不存在!`);
+  }
+
+  if (tmpGYS.disabledAt !== null) {
+    throw new Error(`供应商id:${id}在屏蔽状态!`);
   }
 
   switch (this.JS) {
@@ -786,13 +804,16 @@ User.prototype.checkAZGSId = async function (id, transaction) {
   const tmpAZGS = await AZGS.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpAZGS) {
-    throw new Error('记录不合法!');
+    throw new Error(`安装公司id:${id}不存在!`);
+  }
+
+  if (tmpAZGS.disabledAt !== null) {
+    throw new Error(`安装公司id:${id}在屏蔽状态!`);
   }
 
   switch (this.JS) {
@@ -831,13 +852,16 @@ User.prototype.checkFGId = async function (id, transaction) {
   const tmpFG = await FG.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpFG) {
-    throw new Error('记录不合法!');
+    throw new Error(`FG id:${id}不存在!`);
+  }
+
+  if (tmpFG.disabledAt !== null) {
+    throw new Error(`FG id:${id}在屏蔽状态!`);
   }
 
   const tmpPPId = tmpFG.PPId;
@@ -877,13 +901,16 @@ User.prototype.checkTesterId = async function (id, transaction) {
   const tmpTester = await Tester.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpTester) {
-    throw new Error('记录不合法!');
+    throw new Error(`Tester id:${id}不存在!`);
+  }
+
+  if (tmpTester.disabledAt !== null) {
+    throw new Error(`Tester id:${id}在屏蔽状态!`);
   }
 
   const tmpPPId = tmpTester.PPId;
@@ -923,13 +950,16 @@ User.prototype.checkFGTesterId = async function (id, transaction) {
   const tmpFGTester = await FG_Tester.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpFGTester) {
-    throw new Error('记录不合法!');
+    throw new Error(`FGTester id:${id}不存在!`);
+  }
+
+  if (tmpFGTester.disabledAt !== null) {
+    throw new Error(`FGTester id:${id}在屏蔽状态!`);
   }
 
   const tmpPPId = tmpFGTester.PPId;
@@ -973,13 +1003,16 @@ User.prototype.checkWLId = async function (id, transaction) {
   const tmpWL = await WL.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpWL) {
-    throw new Error('记录不合法!');
+    throw new Error(`物料类型id:${id}不存在!`);
+  }
+
+  if (tmpWL.disabledAt !== null) {
+    throw new Error(`物料类型id:${id}在屏蔽状态!`);
   }
 
   const tmpPPId = tmpWL.PPId;
@@ -1042,13 +1075,16 @@ User.prototype.checkEJZHId = async function (id, transaction) {
   const tmpEJZH = await EJZH.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpEJZH) {
-    throw new Error('记录不合法!');
+    throw new Error(`二级组合id:${id}不存在!`);
+  }
+
+  if (tmpEJZH.disabledAt !== null) {
+    throw new Error(`二级组合id:${id}在屏蔽状态!`);
   }
 
   const tmpPPId = tmpEJZH.PPId;
@@ -1088,13 +1124,16 @@ User.prototype.checkYJZHId = async function (id, transaction) {
   const tmpYJZH = await YJZH.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpYJZH) {
-    throw new Error('记录不合法!');
+    throw new Error(`一级组合id:${id}不存在!`);
+  }
+
+  if (tmpYJZH.disabledAt !== null) {
+    throw new Error(`一级组合id:${id}在屏蔽状态!`);
   }
 
   const tmpPPId = tmpYJZH.PPId;
@@ -1135,13 +1174,16 @@ User.prototype.checkGYSId = async function (id, transaction) {
   const tmpGYS = await GYS.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpGYS) {
-    throw new Error('记录不合法!');
+    throw new Error(`供应商id:${id}不存在!`);
+  }
+
+  if (tmpGYS.disabledAt !== null) {
+    throw new Error(`供应商id:${id}在屏蔽状态!`);
   }
 
   switch (this.JS) {
@@ -1181,13 +1223,16 @@ User.prototype.checkAZGSId = async function (id, transaction) {
   const tmpAZGS = await AZGS.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpAZGS) {
-    throw new Error('记录不合法!');
+    throw new Error(`安装公司id:${id}不存在!`);
+  }
+
+  if (tmpAZGS.disabledAt !== null) {
+    throw new Error(`安装公司id:${id}在屏蔽状态!`);
   }
 
   switch (this.JS) {

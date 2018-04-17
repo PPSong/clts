@@ -28,7 +28,7 @@ export default class createGTWithGTBA extends BusinessApiBase {
     // end 新建GTBAUser
 
     // 新建GT
-    const tmpGT = await DBTables.GT.create(
+    await DBTables.GT.create(
       {
         name,
         code,

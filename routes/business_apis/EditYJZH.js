@@ -7,23 +7,41 @@ export default class EditYJZH extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
+    // XGTs: ['YJZH1Url'];
+    // EJZHs: [
+    //   {
+    //     id: 2,
+    //     number: 2,
+    //   },
+    //   {
+    //     id: 3,
+    //     number: 2,
+    //   },
+    // ];
     const {
       id, WLId, imageUrl, XGTs, EJZHs,
     } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+
+    // 检查YJZH
     const tmpYJZH = await user.checkYJZHId(id, transaction);
+    // end 检查YJZH
+
+    // 检查WLId
     const tmpWL = await user.checkWLId(WLId, transaction);
     if (tmpWL.level !== 1) {
       throw new Error(`${tmpWL}不是一级物料!`);
     }
+    // end 检查WLId
 
-    // 检查EJZHIds与YJZH同一品牌, 而且都是enable状态
+    // 检查EJZHs
     const EJZHIds = EJZHs.map(item => item.id);
     for (let i = 0; i < EJZHIds.length; i++) {
       await user.checkEJZHId(EJZHIds[i], transaction);
     }
-    // end 检查EJZHIds与YJZH同一品牌, 而且都是enable状态
+    // end 检查EJZHs
+
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 编辑YJZH
@@ -35,7 +53,7 @@ export default class EditYJZH extends BusinessApiBase {
       { transaction },
     );
 
-    // 重置 YJZHXGTs
+    // 重置YJZHXGTs
     await DBTables.YJZHXGT.destroy({
       where: {
         YJZHId: tmpYJZH.id,
@@ -53,15 +71,15 @@ export default class EditYJZH extends BusinessApiBase {
         },
       );
     }
-    // end 重置 YJZHXGTs
+    // end 重置YJZHXGTs
 
-    // 配置YJZH的EJZHs
+    // 重置YJZH的EJZHs
     await tmpYJZH.setEJZHs(null, { transaction });
     for (let i = 0; i < EJZHs.length; i++) {
       const tmpEJZH = EJZHs[i];
       await tmpYJZH.addEJZH(tmpEJZH.id, { through: { number: tmpEJZH.number }, transaction });
     }
-    // end 配置YJZH的EJZHs
+    // end 重置YJZH的EJZHs
 
     // end 编辑YJZH
   }

@@ -25,8 +25,8 @@ export default class CreateGZ extends BusinessApiBase {
     );
     // end 创建GZ用户
 
-    // 设定GZ的PP
+    // 重置GZ的PP
     await tmpGZUser.setGZPPs([PPId], { transaction });
-    // end 设定GZ的PP
+    // end 重置GZ的PP
   }
 }
