@@ -2361,7 +2361,24 @@ describe('SPRT测试', () => {
   describe('/setDDGTWLs0GYS', async () => {
     describe('成功', async () => {
       it('GYSGLY设置DD_GT_WL的发货GYS', async () => {
-        
+        let GYSGLY6Token = await getToken('GYSGLY6', '123456');
+        const DD_GT_WLIds = [7, 8];
+        const GYSId = 4;
+
+        const response = await post(
+          'setDDGTWLs0GYS',
+          {
+            DD_GT_WLIds,
+            GYSId,
+          },
+          GYSGLY6Token,
+        );
+        assert.equal(response.data.code, 1);
+
+        DD_GT_WLIds.forEach(async (item) => {
+          const ddgtwl = DD_GT_WL.findOne({ where: { id: item } });
+          assert.equal(ddgtw.dataValues.GYSId, GYSId);
+        });
       });
 
       it('GYSGLY设置还未审批通过的DD的DD_GT_WL', async () => {
@@ -2384,7 +2401,24 @@ describe('SPRT测试', () => {
   describe('/setDDDWDPs0GYS', async () => {
     describe('成功', async () => {
       it('GYSGLY设置DD_DW_DP的发货GYS', async () => {
+        let GYSGLY6Token = await getToken('GYSGLY6', '123456');
+        const DD_DW_DPIds = [5, 6];
+        const GYSId = 4;
 
+        const response = await post(
+          'setDDGTWLs0GYS',
+          {
+            DD_DW_DPIds,
+            GYSId,
+          },
+          GYSGLY6Token,
+        );
+        assert.equal(response.data.code, 1);
+
+        DD_DW_DPIds.forEach(async (item) => {
+          const dddwdp = await findOne({ where: { id: item } });
+          assert.equal(dddwdp.dataValues.GYSId, GYSId);
+        });
       });
 
       it('GYSGLY设置还未审批通过的DD的DD_DW_DP的发货GYS', async () => {
@@ -2407,10 +2441,27 @@ describe('SPRT测试', () => {
   describe('/setDDGTWLs0AZG', async () => {
     describe('成功', async () => {
       it('AZGSGLY设置DD_GT_WL的AZG', async () => {
+        let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
+        const DD_GT_WLIds = [7, 8];
+        const AZGUserId = 39;
 
+        const response = await post(
+          'setDDGTWLs0AZG',
+          {
+            DD_GT_WLIds,
+            AZGUserId,
+          },
+          AZGSGLY5Token,
+        );
+        assert.equal(response.data.code, 1);
+
+        DD_GT_WLIds.forEach(async (item) => {
+          const ddgtwl = DD_GT_WL.findOne({ where: { id: item } });
+          assert.equal(ddgtwl.dataValues.AZGUserId, AZGUserId);
+        });
       });
 
-      it('AZGSGLY设置还未审批通过的DD的DD_DW_DP的发货AZG', async () => {
+      it('AZGSGLY设置还未审批通过的DD的DD_GT_WL的AZG', async () => {
 
       });
     });
@@ -2430,76 +2481,93 @@ describe('SPRT测试', () => {
   });
 
   // 批量设置DD_DW_DP的AZG [AZGSGLY]
-  // describe('/setDDDWDPs0AZG', async () => {
-  //   describe('成功', async () => {
-  //     it('安装公司管理员批量设置订单灯位灯片的安装工', async () => {
+  describe('/setDDDWDPs0AZG', async () => {
+    describe('成功', async () => {
+      it('AZGSGLY设置DD_DW_DP的AZG', async () => {
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+      });
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非安装工管理员登入', async () => {
+      it('GYSGLY设置还未审批通过的DD的DD_DW_DP的AZG', async () => {
 
-  //       });
-  //       it('订单灯位灯片不属于同一个订单', async () => {
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('AZGSGLY设置不属于自己管理的DD_DW_DP的AZG', async () => {
 
-  //       });
-  //       it('订单灯位灯片对应安装公司不属于同一个安装公司', async () => {
+        });
 
-  //       });
-  //       it('该安装公司非安装工管理员所属安装公司', async () => {
+        it('AZGSGLY为DD_DW_DP设置不属于自己管理的AZG', async () => {
 
-  //       });
-  //       it('所分配安装工非安装工管理员所属安装公司下的安装工', async () => {
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('当前品牌订单状态非已审批', async () => {
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('当前品牌订单状态非已审批', async () => {
+        });
+      });
+      describe('唯一性校验', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
-
-  //     });
-  //   });
-  // });
+      });
+    });
+  });
 
   // 批量入库 [ZHY]
-  // describe('/piLiangRuKu', async () => {
-  //   describe('成功', async () => {
-  //     it('装货员批量入库成功', async () => {
+  describe('/piLiangRuKu', async () => {
+    describe('成功', async () => {
+      it('ZHY入库WL', async () => {
+        let ZHY4Token = await getToken('ZHY4', '123456');
+        const EWMs = [
+          {
+            type: 'WL',
+            typeId: '23',
+            uuid: 'WL23_6',
+          },
+          {
+            type: 'WL',
+            typeId: '23',
+            uuid: 'WL23_7',
+          },
+        ];
 
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+        const response = await post(
+          'piLiangRuKu',
+          {
+            EWMs,
+          },
+          ZHY4Token,
+        );
+        assert.equal(response.data.code, 1);
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非装货员登入', async () => {
+        const ddgtwl = await DD_GT_WL.findOne({ where: {}});
+      });
+    });
+    // describe('失败', async () => {
+    //   describe('数据不合法', async () => {
 
-  //       });
-  //       it('二维码信息非物料/灯片', async () => {
+    //   });
+    //   describe('没有权限', async () => {
+    //     it('非装货员登入', async () => {
 
-  //       });
-  //       it('二维码中物料/灯片不属于装货员所属的供应商/中转供应商', async () => {
+    //     });
+    //     it('二维码信息非物料/灯片', async () => {
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
-  //       it('二维码状态为已入库之后的状态', async () => {
+    //     });
+    //     it('二维码中物料/灯片不属于装货员所属的供应商/中转供应商', async () => {
 
-  //       });
-  //     });
-  //     describe('唯一性校验', async () => {
+    //     });
+    //   });
+    //   describe('操作状态不正确', async () => {
+    //     it('二维码状态为已入库之后的状态', async () => {
 
-  //     });
-  //   });
-  // });
+    //     });
+    //   });
+    //   describe('唯一性校验', async () => {
+
+    //   });
+    // });
+  });
 
   // 装箱 [ZHY]
   // describe('/zhuangXiang', async () => {
