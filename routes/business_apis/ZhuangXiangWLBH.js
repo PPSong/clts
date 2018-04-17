@@ -33,5 +33,9 @@ export default class ZhuangXiangWLBH extends BusinessApiBase {
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+
+    for (let i = 0; i < WLEWMs; i++) {
+      // 确定
+    }
   }
 }
