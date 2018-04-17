@@ -24,8 +24,9 @@ export default class HeBingWLBH extends BusinessApiBase {
     });
 
     const tmpWLBHIds = tmpWLBHs.map(item => item.id);
-    if (_.difference(ids, tmpWLBHIds).length > 0) {
-      throw new Error(`物料补货记录id:${ids}不存在!`);
+    const diffIds = _.difference(ids, tmpWLBHIds);
+    if (diffIds.length > 0) {
+      throw new Error(`物料补货记录id:${diffIds}不存在!`);
     }
     // end 检查WLBH的ids存在
 

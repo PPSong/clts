@@ -21,7 +21,10 @@ export default class CreateDD extends BusinessApiBase {
     }
     // end 检查PP_DDOperationLock
 
+    // 检查PPId
     const tmpPP = await user.checkPPId(PPId, transaction);
+    // end 检查PPId
+
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 创建DD和相关Snapshot

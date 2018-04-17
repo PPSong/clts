@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 
@@ -11,7 +12,7 @@ export default class SetDDDWDPs0AZGS extends BusinessApiBase {
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-    // 检查DD_DW_DP是否属于同一个DD
+    // 检查DD_DW_DPIds存在
     const tmpDD_DW_DPs = await DBTables.DD_DW_DP.findAll({
       where: {
         id: {
@@ -21,15 +22,23 @@ export default class SetDDDWDPs0AZGS extends BusinessApiBase {
       transaction,
     });
 
-    const tmpDD_DW_DPIds = tmpDD_DW_DPs.map(item => item.DDId);
-    const tmpUniqueDD_DW_DPIds = [...new Set(tmpDD_DW_DPIds)];
-
-    if (tmpUniqueDD_DW_DPIds.length !== 1) {
-      throw new Error('订单_灯位_灯片应该要存在并属于同一个订单!');
+    const tmpDD_DW_DPIds = tmpDD_DW_DPs.map(item => item.id);
+    const diffIds = _.difference(DD_DW_DPIds, tmpDD_DW_DPIds);
+    if (diffIds.length > 0) {
+      throw new Error(`订单_灯位_灯片记录id:${diffIds}不存在!`);
     }
+    // end 检查DD_DW_DPIds存在
 
-    const tmpDDId = tmpUniqueDD_DW_DPIds[0];
+    // 检查DD_DW_DP是否属于同一个DD
+    const tmpDDIds = tmpDD_DW_DPs.map(item => item.DDId);
+    const tmpUniqueDDIds = [...new Set(tmpDDIds)];
+
+    if (tmpUniqueDDIds.length !== 1) {
+      throw new Error('订单_灯位_灯片要属于同一个订单!');
+    }
     // end 检查DD_DW_DP是否属于同一个DD
+
+    const tmpDDId = tmpUniqueDDIds[0];
 
     // 检查订单所属品牌是否在权限范围
     const tmpDD = await user.checkDDId(tmpDDId, transaction);
