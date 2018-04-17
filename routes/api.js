@@ -133,19 +133,16 @@ router.post('/danDuShengPiTongGuoWLBHb', businessApis.DanDuShengPiTongGuoWLBHb.g
 router.post('/danDuShengPiBoHuiWLBHb', businessApis.DanDuShengPiBoHuiWLBHb.getApi());
 // 为物料补货分配发货GYS [生产GYS]
 router.post('/fengPeiFaHuoGYS', businessApis.FengPeiFaHuoGYS.getApi());
-
-
-//--
 // 并单 [生产GYS]
-// ids
-// 检查属于同一个发货GYS
-
-//--
+router.post('/heBingWLBH', businessApis.HeBingWLBH.getApi());
 // 分配AZG [AZGSGLY]
-// HBTime, GTId, WLIds, AZGUserId
+router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
+// 装箱WLBH [ZHY]
+router.post('/zhuangXiangWLBH', businessApis.ZhuangXiangWLBH.getApi());
+
 
 // 装箱 [ZHY]
-// HBTime, GTId, WLEWMs, KDXEWM
+// HBUUID, GTId, WLEWMs, KDXEWM
 
 // 出箱--修改原来的出箱函数 [ZHY]
 
