@@ -961,7 +961,7 @@ describe('SPRT测试', () => {
           'createFGAndTesterAndFGTester',
           {
             PPId,
-            FGPayload,
+            FG: FGPayload,
           },
           KFJLToken,
         );
@@ -992,7 +992,7 @@ describe('SPRT测试', () => {
           'createFGAndTesterAndFGTester',
           {
             PPId,
-            FGPayload,
+            FG: FGPayload,
           },
           KFJLToken,
         );
@@ -1024,7 +1024,7 @@ describe('SPRT测试', () => {
           'createFGAndTesterAndFGTester',
           {
             PPId,
-            FGPayload,
+            FG: FGPayload,
           },
           KFJLToken,
         );
@@ -1060,7 +1060,7 @@ describe('SPRT测试', () => {
             'createFGAndTesterAndFGTester',
             {
               PPId,
-              FGPayload,
+              FG: FGPayload,
             },
             KFJLToken,
           );
@@ -2413,7 +2413,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
         });
       });
-      describe.skip('操作状态不正确', async () => {
+      describe('操作状态不正确', async () => {
         it('GYSGLY设置还未审批通过的DD的DD_GT_WL的发货GYS', async () => {
           let GYSGLY6Token = await getToken('GYSGLY6', '123456');
           const DD_GT_WLIds = [4, 5];
@@ -2860,13 +2860,13 @@ describe('SPRT测试', () => {
           'guanLianKuaiDi',
           {
             KDXEWMs,
-            code: KDDCode,
+            KDDCode,
           },
           ZHY4Token,
         );
         assert.equal(response.data.code, 1);
 
-        const kdd = await KDD.findOne({ where: { name: KKDCode } });
+        const kdd = await KDD.findOne({ where: { code: KDDCode } });
         assert.notEqual(kdd, null);
 
         const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWMs[0]) } });
@@ -2878,12 +2878,13 @@ describe('SPRT测试', () => {
           status: item.dataValues.status,
         }));
         let truewywlList = [
-          { EWM: WL23_3, status: 装箱 },
-          { EWM: WL23_4, status: 装箱 },
-          { EWM: WL23_5, status: 装箱 },
-          { EWM: WL24_1, status: 装箱 },
-          { EWM: WL24_2, status: 装箱 },
+          { EWM: '{"type":"WL","typeId":23,"uuid":"WL23_3"}', status: '发货' },
+          { EWM: '{"type":"WL","typeId":23,"uuid":"WL23_4"}', status: '发货' },
+          { EWM: '{"type":"WL","typeId":23,"uuid":"WL23_5"}', status: '发货' },
+          { EWM: '{"type":"WL","typeId":24,"uuid":"WL24_1"}', status: '发货' },
+          { EWM: '{"type":"WL","typeId":24,"uuid":"WL24_2"}', status: '发货' },
         ];
+        console.log('izzlog----->', wywlList);
         assert.equal(isArrayEqual(wywlList, truewywlList), true);
         //快递箱成功关联后，快递箱状态转为发货状态；
         //快递箱成功关联后，箱中物料/灯片状态更改为发货状态
