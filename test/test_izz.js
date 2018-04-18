@@ -140,8 +140,38 @@ let AZGSGLYToken;
 let ZHYToken;
 let AZGToken;
 
+let scriptArr;
+
+const initData = async () => {
+  await sequelize.sync({ force: true });
+
+  for (let i = 0; i < scriptArr.length; i++) {
+    if (scriptArr[i].trim().length > 0) {
+      const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
+    }
+  }
+}
+
+const createViewAndProcedure = async () => {
+  // 创建View
+  const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
+  await sequelize.query(viewSql, {
+    type: sequelize.QueryTypes.SELECT,
+  });
+  // end 创建View
+
+  // 创建Procedure
+  const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
+  const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
+  const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
+  await sequelize.query(procedureSql2, {
+    type: sequelize.QueryTypes.SELECT,
+  });
+  // end 创建创建Procedure
+}
+
 describe('SPRT测试', () => {
-  beforeEach(async () => {
+  before(async () => {
     const con = mysql.createConnection({
       host: 'localhost',
       user: 'root',
@@ -153,32 +183,10 @@ describe('SPRT测试', () => {
     await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
 
     const data = await readFile(`${__dirname}/../tools_izz/initDataScript_izz.sql`);
+    scriptArr = data.split(';');
 
-    const scriptArr = data.split(';');
-
-    await sequelize.sync({ force: true });
-
-    for (let i = 0; i < scriptArr.length; i++) {
-      if (scriptArr[i].trim().length > 0) {
-        const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
-      }
-    }
-
-    // 创建View
-    const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
-    await sequelize.query(viewSql, {
-      type: sequelize.QueryTypes.SELECT,
-    });
-    // end 创建View
-
-    // 创建Procedure
-    const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
-    const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
-    const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
-    await sequelize.query(procedureSql2, {
-      type: sequelize.QueryTypes.SELECT,
-    });
-    // end 创建创建Procedure
+    await initData();
+    await createViewAndProcedure();
 
     adminToken = await getToken('admin', '123456');
     PPJLToken = await getToken('PPJL1', '123456');
@@ -189,6 +197,9 @@ describe('SPRT测试', () => {
     AZGSGLYToken = await getToken('AZGSGLY1', '123456');
     ZHYToken = await getToken('ZHY1', '123456');
     AZGToken = await getToken('AZG1', '123456');
+  })
+  beforeEach(async () => {
+    await initData();
   });
 
   describe('test', async () => {
@@ -2145,7 +2156,8 @@ describe('SPRT测试', () => {
   // 设置DD_GTFXs [KFJL]
   describe.skip('/setDDGTFXs', async () => {
     describe('成功', async () => {
-      it('客服经理成功翻新柜台', async () => {
+      it('KFJL翻新GT', async () => {
+
       });
     });
     describe('失败', async () => {
@@ -2381,21 +2393,45 @@ describe('SPRT测试', () => {
           assert.equal(ddgtw.dataValues.GYSId, GYSId);
         });
       });
-
-      it('GYSGLY设置还未审批通过的DD的DD_GT_WL', async () => {
-
-      });
     });
-    // describe('失败', async () => {
-    //   describe('数据不合法', async () => { });
-    //   describe('没有权限', async () => {
-    //     it('GYSGLY设置不属于自己管理的DD_GT_WL的发货GYS', async () => {
+    describe('失败', async () => {
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('GYSGLY设置不属于自己管理的DD_GT_WL的发货GYS', async () => {
+          let GYSGLY6Token = await getToken('GYSGLY6', '123456');
+          const DD_GT_WLIds = [1, 2];
+          const GYSId = 5;
 
-    //     });
-    //   });
-    //   describe('操作状态不正确', async () => { });
-    //   describe('唯一性校验', async () => { });
-    // });
+          const response = await post(
+            'setDDGTWLs0GYS',
+            {
+              DD_GT_WLIds,
+              GYSId,
+            },
+            GYSGLY6Token,
+          );
+          assert.equal(response.data.code, -1);
+        });
+      });
+      describe.skip('操作状态不正确', async () => {
+        it('GYSGLY设置还未审批通过的DD的DD_GT_WL的发货GYS', async () => {
+          let GYSGLY6Token = await getToken('GYSGLY6', '123456');
+          const DD_GT_WLIds = [4, 5];
+          const GYSId = 5;
+
+          const response = await post(
+            'setDDGTWLs0GYS',
+            {
+              DD_GT_WLIds,
+              GYSId,
+            },
+            GYSGLY6Token,
+          );
+          assert.equal(response.data.code, -1);
+        });
+      });
+      describes.skip('唯一性校验', async () => { });
+    });
   });
 
   // 批量设置DD_DW_DP的发货GYS [GYSGLY]
@@ -2421,21 +2457,46 @@ describe('SPRT测试', () => {
           assert.equal(dddwdp.dataValues.GYSId, GYSId);
         });
       });
-
-      it('GYSGLY设置还未审批通过的DD的DD_DW_DP的发货GYS', async () => {
-
-      });
     });
-    // describe('失败', async () => {
-    //   describe('数据不合法', async () => { });
-    //   describe('没有权限', async () => {
-    //     it('GYSGLY设置不属于自己管理的DD_DW_DP的发货GYS', async () => {
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('GYSGLY设置不属于自己管理的DD_DW_DP的发货GYS', async () => {
+          let GYSGLY6Token = await getToken('GYSGLY6', '123456');
+          const DD_DW_DPIds = [1, 2];
+          const GYSId = 5;
 
-    //     });
-    //   });
-    //   describe('操作状态不正确', async () => { });
-    //   describe('唯一性校验', async () => { });
-    // });
+          const response = await post(
+            'setDDDWDPs0GYS',
+            {
+              DD_DW_DPIds,
+              GYSId,
+            },
+            GYSGLY6Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('GYSGLY设置还未审批通过的DD的DD_DW_DP的发货GYS', async () => {
+          let GYSGLY6Token = await getToken('GYSGLY6', '123456');
+          const DD_DW_DPIds = [3, 4];
+          const GYSId = 5;
+
+          const response = await post(
+            'setDDDWDPs0GYS',
+            {
+              DD_DW_DPIds,
+              GYSId,
+            },
+            GYSGLY6Token,
+          );
+          assert.equal(response.data.code, -1);
+        });
+      });
+      describe('唯一性校验', async () => { });
+    });
   });
 
   // 批量设置DD_GT_WL的AZG [AZGSGLY]
@@ -2461,24 +2522,21 @@ describe('SPRT测试', () => {
           assert.equal(ddgtwl.dataValues.AZGUserId, AZGUserId);
         });
       });
-
-      it('AZGSGLY设置还未审批通过的DD的DD_GT_WL的AZG', async () => {
-
-      });
     });
-    // describe('失败', async () => {
-    //   describe('数据不合法', async () => { });
-    //   describe('没有权限', async () => {
-    //     it('AZGSGLY设置不属于自己管理的DD_GT_WL的AZG', async () => {
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('AZGSGLY设置不属于自己管理的DD_GT_WL的AZG', async () => {
 
-    //     });
-    //     it('AZGSGLY为DD_GT_WL设置不属于自己管理的AZG', async () => {
 
-    //     });
-    //   });
-    //   describe('操作状态不正确', async () => { });
-    //   describe('唯一性校验', async () => { });
-    // });
+        });
+        it('AZGSGLY为DD_GT_WL设置不属于自己管理的AZG', async () => {
+
+        });
+      });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
+    });
   });
 
   // 批量设置DD_DW_DP的AZG [AZGSGLY]
@@ -2503,10 +2561,6 @@ describe('SPRT测试', () => {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.AZGUserId, AZGUserId);
         });
-      });
-
-      it('GYSGLY设置还未审批通过的DD的DD_DW_DP的AZG', async () => {
-
       });
     });
     // describe('失败', async () => {
@@ -2634,19 +2688,18 @@ describe('SPRT测试', () => {
         const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: HWEWMs[0].typeId } });
         assert.equal(ddgtwl.dataValues.ZXNumber, 5);
 
+        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWM) } });
+        assert.notEqual(kdx, null);
+
         HWEWMs.forEach(async (item) => {
           const wywl = await WYWL.findOne({ where: { EWM: item.uuid } });
           assert.notEqual(wywl, null);
+          assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
           assert.equal(wywlcz.length, 1);
           assert.include(wywlcz, '装箱');
         });
-
-        const kdx = await KDX.findOne({ where: { EWM: KDXEWM.uuid } });
-        console.log('izzlog---->',kdx);
-        assert.notEqual(kdx, null);
-        assert.equal(ddgtwl.dataValues.KDXId, kdx.dataValues.id);
         //箱子如果不存在，要新建箱子；
         //装箱成功后物料待装箱数量相应减少；
         //装箱后货物状态更改为装箱；
@@ -2706,23 +2759,23 @@ describe('SPRT测试', () => {
   // 出箱 [ZHY]
   describe('/chuXiang', async () => {
     describe('成功', async () => {
-      it.only('ZHY出箱货物', async () => {
+      it('ZHY出箱货物', async () => {
         let ZHY4Token = await getToken('ZHY4', '123456');
         const HWEWMs = [
           {
-            type: 'WL',
+            type: "WL",
             typeId: 23,
-            uuid: 'WL23_3',
+            uuid: "WL23_3",
           },
           {
-            type: 'WL',
+            type: "WL",
             typeId: 23,
-            uuid: 'WL23_4',
+            uuid: "WL23_4",
           },
           {
-            type: 'DP',
+            type: "DP",
             typeId: 8,
-            uuid: 'DP9',
+            uuid: "DP9",
           },
         ];
 
@@ -2733,32 +2786,29 @@ describe('SPRT测试', () => {
           },
           ZHY4Token,
         );
-        console.log('izz--->',response.data);
+        console.log('izz--->', response.data);
         assert.equal(response.data.code, 1);
 
         const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: HWEWMs[0].typeId } });
         assert.equal(ddgtwl.dataValues.ZXNumber, 1);
-        assert.equal(ddgtwl.dataValues.KDXId, null);
 
         for (let i = 0; i < 2; i++) {
-          const wywl = await WYWL.findOne({ where: { EWM: HWEWMs[i].uuid } });
-          assert.notEqual(wywl, null);
-
+          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(HWEWMs[i]) } });
+          assert.equal(wywl.dataValues.KDXId, null);
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
           assert.equal(wywlcz.length, 2);
-          assert.include(wywlcz, '入库');
+          assert.include(wywlcz.map(item => (item.dataValues.status)), '入库');
         };
 
-        const wydp = await WYDP.findOne({ where: { EWM: HWEWMs[2].uuid } });
-        assert.notEqual(wywl, null);
+        const wydp = await WYDP.findOne({ where: { EWM: JSON.stringify(HWEWMs[2]) } });
+        assert.equal(wydp.dataValues.KDXId, null);
 
         const wydpcz = await WYDPCZ.findAll({ where: { WYDPId: wydp.dataValues.id } });
         assert.equal(wydpcz.length, 2);
-        assert.include(wydpcz, '入库');
+        assert.include(wydpcz.map(item => (item.dataValues.status)), '入库');
 
-        const dddwdp = await DD_DW_DP.findOne({ where: { id: wydp.dataValues.DDDWDPId } });
+        const dddwdp = await DD_DW_DP.findOne({ where: { id: 7 } });//TODO:思考不写死的方法
         assert.equal(dddwdp.dataValues.ZXNumber, 0);
-        assert.equal(dddwdp.dataValues.KDXId, null);
         //出箱货物需为同一个装货员，但无需为同一个柜台；
         //出箱后货物待装箱数量增加；
         //出箱后货物状态更改为待入库状态；
@@ -2800,8 +2850,8 @@ describe('SPRT测试', () => {
         let ZHY4Token = await getToken('ZHY4', '123456');
         const KDXEWMs = [
           {
-            type: 'KDX',
-            uuid: 'KDX1',
+            type: "KDX",
+            uuid: "KDX1",
           },
         ];
         const KDDCode = 'KDD_T';
@@ -2810,7 +2860,7 @@ describe('SPRT测试', () => {
           'guanLianKuaiDi',
           {
             KDXEWMs,
-            KDDCode,
+            code: KDDCode,
           },
           ZHY4Token,
         );
@@ -2819,7 +2869,7 @@ describe('SPRT测试', () => {
         const kdd = await KDD.findOne({ where: { name: KKDCode } });
         assert.notEqual(kdd, null);
 
-        const kdx = await KDX.findOne({ where: { EWM: KDXEWMs[0].uuid } });
+        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWMs[0]) } });
         assert.equal(kdx.dataValues.status, '发货');
 
         const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
@@ -2889,7 +2939,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const kdx = await KDX.findOne({ where: { EWM: KDXEWMs[0].uuid } });
+        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWMs[0]) } });
         assert.equal(kdx.dataValues.KDDId, null);
         assert.equal(kdx.dataValues.status, '装箱');
 
@@ -2958,7 +3008,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const kdx = await KDX.findOne({ where: { EWM: KDXEWMs[0].uuid } });
+        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWMs[0]) } });
         assert.equal(kdx.dataValues.status, '收箱');
 
         const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
@@ -3029,7 +3079,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         HWEWMs.forEach(async (item) => {
-          const wywl = await WYWL.findOne({ where: { EWM: item.uuid } });
+          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.equal(wywl.dataValues.status, '收货');
         });
         //收货后，货物状态更改为收货状态；
@@ -3077,15 +3127,24 @@ describe('SPRT测试', () => {
           },
         ];
 
-        let HWEWMs = [];
-        for (let i = 12; i < 24; i++) {
-          const wywl = await WYWL.findOne({ where: { id: i } });
-          HWEWMs.push({
-            type: 'WL',
-            typeId: wywl.dataValues.WLId,
-            uuid: wywl.dataValues.EWM,
-          });
-        };
+        let HWEWMs = [
+          { "type": "WL", "typeId": 26, "uuid": "WL26_1" },
+          { "type": "WL", "typeId": 26, "uuid": "WL26_2" },
+          { "type": "WL", "typeId": 26, "uuid": "WL26_3" },
+          { "type": "WL", "typeId": 26, "uuid": "WL26_4" },
+          { "type": "WL", "typeId": 26, "uuid": "WL26_5" },
+          { "type": "WL", "typeId": 26, "uuid": "WL26_6" },
+          { "type": "WL", "typeId": 26, "uuid": "WL26_7" },
+          { "type": "WL", "typeId": 26, "uuid": "WL26_8" },
+          { "type": "WL", "typeId": 27, "uuid": "WL27_1" },
+          { "type": "WL", "typeId": 27, "uuid": "WL27_2" },
+          { "type": "WL", "typeId": 27, "uuid": "WL27_3" },
+          { "type": "WL", "typeId": 27, "uuid": "WL27_4" },
+        ];
+        // for (let i = 12; i < 24; i++) {
+        //   const wywl = await WYWL.findOne({ where: { id: i } });
+        //   HWEWMs.push(wywl.dataValues.EWM);
+        // };
         await post(
           'shouXiang',
           {
@@ -3096,11 +3155,10 @@ describe('SPRT测试', () => {
         await post(
           'shouHuo',
           {
-            HWEWMs,
+            HWEWMs
           },
           AZG6Token,
         );
-
         let HWPayloads = [];
         for (let i = 13; i < 26; i++) {
           HWPayloads.push({

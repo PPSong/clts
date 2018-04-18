@@ -398,7 +398,7 @@ id	DDId	GTId	WLId	number
 id	DDId	GTId	WLId	number	GYSId	ZXNumber	AZGSId					
 7	3	7	23	8	6	3	5					
 8	3	7	24	4	6	2	5					
-9	3	7	25	2	6	1	5					
+9	3	7	25	2	6	1	4					
 												
 [DD_GT_WL]												
 id	DDId	GTId	WLId	number	GYSId	ZXNumber	AZGSId	AZGUserId	YJRKDate	YJZXDate	YJAZDate	
@@ -415,8 +415,8 @@ id	DDId	GTId	WLId	number	GYSId	ZXNumber	AZGSId	AZGUserId	YJRKDate	YJZXDate	YJAZD
 id	DDId	DWId	DPId	GYSId								
 1	1	20	4	3								
 2	1	21	5	3								
-3	2	9	6	3								
-4	2	10	7	3								
+3	2	9	6	6								
+4	2	10	7	6								
 												
 // 订单灯位灯片快照												
 [DD_DW_DPSnapshot]												
@@ -464,74 +464,74 @@ id	code
 // 快递箱												
 [KDX]												
 id	EWM	GTId	KDDId	status								
-2	KDX2	7	1	发货								
-3	KDX3	8	2	发货								
-4	KDX4	8	3	收箱								
-5	KDX5	9	4	收箱								
-6	KDX6	9	4	收箱								
-8	KDX8	8	5	发货								
-9	KDX9	8	6	收箱								
-10	KDX10	9	7	收箱								
-11	KDX11	9	7	收箱								
-12	KDX12	10	8	收箱								
-13	KDX13	10	9	收箱								
+2	{"type":"KDX","uuid":"KDX2"}	7	1	发货								
+3	{"type":"KDX","uuid":"KDX3"}	8	2	发货								
+4	{"type":"KDX","uuid":"KDX4"}	8	3	收箱								
+5	{"type":"KDX","uuid":"KDX5"}	9	4	收箱								
+6	{"type":"KDX","uuid":"KDX6"}	9	4	收箱								
+8	{"type":"KDX","uuid":"KDX8"}	8	5	发货								
+9	{"type":"KDX","uuid":"KDX9"}	8	6	收箱								
+10	{"type":"KDX","uuid":"KDX10"}	9	7	收箱								
+11	{"type":"KDX","uuid":"KDX11"}	9	7	收箱								
+12	{"type":"KDX","uuid":"KDX12"}	10	8	收箱								
+13	{"type":"KDX","uuid":"KDX13"}	10	9	收箱								
 												
 [KDX]												
 id	EWM	GTId	status									
-1	KDX1	7	装箱									
-7	KDX7	7	装箱									
-14	KDX14	7	装箱									
+1	{"type":"KDX","uuid":"KDX1"}	7	装箱									
+7	{"type":"KDX","uuid":"KDX7"}	7	装箱									
+14	{"type":"KDX","uuid":"KDX14"}	7	装箱									
 												
 // 唯一物料												
 [WYWL]												
 id	EWM	status	WLId	GYSId	DDGTWLId							
-1	WL23_1	入库	23	6	7							
-2	WL23_2	入库	23	6	7							
+1	{"type":"WL","typeId":23,"uuid":"WL23_1"}	入库	23	6	7							
+2	{"type":"WL","typeId":23,"uuid":"WL23_2"}	入库	23	6	7							
 												
 [WYWL]												
 id	EWM	status	WLId	GYSId	DDGTWLId	KDXId						
-3	WL23_3	装箱	23	6	7	1						
-4	WL23_4	装箱	23	6	7	1						
-5	WL23_5	装箱	23	6	7	1						
-6	WL24_1	装箱	24	6	8	1						
-7	WL24_2	装箱	24	6	8	1						
-10	WL25_1	发货	25	6	9	2						
-12	WL26_1	发货	26	6	10	3						
-13	WL26_2	发货	26	6	10	3						
-14	WL26_3	发货	26	6	10	3						
-15	WL26_4	发货	26	6	10	3						
-16	WL26_5	发货	26	6	10	3						
-17	WL26_6	发货	26	6	10	3						
-18	WL26_7	发货	26	6	10	3						
-19	WL26_8	发货	26	6	10	3						
-20	WL27_1	收箱	27	6	11	4						
-21	WL27_2	收箱	27	6	11	4						
-22	WL27_3	收箱	27	6	11	4						
-23	WL27_4	收箱	27	6	11	4						
-24	WL28_1	收货	28	6	12	4						
-25	WL28_2	收货	28	6	12	4						
+3	{"type":"WL","typeId":23,"uuid":"WL23_3"}	装箱	23	6	7	1						
+4	{"type":"WL","typeId":23,"uuid":"WL23_4"}	装箱	23	6	7	1						
+5	{"type":"WL","typeId":23,"uuid":"WL23_5"}	装箱	23	6	7	1						
+6	{"type":"WL","typeId":24,"uuid":"WL24_1"}	装箱	24	6	8	1						
+7	{"type":"WL","typeId":24,"uuid":"WL24_2"}	装箱	24	6	8	1						
+10	{"type":"WL","typeId":25,"uuid":"WL25_1"}	发货	25	6	9	2						
+12	{"type":"WL","typeId":26,"uuid":"WL26_1"}	发货	26	6	10	3						
+13	{"type":"WL","typeId":26,"uuid":"WL26_2"}	发货	26	6	10	3						
+14	{"type":"WL","typeId":26,"uuid":"WL26_3"}	发货	26	6	10	3						
+15	{"type":"WL","typeId":26,"uuid":"WL26_4"}	发货	26	6	10	3						
+16	{"type":"WL","typeId":26,"uuid":"WL26_5"}	发货	26	6	10	3						
+17	{"type":"WL","typeId":26,"uuid":"WL26_6"}	发货	26	6	10	3						
+18	{"type":"WL","typeId":26,"uuid":"WL26_7"}	发货	26	6	10	3						
+19	{"type":"WL","typeId":26,"uuid":"WL26_8"}	发货	26	6	10	3						
+20	{"type":"WL","typeId":27,"uuid":"WL27_1"}	收箱	27	6	11	4						
+21	{"type":"WL","typeId":27,"uuid":"WL27_2"}	收箱	27	6	11	4						
+22	{"type":"WL","typeId":27,"uuid":"WL27_3"}	收箱	27	6	11	4						
+23	{"type":"WL","typeId":27,"uuid":"WL27_4"}	收箱	27	6	11	4						
+24	{"type":"WL","typeId":28,"uuid":"WL28_1"}	收货	28	6	12	4						
+25	{"type":"WL","typeId":28,"uuid":"WL28_2"}	收货	28	6	12	4						
 												
 [WYWL]												
 id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFKType	imageUrl				
-26	WL29_1	反馈图	29	6	13	5	安装成功	UrlWL29_1				
-27	WL29_2	反馈图	29	6	13	5	安装成功	UrlWL29_2				
-28	WL29_3	反馈图	29	6	13	5	安装成功	UrlWL29_3				
-29	WL29_4	反馈图	29	6	13	5	安装成功	UrlWL29_4				
-30	WL29_5	反馈图	29	6	13	5	安装成功	UrlWL29_5				
-31	WL29_6	反馈图	29	6	13	5	安装成功	UrlWL29_6				
-32	WL29_7	反馈图	29	6	13	5	安装成功	UrlWL29_7				
-33	WL29_8	反馈图	29	6	13	5	安装成功	UrlWL29_8				
-34	WL30_1	反馈图	30	6	14	6	安装成功	UrlWL30_1				
-35	WL30_2	反馈图	30	6	14	6	安装成功	UrlWL30_2				
-36	WL30_3	反馈图	30	6	14	6	安装成功	UrlWL30_3				
-37	WL30_4	反馈图	30	6	14	6	安装成功	UrlWL30_4				
-38	WL31_1	反馈图	31	6	15	6	丢失	UrlWL31_1				
-39	WL31_2	反馈图	31	6	15	6	丢失	UrlWL31_2				
+26	{"type":"WL","typeId":29,"uuid":"WL29_1"}	反馈图	29	6	13	5	安装成功	UrlWL29_1				
+27	{"type":"WL","typeId":29,"uuid":"WL29_2"}	反馈图	29	6	13	5	安装成功	UrlWL29_2				
+28	{"type":"WL","typeId":29,"uuid":"WL29_3"}	反馈图	29	6	13	5	安装成功	UrlWL29_3				
+29	{"type":"WL","typeId":29,"uuid":"WL29_4"}	反馈图	29	6	13	5	安装成功	UrlWL29_4				
+30	{"type":"WL","typeId":29,"uuid":"WL29_5"}	反馈图	29	6	13	5	安装成功	UrlWL29_5				
+31	{"type":"WL","typeId":29,"uuid":"WL29_6"}	反馈图	29	6	13	5	安装成功	UrlWL29_6				
+32	{"type":"WL","typeId":29,"uuid":"WL29_7"}	反馈图	29	6	13	5	安装成功	UrlWL29_7				
+33	{"type":"WL","typeId":29,"uuid":"WL29_8"}	反馈图	29	6	13	5	安装成功	UrlWL29_8				
+34	{"type":"WL","typeId":30,"uuid":"WL30_1"}	反馈图	30	6	14	6	安装成功	UrlWL30_1				
+35	{"type":"WL","typeId":30,"uuid":"WL30_2"}	反馈图	30	6	14	6	安装成功	UrlWL30_2				
+36	{"type":"WL","typeId":30,"uuid":"WL30_3"}	反馈图	30	6	14	6	安装成功	UrlWL30_3				
+37	{"type":"WL","typeId":30,"uuid":"WL30_4"}	反馈图	30	6	14	6	安装成功	UrlWL30_4				
+38	{"type":"WL","typeId":31,"uuid":"WL31_1"}	反馈图	31	6	15	6	丢失	UrlWL31_1				
+39	{"type":"WL","typeId":31,"uuid":"WL31_2"}	反馈图	31	6	15	6	丢失	UrlWL31_2				
 												
 [WYWL]												
 id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFKType					
-40	WL32_1	反馈	32	6	16	12	安装成功					
-41	WL32_2	反馈	32	6	16	12	安装成功					
+40	{"type":"WL","typeId":32,"uuid":"WL32_1"}	反馈	32	6	16	12	安装成功					
+41	{"type":"WL","typeId":32,"uuid":"WL32_2"}	反馈	32	6	16	12	安装成功					
 												
 // 唯一物料状态												
 [WYWLCZ]												
@@ -681,19 +681,19 @@ id	WYWLId	status	UserId
 // 唯一灯片												
 [WYDP]												
 id	EWM	status	DPId	GYSId	DDDWDPId	KDXId						
-1	DP9	装箱	8	6	7	7						
-2	DP8	发货	8	6	5	2						
-3	DP10	收箱	10	6	7	8						
-4	DP11	收货	11	6	8	9						
+1	{"type":"DP","typeId":8,"uuid":"DP9"}	装箱	8	6	7	7						
+2	{"type":"DP","typeId":8,"uuid":"DP8"}	发货	8	6	5	2						
+3	{"type":"DP","typeId":10,"uuid":"DP10"}	收箱	10	6	7	8						
+4	{"type":"DP","typeId":11,"uuid":"DP11"}	收货	11	6	8	9						
 												
 [WYDP]												
 id	EWM	status	DPId	GYSId	DDDWDPId	KDXId	AZFKType	imageUrl				
-5	DP12	反馈图	12	6	9	10	安装成功	UrlDP12				
-6	DP13	反馈图	13	6	10	11	尺寸不对	UrlDP13				
+5	{"type":"DP","typeId":12,"uuid":"DP12"}	反馈图	12	6	9	10	安装成功	UrlDP12				
+6	{"type":"DP","typeId":13,"uuid":"DP13"}	反馈图	13	6	10	11	尺寸不对	UrlDP13				
 												
 [WYDP]												
 id	EWM	status	DPId	GYSId	DDDWDPId	KDXId	AZFKType					
-7	DP14	反馈	14	6	11	13	安装成功					
+7	{"type":"DP","typeId":14,"uuid":"DP14"}	反馈	14	6	11	13	安装成功					
 												
 // 唯一灯片状态												
 [WYDPCZ]												

@@ -27,7 +27,7 @@ export default class ChuXiang extends BusinessApiBase {
 
 async function chuXiangWYWL(WYWLEWM, user, transaction) {
   // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
-
+  console.log('ppt111', WYWLEWM, JSON.stringify(WYWLEWM));
   // 检查HWEWMs存在且是属于ZX状态
   const tmpWYWL = await DBTables.WYWL.findOne({
     where: {
