@@ -533,6 +533,11 @@ id	EWM	status	WLId	GYSId	DDGTWLId	KDXId	AZFKType
 40	{"type":"WL","typeId":32,"uuid":"WL32_1"}	反馈	32	6	16	12	安装成功					
 41	{"type":"WL","typeId":32,"uuid":"WL32_2"}	反馈	32	6	16	12	安装成功					
 												
+// 柜台翻新												
+[DD_GTFX]												
+DDId	GTId											
+3	4											
+												
 // 唯一物料状态												
 [WYWLCZ]												
 id	WYWLId	status	UserId									

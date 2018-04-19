@@ -56,6 +56,7 @@ import {
   YJZH_EJZH,
   GT_YJZH,
   AZFKType,
+  DD_GTFX,
 } from '../models/Model';
 
 const isArrayEqual = function (x, y) {
@@ -582,9 +583,9 @@ describe('SPRT测试', () => {
         for (let i = 0; i < gt.length; i++) {
           GTIdList.push(gt[i].dataValues.id);
         }
-        GTIds.forEach((item) => {
+        for(let item of GTIds) {
           assert.include(GTIdList, item);
-        });
+        };
       });
     });
     describe('失败', async () => {
@@ -843,10 +844,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        DWIds.forEach(async (item) => {
+        for(let item of DWIds) {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
-        });
+        };
       });
 
       it('KFJL将DP关联多个GT的DW', async () => {
@@ -882,10 +883,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        DWIds.forEach(async (item) => {
+        for(let item of DWIds) {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
-        });
+        };
       });
 
       it('KFJL将GT的DW由DP1修改成DP2', async () => {
@@ -901,10 +902,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        DWIds.forEach(async (item) => {
+        for(let item of DWIds) {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
-        });
+        };
       });
     });
     describe('失败', async () => {
@@ -970,15 +971,24 @@ describe('SPRT测试', () => {
         const fg = await FG.findOne({ where: { name: 'FG_T' } });
         assert.notEqual(fg, null);
 
-        FGPayload.Testers.forEach(async (item) => {
+        let fg_testList = [];
+        for(let item of FGPayload.Testers) {
           const tester = await Tester.findOne({ where: { name: item } });
           assert.notEqual(tester, null);
-        });
 
-        const r = await FG_Tester.findAll({ where: { PPId: 1 } });
-        r.forEach(async (item) => {
-          assert.include(item.dataValues, FGPayload);
-        });
+          fg_testList.push({
+            FGId: fg.dataValues.id,
+            TesterId: tester.dataValues.id,
+          });
+        };
+
+        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id} });
+        let fg_testDBList = [];
+        fg_testDBList = r.map(item => ({
+          FGId: item.dataValues.FGId,
+          TesterId: item.dataValues.TesterId,
+        }));
+        assert.equal(isArrayEqual(fg_testDBList, fg_testList), true);
       });// 前置条件：FG_T,Tester1&Tester2数据库中不存在
 
       it('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
@@ -1001,15 +1011,25 @@ describe('SPRT测试', () => {
         const fg = await FG.findOne({ where: { name: 'FG1' } });
         assert.notEqual(fg, null);
 
-        FGPayload.Testers.forEach(async (item) => {
+        let fg_testList = [];
+        for(let item of FGPayload.Testers) {
           const tester = await Tester.findOne({ where: { name: item } });
           assert.notEqual(tester, null);
-        });
 
-        const r = await FG_Tester.findAll({ where: { PPId: 1 } });
-        r.forEach(async (item) => {
-          assert.include(item.dataValues, FGPayload);
-        });
+          fg_testList.push({
+            FGId: fg.dataValues.id,
+            TesterId: tester.dataValues.id,
+          });
+        };
+
+        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id} });
+        let fg_testDBList = [];
+        fg_testDBList = r.map(item => ({
+          FGId: item.dataValues.FGId,
+          TesterId: item.dataValues.TesterId,
+        }));
+        assert.equal(fg_testList.length, 2);
+        assert.includeDeepMembers(fg_testDBList, fg_testList);
       });// 前置条件：FG_T存在，Tester1&Tester2数据库中不存在
 
       it('KFJL创建FG不存在，Tester存在的组合', async () => {
@@ -1033,15 +1053,24 @@ describe('SPRT测试', () => {
         const fg = await FG.findOne({ where: { name: 'FG_T' } });
         assert.notEqual(fg, null);
 
-        FGPayload.Testers.forEach(async (item) => {
+        let fg_testList = [];
+        for(let item of FGPayload.Testers) {
           const tester = await Tester.findOne({ where: { name: item } });
           assert.notEqual(tester, null);
-        });
 
-        const r = await FG_Tester.findAll({ where: { PPId: 1 } });
-        r.forEach(async (item) => {
-          assert.include(item.dataValues, FGPayload);
-        });
+          fg_testList.push({
+            FGId: fg.dataValues.id,
+            TesterId: tester.dataValues.id,
+          });
+        };
+
+        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id} });
+        let fg_testDBList = [];
+        fg_testDBList = r.map(item => ({
+          FGId: item.dataValues.FGId,
+          TesterId: item.dataValues.TesterId,
+        }));
+        assert.equal(isArrayEqual(fg_testDBList, fg_testList), true);
       });// 前置条件：FG_T不存在，Tester1&Tester2数据库中存在
     });
     describe('失败', async () => {
@@ -1524,23 +1553,23 @@ describe('SPRT测试', () => {
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
         const FGTesterIdList = [];
-        ejzh_fg_tester.forEach((item) => {
+        for(let item of ejzh_fg_tester) {
           FGTesterIdList.push(item.dataValues.FGTesterId);
-        });
+        };
         assert.equal(FGTesterIdList.length, 3);
-        FGTesters.forEach((item) => {
+        for(let item of FGTesters) {
           assert.include(FGTesterIdList, item.id);
-        });
+        };
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
         const SJWLIdList = [];
-        ejzh_sjwl.forEach((item) => {
+        for(let item of ejzh_sjwl) {
           SJWLIdList.push(item.dataValues.WLId);
-        });
+        };
         assert.equal(SJWLIdList.length, 2);
-        SJWLs.forEach((item) => {
+        for(let item of SJWLs) {
           assert.include(SJWLIdList, item.id);
-        });
+        };
       });
 
       it('KFJL编辑EJZH-将原FGTester&SJWL修改成新的', async () => {
@@ -1577,23 +1606,23 @@ describe('SPRT测试', () => {
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
         const FGTesterIdList = [];
-        ejzh_fg_tester.forEach((item) => {
+        for(let item of ejzh_fg_tester) {
           FGTesterIdList.push(item.dataValues.FGTesterId);
-        });
+        };
         assert.equal(FGTesterIdList.length, 1);
-        FGTesters.forEach((item) => {
+        for(let item of FGTesters) {
           assert.include(FGTesterIdList, item.id);
-        });
+        };
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
         const SJWLIdList = [];
-        ejzh_sjwl.forEach((item) => {
+        for(let item of ejzh_sjwl) {
           SJWLIdList.push(item.dataValues.WLId);
-        });
+        };
         assert.equal(SJWLIdList.length, 1);
-        SJWLs.forEach((item) => {
+        for(let item of SJWLs) {
           assert.include(SJWLIdList, item.id);
-        });
+        };
       });
     });
     describe('失败', async () => {
@@ -1855,13 +1884,13 @@ describe('SPRT测试', () => {
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId } });
 
         const EJZHIdList = [];
-        yjzh_ejzh.forEach((item) => {
+        for(let item of yjzh_ejzh) {
           EJZHIdList.push(item.dataValues.EJZHId);
-        });
+        };
         assert.equal(EJZHIdList.length, 3);
-        EJZHs.forEach((item) => {
+        for(let item of EJZHs) {
           assert.include(EJZHIdList, item.id);
-        });
+        };
       });
 
       it('KFJL编辑YJZH-替换原EJZH', async () => {
@@ -1892,13 +1921,13 @@ describe('SPRT测试', () => {
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId } });
 
         const EJZHIdList = [];
-        yjzh_ejzh.forEach((item) => {
+        for(let item of yjzh_ejzh) {
           EJZHIdList.push(item.dataValues.EJZHId);
-        });
+        };
         assert.equal(EJZHIdList.length, 1);
-        EJZHs.forEach((item) => {
+        for(let item of EJZHs) {
           assert.include(EJZHIdList, item.id);
-        });
+        };
       });
     });
     describe.skip('失败', async () => {
@@ -1937,13 +1966,13 @@ describe('SPRT测试', () => {
 
         const gt_yjzh = await GT_YJZH.findAll({ where: { YJZHId } });
         const GTIdList = [];
-        gt_yjzh.forEach((item) => {
+        for(let item of gt_yjzh) {
           GTIdList.push(item.dataValues.GTId);
-        });
+        };
         assert.equal(GTIdList.length, 2);
-        GTs.forEach((item) => {
+        for(let item of GTs) {
           assert.include(GTIdList, item.id);
-        });
+        };
       });
     });
     describe('失败', async () => {
@@ -2106,7 +2135,7 @@ describe('SPRT测试', () => {
             KFJL2Token,
           );
           assert.equal(response.data.code, -1);
-          // assert.include(response.data.msg, '订单相关操作正在进行中');
+          assert.include(response.data.msg, '该品牌还有未审批通过的DD');
         });
       });
       describe.skip('唯一性校验', async () => { });
@@ -2201,10 +2230,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        DD_GT_WLIds.forEach(async (item) => {
+        for(let item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.AZGSId, AZGSId);
-        });
+        };
       });
     });
     describe('失败', async () => {
@@ -2266,10 +2295,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        DD_DW_DPIds.forEach(async (item) => {
+        for(let item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.AZGSId, AZGSId);
-        });
+        };
       });
     });
     describe('失败', async () => {
@@ -2388,10 +2417,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        DD_GT_WLIds.forEach(async (item) => {
+        for(let item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
-          assert.equal(ddgtw.dataValues.GYSId, GYSId);
-        });
+          assert.equal(ddgtwl.dataValues.GYSId, GYSId);
+        };
       });
     });
     describe('失败', async () => {
@@ -2452,10 +2481,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        DD_DW_DPIds.forEach(async (item) => {
-          const dddwdp = await findOne({ where: { id: item } });
+        for(let item of DD_DW_DPIds) {
+          const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.GYSId, GYSId);
-        });
+        };
       });
     });
     describe('失败', async () => {
@@ -2517,21 +2546,46 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        DD_GT_WLIds.forEach(async (item) => {
+        for(let item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.AZGUserId, AZGUserId);
-        });
+        };
       });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的DD_GT_WL的AZG', async () => {
+          let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
+          const DD_GT_WLIds = [9];
+          const AZGUserId = 38;
 
-
+          const response = await post(
+            'setDDGTWLs0AZG',
+            {
+              DD_GT_WLIds,
+              AZGUserId,
+            },
+            AZGSGLY5Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
         it('AZGSGLY为DD_GT_WL设置不属于自己管理的AZG', async () => {
-
+          let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
+          const DD_GT_WLIds = [7, 8];
+          const AZGUserId = 38;
+  
+          const response = await post(
+            'setDDGTWLs0AZG',
+            {
+              DD_GT_WLIds,
+              AZGUserId,
+            },
+            AZGSGLY5Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe('操作状态不正确', async () => { });
@@ -2557,32 +2611,30 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        DD_DW_DPIds.forEach(async (item) => {
+        for(let item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.AZGUserId, AZGUserId);
-        });
+        };
       });
     });
-    // describe('失败', async () => {
-    //   describe('数据不合法', async () => { });
-    //   describe('没有权限', async () => {
-    //     it('AZGSGLY设置不属于自己管理的DD_DW_DP的AZG', async () => {
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('AZGSGLY设置不属于自己管理的DD_DW_DP的AZG', async () => {
 
-    //     });
+        });
 
-    //     it('AZGSGLY为DD_DW_DP设置不属于自己管理的AZG', async () => {
+        it('AZGSGLY为DD_DW_DP设置不属于自己管理的AZG', async () => {
 
-    //     });
-    //   });
-    //   describe('操作状态不正确', async () => {
-    //     it('当前品牌订单状态非已审批', async () => {
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('当前品牌订单状态非已审批', async () => {
 
-    //     });
-    //   });
-    //   describe('唯一性校验', async () => {
-
-    //   });
-    // });
+        });
+      });
+      describe('唯一性校验', async () => {});
+    });
   });
 
   // 批量入库 [ZHY]
@@ -2612,14 +2664,15 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        EWMs.forEach(async (item) => {
-          const wywl = await WYWL.findOne({ where: { EWM: item.uuid } });
+        for(let item of EWMs) {
+          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
+          let wywlczList = wywlcz.map(item => (item.dataValues));
           assert.equal(wywlcz.length, 1);
-          assert.include(wywlcz, '入库');
-        });
+          assert.deepInclude(wywlczList[0].status, '入库');
+        };
       });
     });
 
@@ -2691,15 +2744,15 @@ describe('SPRT测试', () => {
         const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWM) } });
         assert.notEqual(kdx, null);
 
-        HWEWMs.forEach(async (item) => {
-          const wywl = await WYWL.findOne({ where: { EWM: item.uuid } });
+        for(let item of HWEWMs) {
+          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
           assert.equal(wywlcz.length, 1);
-          assert.include(wywlcz, '装箱');
-        });
+          assert.include(wywlcz[0].dataValues.status, '装箱');
+        };
         //箱子如果不存在，要新建箱子；
         //装箱成功后物料待装箱数量相应减少；
         //装箱后货物状态更改为装箱；
@@ -2949,18 +3002,18 @@ describe('SPRT测试', () => {
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        wywlList.forEach(item => {
+        for(let item of wywlList) {
           assert.equal(item.status, '装箱');
-        });
+        };
 
         const wydp = await WYDP.findAll({ where: { KDXId: kdx.dataValues.id } });
         let wydpList = wydp.map(item => ({
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        wydpList.forEach(item => {
+        for(let item of wydpList) {
           assert.equal(item.status, '装箱');
-        });
+        };
         //解除关联后，快递箱状态更改为装箱状态；
         //解除关联后，箱中货物状态更改为装箱状态；
       });
@@ -3017,9 +3070,9 @@ describe('SPRT测试', () => {
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        wywlList.forEach(item => {
+        for(let item of wywlList) {
           assert.equal(item.status, '收箱');
-        });
+        };
         //收箱后，快递箱及箱内货物状态更改为收箱状态；
       });
     });
@@ -3079,10 +3132,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        HWEWMs.forEach(async (item) => {
+        for(let item of HWEWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.equal(wywl.dataValues.status, '收货');
-        });
+        };
         //收货后，货物状态更改为收货状态；
       });
     });
@@ -3183,10 +3236,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        HWPayloads.forEach(async (item) => {
+        for(let item of HWPayloads) {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, '反馈');
-        });
+        };
         //反馈状态后，货物状态更改为反馈状态；
       });
     });
@@ -3256,10 +3309,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        HWPayloads.forEach(async (item) => {
+        for(let item of HWPayloads) {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, '反馈图');
-        });
+        };
         //反馈图片后，货物状态更改为反馈图状态；
         //反馈图片后，该BA/安装工的该订单_柜台全景反馈图重置为最新的全景反馈图；
       });
