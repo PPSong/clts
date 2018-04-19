@@ -2597,13 +2597,8 @@ describe('SPRT测试', () => {
   describe('/setDDDWDPs0AZG', async () => {
     describe('成功', async () => {
       it('AZGSGLY设置DD_DW_DP的AZG', async () => {
-<<<<<<< HEAD
         const AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
-        const DD_DW_DPIds = [5, 6];
-=======
-        let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
         const DD_DW_DPIds = [5];
->>>>>>> 848a573dad2d7c360741c6f118619843949badb4
         const AZGUserId = 39;
 
         const response = await post(
@@ -2626,10 +2621,10 @@ describe('SPRT测试', () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的DD_DW_DP的AZG', async () => {
-          let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
+          const AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
           const DD_DW_DPIds = [6];
           const AZGUserId = 38;
-  
+
           const response = await post(
             'setDDDWDPs0AZG',
             {
@@ -2643,10 +2638,10 @@ describe('SPRT测试', () => {
         });
 
         it('AZGSGLY为DD_DW_DP设置不属于自己管理的AZG', async () => {
-          let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
+          const AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
           const DD_DW_DPIds = [5];
           const AZGUserId = 38;
-  
+
           const response = await post(
             'setDDDWDPs0AZG',
             {
@@ -2784,9 +2779,9 @@ describe('SPRT测试', () => {
           assert.equal(wywlcz.length, 1);
           assert.include(wywlcz[0].dataValues.status, '装箱');
         }
-        //箱子如果不存在，要新建箱子；
-        //装箱成功后物料待装箱数量相应减少；
-        //装箱后货物状态更改为装箱；
+        // 箱子如果不存在，要新建箱子；
+        // 装箱成功后物料待装箱数量相应减少；
+        // 装箱后货物状态更改为装箱；
       });
     });
     // describe('失败', async () => {
@@ -3045,8 +3040,8 @@ describe('SPRT测试', () => {
         for (const item of wydpList) {
           assert.equal(item.status, '装箱');
         }
-        //解除关联后，快递箱状态更改为装箱状态；
-        //解除关联后，箱中货物状态更改为装箱状态；
+        // 解除关联后，快递箱状态更改为装箱状态；
+        // 解除关联后，箱中货物状态更改为装箱状态；
       });
     });
     // describe('失败', async () => {
@@ -3104,7 +3099,7 @@ describe('SPRT测试', () => {
         for (const item of wywlList) {
           assert.equal(item.status, '收箱');
         }
-        //收箱后，快递箱及箱内货物状态更改为收箱状态；
+        // 收箱后，快递箱及箱内货物状态更改为收箱状态；
       });
     });
     // describe('失败', async () => {
@@ -3167,7 +3162,7 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.equal(wywl.dataValues.status, '收货');
         }
-        //收货后，货物状态更改为收货状态；
+        // 收货后，货物状态更改为收货状态；
       });
     });
     // describe('失败', async () => {
@@ -3213,18 +3208,18 @@ describe('SPRT测试', () => {
         ];
 
         const HWEWMs = [
-          { 'type': 'WL', typeId: 26, 'uuid': 'WL26_1' },
-          { type: 'WL', 'typeId': 26, 'uuid': 'WL26_2' },
-          { 'type': 'WL', 'typeId': 26, uuid: 'WL26_3' },
-          { type: 'WL', 'typeId': 26, uuid: 'WL26_4' },
+          { type: 'WL', typeId: 26, uuid: 'WL26_1' },
+          { type: 'WL', typeId: 26, uuid: 'WL26_2' },
+          { type: 'WL', typeId: 26, uuid: 'WL26_3' },
+          { type: 'WL', typeId: 26, uuid: 'WL26_4' },
           { type: 'WL', typeId: 26, uuid: 'WL26_5' },
-          { type: 'WL', typeId: 26, 'uuid': 'WL26_6' },
-          { 'type': 'WL', 'typeId': 26, 'uuid': 'WL26_7' },
-          { type: 'WL', typeId: 26, 'uuid': 'WL26_8' },
-          { type: 'WL', typeId: 27, 'uuid': 'WL27_1' },
-          { 'type': 'WL', typeId: 27, uuid: 'WL27_2' },
+          { type: 'WL', typeId: 26, uuid: 'WL26_6' },
+          { type: 'WL', typeId: 26, uuid: 'WL26_7' },
+          { type: 'WL', typeId: 26, uuid: 'WL26_8' },
+          { type: 'WL', typeId: 27, uuid: 'WL27_1' },
+          { type: 'WL', typeId: 27, uuid: 'WL27_2' },
           { type: 'WL', typeId: 27, uuid: 'WL27_3' },
-          { 'type': 'WL', typeId: 27, uuid: 'WL27_4' },
+          { type: 'WL', typeId: 27, uuid: 'WL27_4' },
         ];
         // for (let i = 12; i < 24; i++) {
         //   const wywl = await WYWL.findOne({ where: { id: i } });
@@ -3271,7 +3266,7 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, '反馈');
         }
-        //反馈状态后，货物状态更改为反馈状态；
+        // 反馈状态后，货物状态更改为反馈状态；
       });
     });
     // describe('失败', async () => {
@@ -3344,8 +3339,8 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, '反馈图');
         }
-        //反馈图片后，货物状态更改为反馈图状态；
-        //反馈图片后，该BA/安装工的该订单_柜台全景反馈图重置为最新的全景反馈图；
+        // 反馈图片后，货物状态更改为反馈图状态；
+        // 反馈图片后，该BA/安装工的该订单_柜台全景反馈图重置为最新的全景反馈图；
       });
     });
     // describe('失败', async () => {
