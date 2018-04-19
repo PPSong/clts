@@ -10,10 +10,16 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
     const { DD_DW_DPIds, GYSId } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
-    await DBTables.GYS.checkZZGYS(GYSId, transaction);
+    await DBTables.GYS.checkIsZZGYSOrMe(GYSId, transaction);
 
     // 检查DD_DW_DP是否属于同一个DD, 并且当前GYS是操作者所属供应商
     const tmpDD_DW_DPs = await DBTables.DD_DW_DP.findAll({
+      include: [
+        {
+          model: DBTables.DP,
+          as: 'DP',
+        },
+      ],
       where: {
         id: {
           $in: DD_DW_DPIds,
@@ -31,7 +37,7 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
 
     const tmpDDId = tmpUniqueDD_DW_DPDDIds[0];
 
-    const tmpDD_DW_DPGYSIds = tmpDD_DW_DPs.map(item => item.GYSId);
+    const tmpDD_DW_DPGYSIds = tmpDD_DW_DPs.map(item => item.DP.GYSId);
     const tmpUniqueDD_DW_DPGYSIds = [...new Set(tmpDD_DW_DPGYSIds)];
 
     if (tmpUniqueDD_DW_DPGYSIds.length !== 1) {

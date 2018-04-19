@@ -14,7 +14,7 @@ export default class ApproveDD extends BusinessApiBase {
 
     // 检查DDId
     const tmpDD = await user.checkDDId(id, transaction);
-    if (tmpDD.status !== DBTables.DDStatus.DSP) {
+    if (tmpDD.status !== DBTables.DDStatus.CS) {
       throw new Error(`${tmpDD}状态为:${tmpDD.status}, 不能被审批!`);
     }
     // end 检查DDId

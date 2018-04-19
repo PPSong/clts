@@ -47,7 +47,8 @@ npm manifest:
       "passport-local": "^1.0.0",
       "pug": "^2.0.1",
       "sequelize": "^4.36.1",
-      "serve-favicon": "^2.4.5"
+      "serve-favicon": "^2.4.5",
+      "uuid": "^3.2.1"
     },
     "devDependencies": {
       "axios": "^0.18.0",

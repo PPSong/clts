@@ -215,7 +215,7 @@ export async function createWLBH(GTId, WLId, imageUrl, note, user, transaction, 
       imageUrl,
       note,
       DDId,
-      status: DBTables.WLBHStatus.DKFJLSP,
+      status: DBTables.WLBHStatus.CS,
     },
     { transaction },
   );

@@ -21,6 +21,15 @@ export default class SetDDDWDPs0AZG extends BusinessApiBase {
       transaction,
     });
 
+    // 检查是否已分配过安装工
+    const hasAZGUserIdRecordIds = tmpDD_DW_DPs
+      .filter(item => item.AZGUserId !== null)
+      .map(item => item.id);
+    if (hasAZGUserIdRecordIds.length > 0) {
+      throw new Error(`订单_灯位_灯片ids:${hasAZGUserIdRecordIds}已分配过安装工!`);
+    }
+    // end 检查是否已分配过安装工
+
     const tmpDD_DW_DPDDIds = tmpDD_DW_DPs.map(item => item.DDId);
     const tmpUniqueDD_DW_DPDDIds = [...new Set(tmpDD_DW_DPDDIds)];
 
@@ -48,7 +57,7 @@ export default class SetDDDWDPs0AZG extends BusinessApiBase {
     // end 检查AZGUserId是否属于tmpAZGS
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
-    
+
     // 检查订单状态是否是'已审批'
     const tmpDD = await DBTables.DD.findOne({
       where: {

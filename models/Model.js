@@ -1495,21 +1495,26 @@ export const GYS = sequelize.define(
   },
 );
 
-GYS.checkZZGYS = async function (id, transaction) {
+GYS.checkIsZZGYSOrMe = async function (id, user, transaction) {
   const tmpGYS = await GYS.findOne({
     where: {
       id,
-      disabledAt: null,
     },
     transaction,
   });
 
   if (!tmpGYS) {
-    throw new Error('记录不合法!');
+    throw new Error(`供应商id:${id}不存在!`);
   }
 
-  if (tmpGYS.type !== GYSType.ZZ) {
-    throw new Error('记录不合法!');
+  if (tmpGYS.disabledAt !== null) {
+    throw new Error(`供应商id:${id}在屏蔽状态!`);
+  }
+
+  const tmpGYSs = await user.getGLYGYSs({ transaction });
+  const tmpGYSIds = tmpGYSs.map(item => item.id);
+  if (!tmpGYSIds.includes(id) && tmpGYS.type !== GYSType.ZZ) {
+    throw new Error(`供应商id:${id}不是中转供应商也不是你所属供应商!`);
   }
 
   return tmpGYS;

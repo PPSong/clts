@@ -270,9 +270,9 @@ CREATE PROCEDURE genDD(IN v_PPId INT, IN v_name CHAR(255) CHARACTER SET utf8)
 BEGIN
 	DECLARE code CHAR(5) DEFAULT '00000';
     DECLARE msg TEXT CHARACTER SET utf8;
-    -- _DDStatus.DSP_由调用的js代码做变量替换
-    DECLARE v_init_status CHAR(255) CHARACTER SET utf8 DEFAULT '_DDStatus.DSP_';
-    -- _DDStatus.DSP_由调用的js代码做变量替换
+    -- _DDStatus.CS_由调用的js代码做变量替换
+    DECLARE v_init_status CHAR(255) CHARACTER SET utf8 DEFAULT '_DDStatus.CS_';
+    -- _DDStatus.CS_由调用的js代码做变量替换
     DECLARE v_end_status CHAR(255) CHARACTER SET utf8 DEFAULT '_DDStatus.YSP_';
 	DECLARE v_unApprovedDDCount INT DEFAULT 0;
     DECLARE v_DDId INT DEFAULT 0;

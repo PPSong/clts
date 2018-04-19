@@ -12,7 +12,7 @@ export default class DanDuShengPiBoHuiWLBHa extends BusinessApiBase {
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-    // 检查WLBH的id存在, 且状态属于DKFJLSP, 且所属PPId和操作者一致
+    // 检查WLBH的id存在, 且状态属于CS, 且所属PPId和操作者一致
     const tmpWLBH = await DBTables.WLBH.findOne({
       include: [
         {
@@ -32,10 +32,10 @@ export default class DanDuShengPiBoHuiWLBHa extends BusinessApiBase {
 
     await user.checkPPId(tmpWLBH.GT.PPId, transaction);
 
-    if (tmpWLBH.status !== DBTables.WLBHStatus.DKFJLSP) {
-      throw new Error(`物料补货记录:${tmpWLBH}状态不属于${DBTables.WLBHStatus.DKFJLSP}!`);
+    if (tmpWLBH.status !== DBTables.WLBHStatus.CS) {
+      throw new Error(`物料补货记录:${tmpWLBH}状态不属于${DBTables.WLBHStatus.CS}!`);
     }
-    // end 检查WLBH的id存在, 且状态属于DKFJLSP, 且所属PPId和操作者一致
+    // end 检查WLBH的id存在, 且状态属于CS, 且所属PPId和操作者一致
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 

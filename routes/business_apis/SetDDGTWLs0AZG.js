@@ -21,6 +21,15 @@ export default class SetDDGTWLs0AZG extends BusinessApiBase {
       transaction,
     });
 
+    // 检查是否已分配过安装工
+    const hasAZGUserIdRecordIds = tmpDD_GT_WLs
+      .filter(item => item.AZGUserId !== null)
+      .map(item => item.id);
+    if (hasAZGUserIdRecordIds.length > 0) {
+      throw new Error(`订单_柜台_物料ids:${hasAZGUserIdRecordIds}已分配过安装工!`);
+    }
+    // end 检查是否已分配过安装工
+
     const tmpDD_GT_WLDDIds = tmpDD_GT_WLs.map(item => item.DDId);
     const tmpUniqueDD_GT_WLDDIds = [...new Set(tmpDD_GT_WLDDIds)];
 
@@ -48,7 +57,7 @@ export default class SetDDGTWLs0AZG extends BusinessApiBase {
     // end 检查AZGUserId是否属于tmpAZGS
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
-    
+
     // 检查订单状态是否是'已审批'
     const tmpDD = await DBTables.DD.findOne({
       where: {

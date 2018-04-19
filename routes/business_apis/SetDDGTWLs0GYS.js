@@ -10,10 +10,16 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
     const { DD_GT_WLIds, GYSId } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
-    await DBTables.GYS.checkZZGYS(GYSId, transaction);
+    await DBTables.GYS.checkIsZZGYSOrMe(GYSId, transaction);
 
     // 检查DD_GT_WL是否属于同一个DD, 并且当前GYS是操作者所属供应商
     const tmpDD_GT_WLs = await DBTables.DD_GT_WL.findAll({
+      include: [
+        {
+          model: DBTables.WL,
+          as: 'WL',
+        },
+      ],
       where: {
         id: {
           $in: DD_GT_WLIds,
@@ -21,7 +27,7 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
       },
       transaction,
     });
-    
+
     const tmpDD_GT_WLDDIds = tmpDD_GT_WLs.map(item => item.DDId);
     const tmpUniqueDD_GT_WLDDIds = [...new Set(tmpDD_GT_WLDDIds)];
 
@@ -31,11 +37,11 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
 
     const tmpDDId = tmpUniqueDD_GT_WLDDIds[0];
 
-    const tmpDD_GT_WLGYSIds = tmpDD_GT_WLs.map(item => item.GYSId);
+    const tmpDD_GT_WLGYSIds = tmpDD_GT_WLs.map(item => item.WL.GYSId);
     const tmpUniqueDD_GT_WLGYSIds = [...new Set(tmpDD_GT_WLGYSIds)];
 
     if (tmpUniqueDD_GT_WLGYSIds.length !== 1) {
-      throw new Error('订单_柜台_物料应该要存在并属于同一个发货供应商!');
+      throw new Error('订单_柜台_物料应该要存在并属于同一个生产供应商!');
     }
 
     const tmpGYSId = tmpUniqueDD_GT_WLGYSIds[0];

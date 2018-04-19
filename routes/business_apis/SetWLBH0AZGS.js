@@ -29,8 +29,8 @@ export default class SetWLBH0AZGS extends BusinessApiBase {
 
       await user.checkPPId(tmpWLBH.GT.PPId, transaction);
 
-      if (tmpWLBH.status !== DBTables.WLBHStatus.DPPJLSP) {
-        throw new Error(`物料补货记录:${tmpWLBH}状态不属于${DBTables.WLBHStatus.DPPJLSP}!`);
+      if (tmpWLBH.status !== DBTables.WLBHStatus.KFJLSPTG) {
+        throw new Error(`物料补货记录:${tmpWLBH}状态不属于${DBTables.WLBHStatus.KFJLSPTG}!`);
       }
 
       // set AZGS
