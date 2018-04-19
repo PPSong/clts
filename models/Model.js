@@ -73,8 +73,22 @@ export const QY = {
 };
 
 export const DDStatus = {
-  DSP: '待审批',
+  CS: '初始',
   YSP: '已审批',
+};
+
+export const DD_GT_WLStatus = {
+  CS: '初始',
+  YFPFHGYS: '已分配发货供应商',
+  KPQJT: '可拍全景图',
+  WC: '完成',
+};
+
+export const DD_DW_DPStatus = {
+  CS: '初始',
+  YFPFHGYS: '已分配发货供应商',
+  KPQJT: '可拍全景图',
+  WC: '完成',
 };
 
 export const GYSType = {
@@ -123,15 +137,18 @@ export const EWMType = {
 };
 
 export const WLBHStatus = {
-  DKFJLSP: '待客服经理审批',
-  DPPJLSP: '待品牌经理审批',
+  CS: '初始',
+  KFJLSPTG: '客服经理审批通过',
   BH: '驳回',
   TG: '通过',
+  YFPFHGYS: '已分配发货供应商',
+  KPQJT: '可拍全景图',
+  WC: '完成',
 };
 
 export const DPBHStatus = {
-  DKFJLSP: '待客服经理审批',
-  DPPJLSP: '待品牌经理审批',
+  CS: '初始',
+  KFJLSPTG: '客服经理审批通过',
   BH: '驳回',
   TG: '通过',
 };
