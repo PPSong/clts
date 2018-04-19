@@ -202,7 +202,7 @@ export const User = sequelize.define(
     username: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'username',
     },
     password: {
       type: Sequelize.STRING,
@@ -1276,10 +1276,12 @@ export const PPJL_PP = sequelize.define(
   {
     UserId: {
       type: Sequelize.INTEGER,
-      unique: true,
+      unique: 'UserId',
+      allowNull: false,
     },
     PPId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
   },
   {
@@ -1307,10 +1309,12 @@ export const KFJL_PP = sequelize.define(
   {
     UserId: {
       type: Sequelize.INTEGER,
-      unique: true,
+      unique: 'UserId',
+      allowNull: false,
     },
     PPId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
   },
   {
@@ -1338,10 +1342,12 @@ export const GZ_PP = sequelize.define(
   {
     UserId: {
       type: Sequelize.INTEGER,
-      unique: true,
+      unique: 'UserId',
+      allowNull: false,
     },
     PPId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
   },
   {
@@ -1375,7 +1381,7 @@ export const GT = sequelize.define(
     name: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: 'name',
+      unique: 'name_PPId',
     },
     code: {
       type: Sequelize.STRING,
@@ -1384,6 +1390,8 @@ export const GT = sequelize.define(
     },
     PPId: {
       type: Sequelize.INTEGER,
+      unique: 'name_PPId',
+      allowNull: false,
     },
     QY: {
       type: Sequelize.STRING,
@@ -1472,7 +1480,7 @@ export const GYS = sequelize.define(
     name: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'name',
     },
     type: {
       type: Sequelize.STRING,
@@ -1521,10 +1529,12 @@ export const GLY_GYS = sequelize.define(
   {
     UserId: {
       type: Sequelize.INTEGER,
-      unique: true,
+      unique: 'UserId',
+      allowNull: false,
     },
     GYSId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
   },
   {
@@ -1615,10 +1625,12 @@ export const GLY_AZGS = sequelize.define(
   {
     UserId: {
       type: Sequelize.INTEGER,
-      unique: true,
+      unique: 'UserId',
+      allowNull: false,
     },
     AZGSId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
   },
   {
@@ -1647,10 +1659,12 @@ export const AZG_AZGS = sequelize.define(
   {
     UserId: {
       type: Sequelize.INTEGER,
-      unique: true,
+      unique: 'UserId',
+      allowNull: false,
     },
     AZGSId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
   },
   {
@@ -1690,9 +1704,11 @@ export const DP = sequelize.define(
     PPId: {
       type: Sequelize.INTEGER,
       unique: 'name_PPId',
+      allowNull: false,
     },
     GYSId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
     imageUrl: {
       type: Sequelize.STRING,
@@ -1733,6 +1749,7 @@ export const DW = sequelize.define(
     GTId: {
       type: Sequelize.INTEGER,
       unique: 'name_GTId',
+      allowNull: false,
     },
     DPId: {
       type: Sequelize.INTEGER,
@@ -1844,10 +1861,12 @@ export const FG_Tester = sequelize.define(
     FGId: {
       type: Sequelize.STRING,
       allowNull: false,
+      unique: 'FGId_TesterId',
     },
     TesterId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'FGId_TesterId',
     },
     PPId: {
       type: Sequelize.INTEGER,
@@ -1899,7 +1918,7 @@ export const WL = sequelize.define(
     code: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: 'code_PPId',
+      unique: 'code',
     },
     level: {
       type: Sequelize.INTEGER,
@@ -1975,7 +1994,6 @@ export const EJZH = sequelize.define(
     },
     imageUrl: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
     disabledAt: {
       type: Sequelize.DATE,
@@ -2003,10 +2021,12 @@ export const EJZH_FGTester = sequelize.define(
     EJZHId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'EJZHId_FGTesterId',
     },
     FGTesterId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'EJZHId_FGTesterId',
     },
     number: {
       type: Sequelize.INTEGER,
@@ -2041,10 +2061,12 @@ export const EJZH_SJWL = sequelize.define(
     EJZHId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'EJZHId_WLId',
     },
     WLId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'EJZHId_WLId',
     },
     number: {
       type: Sequelize.INTEGER,
@@ -2097,7 +2119,6 @@ export const YJZH = sequelize.define(
     },
     imageUrl: {
       type: Sequelize.STRING,
-      allowNull: false,
     },
     disabledAt: {
       type: Sequelize.DATE,
@@ -2125,10 +2146,12 @@ export const YJZH_EJZH = sequelize.define(
     YJZHId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'YJZHId_EJZHId',
     },
     EJZHId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'YJZHId_EJZHId',
     },
     number: {
       type: Sequelize.INTEGER,
@@ -2151,10 +2174,12 @@ export const GT_YJZH = sequelize.define(
     GTId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'GTId_YJZHId',
     },
     YJZHId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'GTId_YJZHId',
     },
     number: {
       type: Sequelize.INTEGER,
@@ -2463,11 +2488,24 @@ export const DD_GT_WL = sequelize.define(
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(DD_GT_WLStatus).includes(val)) {
+            throw new Error('非法订单状态名称!');
+          }
+        },
+      },
+    },
     GYSId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
     ZXNumber: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
     AZGSId: {
       type: Sequelize.INTEGER,
@@ -2556,11 +2594,24 @@ export const DD_DW_DP = sequelize.define(
       allowNull: false,
       unique: 'DDId_DWId_DPId',
     },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(DD_DW_DPStatus).includes(val)) {
+            throw new Error('非法订单状态名称!');
+          }
+        },
+      },
+    },
     GYSId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
     ZXNumber: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
     AZGSId: {
       type: Sequelize.INTEGER,
@@ -2676,10 +2727,12 @@ export const DD_GTFX = sequelize.define(
     DDId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'DDId_GTId',
     },
     GTId: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      unique: 'DDId_GTId',
     },
   },
   {
@@ -2703,7 +2756,7 @@ export const KDD = sequelize.define(
     code: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'code',
     },
   },
   {
@@ -2724,7 +2777,7 @@ export const KDX = sequelize.define(
     EWM: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'EWM',
     },
     GTId: {
       type: Sequelize.INTEGER,
@@ -2837,7 +2890,7 @@ export const WYWL = sequelize.define(
     EWM: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'EWM',
     },
     status: {
       type: Sequelize.STRING,
@@ -2856,7 +2909,6 @@ export const WYWL = sequelize.define(
     },
     GYSId: {
       type: Sequelize.INTEGER,
-      allowNull: false,
     },
     DDGTWLId: {
       type: Sequelize.INTEGER,
@@ -3004,7 +3056,7 @@ export const WYDP = sequelize.define(
     EWM: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: true,
+      unique: 'EWM',
     },
     status: {
       type: Sequelize.STRING,
@@ -3023,7 +3075,6 @@ export const WYDP = sequelize.define(
     },
     GYSId: {
       type: Sequelize.INTEGER,
-      allowNull: false,
     },
     DDDWDPId: {
       type: Sequelize.INTEGER,
@@ -3174,7 +3225,6 @@ export const WLQJFKT = sequelize.define(
     },
     DDId: {
       type: Sequelize.INTEGER,
-      allowNull: false,
     },
     GTId: {
       type: Sequelize.INTEGER,
@@ -3206,7 +3256,6 @@ export const DPQJFKT = sequelize.define(
     },
     DDId: {
       type: Sequelize.INTEGER,
-      allowNull: false,
     },
     GTId: {
       type: Sequelize.INTEGER,
@@ -3256,6 +3305,7 @@ export const WLBH = sequelize.define(
     },
     ZXNumber: {
       type: Sequelize.INTEGER,
+      allowNull: false,
     },
     imageUrl: {
       type: Sequelize.STRING,

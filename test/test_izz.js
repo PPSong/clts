@@ -2598,7 +2598,7 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('AZGSGLY设置DD_DW_DP的AZG', async () => {
         let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
-        const DD_DW_DPIds = [5, 6];
+        const DD_DW_DPIds = [5];
         const AZGUserId = 39;
 
         const response = await post(
@@ -2621,15 +2621,41 @@ describe('SPRT测试', () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的DD_DW_DP的AZG', async () => {
-
+          let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
+          const DD_DW_DPIds = [6];
+          const AZGUserId = 38;
+  
+          const response = await post(
+            'setDDDWDPs0AZG',
+            {
+              DD_DW_DPIds,
+              AZGUserId,
+            },
+            AZGSGLY5Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
 
         it('AZGSGLY为DD_DW_DP设置不属于自己管理的AZG', async () => {
-
+          let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
+          const DD_DW_DPIds = [5];
+          const AZGUserId = 38;
+  
+          const response = await post(
+            'setDDDWDPs0AZG',
+            {
+              DD_DW_DPIds,
+              AZGUserId,
+            },
+            AZGSGLY5Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe('操作状态不正确', async () => {
-        it('当前品牌订单状态非已审批', async () => {
+        it('AZGSGLY为处于待审批状态的DD设置DD_DW_DP的AZG', async () => {
 
         });
       });
