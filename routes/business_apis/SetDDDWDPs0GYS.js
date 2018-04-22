@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 
@@ -12,7 +13,7 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     await DBTables.GYS.checkIsZZGYSOrMe(GYSId, transaction);
 
-    // 检查DD_DW_DP是否属于同一个DD, 并且当前GYS是操作者所属供应商
+    // 检查DD_DW_DPIds存在
     const tmpDD_DW_DPs = await DBTables.DD_DW_DP.findAll({
       include: [
         {
@@ -28,6 +29,14 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
       transaction,
     });
 
+    const tmpDD_DW_DPIds = tmpDD_DW_DPs.map(item => item.id);
+    const diffIds = _.difference(DD_DW_DPIds, tmpDD_DW_DPIds);
+    if (diffIds.length > 0) {
+      throw new Error(`订单_灯位_灯片记录id:${diffIds}不存在!`);
+    }
+    // end 检查DD_DW_DPIds存在
+
+    // 检查DD_DW_DP是否属于同一个DD, 并且生产GYS是操作者所属供应商, 状态是'初始'
     const tmpDD_DW_DPDDIds = tmpDD_DW_DPs.map(item => item.DDId);
     const tmpUniqueDD_DW_DPDDIds = [...new Set(tmpDD_DW_DPDDIds)];
 
@@ -47,7 +56,12 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
     const tmpGYSId = tmpUniqueDD_DW_DPGYSIds[0];
 
     await user.checkGYSId(tmpGYSId, transaction);
-    // end 检查DD_DW_DP是否属于同一个DD, 并且当前GYS是操作者所属供应商
+
+    const notCSDD_DW_DPs = tmpDD_DW_DPs.filter(item => item.status !== DBTables.DD_DW_DPStatus.CS);
+    if (notCSDD_DW_DPs.length > 0) {
+      throw new Error(`${notCSDD_DW_DPs}不在${DBTables.DD_DW_DPStatus.CS}状态, 不可指定发货供应商!`);
+    }
+    // end 检查DD_DW_DP是否属于同一个DD, 并且生产GYS是操作者所属供应商, 状态是'初始'
 
     // 检查订单状态是否是'已审批'
     const tmpDD = await DBTables.DD.findOne({

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 
@@ -12,7 +13,7 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     await DBTables.GYS.checkIsZZGYSOrMe(GYSId, transaction);
 
-    // 检查DD_GT_WL是否属于同一个DD, 并且当前GYS是操作者所属供应商
+    // 检查DD_GT_WLIds存在
     const tmpDD_GT_WLs = await DBTables.DD_GT_WL.findAll({
       include: [
         {
@@ -28,6 +29,14 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
       transaction,
     });
 
+    const tmpDD_GT_WLIds = tmpDD_GT_WLs.map(item => item.id);
+    const diffIds = _.difference(DD_GT_WLIds, tmpDD_GT_WLIds);
+    if (diffIds.length > 0) {
+      throw new Error(`订单_柜台_物料记录id:${diffIds}不存在!`);
+    }
+    // end 检查DD_GT_WLIds存在
+
+    // 检查DD_GT_WL是否属于同一个DD, 并且生产GYS是操作者所属供应商, 状态是'初始'
     const tmpDD_GT_WLDDIds = tmpDD_GT_WLs.map(item => item.DDId);
     const tmpUniqueDD_GT_WLDDIds = [...new Set(tmpDD_GT_WLDDIds)];
 
@@ -47,7 +56,12 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
     const tmpGYSId = tmpUniqueDD_GT_WLGYSIds[0];
 
     await user.checkGYSId(tmpGYSId, transaction);
-    // end 检查DD_GT_WL是否属于同一个DD, 并且当前GYS是操作者所属供应商
+
+    const notCSDD_GT_WLs = tmpDD_GT_WLs.filter(item => item.status !== DBTables.DD_GT_WLStatus.CS);
+    if (notCSDD_GT_WLs.length > 0) {
+      throw new Error(`${notCSDD_GT_WLs}不在${DBTables.DD_GT_WLStatus.CS}状态, 不可指定发货供应商!`);
+    }
+    // end 检查DD_GT_WL是否属于同一个DD, 并且生产GYS是操作者所属供应商, 状态是'初始'
 
     // 检查订单状态是否是'已审批'
     const tmpDD = await DBTables.DD.findOne({

@@ -81,6 +81,7 @@ export const DD_GT_WLStatus = {
   CS: '初始',
   YFPFHGYS: '已分配发货供应商',
   ZXWC: '装箱完成',
+  SH: '收货',
   KPQJT: '可拍全景图',
   WC: '完成',
 };
@@ -89,6 +90,7 @@ export const DD_DW_DPStatus = {
   CS: '初始',
   YFPFHGYS: '已分配发货供应商',
   ZXWC: '装箱完成',
+  SH: '收货',
   KPQJT: '可拍全景图',
   WC: '完成',
 };
