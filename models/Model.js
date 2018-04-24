@@ -6,7 +6,7 @@ import debug from 'debug';
 
 const ppLog = debug('ppLog');
 
-export const { Op } = Sequelize;
+export const { Op, literal } = Sequelize;
 const operatorsAliases = {
   $eq: Op.eq,
   $ne: Op.ne,
@@ -86,6 +86,8 @@ export const DD_GT_WLStatus = {
   WC: '完成',
 };
 
+export const DD_GT_WLStatusMap = new Map(Object.entries(DD_GT_WLStatus).map((item, index) => [item[1], index]));
+
 export const DD_DW_DPStatus = {
   CS: '初始',
   YFPFHGYS: '已分配发货供应商',
@@ -95,6 +97,8 @@ export const DD_DW_DPStatus = {
   WC: '完成',
 };
 
+export const DD_DW_DPStatusMap = new Map(Object.entries(DD_DW_DPStatus).map((item, index) => [item[1], index]));
+
 export const GYSType = {
   SC: '生产',
   ZZ: '中转',
@@ -102,23 +106,29 @@ export const GYSType = {
 
 export const WYWLStatus = {
   RK: '入库',
+  ZK: '出库',
+  XK: '消库',
   ZX: '装箱',
   FH: '发货',
   SX: '收箱',
   SH: '收货',
   FK: '反馈',
-  FKT: '反馈图',
 };
+
+export const WYWLStatusMap = new Map(Object.entries(WYWLStatus).map((item, index) => [item[1], index]));
 
 export const WYDPStatus = {
   RK: '入库',
+  ZK: '出库',
+  XK: '消库',
   ZX: '装箱',
   FH: '发货',
   SX: '收箱',
   SH: '收货',
   FK: '反馈',
-  FKT: '反馈图',
 };
+
+export const WYDPStatusMap = new Map(Object.entries(WYDPStatus).map((item, index) => [item[1], index]));
 
 export const KDXStatus = {
   ZX: '装箱',
@@ -140,12 +150,19 @@ export const EWMType = {
   KDX: 'KDX',
 };
 
+export const HWType = {
+  WL: 'WL',
+  DP: 'DP',
+};
+
 export const WLBHStatus = {
   CS: '初始',
   KFJLSPTG: '客服经理审批通过',
   BH: '驳回',
   TG: '通过',
   YFPFHGYS: '已分配发货供应商',
+  ZXWC: '装箱完成',
+  SH: '收货',
   KPQJT: '可拍全景图',
   WC: '完成',
 };
@@ -155,6 +172,11 @@ export const DPBHStatus = {
   KFJLSPTG: '客服经理审批通过',
   BH: '驳回',
   TG: '通过',
+  YFPFHGYS: '已分配发货供应商',
+  ZXWC: '装箱完成',
+  SH: '收货',
+  KPQJT: '可拍全景图',
+  WC: '完成',
 };
 
 export const CS = ['北京', '上海', '广州', '深圳'];
@@ -367,38 +389,6 @@ User.prototype.checkGTId = async function (id, transaction) {
   return tmpGT;
 };
 
-User.prototype.checkWYWLId = async function (id, transaction) {
-  if (!transaction) {
-    throw new Error('transaction不能为空!');
-  }
-
-  const tmpWYWL = await WYWL.findOne({
-    where: {
-      id,
-    },
-    transaction,
-  });
-
-  if (!tmpWYWL) {
-    throw new Error(`唯一物料id:${id}不存在!`);
-  }
-
-  const tmpDDGTWLId = tmpWYWL.DDGTWLId;
-
-  switch (this.JS) {
-    case JS.AZG:
-      await this.checkDD_GT_WLId(tmpDDGTWLId, transaction);
-      break;
-    case JS.GTBA:
-      await this.checkDD_GT_WLId(tmpDDGTWLId, transaction);
-      break;
-    default:
-      throw new Error('没有权限!');
-  }
-
-  return tmpWYWL;
-};
-
 User.prototype.checkDD_GT_WLId = async function (id, transaction) {
   if (!transaction) {
     throw new Error('transaction不能为空!');
@@ -454,38 +444,6 @@ User.prototype.checkDD_GT_WLId = async function (id, transaction) {
   }
 
   return tmpDD_GT_WL;
-};
-
-User.prototype.checkWYDPId = async function (id, transaction) {
-  if (!transaction) {
-    throw new Error('transaction不能为空!');
-  }
-
-  const tmpWYDP = await WYDP.findOne({
-    where: {
-      id,
-    },
-    transaction,
-  });
-
-  if (!tmpWYDP) {
-    throw new Error(`唯一灯片id:${id}不存在!`);
-  }
-
-  const tmpDDDWDPId = tmpWYDP.DDDWDPId;
-
-  switch (this.JS) {
-    case JS.AZG:
-      await this.checkDD_DW_DPId(tmpDDDWDPId, transaction);
-      break;
-    case JS.GTBA:
-      await this.checkDD_DW_DPId(tmpDDDWDPId, transaction);
-      break;
-    default:
-      throw new Error('没有权限!');
-  }
-
-  return tmpWYDP;
 };
 
 User.prototype.checkDD_DW_DPId = async function (id, transaction) {
@@ -549,6 +507,130 @@ User.prototype.checkDD_DW_DPId = async function (id, transaction) {
   }
 
   return tmpDD_DW_DP;
+};
+
+User.prototype.checkWLBHId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpWLBH = await WLBH.findOne({
+    include: [
+      {
+        model: GT,
+        as: 'GT',
+      },
+    ],
+    where: {
+      id,
+    },
+    transaction,
+  });
+
+  if (!tmpWLBH) {
+    throw new Error(`物料补货id:${id}不存在!`);
+  }
+
+  const tmpPPId = tmpWLBH.GT.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.AZG:
+      if (tmpWLBH.AZGUserId !== this.id) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.GTBA:
+      if (tmpWLBH.AZGUserId !== null) {
+        throw new Error('没有权限!');
+      }
+      await this.checkGTId(tmpWLBH.GT.id, transaction);
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpWLBH;
+};
+
+User.prototype.checkDPBHId = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpPPs;
+  let tmpPPIds;
+  const tmpDPBH = await DPBH.findOne({
+    include: [
+      {
+        model: GT,
+        as: 'GT',
+      },
+    ],
+    where: {
+      id,
+    },
+    transaction,
+  });
+
+  if (!tmpDPBH) {
+    throw new Error(`物料补货id:${id}不存在!`);
+  }
+
+  const tmpPPId = tmpDPBH.GT.PPId;
+
+  switch (this.JS) {
+    case JS.ADMIN:
+      break;
+    case JS.PPJL:
+      tmpPPs = await this.getPPJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.KFJL:
+      tmpPPs = await this.getKFJLPPs({ transaction });
+      tmpPPIds = tmpPPs.map(item => item.id);
+      if (!tmpPPIds.includes(tmpPPId)) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.AZG:
+      if (tmpDPBH.AZGUserId !== this.id) {
+        throw new Error('没有权限!');
+      }
+      break;
+    case JS.GTBA:
+      if (tmpDPBH.AZGUserId !== null) {
+        throw new Error('没有权限!');
+      }
+      await this.checkGTId(tmpDPBH.GT.id, transaction);
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpDPBH;
 };
 
 User.prototype.checkDDId = async function (id, transaction) {
@@ -2173,8 +2255,16 @@ export const YJZH_EJZH = sequelize.define(
   },
 );
 
-YJZH.belongsToMany(EJZH, { through: 'YJZH_EJZH', as: 'EJZHs', foreignKey: 'YJZHId' });
-EJZH.belongsToMany(YJZH, { through: 'YJZH_EJZH', as: 'YJZHs', foreignKey: 'EJZHId' });
+YJZH.belongsToMany(EJZH, {
+  through: 'YJZH_EJZH',
+  as: 'EJZHs',
+  foreignKey: 'YJZHId',
+});
+EJZH.belongsToMany(YJZH, {
+  through: 'YJZH_EJZH',
+  as: 'YJZHs',
+  foreignKey: 'EJZHId',
+});
 
 // GT_YJZH
 export const GT_YJZH = sequelize.define(
@@ -2767,12 +2857,29 @@ export const KDD = sequelize.define(
       allowNull: false,
       unique: 'code',
     },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
   },
   {
     version: true,
     freezeTableName: true,
   },
 );
+
+KDD.belongsTo(GT, {
+  as: 'GT',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GT.hasMany(KDD, {
+  as: 'KDDs',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 
 // KDX
 export const KDX = sequelize.define(
@@ -2802,6 +2909,20 @@ export const KDX = sequelize.define(
         enumCheck(val) {
           if (!Object.values(KDXStatus).includes(val)) {
             throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    YJZXTime: {
+      type: Sequelize.DATE,
+    },
+    HWType: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(HWType).includes(val)) {
+            throw new Error('非法货物类型!');
           }
         },
       },
@@ -3338,8 +3459,8 @@ export const WLBH = sequelize.define(
     GYSId: {
       type: Sequelize.INTEGER,
     },
-    HBUUID: {
-      type: Sequelize.UUID,
+    YJZXTime: {
+      type: Sequelize.DATE,
     },
   },
   {
@@ -3465,6 +3586,194 @@ WLBHCZ.belongsTo(WLBH, {
 WLBH.hasMany(WLBHCZ, {
   as: 'WLBHCZs',
   foreignKey: 'WLBHId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// DPBH
+export const DPBH = sequelize.define(
+  'DPBH',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    DWId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    DPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(DPBHStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    ZXNumber: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    note: {
+      type: Sequelize.TEXT,
+    },
+    KFJLNote: {
+      type: Sequelize.TEXT,
+    },
+    PPJLNote: {
+      type: Sequelize.TEXT,
+    },
+    AZGSId: {
+      type: Sequelize.INTEGER,
+    },
+    AZGUserId: {
+      type: Sequelize.INTEGER,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
+    YJZXTime: {
+      type: Sequelize.DATE,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DPBH.belongsTo(DW, {
+  as: 'DW',
+  foreignKey: 'DWId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DW.hasMany(DPBH, {
+  as: 'DPBHs',
+  foreignKey: 'DWId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DPBH.belongsTo(DP, {
+  as: 'DP',
+  foreignKey: 'DPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DP.hasMany(DPBH, {
+  as: 'DPBHs',
+  foreignKey: 'DPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DPBH.belongsTo(DD, {
+  as: 'DD',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD.hasMany(DPBH, {
+  as: 'DPBHs',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DPBH.belongsTo(AZGS, {
+  as: 'AZGS',
+  foreignKey: 'AZGSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+AZGS.hasMany(DPBH, {
+  as: 'DPBHs',
+  foreignKey: 'AZGSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DPBH.belongsTo(User, {
+  as: 'AZG',
+  foreignKey: 'AZGUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+User.hasMany(DPBH, {
+  as: 'DPBHs',
+  foreignKey: 'AZGUserId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DPBH.belongsTo(GYS, {
+  as: 'GYS',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GYS.hasMany(DPBH, {
+  as: 'DPBHs',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+// DPBHCZ
+export const DPBHCZ = sequelize.define(
+  'DPBHCZ',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    DPBHId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    status: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(DPBHStatus).includes(val)) {
+            throw new Error('非法状态名称!');
+          }
+        },
+      },
+    },
+    UserId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
+DPBHCZ.belongsTo(DPBH, {
+  as: 'DPBH',
+  foreignKey: 'DPBHId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DPBH.hasMany(DPBHCZ, {
+  as: 'DPBHCZs',
+  foreignKey: 'DPBHId',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });

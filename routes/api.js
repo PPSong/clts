@@ -99,24 +99,51 @@ router.post('/setDDDWDPs0GYS', businessApis.SetDDDWDPs0GYS.getApi());
 router.post('/setDDGTWLs0AZG', businessApis.SetDDGTWLs0AZG.getApi());
 // 批量设置DD_DW_DP的AZG [AZGSGLY]
 router.post('/setDDDWDPs0AZG', businessApis.SetDDDWDPs0AZG.getApi());
-// 批量入库 [ZHY]
-router.post('/piLiangRuKu', businessApis.PiLiangRuKu.getApi());
-// 装箱 [ZHY]
-router.post('/zhuangXiang', businessApis.ZhuangXiang.getApi());
-// 出箱 [ZHY]
-router.post('/chuXiang', businessApis.ChuXiang.getApi());
+// 批量入库WL [ZHY]
+router.post('/piLiangRuKuWL', businessApis.PiLiangRuKuWL.getApi());
+// 批量入库DP [ZHY]
+router.post('/piLiangRuKuDP', businessApis.PiLiangRuKuDP.getApi());
+// 批量出库WL [ZHY]
+router.post('/piLiangChuKuWL', businessApis.PiLiangChuKuWL.getApi());
+// 批量出库DP [ZHY]
+router.post('/piLiangChuKuDP', businessApis.PiLiangChuKuDP.getApi());
+// 批量消库WL [ZHY]
+router.post('/piLiangXiaoKuWL', businessApis.PiLiangXiaoKuWL.getApi());
+// 批量消库DP [ZHY]
+router.post('/piLiangXiaoKuDP', businessApis.PiLiangXiaoKuDP.getApi());
+// 订单批量装箱DDWL [ZHY]
+router.post('/piLiangZhuangXiangDDWL', businessApis.PiLiangZhuangXiangDDWL.getApi());
+// 订单批量装箱DDDP [ZHY]
+router.post('/piLiangZhuangXiangDDDP', businessApis.PiLiangZhuangXiangDDDP.getApi());
+// 订单批量装箱BHWL [ZHY]
+router.post('/piLiangZhuangXiangBHWL', businessApis.PiLiangZhuangXiangBHWL.getApi());
+// 订单批量装箱BHDP [ZHY]
+router.post('/piLiangZhuangXiangBHDP', businessApis.PiLiangZhuangXiangBHDP.getApi());
+// 出箱WL [ZHY]
+router.post('/chuXiangWL', businessApis.ChuXiangWL.getApi());
+// 出箱DP [ZHY]
+router.post('/chuXiangDP', businessApis.ChuXiangDP.getApi());
 // 关联快递 [ZHY]
 router.post('/guanLianKuaiDi', businessApis.GuanLianKuaiDi.getApi());
 // 解除关联快递 [ZHY]
 router.post('/jieChuGuanLianKuaiDi', businessApis.JieChuGuanLianKuaiDi.getApi());
 // 收箱 [GTBA]
 router.post('/shouXiang', businessApis.ShouXiang.getApi());
-// 收货 [GTBA, AZG]
-router.post('/shouHuo', businessApis.ShouHuo.getApi());
-// 安装反馈状态 [GTBA, AZG]
-router.post('/anZhuangFanKuiZhuangTai', businessApis.AnZhuangFanKuiZhuangTai.getApi());
-// 安装反馈图片 [GTBA, AZG]
-router.post('/anZhuangFanKuiTuPian', businessApis.AnZhuangFanKuiTuPian.getApi());
+// 收货WL [GTBA, AZG]
+router.post('/shouHuoWL', businessApis.ShouHuoWL.getApi());
+// 收货DP [GTBA, AZG]
+router.post('/shouHuoDP', businessApis.ShouHuoDP.getApi());
+// 安装反馈DDWL状态 [GTBA, AZG]
+router.post('/anZhuangFanKuiDDWLZhuangTai', businessApis.AnZhuangFanKuiDDWLZhuangTai.getApi());
+// 安装反馈DDDP状态 [GTBA, AZG]
+router.post('/anZhuangFanKuiDDDPZhuangTai', businessApis.AnZhuangFanKuiDDDPZhuangTai.getApi());
+
+// 安装反馈全景WL图片 [GTBA, AZG]
+router.post('/anZhuangFanKuiQuanJingWLTuPian', businessApis.AnZhuangFanKuiQuanJingWLTuPian.getApi());
+// 安装反馈全景DP图片 [GTBA, AZG]
+router.post('/anZhuangFanKuiQuanJingDPTuPian', businessApis.AnZhuangFanKuiQuanJingDPTuPian.getApi());
+
+
 // 申请上市物料补货 [GZ, GTBA, AZG]
 router.post('/shenQingShangShiWLBH', businessApis.ShenQingShangShiWLBH.getApi());
 // 批量审批通过物料补货 [KFJL]
@@ -139,25 +166,6 @@ router.post('/heBingWLBH', businessApis.HeBingWLBH.getApi());
 router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
 // 装箱WLBH [ZHY]
 router.post('/zhuangXiangWLBH', businessApis.ZhuangXiangWLBH.getApi());
-
-
-// 装箱 [ZHY]
-// HBUUID, GTId, WLEWMs, KDXEWM
-
-// 出箱--修改原来的出箱函数 [ZHY]
-
-// 关联KDD-修改原来的
-
-// 取消关联-修改原来的
-
-// 收箱-修改原来的
-
-// 收货-修改原来的
-
-// 反馈
-
-// 反馈图
-
 
 // 常规RESTFUL API
 router.post('/:table', async (req, res, next) => {

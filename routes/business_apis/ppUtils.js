@@ -1,126 +1,195 @@
 import _ from 'lodash';
 import * as DBTables from '../../models/Model';
 
-export async function checkEWMsExistanceAndGetRecords(tableName, EWMs, transaction) {
-  const EWMStrings = EWMs.map(item => JSON.stringify(item));
-  const tmpRecords = await DBTables[tableName].findAll({
-    where: {
-      EWM: {
-        $in: EWMStrings,
-      },
+export async function createDDKDXAndZhuangXiang({
+  EWM,
+  GTId,
+  HWType,
+  user,
+  transaction,
+  DDId = null,
+  YJZXTime = null,
+}) {
+  // EWM: { type: 'KDX'. typeId: 15, uuid: '123456'}
+
+  // 新建KDX
+  const tmpKDX = await DBTables.KDX.create(
+    {
+      EWM: JSON.stringify(EWM),
+      GTId,
+      status: DBTables.KDXStatus.ZX,
+      DDId,
+      YJZXTime,
+      HWType,
     },
-    transaction,
-  });
-  const tmpEWMStrings = tmpRecords.map(item => item.EWM);
-  const diffEWMs = _.difference(EWMStrings, tmpEWMStrings);
-  if (diffEWMs.length > 0) {
-    throw new Error(`${diffEWMs}不存在!`);
-  }
+    { transaction },
+  );
+  // end 新建WYWL
 
-  return tmpRecords;
+  // 新建KDXCZ
+  await DBTables.KDXCZ.create(
+    {
+      KDXId: tmpKDX.id,
+      status: tmpKDX.status,
+      userId: user.id,
+    },
+    { transaction },
+  );
+  // end 新建KDXCZ
 }
 
-export async function checkRecordsStatus(
-  records,
-  targetStatus,
-  errorMsg = '操作不能继续',
+export async function createWYWLAndRuKu(EWM, user, GYSId, transaction) {
+  // EWM: { type: 'WL'. typeId: 15, uuid: '123456'}
+
+  // 新建WYWL
+  const tmpWYWL = await DBTables.WYWL.create(
+    {
+      EWM: JSON.stringify(EWM),
+      status: DBTables.WYWLStatus.RK,
+      WLId: EWM.typeId,
+      GYSId,
+    },
+    { transaction },
+  );
+  // end 新建WYWL
+
+  // 新建WYWLCZ
+  await DBTables.WYWLCZ.create(
+    {
+      WYWLId: tmpWYWL.id,
+      status: tmpWYWL.status,
+      userId: user.id,
+    },
+    { transaction },
+  );
+  // end 新建WYWLCZ
+}
+
+export async function changeWYWLStatusOnGYS(
+  tmpWYWL,
+  status,
+  user,
+  GYSId,
   transaction,
 ) {
-  const tmpFailedStatusRecords = records.filter(item => item.status !== targetStatus);
+  // EWM: { type: 'WL'. typeId: 15, uuid: '123456'}
 
-  // todo: arr toString()
-  if (tmpFailedStatusRecords.length > 0) {
-    throw new Error(`${tmpFailedStatusRecords}不在${targetStatus}状态, ${errorMsg}!`);
-  }
+  // 修改状态
+  await tmpWYWL.update(
+    {
+      status,
+      GYSId,
+    },
+    { transaction },
+  );
+  // end 修改状态
+
+  // 新建WYWLCZ
+  await DBTables.WYWLCZ.create(
+    {
+      WYWLId: tmpWYWL.id,
+      status,
+      userId: user.id,
+    },
+    { transaction },
+  );
+  // end 新建WYWLCZ
 }
 
-export async function checkSameGTAndGetGTId(
-  records,
-  errorMsg = '记录不属于同一个柜台, 操作不能继续',
+export async function createWYDPAndRuKu(EWM, user, GYSId, transaction) {
+  // EWM: { type: 'DP'. typeId: 15, uuid: '123456'}
+
+  // 新建WYDP
+  const tmpWYDP = await DBTables.WYDP.create(
+    {
+      EWM: JSON.stringify(EWM),
+      status: DBTables.WYDPStatus.RK,
+      DPId: EWM.typeId,
+      GYSId,
+    },
+    { transaction },
+  );
+  // end 新建WYDP
+
+  // 新建WYDPCZ
+  await DBTables.WYDPCZ.create(
+    {
+      WYDPId: tmpWYDP.id,
+      status: tmpWYDP.status,
+      userId: user.id,
+    },
+    { transaction },
+  );
+  // end 新建WYDPCZ
+}
+
+export async function changeWYDPStatusOnGYS(
+  tmpWYDP,
+  status,
+  user,
+  GYSId,
   transaction,
 ) {
-  const tmpGTs = records.map(item => item.GTId);
-  const tmpUniqueGTs = [...new Set(tmpGTs)];
-  if (tmpUniqueGTs.length !== 1) {
-    throw new Error(`${errorMsg}!`);
-  }
+  // EWM: { type: 'DP'. typeId: 15, uuid: '123456'}
 
-  return tmpUniqueGTs[0];
+  // 修改状态
+  await tmpWYDP.update(
+    {
+      status,
+      GYSId,
+    },
+    { transaction },
+  );
+  // end 修改状态
+
+  // 新建WYDPCZ
+  await DBTables.WYDPCZ.create(
+    {
+      WYDPId: tmpWYDP.id,
+      status,
+      userId: user.id,
+    },
+    { transaction },
+  );
+  // end 新建WYDPCZ
 }
 
-export async function changeWYWLsInKDXsStatus(KDXEWMs, status, user, transaction) {
-  const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
-  // 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
-  const tmpWYWLSql = `
-      SELECT
-        a.id id
-      FROM
-        WYWL a
-      JOIN
-        KDX b
-      ON
-        a.KDXId = b.id
-      AND
-        b.EWM in (:KDXEWMs)
-      WHERE
-        a.AZFKType IS NULL;
-    `;
-  // end 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
-  const tmpWYWLCZSqlR = await DBTables.sequelize.query(tmpWYWLSql, {
-    transaction,
-    replacements: { KDXEWMs: KDXEWMStrings },
-  });
-  const tmpWYWLIds = tmpWYWLCZSqlR[0].map(item => item.id);
-
-  // 更改相关WYWL状态为FH, 新建相关WYWLCZ
-  await changeWYWLsStatus(tmpWYWLIds, status, user, transaction);
-  // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
-}
-
-export async function changeWYDPsInKDXsStatus(KDXEWMs, status, user, transaction) {
-  const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
-  // 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
-  const tmpWYDPSql = `
-      SELECT
-        a.id
-      FROM
-        WYDP a
-      JOIN
-        KDX b
-      ON
-        a.KDXId = b.id
-      AND
-        b.EWM in (:KDXEWMs)
-      WHERE
-        a.AZFKType IS NULL;
-    `;
-  // end 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
-  const tmpWYDPCZSqlR = await DBTables.sequelize.query(tmpWYDPSql, {
-    transaction,
-    replacements: { KDXEWMs: KDXEWMStrings },
-  });
-  const tmpWYDPIds = tmpWYDPCZSqlR[0].map(item => item.id);
-
-  // 更改相关WYWL状态为FH, 新建相关WYWLCZ
-  await changeWYDPsStatus(tmpWYDPIds, status, user, transaction);
-  // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
-}
-
-export async function changeWYWLsStatus(
+export async function changeWYWLsStatus({
   ids,
   status,
   user,
   transaction,
-  AZFK = null,
+  GYSId = null,
+  DDGTWLId = null,
+  WLBHId = null,
+  AZFKType = null,
   imageUrl = null,
-) {
+}) {
   let updateObj = {
     status,
   };
-  if (AZFK) {
+  if (GYSId) {
     updateObj = {
       ...updateObj,
-      AZFK,
+      GYSId,
+    };
+  }
+  if (DDGTWLId) {
+    updateObj = {
+      ...updateObj,
+      DDGTWLId,
+    };
+  }
+  if (WLBHId) {
+    updateObj = {
+      ...updateObj,
+      DDGTWLId,
+    };
+  }
+  if (AZFKType) {
+    updateObj = {
+      ...updateObj,
+      AZFKType,
     };
   }
   if (imageUrl) {
@@ -156,16 +225,30 @@ export async function changeWYDPsStatus(
   status,
   user,
   transaction,
-  AZFK = null,
+  GYSId = null,
+  DDDWDPId = null,
+  AZFKType = null,
   imageUrl = null,
 ) {
   let updateObj = {
     status,
   };
-  if (AZFK) {
+  if (GYSId) {
     updateObj = {
       ...updateObj,
-      AZFK,
+      GYSId,
+    };
+  }
+  if (DDDWDPId) {
+    updateObj = {
+      ...updateObj,
+      DDDWDPId,
+    };
+  }
+  if (AZFKType) {
+    updateObj = {
+      ...updateObj,
+      AZFKType,
     };
   }
   if (imageUrl) {
@@ -196,6 +279,158 @@ export async function changeWYDPsStatus(
   // end 新建相关WYDPCZ
 }
 
+export async function checkEWMsExistanceAndGetRecords(
+  tableName,
+  EWMs,
+  transaction,
+) {
+  const EWMStrings = EWMs.map(item => JSON.stringify(item));
+  const tmpRecords = await DBTables[tableName].findAll({
+    where: {
+      EWM: {
+        $in: EWMStrings,
+      },
+    },
+    transaction,
+  });
+  const tmpEWMStrings = tmpRecords.map(item => item.EWM);
+  const diffEWMs = _.difference(EWMStrings, tmpEWMStrings);
+  if (diffEWMs.length > 0) {
+    throw new Error(`${diffEWMs}不存在!`);
+  }
+
+  return tmpRecords;
+}
+
+export async function checkIdsExistanceAndGetRecords(
+  tableName,
+  ids,
+  transaction,
+) {
+  const tmpRecords = await DBTables[tableName].findAll({
+    where: {
+      id: {
+        $in: ids,
+      },
+    },
+    transaction,
+  });
+  const tmpIds = tmpRecords.map(item => item.id);
+  const diffIds = _.difference(ids, tmpIds);
+  if (diffIds.length > 0) {
+    throw new Error(`${diffIds}不存在!`);
+  }
+
+  return tmpRecords;
+}
+
+export async function changeWYWLsInKDXsStatus(
+  KDXEWMs,
+  status,
+  user,
+  transaction,
+) {
+  const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
+  // 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
+  const tmpWYWLSql = `
+      SELECT
+        a.id id
+      FROM
+        WYWL a
+      JOIN
+        KDX b
+      ON
+        a.KDXId = b.id
+      AND
+        b.EWM in (:KDXEWMs)
+      WHERE
+        a.AZFKType IS NULL;
+    `;
+  // end 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
+  const tmpWYWLCZSqlR = await DBTables.sequelize.query(tmpWYWLSql, {
+    transaction,
+    replacements: { KDXEWMs: KDXEWMStrings },
+  });
+  const tmpWYWLIds = tmpWYWLCZSqlR[0].map(item => item.id);
+
+  // 更改相关WYWL状态为FH, 新建相关WYWLCZ
+  await changeWYWLsStatus(tmpWYWLIds, status, user, transaction);
+  // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
+}
+
+export async function changeWYDPsInKDXsStatus(
+  KDXEWMs,
+  status,
+  user,
+  transaction,
+) {
+  const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
+  // 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
+  const tmpWYDPSql = `
+      SELECT
+        a.id
+      FROM
+        WYDP a
+      JOIN
+        KDX b
+      ON
+        a.KDXId = b.id
+      AND
+        b.EWM in (:KDXEWMs)
+      WHERE
+        a.AZFKType IS NULL;
+    `;
+  // end 对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败
+  const tmpWYDPCZSqlR = await DBTables.sequelize.query(tmpWYDPSql, {
+    transaction,
+    replacements: { KDXEWMs: KDXEWMStrings },
+  });
+  const tmpWYDPIds = tmpWYDPCZSqlR[0].map(item => item.id);
+
+  // 更改相关WYWL状态为FH, 新建相关WYWLCZ
+  await changeWYDPsStatus(tmpWYDPIds, status, user, transaction);
+  // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
+}
+
+export async function changeKDXsStatus({
+  ids,
+  status,
+  user,
+  transaction,
+  KDDId = null,
+}) {
+  let updateObj = {
+    status,
+  };
+  if (KDDId) {
+    updateObj = {
+      ...updateObj,
+      KDDId,
+    };
+  }
+
+  await DBTables.KDX.update(updateObj, {
+    where: {
+      id: {
+        $in: ids,
+      },
+    },
+    transaction,
+  });
+
+  // 新建相关KDXCZ
+  const tmpKDXCZs = ids.map(item => ({
+    KDXId: item,
+    status,
+    UserId: user.id,
+  }));
+  await DBTables.KDXCZ.bulkCreate(tmpKDXCZs, {
+    transaction,
+  });
+  // end 新建相关KDXCZ
+}
+
+//-----------------------
 export function checkSameEWMTypeAndGetTheType(EWMs) {
   const tmpTypes = EWMs.map(item => item.type);
   const tmpUniqueTypes = [...new Set(tmpTypes)];
@@ -207,7 +442,15 @@ export function checkSameEWMTypeAndGetTheType(EWMs) {
   return false;
 }
 
-export async function createWLBH(GTId, WLId, imageUrl, note, user, transaction, DDId = null) {
+export async function createWLBH(
+  GTId,
+  WLId,
+  imageUrl,
+  note,
+  user,
+  transaction,
+  DDId = null,
+) {
   const tmpWLBH = await DBTables.WLBH.create(
     {
       GTId,

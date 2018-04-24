@@ -11,7 +11,10 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
     const { DD_DW_DPIds, GYSId } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+
+    // 检查目标GYSId是用户所属GYS或中转GYS
     await DBTables.GYS.checkIsZZGYSOrMe(GYSId, transaction);
+    // end 检查目标GYSId是用户所属GYS或中转GYS
 
     // 检查DD_DW_DPIds存在
     const tmpDD_DW_DPs = await DBTables.DD_DW_DP.findAll({
@@ -36,32 +39,38 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
     }
     // end 检查DD_DW_DPIds存在
 
-    // 检查DD_DW_DP是否属于同一个DD, 并且生产GYS是操作者所属供应商, 状态是'初始'
+    // 检查DD_DW_DP是否属于同一个DD
     const tmpDD_DW_DPDDIds = tmpDD_DW_DPs.map(item => item.DDId);
     const tmpUniqueDD_DW_DPDDIds = [...new Set(tmpDD_DW_DPDDIds)];
 
     if (tmpUniqueDD_DW_DPDDIds.length !== 1) {
       throw new Error('订单_灯位_灯片应该要存在并属于同一个订单!');
     }
+    // end 检查DD_DW_DP是否属于同一个DD
 
     const tmpDDId = tmpUniqueDD_DW_DPDDIds[0];
 
+    // 检查DD_DW_DP是否属于同一个生产GYS
     const tmpDD_DW_DPGYSIds = tmpDD_DW_DPs.map(item => item.DP.GYSId);
     const tmpUniqueDD_DW_DPGYSIds = [...new Set(tmpDD_DW_DPGYSIds)];
 
     if (tmpUniqueDD_DW_DPGYSIds.length !== 1) {
-      throw new Error('订单_灯位_灯片应该要存在并属于同一个发货供应商!');
+      throw new Error('订单_灯位_灯片应该要存在并属于同一个生产供应商!');
     }
+    // end 检查DD_DW_DP是否属于同一个生产GYS
 
     const tmpGYSId = tmpUniqueDD_DW_DPGYSIds[0];
 
+    // 检查生产GYS是当前用户所属GYS
     await user.checkGYSId(tmpGYSId, transaction);
+    // end 检查生产GYS是当前用户所属GYS
 
+    // 检查DD_DW_DP状态是'初始'
     const notCSDD_DW_DPs = tmpDD_DW_DPs.filter(item => item.status !== DBTables.DD_DW_DPStatus.CS);
     if (notCSDD_DW_DPs.length > 0) {
       throw new Error(`${notCSDD_DW_DPs}不在${DBTables.DD_DW_DPStatus.CS}状态, 不可指定发货供应商!`);
     }
-    // end 检查DD_DW_DP是否属于同一个DD, 并且生产GYS是操作者所属供应商, 状态是'初始'
+    // end 检查DD_DW_DP状态是'初始'
 
     // 检查订单状态是否是'已审批'
     const tmpDD = await DBTables.DD.findOne({

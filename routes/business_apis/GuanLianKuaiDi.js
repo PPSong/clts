@@ -8,70 +8,98 @@ export default class GuanLianKuaiDi extends BusinessApiBase {
     return [DBTables.JS.ZHY];
   }
 
+  static validateParamsFormat(req, res, next) {
+    const { EWMs, KDDCode } = req.body;
+
+    // 检查KDXEWM是否是KDX
+    const notKDXRecords = EWMs.filter(item => item.type !== DBTables.EWMType.KDX);
+    if (notKDXRecords.length > 0) {
+      throw new Error(`${notKDXRecords}不是快递箱二维码!`);
+    }
+    // end 检查KDXEWM是否是KDX
+  }
+
   static async mainProcess(req, res, next, user, transaction) {
-    // KDXEWM: [{ type: 'KDX', uuid: '123456'}]
-    const { KDXEWMs, KDDCode } = req.body;
-    const KDXEWMStrings = KDXEWMs.map(item => JSON.stringify(item));
+    // EWM: [{ type: 'KDX', uuid: '123456'}]
+    const { EWMs, KDDCode } = req.body;
+    const EWMStrings = EWMs.map(item => JSON.stringify(item));
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-    // 检查KDXEWMs都存在
-    const tmpKDXs = await ppUtils.checkEWMsExistanceAndGetRecords('KDX', KDXEWMs, transaction);
-    // end 检查KDXEWMs都存在
+    // 检查EWMs都存在
+    const tmpKDXs = await ppUtils.checkEWMsExistanceAndGetRecords(
+      'KDX',
+      EWMs,
+      transaction,
+    );
+    // end 检查EWMs都存在
 
-    // 检查KDXEWMs是属于ZX状态, 而且属于同一个GT
-    await ppUtils.checkRecordsStatus(tmpKDXs, DBTables.KDXStatus.ZX, '不能绑定快递', transaction);
-    await ppUtils.checkSameGTAndGetGTId(tmpKDXs);
-    // end 检查KDXEWMs是属于ZX状态, 而且属于同一个GT
+    // 检查EWMs是属于ZX状态
+    const notZXRecords = await tmpKDXs.filter(item => item.status !== DBTables.KDXStatus.ZX);
+    if (notZXRecords.length > 0) {
+      throw new Error(`${notZXRecords}不属于${DBTables.KDXStatus.ZX}, 不能关联快递!`);
+    }
+    // end 检查EWMs是属于ZX状态
+
+    // 检查EWMs属于同一个GT
+    const tmpGTs = tmpKDXs.map(item => item.GTId);
+    const tmpUniqueGTs = [...new Set(tmpGTs)];
+    if (tmpUniqueGTs.length !== 1) {
+      throw new Error(`${tmpGTs}不属于同一个柜台!`);
+    }
+    const tmpGTId = tmpUniqueGTs[0].id;
+    // end 检查EWMs属于同一个GT
+
+    // 检查KDD
+    let tmpKDD = await DBTables.KDD.findOne({
+      where: {
+        code: KDDCode,
+      },
+      transaction,
+    });
+
+    if (tmpKDD) {
+      // 如果存在则GTId要符合条件
+      if (tmpKDD.GTId !== tmpGTId) {
+        throw new Error(`${tmpKDD}不属于柜台id:${tmpGTId}!`);
+      }
+      // end 如果存在则GTId要符合条件
+    } else {
+      tmpKDD = await DBTables.KDD.create({
+        code: KDDCode,
+        GTId: tmpGTId,
+      });
+    }
+    // end 检查KDD
 
     // 不用检查ZHY是否有权限快递这个KDX, 谁都可以快递
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-    // 如需新建KDD则新建
-    const tmpKDDR = await DBTables.KDD.findOrCreate({
-      where: {
-        code: KDDCode,
-      },
-      defaults: {
-        code: KDDCode,
-      },
-      transaction,
-    });
-    // end 如需新建KDD则新建
-    const tmpKDD = tmpKDDR[0];
-
-    // KDXEWMs绑上KDDId, 转为状态FH
-    await DBTables.KDX.update(
-      {
-        status: DBTables.KDXStatus.FH,
-        KDDId: tmpKDD.id,
-      },
-      {
-        where: {
-          EWM: {
-            $in: KDXEWMStrings,
-          },
-        },
-        transaction,
-      },
-    );
-    // end KDXEWMs绑上KDDId, 转为状态FH
-
-    // 新建相关KDXCZ
-    const tmpKDXCZs = tmpKDXs.map(item => ({
-      KDXId: item.id,
+    // EWMs绑上KDDId, 转为状态FH, 新建相关KDXC
+    const ids = tmpKDXs.map(item => item.id);
+    await ppUtils.changeKDXsStatus({
+      ids,
       status: DBTables.KDXStatus.FH,
-      UserId: user.id,
-    }));
-    await DBTables.KDXCZ.bulkCreate(tmpKDXCZs, {
+      user,
       transaction,
+      KDDId: tmpKDD.id,
     });
-    // end 新建相关KDXCZ
+    // end EWMs绑上KDDId, 转为状态FH, 新建相关KDXCZ
 
     // 改变KDX中WL/DP的状态为FH(对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败), 并添加WYWLCZ/WYDPCZ
-    await ppUtils.changeWYWLsInKDXsStatus(KDXEWMs, DBTables.WYWLStatus.FH, user, transaction);
-    await ppUtils.changeWYDPsInKDXsStatus(KDXEWMs, DBTables.WYDPStatus.FH, user, transaction);
+    await ppUtils.changeWYWLsInKDXsStatus(
+      EWMs,
+      DBTables.WYWLStatus.FH,
+      user,
+      transaction,
+    );
+    await ppUtils.changeWYDPsInKDXsStatus(
+      EWMs,
+      DBTables.WYDPStatus.FH,
+      user,
+      transaction,
+    );
     // end 改变KDX中WL/DP的状态为FH(对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败), 并添加WYWLCZ/WYDPCZ
   }
 }
