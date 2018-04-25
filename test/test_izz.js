@@ -209,7 +209,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  // 格式说明
+  // 格式说明git 
   // describe('API名称', async () => {
   //   describe('成功', async () => {
   //   });
@@ -492,7 +492,7 @@ describe('SPRT测试', () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('KFJL编辑不属于自己管理的PP的GT图片', async () => {
-          const GTId = 5;
+          const GTId = 6;
           const imageUrl = 'imageUrl_T';
           const response = await post(
             'setGTImage',
@@ -566,7 +566,7 @@ describe('SPRT测试', () => {
   describe('/setGZGTs', async () => {
     describe('成功', async () => {
       it('KFJL为多个GT分配GZ', async () => {
-        const GZId = 15;
+        const GZId = 14;
         const GTIds = [1, 2];
         const response = await post(
           'setGZGTs',
@@ -583,7 +583,7 @@ describe('SPRT测试', () => {
         for (let i = 0; i < gt.length; i++) {
           GTIdList.push(gt[i].dataValues.id);
         }
-        for(let item of GTIds) {
+        for (let item of GTIds) {
           assert.include(GTIdList, item);
         };
       });
@@ -592,8 +592,8 @@ describe('SPRT测试', () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('KFJL为不属于自己管理的GT分配GZ', async () => {
-          const GZId = 42;
-          const GTIds = [10, 11];
+          const GZId = 15;
+          const GTIds = [6];
           const response = await post(
             'setGZGTs',
             {
@@ -607,8 +607,8 @@ describe('SPRT测试', () => {
         });
 
         it('KFJL为GT分配不属于自己管理的PP的GZ', async () => {
-          const GZId = 15;
-          const GTIds = [10, 11];
+          const GZId = 16;
+          const GTIds = [1, 2];
           const response = await post(
             'setGZGTs',
             {
@@ -726,7 +726,7 @@ describe('SPRT测试', () => {
       describe('没有权限', async () => {
         it('KFJL创建不属于自己管理的GT的DW', async () => {
           const name = 'DW_T';
-          const GTId = 5;
+          const GTId = 6;
 
           const response = await post(
             'DW',
@@ -831,9 +831,8 @@ describe('SPRT测试', () => {
   describe('/setDPDWs', async () => {
     describe('成功', async () => {
       it('KFJL将DP关联1个GT的多个DW', async () => {
-        const KFJL2Token = await getToken('KFJL2', '123456');
-        const DPId = 4;
-        const DWIds = [7, 8];
+        const DPId = 2;
+        const DWIds = [1, 2];
         const response = await post(
           'setDPDWs',
           {
@@ -844,54 +843,15 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of DWIds) {
+        for (let item of DWIds) {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
         };
       });
 
       it('KFJL将DP关联多个GT的DW', async () => {
-        await post(
-          'createPPJL',
-          {
-            PPId: 7,
-            username: 'PPJL7',
-            password: '123456',
-          },
-          adminToken,
-        );
-        const PPJL7Token = await getToken('PPJL7', '123456');
-        await post(
-          'createKFJL',
-          {
-            PPId: 7,
-            username: 'KFJL7',
-            password: '123456',
-          },
-          PPJL7Token,
-        );
-        const KFJL7Token = await getToken('KFJL7', '123456');
-        const DPId = 14;
-        const DWIds = [18, 19];
-        const response = await post(
-          'setDPDWs',
-          {
-            id: DPId,
-            DWIds,
-          },
-          KFJL7Token,
-        );
-        assert.equal(response.data.code, 1);
-
-        for(let item of DWIds) {
-          const dw = await DW.findOne({ where: { id: item } });
-          assert.equal(dw.dataValues.DPId, DPId);
-        };
-      });
-
-      it('KFJL将GT的DW由DP1修改成DP2', async () => {
-        const DPId = 2;
-        const DWIds = [1];
+        const DPId = 4;
+        const DWIds = [6, 7];
         const response = await post(
           'setDPDWs',
           {
@@ -902,7 +862,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of DWIds) {
+        for (let item of DWIds) {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
         };
@@ -913,7 +873,7 @@ describe('SPRT测试', () => {
       });
       describe('没有权限', async () => {
         it('KFJL配置不属于自己管理的PP的DP', async () => {
-          const DPId = 4;
+          const DPId = 5;
           const DWIds = [1];
           const response = await post(
             'setDPDWs',
@@ -929,7 +889,7 @@ describe('SPRT测试', () => {
 
         it('KFJL配置不属于自己管理的PP的DW', async () => {
           const DPId = 1;
-          const DWIds = [7];
+          const DWIds = [8];
           const response = await post(
             'setDPDWs',
             {
@@ -972,7 +932,7 @@ describe('SPRT测试', () => {
         assert.notEqual(fg, null);
 
         let fg_testList = [];
-        for(let item of FGPayload.Testers) {
+        for (let item of FGPayload.Testers) {
           const tester = await Tester.findOne({ where: { name: item } });
           assert.notEqual(tester, null);
 
@@ -982,7 +942,7 @@ describe('SPRT测试', () => {
           });
         };
 
-        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id} });
+        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id } });
         let fg_testDBList = [];
         fg_testDBList = r.map(item => ({
           FGId: item.dataValues.FGId,
@@ -1012,7 +972,7 @@ describe('SPRT测试', () => {
         assert.notEqual(fg, null);
 
         let fg_testList = [];
-        for(let item of FGPayload.Testers) {
+        for (let item of FGPayload.Testers) {
           const tester = await Tester.findOne({ where: { name: item } });
           assert.notEqual(tester, null);
 
@@ -1022,7 +982,7 @@ describe('SPRT测试', () => {
           });
         };
 
-        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id} });
+        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id } });
         let fg_testDBList = [];
         fg_testDBList = r.map(item => ({
           FGId: item.dataValues.FGId,
@@ -1054,7 +1014,7 @@ describe('SPRT测试', () => {
         assert.notEqual(fg, null);
 
         let fg_testList = [];
-        for(let item of FGPayload.Testers) {
+        for (let item of FGPayload.Testers) {
           const tester = await Tester.findOne({ where: { name: item } });
           assert.notEqual(tester, null);
 
@@ -1064,7 +1024,7 @@ describe('SPRT测试', () => {
           });
         };
 
-        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id} });
+        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id } });
         let fg_testDBList = [];
         fg_testDBList = r.map(item => ({
           FGId: item.dataValues.FGId,
@@ -1078,7 +1038,7 @@ describe('SPRT测试', () => {
       });
       describe('没有权限', async () => {
         it('KFJL创建不属于自己管理的PP的FGTester', async () => {
-          const PPId = 2;
+          const PPId = 3;
           const FGPayload = {
             name: 'FG_T',
             note: 'note_T',
@@ -1109,7 +1069,7 @@ describe('SPRT测试', () => {
       it('KFJL创建不包含WL和FGTester的EJZH', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 5;
+        const WLId = 3;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [];
@@ -1143,16 +1103,16 @@ describe('SPRT测试', () => {
       it('KFJL创建仅包含FGTester的EJZH', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 5;
+        const WLId = 3;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [
           {
-            id: 2,
+            id: 1,
             number: 2,
           },
           {
-            id: 3,
+            id: 2,
             number: 2,
           },
         ];
@@ -1186,7 +1146,7 @@ describe('SPRT测试', () => {
       it('KFJL创建仅包含SJWL的EJZH', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 5;
+        const WLId = 3;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [];
@@ -1225,16 +1185,16 @@ describe('SPRT测试', () => {
       it('KFJL创建包含FGTester和SJWL的EJZH-1', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 5;
+        const WLId = 3;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [
           {
-            id: 2,
+            id: 1,
             number: 2,
           },
           {
-            id: 3,
+            id: 2,
             number: 2,
           },
         ];
@@ -1273,7 +1233,7 @@ describe('SPRT测试', () => {
       it('KFJL创建包含FGTester和SJWL的EJZH-2', async () => {
         const PPId = 1;
         const name = 'EJZH_T';
-        const WLId = 5;
+        const WLId = 3;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
         const FGTesters = [
@@ -1284,11 +1244,11 @@ describe('SPRT测试', () => {
         ];
         const SJWLs = [
           {
-            id: 2,
+            id: 1,
             number: 2,
           },
           {
-            id: 3,
+            id: 2,
             number: 2,
           },
         ];
@@ -1349,13 +1309,13 @@ describe('SPRT测试', () => {
         it('KFJL创建EJZH，关联EJWL', async () => {
           const PPId = 1;
           const name = 'EJZH_T';
-          const WLId = 5;
+          const WLId = 3;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
           const FGTesters = [];
           const SJWLs = [
             {
-              id: 5,
+              id: 3,
               number: 2,
             },
           ];
@@ -1380,7 +1340,7 @@ describe('SPRT测试', () => {
         it('KFJL创建不属于自己管理的PP的EJZH', async () => {
           const PPId = 2;
           const name = 'EJZH_T';
-          const WLId = 18;
+          const WLId = 8;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
           const FGTesters = [];
@@ -1406,7 +1366,7 @@ describe('SPRT测试', () => {
         it('KFJL创建EJZH中EJWL不属于自己管理的PP', async () => {
           const PPId = 1;
           const name = 'EJZH_T';
-          const WLId = 18;
+          const WLId = 8;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
           const FGTesters = [];
@@ -1438,8 +1398,8 @@ describe('SPRT测试', () => {
   describe('/editEJZH', async () => {
     describe('成功', async () => {
       it('KFJL编辑EJZH-将FGTester关联关系清空', async () => {
-        const EJZHId = 1;
-        const WLId = 5;
+        const EJZHId = 2;
+        const WLId = 3;
         const imageUrl = 'imageUrlEJZH1';
         const XGTs = ['EJZH1Url1'];
         const FGTesters = [];
@@ -1467,8 +1427,8 @@ describe('SPRT测试', () => {
       });
 
       it('KFJL编辑EJZH-修改EJWL&imageUrl&XGTs', async () => {
-        const EJZHId = 1;
-        const WLId = 6;
+        const EJZHId = 2;
+        const WLId = 4;
         const imageUrl = 'imageUrlEJZH_T1';
         const XGTs = ['EJZH1Url_T1'];
         const FGTesters = [
@@ -1508,21 +1468,17 @@ describe('SPRT测试', () => {
       });
 
       it('KFJL编辑EJZH-新增一组FGTester&SJWL', async () => {
-        const EJZHId = 2;
-        const WLId = 6;
+        const EJZHId = 3;
+        const WLId = 3;
         const imageUrl = 'imageUrlEJZH1';
         const XGTs = ['EJZH1Url1'];
         const FGTesters = [
           {
-            id: 2,
-            number: 2,
-          },
-          {
-            id: 3,
-            number: 2,
-          },
-          {
             id: 1,
+            number: 2,
+          },
+          {
+            id: 2,
             number: 2,
           },
         ];
@@ -1553,33 +1509,33 @@ describe('SPRT测试', () => {
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
         const FGTesterIdList = [];
-        for(let item of ejzh_fg_tester) {
+        for (let item of ejzh_fg_tester) {
           FGTesterIdList.push(item.dataValues.FGTesterId);
         };
         assert.equal(FGTesterIdList.length, 3);
-        for(let item of FGTesters) {
+        for (let item of FGTesters) {
           assert.include(FGTesterIdList, item.id);
         };
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
         const SJWLIdList = [];
-        for(let item of ejzh_sjwl) {
+        for (let item of ejzh_sjwl) {
           SJWLIdList.push(item.dataValues.WLId);
         };
         assert.equal(SJWLIdList.length, 2);
-        for(let item of SJWLs) {
+        for (let item of SJWLs) {
           assert.include(SJWLIdList, item.id);
         };
       });
 
       it('KFJL编辑EJZH-将原FGTester&SJWL修改成新的', async () => {
-        const EJZHId = 2;
-        const WLId = 6;
+        const EJZHId = 3;
+        const WLId = 2;
         const imageUrl = 'imageUrlEJZH_T1';
         const XGTs = ['EJZH1Url_T1'];
         const FGTesters = [
           {
-            id: 1,
+            id: 2,
             number: 2,
           },
         ];
@@ -1606,21 +1562,21 @@ describe('SPRT测试', () => {
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
         const FGTesterIdList = [];
-        for(let item of ejzh_fg_tester) {
+        for (let item of ejzh_fg_tester) {
           FGTesterIdList.push(item.dataValues.FGTesterId);
         };
         assert.equal(FGTesterIdList.length, 1);
-        for(let item of FGTesters) {
+        for (let item of FGTesters) {
           assert.include(FGTesterIdList, item.id);
         };
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
         const SJWLIdList = [];
-        for(let item of ejzh_sjwl) {
+        for (let item of ejzh_sjwl) {
           SJWLIdList.push(item.dataValues.WLId);
         };
         assert.equal(SJWLIdList.length, 1);
-        for(let item of SJWLs) {
+        for (let item of SJWLs) {
           assert.include(SJWLIdList, item.id);
         };
       });
@@ -1631,8 +1587,8 @@ describe('SPRT测试', () => {
       });
       describe('没有权限', async () => {
         it('KFJL编辑不属于自己管理的EJZH', async () => {
-          const EJZHId = 7;
-          const WLId = 5;
+          const EJZHId = 5;
+          const WLId = 3;
           const imageUrl = 'imageUrlEJZH1';
           const XGTs = ['EJZH1Url1'];
           const FGTesters = [];
@@ -1656,7 +1612,7 @@ describe('SPRT测试', () => {
 
         it('KFJL编辑EJZH中的EJWL不属于自己管理的PP', async () => {
           const EJZHId = 1;
-          const WLId = 18;
+          const WLId = 8;
           const imageUrl = 'imageUrlEJZH1';
           const XGTs = ['EJZH1Url1'];
           const FGTesters = [];
@@ -1689,7 +1645,7 @@ describe('SPRT测试', () => {
       it('KFJL创建YJZH-不包含EJZH', async () => {
         const PPId = 1;
         const name = 'YJZH_T';
-        const WLId = 11;
+        const WLId = 5;
         const imageUrl = 'imageUrlYJZH';
         const XGTs = ['YJZH1Url'];
         const EJZHs = [];
@@ -1718,7 +1674,7 @@ describe('SPRT测试', () => {
       it('KFJL创建YJZH-包含多组EJZH', async () => {
         const PPId = 1;
         const name = 'YJZH_T';
-        const WLId = 11;
+        const WLId = 5;
         const imageUrl = 'imageUrlYJZH';
         const XGTs = ['YJZH1Url'];
         const EJZHs = [
@@ -1789,8 +1745,8 @@ describe('SPRT测试', () => {
   describe('/editYJZH', async () => {
     describe('成功', async () => {
       it('KFJL编辑YJZH-清空EJZH关联关系', async () => {
-        const YJZHId = 1;
-        const WLId = 11;
+        const YJZHId = 2;
+        const WLId = 5;
         const imageUrl = 'imageUrlYJZH1';
         const XGTs = ['YJZH1Url1'];
         const EJZHs = [];
@@ -1814,7 +1770,7 @@ describe('SPRT测试', () => {
 
       it('KFJL编辑YJZH-修改YJWL&imageUrl&XGTs', async () => {
         const YJZHId = 1;
-        const WLId = 12;
+        const WLId = 6;
         const imageUrl = 'imageUrlYJZH_T1';
         const XGTs = ['YJZH1Url_T1'];
         const EJZHs = [
@@ -1850,18 +1806,10 @@ describe('SPRT测试', () => {
 
       it('KFJL编辑YJZH-新增EJZH', async () => {
         const YJZHId = 1;
-        const WLId = 12;
+        const WLId = 5;
         const imageUrl = 'imageUrlYJZH2';
         const XGTs = ['YJZH1Url2'];
         const EJZHs = [
-          {
-            id: 2,
-            number: 2,
-          },
-          {
-            id: 3,
-            number: 2,
-          },
           {
             id: 1,
             number: 2,
@@ -1884,23 +1832,23 @@ describe('SPRT测试', () => {
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId } });
 
         const EJZHIdList = [];
-        for(let item of yjzh_ejzh) {
+        for (let item of yjzh_ejzh) {
           EJZHIdList.push(item.dataValues.EJZHId);
         };
         assert.equal(EJZHIdList.length, 3);
-        for(let item of EJZHs) {
+        for (let item of EJZHs) {
           assert.include(EJZHIdList, item.id);
         };
       });
 
       it('KFJL编辑YJZH-替换原EJZH', async () => {
-        const YJZHId = 1;
-        const WLId = 12;
+        const YJZHId = 2;
+        const WLId = 5;
         const imageUrl = 'imageUrlYJZH_T1';
         const XGTs = ['YJZH1Url_T1'];
         const EJZHs = [
           {
-            id: 1,
+            id: 2,
             number: 2,
           },
         ];
@@ -1921,11 +1869,11 @@ describe('SPRT测试', () => {
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId } });
 
         const EJZHIdList = [];
-        for(let item of yjzh_ejzh) {
+        for (let item of yjzh_ejzh) {
           EJZHIdList.push(item.dataValues.EJZHId);
         };
         assert.equal(EJZHIdList.length, 1);
-        for(let item of EJZHs) {
+        for (let item of EJZHs) {
           assert.include(EJZHIdList, item.id);
         };
       });
@@ -1966,11 +1914,11 @@ describe('SPRT测试', () => {
 
         const gt_yjzh = await GT_YJZH.findAll({ where: { YJZHId } });
         const GTIdList = [];
-        for(let item of gt_yjzh) {
+        for (let item of gt_yjzh) {
           GTIdList.push(item.dataValues.GTId);
         };
         assert.equal(GTIdList.length, 2);
-        for(let item of GTs) {
+        for (let item of GTs) {
           assert.include(GTIdList, item.id);
         };
       });
@@ -1982,11 +1930,11 @@ describe('SPRT测试', () => {
           const YJZHId = 1;
           const GTs = [
             {
-              id: 5,
+              id: 6,
               number: 2,
             },
             {
-              id: 6,
+              id: 7,
               number: 2,
             },
           ];
@@ -1999,14 +1947,12 @@ describe('SPRT测试', () => {
             },
             KFJLToken,
           );
-
-          console.log('pairCoding_izz_test');
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
         });
 
         it('KFJL配置不属于自己管理的YJZH', async () => {
-          const YJZHId = 7;
+          const YJZHId = 4;
           const GTs = [
             {
               id: 1,
@@ -2063,24 +2009,9 @@ describe('SPRT测试', () => {
           number: item.dataValues.number,
         }));
         const tureddgtwlList = [
-          { GTId: 1, WLId: 11, number: 2 },
           { GTId: 1, WLId: 5, number: 4 },
-          { GTId: 2, WLId: 12, number: 2 },
-          { GTId: 2, WLId: 13, number: 2 },
-          { GTId: 2, WLId: 5, number: 4 },
-          { GTId: 2, WLId: 6, number: 4 },
-          { GTId: 2, WLId: 7, number: 4 },
-          { GTId: 2, WLId: 1, number: 8 },
-          { GTId: 2, WLId: 2, number: 8 },
-          { GTId: 2, WLId: 3, number: 8 },
-          { GTId: 3, WLId: 11, number: 2 },
-          { GTId: 3, WLId: 5, number: 4 },
-          { GTId: 4, WLId: 14, number: 2 },
-          { GTId: 4, WLId: 15, number: 2 },
-          { GTId: 4, WLId: 16, number: 2 },
-          { GTId: 4, WLId: 8, number: 4 },
-          { GTId: 4, WLId: 10, number: 4 },
-          { GTId: 4, WLId: 1, number: 8 },
+          { GTId: 1, WLId: 3, number: 8 },
+          { GTId: 2, WLId: 5, number: 2 },
         ];
         assert.equal(isArrayEqual(ddgtwlList, tureddgtwlList), true);
 
@@ -2092,8 +2023,8 @@ describe('SPRT测试', () => {
         }));
         const truedddwdpList = [
           { DWId: 1, DPId: 1 },
-          { DWId: 2, DPId: 2 },
-          { DWId: 3, DPId: 2 },
+          { DWId: 2, DPId: 1 },
+          { DWId: 3, DPId: 4 },
           { DWId: 4, DPId: 1 },
           { DWId: 5, DPId: 2 },
           { DWId: 6, DPId: 3 },
@@ -2105,7 +2036,7 @@ describe('SPRT测试', () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('KFJL创建不属于自己管理的PP的DD', async () => {
-          const PPId = 4;
+          const PPId = 7;
           const name = 'DD_PP1';
 
           const response = await post(
@@ -2165,15 +2096,15 @@ describe('SPRT测试', () => {
       describe.skip('没有权限', async () => { });
       describe('操作状态不正确', async () => {
         it('KFJL重新生成已经审批通过的DD', async () => {
-          const KFJL4Token = await getToken('KFJL4', '123456');
-          const DDId = 3;
+          const KFJL3Token = await getToken('KFJL3', '123456');
+          const DDId = 2;
 
           const response = await post(
             'reCreateDD',
             {
               DDId,
             },
-            KFJL4Token,
+            KFJL3Token,
           );
           assert.equal(response.data.code, -1);
         });
@@ -2217,7 +2148,7 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('PPJL配置DD_GT_WL的AZGS', async () => {
         const PPJL2Token = await getToken('PPJL2', '123456');
-        const AZGSId = 5;
+        const AZGSId = 1;
         const DD_GT_WLIds = [1, 2, 3];
 
         const response = await post(
@@ -2230,7 +2161,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of DD_GT_WLIds) {
+        for (let item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.AZGSId, AZGSId);
         };
@@ -2240,7 +2171,7 @@ describe('SPRT测试', () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('PPJL为不属于自己管理的DD配置AZGS', async () => {
-          const AZGSId = 5;
+          const AZGSId = 1;
           const DD_GT_WLIds = [1, 2, 3];
 
           const response = await post(
@@ -2258,8 +2189,8 @@ describe('SPRT测试', () => {
       describe('操作状态不正确', async () => {
         it('PPJL为已经审批通过的DD的WL配置AZGS', async () => {
           const PPJL4Token = await getToken('PPJL4', '123456');
-          const AZGSId = 5;
-          const DD_GT_WLIds = [7, 8, 9];
+          const AZGSId = 2;
+          const DD_GT_WLIds = [4, 5];
 
           const response = await post(
             'setDDGTWLs0AZGS',
@@ -2282,8 +2213,8 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('PPJL配置DD_DW_DP的AZGS', async () => {
         const PPJL2Token = await getToken('PPJL2', '123456');
-        const AZGSId = 5;
-        const DD_DW_DPIds = [1, 2];
+        const AZGSId = 1;
+        const DD_DW_DPIds = [1, 2, 3];
 
         const response = await post(
           'setDDDWDPs0AZGS',
@@ -2295,7 +2226,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of DD_DW_DPIds) {
+        for (let item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.AZGSId, AZGSId);
         };
@@ -2305,8 +2236,8 @@ describe('SPRT测试', () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('PPJL为不属于自己管理的DD配置AZGS', async () => {
-          const AZGSId = 5;
-          const DD_DW_DPIds = [1, 2];
+          const AZGSId = 1;
+          const DD_DW_DPIds = [1, 2, 3];
 
           const response = await post(
             'setDDDWDPs0AZGS',
@@ -2323,8 +2254,8 @@ describe('SPRT测试', () => {
       describe('操作状态不正确', async () => {
         it('PPJL为已经审批通过的DD配置AZGS', async () => {
           const PPJL4Token = await getToken('PPJL4', '123456');
-          const AZGSId = 5;
-          const DD_DW_DPIds = [5, 6];
+          const AZGSId = 2;
+          const DD_DW_DPIds = [4, 5];
 
           const response = await post(
             'setDDDWDPs0AZGS',
@@ -2359,7 +2290,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         const dd = await DD.findOne({ where: { id } });
-        assert.equal(dd.dataValues.status, DDStatus.YSP);
+        assert.equal(dd.dataValues.status, DDStatus.CS);
       });
     });
     describe('失败', async () => {
@@ -2381,15 +2312,15 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('PPJL审批审批通过的DD', async () => {
-          const PPJL4Token = await getToken('PPJL4', '123456');
-          const id = 3;
+          const PPJL3Token = await getToken('PPJL3', '123456');
+          const id = 2;
 
           const response = await post(
             'approveDD',
             {
               id,
             },
-            PPJL4Token,
+            PPJL3Token,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '不能被审批');
@@ -2403,9 +2334,8 @@ describe('SPRT测试', () => {
   describe('/setDDGTWLs0GYS', async () => {
     describe('成功', async () => {
       it('GYSGLY设置DD_GT_WL的发货GYS', async () => {
-        let GYSGLY6Token = await getToken('GYSGLY6', '123456');
-        const DD_GT_WLIds = [7, 8];
-        const GYSId = 5;
+        const DD_GT_WLIds = [4, 5];
+        const GYSId = 1;
 
         const response = await post(
           'setDDGTWLs0GYS',
@@ -2413,11 +2343,11 @@ describe('SPRT测试', () => {
             DD_GT_WLIds,
             GYSId,
           },
-          GYSGLY6Token,
+          GYSGLYToken,
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of DD_GT_WLIds) {
+        for (let item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.GYSId, GYSId);
         };
@@ -2427,9 +2357,8 @@ describe('SPRT测试', () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('GYSGLY设置不属于自己管理的DD_GT_WL的发货GYS', async () => {
-          let GYSGLY6Token = await getToken('GYSGLY6', '123456');
-          const DD_GT_WLIds = [1, 2];
-          const GYSId = 5;
+          const DD_GT_WLIds = [6];
+          const GYSId = 1;
 
           const response = await post(
             'setDDGTWLs0GYS',
@@ -2437,16 +2366,15 @@ describe('SPRT测试', () => {
               DD_GT_WLIds,
               GYSId,
             },
-            GYSGLY6Token,
+            GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
         });
       });
       describe('操作状态不正确', async () => {
         it('GYSGLY设置还未审批通过的DD的DD_GT_WL的发货GYS', async () => {
-          let GYSGLY6Token = await getToken('GYSGLY6', '123456');
-          const DD_GT_WLIds = [4, 5];
-          const GYSId = 5;
+          const DD_GT_WLIds = [1, 2];
+          const GYSId = 1;
 
           const response = await post(
             'setDDGTWLs0GYS',
@@ -2457,6 +2385,7 @@ describe('SPRT测试', () => {
             GYSGLY6Token,
           );
           assert.equal(response.data.code, -1);
+          console.log('GYSGLY设置还未审批通过的DD的DD_GT_WL的发货GYS---->', response.data.msg);
         });
       });
       describes.skip('唯一性校验', async () => { });
@@ -2467,9 +2396,8 @@ describe('SPRT测试', () => {
   describe('/setDDDWDPs0GYS', async () => {
     describe('成功', async () => {
       it('GYSGLY设置DD_DW_DP的发货GYS', async () => {
-        let GYSGLY6Token = await getToken('GYSGLY6', '123456');
-        const DD_DW_DPIds = [5, 6];
-        const GYSId = 5;
+        const DD_DW_DPIds = [4, 5];
+        const GYSId = 1;
 
         const response = await post(
           'setDDDWDPs0GYS',
@@ -2477,11 +2405,11 @@ describe('SPRT测试', () => {
             DD_DW_DPIds,
             GYSId,
           },
-          GYSGLY6Token,
+          GYSGLYToken,
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of DD_DW_DPIds) {
+        for (let item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.GYSId, GYSId);
         };
@@ -2491,9 +2419,8 @@ describe('SPRT测试', () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('GYSGLY设置不属于自己管理的DD_DW_DP的发货GYS', async () => {
-          let GYSGLY6Token = await getToken('GYSGLY6', '123456');
-          const DD_DW_DPIds = [1, 2];
-          const GYSId = 5;
+          const DD_DW_DPIds = [6];
+          const GYSId = 1;
 
           const response = await post(
             'setDDDWDPs0GYS',
@@ -2501,7 +2428,7 @@ describe('SPRT测试', () => {
               DD_DW_DPIds,
               GYSId,
             },
-            GYSGLY6Token,
+            GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
@@ -2510,8 +2437,8 @@ describe('SPRT测试', () => {
       describe('操作状态不正确', async () => {
         it('GYSGLY设置还未审批通过的DD的DD_DW_DP的发货GYS', async () => {
           let GYSGLY6Token = await getToken('GYSGLY6', '123456');
-          const DD_DW_DPIds = [3, 4];
-          const GYSId = 5;
+          const DD_DW_DPIds = [1, 2];
+          const GYSId = 1;
 
           const response = await post(
             'setDDDWDPs0GYS',
@@ -2522,6 +2449,7 @@ describe('SPRT测试', () => {
             GYSGLY6Token,
           );
           assert.equal(response.data.code, -1);
+          console.log('GYSGLY设置还未审批通过的DD的DD_DW_DP的发货GYS---->', response.data.msg);
         });
       });
       describe('唯一性校验', async () => { });
@@ -2532,9 +2460,8 @@ describe('SPRT测试', () => {
   describe('/setDDGTWLs0AZG', async () => {
     describe('成功', async () => {
       it('AZGSGLY设置DD_GT_WL的AZG', async () => {
-        let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
-        const DD_GT_WLIds = [7, 8];
-        const AZGUserId = 39;
+        const DD_GT_WLIds = [4, 5];
+        const AZGUserId = 36;
 
         const response = await post(
           'setDDGTWLs0AZG',
@@ -2542,11 +2469,11 @@ describe('SPRT测试', () => {
             DD_GT_WLIds,
             AZGUserId,
           },
-          AZGSGLY5Token,
+          AZGSGLYToken,
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of DD_GT_WLIds) {
+        for (let item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.AZGUserId, AZGUserId);
         };
@@ -2556,8 +2483,22 @@ describe('SPRT测试', () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的DD_GT_WL的AZG', async () => {
-          let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
-          const DD_GT_WLIds = [9];
+          const DD_GT_WLIds = [6];
+          const AZGUserId = 36;
+
+          const response = await post(
+            'setDDGTWLs0AZG',
+            {
+              DD_GT_WLIds,
+              AZGUserId,
+            },
+            AZGSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+        it('AZGSGLY为DD_GT_WL设置不属于自己管理的AZG', async () => {
+          const DD_GT_WLIds = [4, 5];
           const AZGUserId = 38;
 
           const response = await post(
@@ -2566,23 +2507,7 @@ describe('SPRT测试', () => {
               DD_GT_WLIds,
               AZGUserId,
             },
-            AZGSGLY5Token,
-          );
-          assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '没有权限');
-        });
-        it('AZGSGLY为DD_GT_WL设置不属于自己管理的AZG', async () => {
-          let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
-          const DD_GT_WLIds = [7, 8];
-          const AZGUserId = 38;
-  
-          const response = await post(
-            'setDDGTWLs0AZG',
-            {
-              DD_GT_WLIds,
-              AZGUserId,
-            },
-            AZGSGLY5Token,
+            AZGSGLYToken,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
@@ -2597,9 +2522,8 @@ describe('SPRT测试', () => {
   describe('/setDDDWDPs0AZG', async () => {
     describe('成功', async () => {
       it('AZGSGLY设置DD_DW_DP的AZG', async () => {
-        let AZGSGLY5Token = await getToken('AZGSGLY5', '123456');
-        const DD_DW_DPIds = [5, 6];
-        const AZGUserId = 39;
+        const DD_DW_DPIds = [4, 5];
+        const AZGUserId = 36;
 
         const response = await post(
           'setDDDWDPs0AZG',
@@ -2611,7 +2535,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of DD_DW_DPIds) {
+        for (let item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.AZGUserId, AZGUserId);
         };
@@ -2621,11 +2545,35 @@ describe('SPRT测试', () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的DD_DW_DP的AZG', async () => {
+          const DD_DW_DPIds = [6];
+          const AZGUserId = 36;
 
+          const response = await post(
+            'setDDDWDPs0AZG',
+            {
+              DD_DW_DPIds,
+              AZGUserId,
+            },
+            AZGSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
 
         it('AZGSGLY为DD_DW_DP设置不属于自己管理的AZG', async () => {
+          const DD_DW_DPIds = [4, 5];
+          const AZGUserId = 38;
 
+          const response = await post(
+            'setDDDWDPs0AZG',
+            {
+              DD_DW_DPIds,
+              AZGUserId,
+            },
+            AZGSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe('操作状态不正确', async () => {
@@ -2633,7 +2581,7 @@ describe('SPRT测试', () => {
 
         });
       });
-      describe('唯一性校验', async () => {});
+      describe('唯一性校验', async () => { });
     });
   });
 
@@ -2664,7 +2612,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of EWMs) {
+        for (let item of EWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
 
@@ -2702,12 +2650,12 @@ describe('SPRT测试', () => {
     // });
   });
 
-  // 装箱 [ZHY]
+  // 装箱 [ZHY] --->fanfan
   describe('/zhuangXiang', async () => {
     describe('成功', async () => {
       it('ZHY装箱WL', async () => {
         let ZHY4Token = await getToken('ZHY4', '123456');
-        const DDId = 3;
+        const DDId = 3; 3
         const GTId = 7;
         const HWEWMs = [
           {
@@ -2744,7 +2692,7 @@ describe('SPRT测试', () => {
         const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWM) } });
         assert.notEqual(kdx, null);
 
-        for(let item of HWEWMs) {
+        for (let item of HWEWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
@@ -3002,7 +2950,7 @@ describe('SPRT测试', () => {
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        for(let item of wywlList) {
+        for (let item of wywlList) {
           assert.equal(item.status, '装箱');
         };
 
@@ -3011,7 +2959,7 @@ describe('SPRT测试', () => {
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        for(let item of wydpList) {
+        for (let item of wydpList) {
           assert.equal(item.status, '装箱');
         };
         //解除关联后，快递箱状态更改为装箱状态；
@@ -3070,7 +3018,7 @@ describe('SPRT测试', () => {
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        for(let item of wywlList) {
+        for (let item of wywlList) {
           assert.equal(item.status, '收箱');
         };
         //收箱后，快递箱及箱内货物状态更改为收箱状态；
@@ -3132,7 +3080,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of HWEWMs) {
+        for (let item of HWEWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.equal(wywl.dataValues.status, '收货');
         };
@@ -3236,7 +3184,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of HWPayloads) {
+        for (let item of HWPayloads) {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, '反馈');
         };
@@ -3309,7 +3257,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for(let item of HWPayloads) {
+        for (let item of HWPayloads) {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, '反馈图');
         };
