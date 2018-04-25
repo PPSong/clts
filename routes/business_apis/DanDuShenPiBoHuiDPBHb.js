@@ -2,7 +2,7 @@ import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 import * as ppUtils from './ppUtils';
 
-export default class DanDuShengPiBoHuiDPBHb extends BusinessApiBase {
+export default class DanDuShenPiBoHuiDPBHb extends BusinessApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.PPJL];
   }

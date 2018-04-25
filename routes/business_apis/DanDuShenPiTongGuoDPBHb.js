@@ -2,17 +2,17 @@ import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 import * as ppUtils from './ppUtils';
 
-export default class DanDuShengPiTongGuoDPBHa extends BusinessApiBase {
+export default class DanDuShenPiTongGuoDPBHb extends BusinessApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.KFJL];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { id, KFJLNote } = req.body;
+    const { id, PPJLNote } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-    // 检查DPBH的id存在, 且状态属于CS, 且所属PPId和操作者一致
+    // 检查DPBH的id存在, 且状态属于KFJLSPTG, 且所属PPId和操作者一致
     const tmpDPBH = await DBTables.DPBH.findOne({
       include: [
         {
@@ -32,13 +32,13 @@ export default class DanDuShengPiTongGuoDPBHa extends BusinessApiBase {
 
     await user.checkPPId(tmpDPBH.GT.PPId, transaction);
 
-    if (tmpDPBH.status !== DBTables.DPBHStatus.CS) {
-      throw new Error(`灯片补货记录:${tmpDPBH}状态不属于${DBTables.DPBHStatus.CS}!`);
+    if (tmpDPBH.status !== DBTables.DPBHStatus.KFJLSPTG) {
+      throw new Error(`灯片补货记录:${tmpDPBH}状态不属于${DBTables.DPBHStatus.KFJLSPTG}!`);
     }
-    // end 检查DPBH的id存在, 且状态属于CS, 且所属PPId和操作者一致
+    // end 检查DPBH的id存在, 且状态属于KFJLSPTG, 且所属PPId和操作者一致
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-    ppUtils.changeDPBHsStatus([id], DBTables.DPBHStatus.KFJLSPTG, user, transaction, KFJLNote);
+    ppUtils.changeDPBHsStatus([id], DBTables.DPBHStatus.TG, user, transaction, PPJLNote);
   }
 }

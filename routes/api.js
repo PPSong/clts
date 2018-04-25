@@ -7,40 +7,7 @@ import _ from 'lodash';
 import * as tables from '../tables';
 import * as businessApis from './business_apis';
 /* eslint-enable */
-import {
-  sequelize,
-  JS,
-  EWMType,
-  DDStatus,
-  User,
-  PP,
-  GT,
-  GYS,
-  AZGS,
-  DP,
-  DW,
-  WL,
-  FG,
-  Tester,
-  FG_Tester,
-  EJZH,
-  EJZHXGT,
-  YJZH,
-  YJZHXGT,
-  DD,
-  DD_GT_WL,
-  DD_DW_DP,
-  WYWL,
-  WYDP,
-  WYWLStatus,
-  WYDPStatus,
-  WYWLCZ,
-  WYDPCZ,
-  KDX,
-  KDXStatus,
-  KDXCZ,
-  KDD,
-} from '../models/Model';
+import { sequelize } from '../models/Model';
 
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
@@ -68,7 +35,10 @@ router.post('/createAZGSWithGLY', businessApis.CreateAZGSWithGLY.getApi());
 // 配置DP到DWs [KFJL]
 router.post('/setDPDWs', businessApis.SetDPDWs.getApi());
 // 创建FG, Tester, FGTester [KFJL]
-router.post('/createFGAndTesterAndFGTester', businessApis.CreateFGAndTesterAndFGTester.getApi());
+router.post(
+  '/createFGAndTesterAndFGTester',
+  businessApis.CreateFGAndTesterAndFGTester.getApi(),
+);
 // 创建EJZH [KFJL]
 router.post('/createEJZH', businessApis.CreateEJZH.getApi());
 // 编辑EJZH [KFJL]
@@ -112,13 +82,25 @@ router.post('/piLiangXiaoKuWL', businessApis.PiLiangXiaoKuWL.getApi());
 // 批量消库DP [ZHY]
 router.post('/piLiangXiaoKuDP', businessApis.PiLiangXiaoKuDP.getApi());
 // 订单批量装箱DDWL [ZHY]
-router.post('/piLiangZhuangXiangDDWL', businessApis.PiLiangZhuangXiangDDWL.getApi());
+router.post(
+  '/piLiangZhuangXiangDDWL',
+  businessApis.PiLiangZhuangXiangDDWL.getApi(),
+);
 // 订单批量装箱DDDP [ZHY]
-router.post('/piLiangZhuangXiangDDDP', businessApis.PiLiangZhuangXiangDDDP.getApi());
+router.post(
+  '/piLiangZhuangXiangDDDP',
+  businessApis.PiLiangZhuangXiangDDDP.getApi(),
+);
 // 订单批量装箱BHWL [ZHY]
-router.post('/piLiangZhuangXiangBuHuoWL', businessApis.PiLiangZhuangXiangBuHuoWL.getApi());
+router.post(
+  '/piLiangZhuangXiangBuHuoWL',
+  businessApis.PiLiangZhuangXiangBuHuoWL.getApi(),
+);
 // 订单批量装箱BHDP [ZHY]
-router.post('/piLiangZhuangXiangBuHuoDP', businessApis.PiLiangZhuangXiangBuHuoDP.getApi());
+router.post(
+  '/piLiangZhuangXiangBuHuoDP',
+  businessApis.PiLiangZhuangXiangBuHuoDP.getApi(),
+);
 // 出箱WL [ZHY]
 router.post('/chuXiangWL', businessApis.ChuXiangWL.getApi());
 // 出箱DP [ZHY]
@@ -126,7 +108,10 @@ router.post('/chuXiangDP', businessApis.ChuXiangDP.getApi());
 // 关联快递 [ZHY]
 router.post('/guanLianKuaiDi', businessApis.GuanLianKuaiDi.getApi());
 // 解除关联快递 [ZHY]
-router.post('/jieChuGuanLianKuaiDi', businessApis.JieChuGuanLianKuaiDi.getApi());
+router.post(
+  '/jieChuGuanLianKuaiDi',
+  businessApis.JieChuGuanLianKuaiDi.getApi(),
+);
 // 收箱 [GTBA]
 router.post('/shouXiang', businessApis.ShouXiang.getApi());
 // 收货WL [GTBA, AZG]
@@ -134,57 +119,125 @@ router.post('/shouHuoWL', businessApis.ShouHuoWL.getApi());
 // 收货DP [GTBA, AZG]
 router.post('/shouHuoDP', businessApis.ShouHuoDP.getApi());
 // 安装反馈DDWL状态 [GTBA, AZG]
-router.post('/anZhuangFanKuiDDWLZhuangTai', businessApis.AnZhuangFanKuiDDWLZhuangTai.getApi());
+router.post(
+  '/anZhuangFanKuiDDWLZhuangTai',
+  businessApis.AnZhuangFanKuiDDWLZhuangTai.getApi(),
+);
 // 安装反馈DDDP状态 [GTBA, AZG]
-router.post('/anZhuangFanKuiDDDPZhuangTai', businessApis.AnZhuangFanKuiDDDPZhuangTai.getApi());
+router.post(
+  '/anZhuangFanKuiDDDPZhuangTai',
+  businessApis.AnZhuangFanKuiDDDPZhuangTai.getApi(),
+);
 // 安装反馈全景WL图片 [GTBA, AZG]
-router.post('/anZhuangFanKuiQuanJingWLTuPian', businessApis.AnZhuangFanKuiQuanJingWLTuPian.getApi());
+router.post(
+  '/anZhuangFanKuiQuanJingWLTuPian',
+  businessApis.AnZhuangFanKuiQuanJingWLTuPian.getApi(),
+);
 // 安装反馈全景DP图片 [GTBA, AZG]
-router.post('/anZhuangFanKuiQuanJingDPTuPian', businessApis.AnZhuangFanKuiQuanJingDPTuPian.getApi());
+router.post(
+  '/anZhuangFanKuiQuanJingDPTuPian',
+  businessApis.AnZhuangFanKuiQuanJingDPTuPian.getApi(),
+);
 // 申请上市WLBH [GZ, GTBA, AZG]
-router.post('/shenQingShangShiWLBH', businessApis.ShenQingShangShiWLBH.getApi());
+router.post(
+  '/shenQingShangShiWLBH',
+  businessApis.ShenQingShangShiWLBH.getApi(),
+);
 // 申请上市DPBH [GZ, GTBA, AZG]
-router.post('/shenQingShangShiDPBH', businessApis.ShenQingShangShiDPBH.getApi());
+router.post(
+  '/shenQingShangShiDPBH',
+  businessApis.ShenQingShangShiDPBH.getApi(),
+);
+// 申请日常WLBH [GZ, GTBA]
+router.post(
+  '/shenQingShangShiWLBH',
+  businessApis.ShenQingRiChangeWLBH.getApi(),
+);
+// 申请日常DPBH [GZ, GTBA]
+router.post(
+  '/shenQingShangShiDPBH',
+  businessApis.ShenQingRiChangeDPBH.getApi(),
+);
 // 批量审批通过WLBH [KFJL]
-router.post('/piLiangShengPiTongGuoWLBHa', businessApis.PiLiangShengPiTongGuoWLBHa.getApi());
+router.post(
+  '/piLiangShenPiTongGuoWLBHa',
+  businessApis.PiLiangShenPiTongGuoWLBHa.getApi(),
+);
 // 批量审批通过DPBH [KFJL]
-router.post('/piLiangShengPiTongGuoDPBHa', businessApis.PiLiangShengPiTongGuoDPBHa.getApi());
-// 单独审批通过WLBH [KFJL]
-router.post('/danDuShengPiTongGuoWLBHa', businessApis.DanDuShengPiTongGuoWLBHa.getApi());
-// 单独审批通过DPBH [KFJL]
-router.post('/danDuShengPiTongGuoDPBHa', businessApis.DanDuShengPiTongGuoDPBHa.getApi());
-// 单独审批驳回WLBH [KFJL]
-router.post('/danDuShengPiBoHuiWLBHa', businessApis.DanDuShengPiBoHuiWLBHa.getApi());
-// 单独审批驳回DPBH [KFJL]
-router.post('/danDuShengPiBoHuiDPBHa', businessApis.DanDuShengPiBoHuiDPBHa.getApi());
+router.post(
+  '/piLiangShenPiTongGuoDPBHa',
+  businessApis.PiLiangShenPiTongGuoDPBHa.getApi(),
+);
+// 单独审批通过WLBHa [KFJL]
+router.post(
+  '/danDuShenPiTongGuoWLBHa',
+  businessApis.DanDuShenPiTongGuoWLBHa.getApi(),
+);
+// 单独审批通过DPBHa [KFJL]
+router.post(
+  '/danDuShenPiTongGuoDPBHa',
+  businessApis.DanDuShenPiTongGuoDPBHa.getApi(),
+);
+// 单独审批驳回WLBHa [KFJL]
+router.post(
+  '/danDuShenPiBoHuiWLBHa',
+  businessApis.DanDuShenPiBoHuiWLBHa.getApi(),
+);
+// 单独审批驳回DPBHa [KFJL]
+router.post(
+  '/danDuShenPiBoHuiDPBHa',
+  businessApis.DanDuShenPiBoHuiDPBHa.getApi(),
+);
 // 为WLBH分配AZGS [PPJL]
 router.post('/setWLBH0AZGS', businessApis.SetWLBH0AZGS.getApi());
 // 为DPBH分配AZGS [PPJL]
 router.post('/setDPBH0AZGS', businessApis.SetDPBH0AZGS.getApi());
 // 批量审批通过WLBH [PPJL]
-router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
-// 批量审批通过DPBH [PPJL]
-router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
-// 单独审批通过WLBH [PPJL]
-router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
-// 单独审批通过DPBH [PPJL]
-router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
-// 单独审批驳回WLBH [PPJL]
-router.post('/danDuShengPiBoHuiWLBHb', businessApis.DanDuShengPiBoHuiWLBHb.getApi());
-// 单独审批驳回DPBH [PPJL]
-router.post('/danDuShengPiBoHuiDPBHb', businessApis.DanDuShengPiBoHuiDPBHb.getApi());
+router.post(
+  '/piLiangShenPiTongGuoWLBHb',
+  businessApis.PiLiangShenPiTongGuoWLBHb.getApi(),
+);
+// 批量审批通过DPBHb [PPJL]
+router.post(
+  '/piLiangShenPiTongGuoDPBHb',
+  businessApis.PiLiangShenPiTongGuoDPBHb.getApi(),
+);
+// 单独审批通过WLBHb [PPJL]
+router.post(
+  '/danDuShenPiTongGuoWLBHb',
+  businessApis.DanDuShenPiTongGuoWLBHb.getApi(),
+);
+// 单独审批通过DPBHb [PPJL]
+router.post(
+  '/danDuShenPiTongGuoDPBHb',
+  businessApis.DanDuShenPiTongGuoDPBHb.getApi(),
+);
+// 单独审批驳回WLBHb [PPJL]
+router.post(
+  '/danDuShenPiBoHuiWLBHb',
+  businessApis.DanDuShenPiBoHuiWLBHb.getApi(),
+);
+// 单独审批驳回DPBHb [PPJL]
+router.post(
+  '/danDuShenPiBoHuiDPBHb',
+  businessApis.DanDuShenPiBoHuiDPBHb.getApi(),
+);
 // setWLBHYJZXTime [生产GYSGLY]
 router.post('/setWLBHs0YJZXTime', businessApis.SetWLBHs0YJZXTime.getApi());
 // setDPBHYJZXTime [生产GYSGLY]
 router.post('/setDPBHs0YJZXTime', businessApis.SetDPBHs0YJZXTime.getApi());
 // 为WLBH分配发货GYS [生产GYS]
-router.post('/fengPeiWLBHFaHuoGYS', businessApis.FengPeiWLBHFaHuoGYS.getApi());
+router.post('/fenPeiWLBHFaHuoGYS', businessApis.FenPeiWLBHFaHuoGYS.getApi());
 // 为DPBH分配发货GYS [生产GYS]
-router.post('/fengPeiDPBHFaHuoGYS', businessApis.FengPeiDPBHFaHuoGYS.getApi());
+router.post('/fenPeiDPBHFaHuoGYS', businessApis.FenPeiDPBHFaHuoGYS.getApi());
 // 分配WLBH的AZG [AZGSGLY]
 router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
 // 分配DPBH的AZG [AZGSGLY]
 router.post('/setDPBHs0AZG', businessApis.SetDPBHs0AZG.getApi());
+
+// setDD_GTFXs [KFJL]
+router.post('/setDD_GTFXs', businessApis.SetDD_GTFXs.getApi());
+
 
 // 常规RESTFUL API
 router.post('/:table', async (req, res, next) => {
@@ -244,7 +297,11 @@ router.put('/:table/:id', async (req, res, next) => {
   try {
     transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).edit(req.params.id, req.body, transaction);
+    const r = await new Table(req.user).edit(
+      req.params.id,
+      req.body,
+      transaction,
+    );
     await transaction.commit();
     res.json(r);
   } catch (err) {
@@ -261,7 +318,11 @@ router.delete('/:table/:id', async (req, res, next) => {
   try {
     transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).delete(req.params.id, req.body, transaction);
+    const r = await new Table(req.user).delete(
+      req.params.id,
+      req.body,
+      transaction,
+    );
     await transaction.commit();
     res.json(r);
   } catch (err) {
