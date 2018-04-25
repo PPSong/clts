@@ -137,23 +137,32 @@ router.post('/shouHuoDP', businessApis.ShouHuoDP.getApi());
 router.post('/anZhuangFanKuiDDWLZhuangTai', businessApis.AnZhuangFanKuiDDWLZhuangTai.getApi());
 // 安装反馈DDDP状态 [GTBA, AZG]
 router.post('/anZhuangFanKuiDDDPZhuangTai', businessApis.AnZhuangFanKuiDDDPZhuangTai.getApi());
-
 // 安装反馈全景WL图片 [GTBA, AZG]
 router.post('/anZhuangFanKuiQuanJingWLTuPian', businessApis.AnZhuangFanKuiQuanJingWLTuPian.getApi());
 // 安装反馈全景DP图片 [GTBA, AZG]
 router.post('/anZhuangFanKuiQuanJingDPTuPian', businessApis.AnZhuangFanKuiQuanJingDPTuPian.getApi());
-
-
-// 申请上市物料补货 [GZ, GTBA, AZG]
+// 申请上市WL补货 [GZ, GTBA, AZG]
 router.post('/shenQingShangShiWLBH', businessApis.ShenQingShangShiWLBH.getApi());
-// 批量审批通过物料补货 [KFJL]
+// 申请上市DP补货 [GZ, GTBA, AZG]
+router.post('/shenQingShangShiDPBH', businessApis.ShenQingShangShiDPBH.getApi());
+// 批量审批通过WL补货 [KFJL]
 router.post('/piLiangShengPiTongGuoWLBHa', businessApis.PiLiangShengPiTongGuoWLBHa.getApi());
-// 单独审批通过物料补货 [KFJL]
+// 批量审批通过DP补货 [KFJL]
+router.post('/piLiangShengPiTongGuoDPBHa', businessApis.PiLiangShengPiTongGuoDPBHa.getApi());
+// 单独审批通过WL补货 [KFJL]
 router.post('/danDuShengPiTongGuoWLBHa', businessApis.DanDuShengPiTongGuoWLBHa.getApi());
-// 单独审批驳回物料补货 [KFJL]
+// 单独审批通过DP补货 [KFJL]
+router.post('/danDuShengPiTongGuoDPBHa', businessApis.DanDuShengPiTongGuoDPBHa.getApi());
+// 单独审批驳回WL补货 [KFJL]
 router.post('/danDuShengPiBoHuiWLBHa', businessApis.DanDuShengPiBoHuiWLBHa.getApi());
-// 为物料补货分配AZGS [PPJL]
+// 单独审批驳回DP补货 [KFJL]
+router.post('/danDuShengPiBoHuiDPBHa', businessApis.DanDuShengPiBoHuiDPBHa.getApi());
+// 为WLBH分配AZGS [PPJL]
 router.post('/setWLBH0AZGS', businessApis.SetWLBH0AZGS.getApi());
+// 为DPBH分配AZGS [PPJL]
+router.post('/setDPBH0AZGS', businessApis.SetDPBH0AZGS.getApi());
+
+
 // 批量审批通过物料补货 [PPJL]
 router.post('/danDuShengPiTongGuoWLBHb', businessApis.DanDuShengPiTongGuoWLBHb.getApi());
 // 单独审批驳回物料补货 [PPJL]
@@ -164,8 +173,6 @@ router.post('/fengPeiFaHuoGYS', businessApis.FengPeiFaHuoGYS.getApi());
 router.post('/heBingWLBH', businessApis.HeBingWLBH.getApi());
 // 分配AZG [AZGSGLY]
 router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
-// 装箱WLBH [ZHY]
-router.post('/zhuangXiangWLBH', businessApis.ZhuangXiangWLBH.getApi());
 
 // 常规RESTFUL API
 router.post('/:table', async (req, res, next) => {

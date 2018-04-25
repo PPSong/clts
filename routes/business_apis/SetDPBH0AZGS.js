@@ -2,7 +2,7 @@ import _ from 'lodash';
 import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class SetWLBH0AZGS extends BusinessApiBase {
+export default class SetDPBH0AZGS extends BusinessApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.PPJL];
   }
@@ -12,7 +12,7 @@ export default class SetWLBH0AZGS extends BusinessApiBase {
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     // 检查ids存在
-    const tmpWLBHs = await DBTables.WLBH.findAll({
+    const tmpDPBHs = await DBTables.DPBH.findAll({
       include: [
         {
           model: DBTables.GT,
@@ -27,15 +27,15 @@ export default class SetWLBH0AZGS extends BusinessApiBase {
       transaction,
     });
 
-    const tmpWLBHIds = tmpWLBHs.map(item => item.id);
-    const diffIds = _.difference(ids, tmpWLBHIds);
+    const tmpDPBHIds = tmpDPBHs.map(item => item.id);
+    const diffIds = _.difference(ids, tmpDPBHIds);
     if (diffIds.length > 0) {
-      throw new Error(`物料补货记录id:${diffIds}不存在!`);
+      throw new Error(`灯片补货记录id:${diffIds}不存在!`);
     }
     // end 检查ids存在
 
     // 是否属于同一PP
-    const tmpPPIds = tmpWLBHs.map(item => item.GT.PPId);
+    const tmpPPIds = tmpDPBHs.map(item => item.GT.PPId);
     const tmpUniquePPId = [...new Set(tmpPPIds)];
     if (tmpUniquePPId.length > 1) {
       throw new Error('要属于同一品牌!');
@@ -44,10 +44,10 @@ export default class SetWLBH0AZGS extends BusinessApiBase {
     // end 是否属于同一PP
 
     // 检查状态
-    const notOKRecords = tmpWLBHs.filter(item => item.status !== DBTables.WLBHStatus.KFJLSPTG);
+    const notOKRecords = tmpDPBHs.filter(item => item.status !== DBTables.DPBHStatus.KFJLSPTG);
     if (notOKRecords.length > 0) {
-      throw new Error(`物料补货记录:${notOKRecords}状态不属于${
-        DBTables.WLBHStatus.KFJLSPTG
+      throw new Error(`灯片补货记录:${notOKRecords}状态不属于${
+        DBTables.DPBHStatus.KFJLSPTG
       }!`);
     }
     // end 检查状态
@@ -56,7 +56,7 @@ export default class SetWLBH0AZGS extends BusinessApiBase {
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // set AZGS
-    await DBTables.WLBH.update(
+    await DBTables.DPBH.update(
       {
         AZGSId,
       },
