@@ -4,7 +4,7 @@ import * as ppUtils from './ppUtils';
 
 export default class ShenQingShangShiDPBuHuo extends BusinessApiBase {
   static getAllowAccessJSs() {
-    return [DBTables.JS.KFJL];
+    return [DBTables.JS.GTBA, DBTables.JS.AZG];
   }
 
   static async mainProcess(req, res, next, user, transaction) {

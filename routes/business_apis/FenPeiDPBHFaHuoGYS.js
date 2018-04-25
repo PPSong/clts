@@ -2,7 +2,7 @@ import _ from 'lodash';
 import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class FengPeiDPBHFaHuoGYS extends BusinessApiBase {
+export default class FenPeiDPBHFaHuoGYS extends BusinessApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.GYSGLY];
   }

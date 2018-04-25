@@ -2,7 +2,7 @@ import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 import * as ppUtils from './ppUtils';
 
-export default class DanDuShengPiBoHuiWLBHa extends BusinessApiBase {
+export default class DanDuShenPiTongGuoWLBHa extends BusinessApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.KFJL];
   }
@@ -39,6 +39,6 @@ export default class DanDuShengPiBoHuiWLBHa extends BusinessApiBase {
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-    ppUtils.changeWLBHsStatus([id], DBTables.WLBHStatus.BH, user, transaction, KFJLNote);
+    ppUtils.changeWLBHsStatus([id], DBTables.WLBHStatus.KFJLSPTG, user, transaction, KFJLNote);
   }
 }
