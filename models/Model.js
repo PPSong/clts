@@ -167,6 +167,8 @@ export const WLBHStatus = {
   WC: '完成',
 };
 
+export const WLBHStatusMap = new Map(Object.entries(WLBHStatus).map((item, index) => [item[1], index]));
+
 export const DPBHStatus = {
   CS: '初始',
   KFJLSPTG: '客服经理审批通过',
@@ -178,6 +180,8 @@ export const DPBHStatus = {
   KPQJT: '可拍全景图',
   WC: '完成',
 };
+
+export const DPBHStatusMap = new Map(Object.entries(DPBHStatus).map((item, index) => [item[1], index]));
 
 export const CS = ['北京', '上海', '广州', '深圳'];
 
