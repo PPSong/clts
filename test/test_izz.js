@@ -2115,31 +2115,12 @@ describe('SPRT测试', () => {
 
   // 设置DD_GTFXs [KFJL]
   describe.skip('/setDDGTFXs', async () => {
-    describe('成功', async () => {
-      it('KFJL翻新GT', async () => {
-
-      });
-    });
+    describe('成功', async () => { });
     describe('失败', async () => {
-      describe('数据不合法', async () => {
-
-      });
-      describe('没有权限', async () => {
-        it('非客服经理登入', async () => {
-
-        });
-        it('该柜台非客服经理所属品牌下柜台', async () => {
-
-        });
-      });
-      describe('操作状态不正确', async () => {
-        it('当前品牌有正在进行的订单', async () => {
-
-        });
-      });
-      describe('唯一性校验', async () => {
-
-      });
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => { });
+      describe('操作状态不正确', async () => { });
+      describe('唯一性校验', async () => { });
     });
   });
 
@@ -2388,7 +2369,7 @@ describe('SPRT测试', () => {
           console.log('GYSGLY设置还未审批通过的DD的DD_GT_WL的发货GYS---->', response.data.msg);
         });
       });
-      describes.skip('唯一性校验', async () => { });
+      describe.skip('唯一性校验', async () => { });
     });
   });
 
@@ -2585,8 +2566,8 @@ describe('SPRT测试', () => {
     });
   });
 
-  // 批量入库 [ZHY]
-  describe('/piLiangRuKu', async () => {
+  // 批量入库WL [ZHY]
+  describe('/piLiangRuKuWL', async () => {
     describe('成功', async () => {
       it('ZHY入库WL', async () => {
         let ZHY4Token = await getToken('ZHY4', '123456');
@@ -2604,7 +2585,7 @@ describe('SPRT测试', () => {
         ];
 
         const response = await post(
-          'piLiangRuKu',
+          'piLiangRuKuWL',
           {
             EWMs,
           },
@@ -2650,12 +2631,62 @@ describe('SPRT测试', () => {
     // });
   });
 
+  // 批量入库DP [ZHY]
+  describe('/piLiangRuKuDP', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
+  });
+
+  // 批量出库WL [ZHY]
+  describe('/piLiangChuKuWL', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
+  });
+
+  // 批量出库DP [ZHY]
+  describe('/piLiangChuKuDP', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
+  });
+
+  // 批量消库WL [ZHY]
+  describe('/piLiangXiaoKuWL', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
+  });
+
+  // 批量消库DP [ZHY]
+  describe('/piLiangXiaoKuDP', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
+  });
+
   // 装箱 [ZHY] --->fanfan
   describe('/zhuangXiang', async () => {
     describe('成功', async () => {
       it('ZHY装箱WL', async () => {
         let ZHY4Token = await getToken('ZHY4', '123456');
-        const DDId = 3; 3
+        const DDId = 3;
         const GTId = 7;
         const HWEWMs = [
           {
