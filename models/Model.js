@@ -49,7 +49,7 @@ export const sequelize = new Sequelize('cltp', 'root', 'tcltcl', {
   dialectOptions: {
     multipleStatements: true,
   },
-  logging: true,
+  logging: false,
   operatorsAliases,
 });
 

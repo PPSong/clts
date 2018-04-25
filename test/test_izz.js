@@ -204,7 +204,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it.only('small test', async () => {
+    it('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -839,7 +839,7 @@ describe('SPRT测试', () => {
             id: DPId,
             DWIds,
           },
-          KFJL2Token,
+          KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
@@ -1512,7 +1512,7 @@ describe('SPRT测试', () => {
         for (let item of ejzh_fg_tester) {
           FGTesterIdList.push(item.dataValues.FGTesterId);
         };
-        assert.equal(FGTesterIdList.length, 3);
+        assert.equal(FGTesterIdList.length, 2);
         for (let item of FGTesters) {
           assert.include(FGTesterIdList, item.id);
         };
@@ -1530,7 +1530,7 @@ describe('SPRT测试', () => {
 
       it('KFJL编辑EJZH-将原FGTester&SJWL修改成新的', async () => {
         const EJZHId = 3;
-        const WLId = 2;
+        const WLId = 3;
         const imageUrl = 'imageUrlEJZH_T1';
         const XGTs = ['EJZH1Url_T1'];
         const FGTesters = [
@@ -1545,7 +1545,7 @@ describe('SPRT测试', () => {
             number: 2,
           },
         ];
-
+        console.log('KFJLToken--->',KFJLToken)
         const response = await post(
           'editEJZH',
           {
@@ -1835,7 +1835,7 @@ describe('SPRT测试', () => {
         for (let item of yjzh_ejzh) {
           EJZHIdList.push(item.dataValues.EJZHId);
         };
-        assert.equal(EJZHIdList.length, 3);
+        assert.equal(EJZHIdList.length, 1);
         for (let item of EJZHs) {
           assert.include(EJZHIdList, item.id);
         };
@@ -2031,7 +2031,7 @@ describe('SPRT测试', () => {
         ];
         assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
-    });
+    });//TODO:ppLog Error: HY000:Field 'status' doesn't have a default value
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
@@ -2169,7 +2169,7 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('PPJL为已经审批通过的DD的WL配置AZGS', async () => {
-          const PPJL4Token = await getToken('PPJL4', '123456');
+          const PPJL3Token = await getToken('PPJL3', '123456');
           const AZGSId = 2;
           const DD_GT_WLIds = [4, 5];
 
@@ -2179,7 +2179,7 @@ describe('SPRT测试', () => {
               DD_GT_WLIds,
               AZGSId,
             },
-            PPJL4Token,
+            PPJL3Token,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '不能指定安装公司');
@@ -2193,7 +2193,7 @@ describe('SPRT测试', () => {
   describe('/setDDDWDPs0AZGS', async () => {
     describe('成功', async () => {
       it('PPJL配置DD_DW_DP的AZGS', async () => {
-        const PPJL2Token = await getToken('PPJL2', '123456');
+        const PPJL3Token = await getToken('PPJL3', '123456');
         const AZGSId = 1;
         const DD_DW_DPIds = [1, 2, 3];
 
@@ -2203,7 +2203,7 @@ describe('SPRT测试', () => {
             DD_DW_DPIds,
             AZGSId,
           },
-          PPJL2Token,
+          PPJL3Token,
         );
         assert.equal(response.data.code, 1);
 
@@ -2234,7 +2234,7 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('PPJL为已经审批通过的DD配置AZGS', async () => {
-          const PPJL4Token = await getToken('PPJL4', '123456');
+          const PPJL3Token = await getToken('PPJL3', '123456');
           const AZGSId = 2;
           const DD_DW_DPIds = [4, 5];
 
@@ -2244,7 +2244,7 @@ describe('SPRT测试', () => {
               DD_DW_DPIds,
               AZGSId,
             },
-            PPJL4Token,
+            PPJL3Token,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '不能指定安装公司');
@@ -2271,7 +2271,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         const dd = await DD.findOne({ where: { id } });
-        assert.equal(dd.dataValues.status, DDStatus.CS);
+        assert.equal(dd.dataValues.status, DDStatus.YSP);
       });
     });
     describe('失败', async () => {
@@ -2363,7 +2363,7 @@ describe('SPRT测试', () => {
               DD_GT_WLIds,
               GYSId,
             },
-            GYSGLY6Token,
+            GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
           console.log('GYSGLY设置还未审批通过的DD的DD_GT_WL的发货GYS---->', response.data.msg);
@@ -2570,17 +2570,16 @@ describe('SPRT测试', () => {
   describe('/piLiangRuKuWL', async () => {
     describe('成功', async () => {
       it('ZHY入库WL', async () => {
-        let ZHY4Token = await getToken('ZHY4', '123456');
         const EWMs = [
           {
             type: 'WL',
-            typeId: 23,
-            uuid: 'WL23_6',
+            typeId: 1,
+            uuid: 'WL1_101',
           },
           {
             type: 'WL',
-            typeId: 23,
-            uuid: 'WL23_7',
+            typeId: 1,
+            uuid: 'WL1_101',
           },
         ];
 
@@ -2589,7 +2588,7 @@ describe('SPRT测试', () => {
           {
             EWMs,
           },
-          ZHY4Token,
+          ZHYToken,
         );
         assert.equal(response.data.code, 1);
 
@@ -2685,19 +2684,18 @@ describe('SPRT测试', () => {
   describe('/piLiangZhuangXiangDDWL', async () => {
     describe('成功', async () => {
       it('ZHY装箱WL', async () => {
-        let ZHY4Token = await getToken('ZHY4', '123456');
-        const DDId = 3;
+        const DDId = 2;
         const GTId = 7;
         const HWEWMs = [
           {
             type: 'WL',
-            typeId: 23,
-            uuid: 'WL23_6',
+            typeId: 10,
+            uuid: 'WL10_100',
           },
           {
             type: 'WL',
-            typeId: 23,
-            uuid: 'WL23_7',
+            typeId: 10,
+            uuid: 'WL10_100',
           },
         ];
         const KDXEWM = {
@@ -2713,7 +2711,7 @@ describe('SPRT测试', () => {
             HWEWMs,
             KDXEWM,
           },
-          ZHY4Token,
+          ZHYToken,
         );
         assert.equal(response.data.code, 1);
 
@@ -2822,22 +2820,11 @@ describe('SPRT测试', () => {
   describe('/chuXiangWL', async () => {
     describe('成功', async () => {
       it('ZHY出箱货物', async () => {
-        let ZHY4Token = await getToken('ZHY4', '123456');
         const HWEWMs = [
           {
             type: "WL",
-            typeId: 23,
-            uuid: "WL23_3",
-          },
-          {
-            type: "WL",
-            typeId: 23,
-            uuid: "WL23_4",
-          },
-          {
-            type: "DP",
-            typeId: 8,
-            uuid: "DP9",
+            typeId: 14,
+            uuid: "WL14_1",
           },
         ];
 
@@ -3548,6 +3535,16 @@ describe('/piLiangShengPiTongGuoWLBHb', async () => {
 });
 
 // 批量审批通过DPBH [PPJL]
+describe('/danDuShengPiTongGuoDPBHb', async () => {
+  describe('成功', async () => {
+
+  });
+  describe('失败', async () => {
+
+  });
+});
+
+// 单独审批通过WLBH [PPJL]
 describe('/danDuShengPiTongGuoWLBHb', async () => {
   describe('成功', async () => {
 
@@ -3557,8 +3554,8 @@ describe('/danDuShengPiTongGuoWLBHb', async () => {
   });
 });
 
-// 为DPBH分配AZGS [PPJL]
-describe('/setDPBH0AZGS', async () => {
+// 单独审批通过DPBH [PPJL]
+describe('/danDuShengPiTongGuoDPBHb', async () => {
   describe('成功', async () => {
 
   });
@@ -3567,8 +3564,78 @@ describe('/setDPBH0AZGS', async () => {
   });
 });
 
-// 为DPBH分配AZGS [PPJL]
-describe('/setDPBH0AZGS', async () => {
+// 单独审批驳回WLBH [PPJL]
+describe('/danDuShengPiBoHuiWLBHb', async () => {
+  describe('成功', async () => {
+
+  });
+  describe('失败', async () => {
+
+  });
+});
+
+// 单独审批驳回DPBH [PPJL]
+describe('/danDuShengPiBoHuiDPBHb', async () => {
+  describe('成功', async () => {
+
+  });
+  describe('失败', async () => {
+
+  });
+});
+
+// setWLBHYJZXTime [生产GYSGLY]
+describe('/setWLBHs0YJZXTime', async () => {
+  describe('成功', async () => {
+
+  });
+  describe('失败', async () => {
+
+  });
+});
+
+// setDPBHYJZXTime [生产GYSGLY]
+describe('/setDPBHs0YJZXTime', async () => {
+  describe('成功', async () => {
+
+  });
+  describe('失败', async () => {
+
+  });
+});
+
+// 为WLBH分配发货GYS [生产GYSGLY]
+describe('/fengPeiWLBHFaHuoGYS', async () => {
+  describe('成功', async () => {
+
+  });
+  describe('失败', async () => {
+
+  });
+});
+
+// 为DPBH分配发货GYS [生产GYSGLY]
+describe('/fengPeiDPBHFaHuoGYS', async () => {
+  describe('成功', async () => {
+
+  });
+  describe('失败', async () => {
+
+  });
+});
+
+// 分配WLBH的AZG [AZGSGLY]
+describe('/setWLBHs0AZG', async () => {
+  describe('成功', async () => {
+
+  });
+  describe('失败', async () => {
+
+  });
+});
+
+// 分配DPBH的AZG [AZGSGLY]
+describe('/setDPBHs0AZG', async () => {
   describe('成功', async () => {
 
   });
