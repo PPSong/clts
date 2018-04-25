@@ -116,9 +116,9 @@ router.post('/piLiangZhuangXiangDDWL', businessApis.PiLiangZhuangXiangDDWL.getAp
 // 订单批量装箱DDDP [ZHY]
 router.post('/piLiangZhuangXiangDDDP', businessApis.PiLiangZhuangXiangDDDP.getApi());
 // 订单批量装箱BHWL [ZHY]
-router.post('/piLiangZhuangXiangBHWL', businessApis.PiLiangZhuangXiangBHWL.getApi());
+router.post('/piLiangZhuangXiangBuHuoWL', businessApis.PiLiangZhuangXiangBuHuoWL.getApi());
 // 订单批量装箱BHDP [ZHY]
-router.post('/piLiangZhuangXiangBHDP', businessApis.PiLiangZhuangXiangBHDP.getApi());
+router.post('/piLiangZhuangXiangBuHuoDP', businessApis.PiLiangZhuangXiangBuHuoDP.getApi());
 // 出箱WL [ZHY]
 router.post('/chuXiangWL', businessApis.ChuXiangWL.getApi());
 // 出箱DP [ZHY]
@@ -163,14 +163,14 @@ router.post('/setWLBH0AZGS', businessApis.SetWLBH0AZGS.getApi());
 router.post('/setDPBH0AZGS', businessApis.SetDPBH0AZGS.getApi());
 
 
-// 批量审批通过WLBH [PPJL]
-router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
-// 批量审批通过DPBH [PPJL]
-router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
-// 单独审批通过WLBH [PPJL]
-router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
-// 单独审批通过DPBH [PPJL]
-router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
+// // 批量审批通过WLBH [PPJL]
+// router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
+// // 批量审批通过DPBH [PPJL]
+// router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
+// // 单独审批通过WLBH [PPJL]
+// router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
+// // 单独审批通过DPBH [PPJL]
+// router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
 
 
 // setWLBHYJZXTime [生产GYSGLY]
@@ -182,8 +182,7 @@ router.post('/setDPBHs0YJZXTime', businessApis.SetDPBHs0YJZXTime.getApi());
 router.post('/danDuShengPiBoHuiWLBHb', businessApis.DanDuShengPiBoHuiWLBHb.getApi());
 // 为物料补货分配发货GYS [生产GYS]
 router.post('/fengPeiFaHuoGYS', businessApis.FengPeiFaHuoGYS.getApi());
-// 并单 [生产GYS]
-router.post('/heBingWLBH', businessApis.HeBingWLBH.getApi());
+
 // 分配AZG [AZGSGLY]
 router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
 
