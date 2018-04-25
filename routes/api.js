@@ -141,46 +141,47 @@ router.post('/anZhuangFanKuiDDDPZhuangTai', businessApis.AnZhuangFanKuiDDDPZhuan
 router.post('/anZhuangFanKuiQuanJingWLTuPian', businessApis.AnZhuangFanKuiQuanJingWLTuPian.getApi());
 // 安装反馈全景DP图片 [GTBA, AZG]
 router.post('/anZhuangFanKuiQuanJingDPTuPian', businessApis.AnZhuangFanKuiQuanJingDPTuPian.getApi());
-// 申请上市WL补货 [GZ, GTBA, AZG]
+// 申请上市WLBH [GZ, GTBA, AZG]
 router.post('/shenQingShangShiWLBH', businessApis.ShenQingShangShiWLBH.getApi());
-// 申请上市DP补货 [GZ, GTBA, AZG]
+// 申请上市DPBH [GZ, GTBA, AZG]
 router.post('/shenQingShangShiDPBH', businessApis.ShenQingShangShiDPBH.getApi());
-// 批量审批通过WL补货 [KFJL]
+// 批量审批通过WLBH [KFJL]
 router.post('/piLiangShengPiTongGuoWLBHa', businessApis.PiLiangShengPiTongGuoWLBHa.getApi());
-// 批量审批通过DP补货 [KFJL]
+// 批量审批通过DPBH [KFJL]
 router.post('/piLiangShengPiTongGuoDPBHa', businessApis.PiLiangShengPiTongGuoDPBHa.getApi());
-// 单独审批通过WL补货 [KFJL]
+// 单独审批通过WLBH [KFJL]
 router.post('/danDuShengPiTongGuoWLBHa', businessApis.DanDuShengPiTongGuoWLBHa.getApi());
-// 单独审批通过DP补货 [KFJL]
+// 单独审批通过DPBH [KFJL]
 router.post('/danDuShengPiTongGuoDPBHa', businessApis.DanDuShengPiTongGuoDPBHa.getApi());
-// 单独审批驳回WL补货 [KFJL]
+// 单独审批驳回WLBH [KFJL]
 router.post('/danDuShengPiBoHuiWLBHa', businessApis.DanDuShengPiBoHuiWLBHa.getApi());
-// 单独审批驳回DP补货 [KFJL]
+// 单独审批驳回DPBH [KFJL]
 router.post('/danDuShengPiBoHuiDPBHa', businessApis.DanDuShengPiBoHuiDPBHa.getApi());
 // 为WLBH分配AZGS [PPJL]
 router.post('/setWLBH0AZGS', businessApis.SetWLBH0AZGS.getApi());
 // 为DPBH分配AZGS [PPJL]
 router.post('/setDPBH0AZGS', businessApis.SetDPBH0AZGS.getApi());
-
-
-// // 批量审批通过WLBH [PPJL]
-// router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
-// // 批量审批通过DPBH [PPJL]
-// router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
-// // 单独审批通过WLBH [PPJL]
-// router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
-// // 单独审批通过DPBH [PPJL]
-// router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
-
-
+// 批量审批通过WLBH [PPJL]
+router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
+// 批量审批通过DPBH [PPJL]
+router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
+// 单独审批通过WLBH [PPJL]
+router.post('/piLiangShengPiTongGuoWLBHb', businessApis.PiLiangShengPiTongGuoWLBHb.getApi());
+// 单独审批通过DPBH [PPJL]
+router.post('/piLiangShengPiTongGuoDPBHb', businessApis.PiLiangShengPiTongGuoDPBHb.getApi());
+// 单独审批驳回WLBH [PPJL]
+router.post('/danDuShengPiBoHuiWLBHb', businessApis.DanDuShengPiBoHuiWLBHb.getApi());
+// 单独审批驳回DPBH [PPJL]
+router.post('/danDuShengPiBoHuiDPBHb', businessApis.DanDuShengPiBoHuiDPBHb.getApi());
 // setWLBHYJZXTime [生产GYSGLY]
 router.post('/setWLBHs0YJZXTime', businessApis.SetWLBHs0YJZXTime.getApi());
 // setDPBHYJZXTime [生产GYSGLY]
 router.post('/setDPBHs0YJZXTime', businessApis.SetDPBHs0YJZXTime.getApi());
 
-// 单独审批驳回物料补货 [PPJL]
-router.post('/danDuShengPiBoHuiWLBHb', businessApis.DanDuShengPiBoHuiWLBHb.getApi());
-// 为物料补货分配发货GYS [生产GYS]
+// 为WLBH分配发货GYS [生产GYS]
+router.post('/fengPeiWLBHFaHuoGYS', businessApis.FengPeiWLBHFaHuoGYS.getApi());
+
+// 为WLBH分配发货GYS [生产GYS]
 router.post('/fengPeiFaHuoGYS', businessApis.FengPeiFaHuoGYS.getApi());
 
 // 分配AZG [AZGSGLY]

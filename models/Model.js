@@ -2917,6 +2917,9 @@ export const KDX = sequelize.define(
         },
       },
     },
+    DDId: {
+      type: Sequelize.INTEGER,
+    },
     YJZXTime: {
       type: Sequelize.DATE,
     },
@@ -2947,6 +2950,19 @@ KDX.belongsTo(KDD, {
 KDD.hasMany(KDX, {
   as: 'KDXs',
   foreignKey: 'KDDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+
+KDX.belongsTo(DD, {
+  as: 'DD',
+  foreignKey: 'DDId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+DD.hasMany(KDX, {
+  as: 'KDXs',
+  foreignKey: 'DDId',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });

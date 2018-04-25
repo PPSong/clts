@@ -89,6 +89,7 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
     await DBTables.DD_DW_DP.update(
       {
         GYSId,
+        status: DBTables.DD_DW_DPStatus.YFPFHGYS,
       },
       {
         where: {

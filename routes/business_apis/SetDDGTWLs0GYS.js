@@ -89,6 +89,7 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
     await DBTables.DD_GT_WL.update(
       {
         GYSId,
+        status: DBTables.DD_GT_WLStatus.YFPFHGYS,
       },
       {
         where: {
