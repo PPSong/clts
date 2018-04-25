@@ -177,15 +177,14 @@ router.post('/danDuShengPiBoHuiDPBHb', businessApis.DanDuShengPiBoHuiDPBHb.getAp
 router.post('/setWLBHs0YJZXTime', businessApis.SetWLBHs0YJZXTime.getApi());
 // setDPBHYJZXTime [生产GYSGLY]
 router.post('/setDPBHs0YJZXTime', businessApis.SetDPBHs0YJZXTime.getApi());
-
 // 为WLBH分配发货GYS [生产GYS]
 router.post('/fengPeiWLBHFaHuoGYS', businessApis.FengPeiWLBHFaHuoGYS.getApi());
-
-// 为WLBH分配发货GYS [生产GYS]
-router.post('/fengPeiFaHuoGYS', businessApis.FengPeiFaHuoGYS.getApi());
-
-// 分配AZG [AZGSGLY]
+// 为DPBH分配发货GYS [生产GYS]
+router.post('/fengPeiDPBHFaHuoGYS', businessApis.FengPeiDPBHFaHuoGYS.getApi());
+// 分配WLBH的AZG [AZGSGLY]
 router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
+// 分配DPBH的AZG [AZGSGLY]
+router.post('/setDPBHs0AZG', businessApis.SetDPBHs0AZG.getApi());
 
 // 常规RESTFUL API
 router.post('/:table', async (req, res, next) => {
