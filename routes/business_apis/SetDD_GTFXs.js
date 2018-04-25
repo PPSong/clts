@@ -2,7 +2,7 @@ import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 import { PP_DDOperationLock } from './CreateDD';
 
-export default class setDDGTFXs extends BusinessApiBase {
+export default class SetDD_GTFXs extends BusinessApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.KFJL];
   }

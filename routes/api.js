@@ -151,12 +151,12 @@ router.post(
 // 申请日常WLBH [GZ, GTBA]
 router.post(
   '/shenQingShangShiWLBH',
-  businessApis.ShenQingRiChangeWLBH.getApi(),
+  businessApis.ShenQingRiChangWLBH.getApi(),
 );
 // 申请日常DPBH [GZ, GTBA]
 router.post(
   '/shenQingShangShiDPBH',
-  businessApis.ShenQingRiChangeDPBH.getApi(),
+  businessApis.ShenQingRiChangDPBH.getApi(),
 );
 // 批量审批通过WLBH [KFJL]
 router.post(
@@ -236,7 +236,7 @@ router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
 router.post('/setDPBHs0AZG', businessApis.SetDPBHs0AZG.getApi());
 
 // setDD_GTFXs [KFJL]
-router.post('/setDD_GTFXs', businessApis.SetDD_GTFXs.getApi());
+// router.post('/setDD_GTFXs', businessApis.SetDD_GTFXs.getApi());
 
 
 // 常规RESTFUL API
