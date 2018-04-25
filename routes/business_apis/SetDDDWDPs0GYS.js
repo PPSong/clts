@@ -13,7 +13,7 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 检查目标GYSId是用户所属GYS或中转GYS
-    await DBTables.GYS.checkIsZZGYSOrMe(GYSId, transaction);
+    await DBTables.GYS.checkIsZZGYSOrMe(GYSId, user, transaction);
     // end 检查目标GYSId是用户所属GYS或中转GYS
 
     // 检查DD_DW_DPIds存在

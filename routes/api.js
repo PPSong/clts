@@ -150,12 +150,12 @@ router.post(
 );
 // 申请日常WLBH [GZ, GTBA]
 router.post(
-  '/shenQingShangShiWLBH',
+  '/shenQingRiChangWLBH',
   businessApis.ShenQingRiChangWLBH.getApi(),
 );
 // 申请日常DPBH [GZ, GTBA]
 router.post(
-  '/shenQingShangShiDPBH',
+  '/shenQingRiChangDPBH',
   businessApis.ShenQingRiChangDPBH.getApi(),
 );
 // 批量审批通过WLBH [KFJL]
