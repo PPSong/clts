@@ -1673,6 +1673,7 @@ export const ZHY_GYS = sequelize.define(
 User.belongsToMany(GYS, {
   through: 'ZHY_GYS',
   as: 'ZHYGYSs',
+  foreignKey: 'UserId',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });

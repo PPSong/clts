@@ -90,7 +90,7 @@ export default class PiLiangZhuangXiangDDWL extends BusinessApiBase {
     }
 
     // 检查WLEWMs是否都是当前用户所属GYS作为发货GYS发往DDId_GTId的
-    const tmpGYSId = await user.getGYSId({ transaction });
+    const tmpGYSId = await user.getGYSId(transaction);
     const tmpTargetWLs = await checkWLEWMsFromUserGYSForSameDDGTAndGetTasks(
       DDId,
       GTId,

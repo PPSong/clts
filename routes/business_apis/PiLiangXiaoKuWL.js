@@ -24,7 +24,7 @@ export default class PiLiangXiaoKuWL extends BusinessApiBase {
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
-    const tmpGYSId = await user.getGYSId({ transaction });
+    const tmpGYSId = await user.getGYSId(transaction);
 
     // 遍历处理每个EWM
     for (const item of EWMs) {

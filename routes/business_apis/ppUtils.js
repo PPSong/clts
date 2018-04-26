@@ -31,7 +31,7 @@ export async function createDDKDXAndZhuangXiang({
     {
       KDXId: tmpKDX.id,
       status: tmpKDX.status,
-      userId: user.id,
+      UserId: user.id,
     },
     { transaction },
   );
@@ -58,7 +58,7 @@ export async function createWYWLAndRuKu(EWM, user, GYSId, transaction) {
     {
       WYWLId: tmpWYWL.id,
       status: tmpWYWL.status,
-      userId: user.id,
+      UserId: user.id,
     },
     { transaction },
   );
@@ -89,7 +89,7 @@ export async function changeWYWLStatusOnGYS(
     {
       WYWLId: tmpWYWL.id,
       status,
-      userId: user.id,
+      UserId: user.id,
     },
     { transaction },
   );
@@ -116,7 +116,7 @@ export async function createWYDPAndRuKu(EWM, user, GYSId, transaction) {
     {
       WYDPId: tmpWYDP.id,
       status: tmpWYDP.status,
-      userId: user.id,
+      UserId: user.id,
     },
     { transaction },
   );
@@ -147,7 +147,7 @@ export async function changeWYDPStatusOnGYS(
     {
       WYDPId: tmpWYDP.id,
       status,
-      userId: user.id,
+      UserId: user.id,
     },
     { transaction },
   );
@@ -468,7 +468,7 @@ export async function createWLBH(
     {
       WLBHId: tmpWLBH.id,
       status: tmpWLBH.status,
-      userId: user.id,
+      UserId: user.id,
     },
     {
       transaction,
