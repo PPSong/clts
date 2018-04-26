@@ -2582,12 +2582,12 @@ describe('SPRT测试', () => {
           {
             type: 'WL',
             typeId: 1,
-            uuid: 'WL1_101',
+            uuid: '1_101',
           },
           {
             type: 'WL',
             typeId: 1,
-            uuid: 'WL1_102',
+            uuid: '1_102',
           },
         ];
 
@@ -2647,12 +2647,12 @@ describe('SPRT测试', () => {
           {
             type: 'DP',
             typeId: 1,
-            uuid: 'DP1_101',
+            uuid: '1_101',
           },
           {
             type: 'DP',
             typeId: 1,
-            uuid: 'DP1_102',
+            uuid: '1_102',
           },
         ];
 
@@ -2839,7 +2839,7 @@ describe('SPRT测试', () => {
 
         for (const item of EWMs) {
           const wydp = await WYDP.findOne({ where: { EWM: JSON.stringify(item) } });
-          assert.notEqual(wywl, null);
+          assert.notEqual(wydp, null);
 
           const wydpcz = await WYDPCZ.findAll({ where: { WYWLId: wydp.dataValues.id } });
           const wydpczList = wydpcz.map(item => (item.dataValues));
@@ -2857,18 +2857,18 @@ describe('SPRT测试', () => {
   describe('/piLiangZhuangXiangDDWL', async () => {
     describe('成功', async () => {
       it('ZHY装箱DDWL', async () => {
-        const DDId = 2;
-        const GTId = 7;
+        const DDId = 3;
+        const GTId = 8;
         const WLEWMs = [
           {
             type: 'WL',
-            typeId: 10,
-            uuid: 'WL10_100',
+            typeId: 14,
+            uuid: '14_100',
           },
           {
             type: 'WL',
-            typeId: 10,
-            uuid: 'WL10_100',
+            typeId: 14,
+            uuid: '14_101',
           },
         ];
         const KDXEWM = {
@@ -2966,12 +2966,12 @@ describe('SPRT测试', () => {
           {
             type: 'DP',
             typeId: 12,
-            uuid: 'DP12_100',
+            uuid: '12_100',
           },
           {
             type: 'DP',
             typeId: 12,
-            uuid: 'DP12_101',
+            uuid: '12_101',
           },
         ];
         const KDXEWM = {
@@ -3041,7 +3041,7 @@ describe('SPRT测试', () => {
           {
             type: 'WL',
             typeId: 14,
-            uuid: 'WL14_1',
+            uuid: '14_1',
           },
         ];
 
@@ -3108,7 +3108,7 @@ describe('SPRT测试', () => {
   // 关联快递 [ZHY]
   describe('/guanLianKuaiDi', async () => {
     describe('成功', async () => {
-      it.only('ZHY关联快递', async () => {
+      it('ZHY关联快递', async () => {
         const ZHY4Token = await getToken('ZHY4', '123456');
         const EWMs = [
           {
@@ -3325,12 +3325,12 @@ describe('SPRT测试', () => {
           {
             type: 'WL',
             typeId: 18,
-            uuid: 'WL18_1',
+            uuid: '18_1',
           },
           {
             type: 'WL',
             typeId: 18,
-            uuid: 'WL18_2',
+            uuid: '18_2',
           },
         ];
 
@@ -3763,7 +3763,7 @@ describe('SPRT测试', () => {
   });
 
   // 申请日常DPBH [GZ, GTBA]
-  describe('/shenQingRiChangDPLBH', async () => {
+  describe('/shenQingRiChangDPBH', async () => {
     describe('成功', async () => {
       it('GTBA申请日常DPBH', async () => {
         const GTBA8Token = await getToken('GTBA8', '123456');
@@ -3773,7 +3773,7 @@ describe('SPRT测试', () => {
         const note = '货物损坏，申请补货';
 
         const response = await post(
-          'shenQingRiChangDPLBH',
+          'shenQingRiChangDPBH',
           {
             DWId,
             DPId,
@@ -3784,7 +3784,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const dpbh = await WLBH.findOne({ where: { DPId } });
+        const dpbh = await DPBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
       });//TODO:Table is not a constructor
     });
@@ -4199,14 +4199,14 @@ describe('SPRT测试', () => {
   });
 
   // 为WLBH分配发货GYS [生产GYSGLY]
-  describe('/fengPeiWLBHFaHuoGYS', async () => {
+  describe('/fenPeiWLBHFaHuoGYS', async () => {
     describe('成功', async () => {
       it('生产GYSGLY分配WLBH的发货GYS', async () => {
         const ids = [8];
         const GYSId = 3;
 
         let response = await post(
-          'fengPeiWLBHFaHuoGYS',
+          'fenPeiWLBHFaHuoGYS',
           {
             ids,
             GYSId,
@@ -4225,14 +4225,14 @@ describe('SPRT测试', () => {
   });
 
   // 为DPBH分配发货GYS [生产GYSGLY]
-  describe('/fengPeiDPBHFaHuoGYS', async () => {
+  describe('/fenPeiDPBHFaHuoGYS', async () => {
     describe('成功', async () => {
       it('生产GYSGLY分配DPBH的发货GYS', async () => {
         const ids = [8];
         const GYSId = 3;
 
         let response = await post(
-          'fengPeiDPBHFaHuoGYS',
+          'fenPeiDPBHFaHuoGYS',
           {
             ids,
             GYSId,
