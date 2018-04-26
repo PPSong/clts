@@ -2586,7 +2586,7 @@ describe('SPRT测试', () => {
           {
             type: 'WL',
             typeId: 1,
-            uuid: 'WL1_101',
+            uuid: 'WL1_102',
           },
         ];
 
@@ -2640,7 +2640,39 @@ describe('SPRT测试', () => {
   // 批量入库DP [ZHY]
   describe('/piLiangRuKuDP', async () => {
     describe('成功', async () => {
+      it('ZHY入库DP', async () => {
+        const EWMs = [
+          {
+            type: 'DP',
+            typeId: 1,
+            uuid: 'DP1_101',
+          },
+          {
+            type: 'DP',
+            typeId: 1,
+            uuid: 'DP1_102',
+          },
+        ];
 
+        const response = await post(
+          'piLiangRuKuDP',
+          {
+            EWMs,
+          },
+          ZHYToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        for (const item of EWMs) {
+          const wydp = await WYDP.findOne({ where: { EWM: JSON.stringify(item) } });
+          assert.notEqual(wydp, null);
+
+          const wydpcz = await WYDPCZ.findAll({ where: { WYDPId: wydp.dataValues.id } });
+          const wydpczList = wydpcz.map(item => (item.dataValues));
+          assert.equal(wydpcz.length, 1);
+          assert.deepInclude(wydpczList[0].status, '入库');
+        };
+      });
     });
     describe('失败', async () => {
 
@@ -2650,7 +2682,7 @@ describe('SPRT测试', () => {
   // 批量出库WL [ZHY]
   describe('/piLiangChuKuWL', async () => {
     describe('成功', async () => {
-
+      it('ZHY出库WL', async () => { });
     });
     describe('失败', async () => {
 
@@ -2660,7 +2692,7 @@ describe('SPRT测试', () => {
   // 批量出库DP [ZHY]
   describe('/piLiangChuKuDP', async () => {
     describe('成功', async () => {
-
+      it('ZHY出库DP', async () => { });
     });
     describe('失败', async () => {
 
@@ -2670,7 +2702,7 @@ describe('SPRT测试', () => {
   // 批量消库WL [ZHY]
   describe('/piLiangXiaoKuWL', async () => {
     describe('成功', async () => {
-
+      it('ZHY消库WL', async () => { });
     });
     describe('失败', async () => {
 
@@ -2680,7 +2712,7 @@ describe('SPRT测试', () => {
   // 批量消库DP [ZHY]
   describe('/piLiangXiaoKuDP', async () => {
     describe('成功', async () => {
-
+      it('ZHY消库DP', async () => { });
     });
     describe('失败', async () => {
 
@@ -2690,7 +2722,7 @@ describe('SPRT测试', () => {
   // 订单批量装箱DDWL [ZHY] --->fanfan
   describe('/piLiangZhuangXiangDDWL', async () => {
     describe('成功', async () => {
-      it('ZHY装箱WL', async () => {
+      it('ZHY装箱DDWL', async () => {
         const DDId = 2;
         const GTId = 7;
         const HWEWMs = [
@@ -2796,7 +2828,7 @@ describe('SPRT测试', () => {
   // 订单批量装箱DDDP [ZHY]
   describe('/piLiangZhuangXiangDDDP', async () => {
     describe('成功', async () => {
-
+      it('ZHY装箱DDDP', async () => { });
     });
     describe('失败', async () => {
 
@@ -2806,7 +2838,7 @@ describe('SPRT测试', () => {
   // 订单批量装箱BHWL [ZHY]
   describe('/piLiangZhuangXiangBuHuoWL', async () => {
     describe('成功', async () => {
-
+      it('ZHY装箱BHWL', async () => { });
     });
     describe('失败', async () => {
 
@@ -2816,7 +2848,7 @@ describe('SPRT测试', () => {
   // 订单批量装箱BHDP [ZHY]
   describe('/piLiangZhuangXiangBuHuoDP', async () => {
     describe('成功', async () => {
-
+      it('ZHY装箱BHDP', async () => { });
     });
     describe('失败', async () => {
 
@@ -2826,7 +2858,7 @@ describe('SPRT测试', () => {
   // 出箱WL [ZHY]
   describe('/chuXiangWL', async () => {
     describe('成功', async () => {
-      it('ZHY出箱货物', async () => {
+      it('ZHY出箱WL', async () => {
         const HWEWMs = [
           {
             type: 'WL',
@@ -2901,7 +2933,7 @@ describe('SPRT测试', () => {
   // 出箱DP [ZHY]
   describe('/chuXiangDP', async () => {
     describe('成功', async () => {
-
+      it('ZHY出箱DP', async () => { });
     });
     describe('失败', async () => {
 
@@ -3120,7 +3152,11 @@ describe('SPRT测试', () => {
   // 收货WL [GTBA, AZG]
   describe('/shouHuoWL', async () => {
     describe('成功', async () => {
-      it('AZG收货', async () => {
+      it('GTBA收货WL', async () => {
+
+      });
+
+      it('AZG收货WL', async () => {
         let AZG3Token = await getToken('AZG3', '123456');
         const HWEWMs = [
           {
@@ -3183,7 +3219,13 @@ describe('SPRT测试', () => {
   // 收货DP [GTBA, AZG]
   describe('/shouHuoDP', async () => {
     describe('成功', async () => {
+      it('GTBA收货DP', async () => {
 
+      });
+
+      it('AZG收货DP', async () => {
+
+      });
     });
     describe('失败', async () => {
 
@@ -3193,7 +3235,11 @@ describe('SPRT测试', () => {
   // 安装反馈DDWL状态 [GTBA, AZG]
   describe('/anZhuangFanKuiDDWLZhuangTai', async () => {
     describe('成功', async () => {
-      it('AZG反馈AZFKType', async () => {
+      it('GTBA反馈DDWL的AZFKType', async () => {
+
+      });
+
+      it('AZG反馈DDWL的AZFKType', async () => {
         let WYWLPayloads = [
           {
             type: 'WL',
@@ -3265,7 +3311,13 @@ describe('SPRT测试', () => {
   // 安装反馈DDDP状态 [GTBA, AZG]
   describe('/anZhuangFanKuiDDDPZhuangTai', async () => {
     describe('成功', async () => {
+      it('GTBA反馈DDDP的AZFKType', async () => {
 
+      });
+
+      it('AZG反馈DDDP的AZFKType', async () => {
+
+      });
     });
     describe('失败', async () => {
 
@@ -3275,7 +3327,11 @@ describe('SPRT测试', () => {
   // 装反馈全景WL图片 [GTBA, AZG]
   describe('/anZhuangFanKuiQuanJingWLTuPian', async () => {
     describe('成功', async () => {
-      it.skip('AZG反馈安装反馈图', async () => {
+      it('GTBA反馈WL安装反馈图', async () => {
+
+      });
+
+      it.skip('AZG反馈WL安装反馈图', async () => {
         let AZG3Token = await getToken('AZG3', '123456');
         const DDId = 3;
         const GTId = 8;
@@ -3339,7 +3395,13 @@ describe('SPRT测试', () => {
   // 安装反馈全景DP图片 [GTBA, AZG]
   describe('/anZhuangFanKuiQuanJingDPTuPian', async () => {
     describe('成功', async () => {
+      it('GTBA反馈DP安装反馈图', async () => {
 
+      });
+
+      it('AZG反馈WL安装反馈图', async () => {
+
+      });
     });
     describe('失败', async () => {
 
