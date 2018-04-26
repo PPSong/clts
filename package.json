@@ -11,7 +11,8 @@
     "genData": "yarn run babel-node -- ./tools/initData.js",
     "test": "mocha --exit --compilers js:babel-core/register test --reporter mochawesome",
     "genData_izz": "yarn run babel-node -- ./tools_izz/initData_izz.js",
-    "test_izz": "mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000"
+    "test_izz": "mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000",
+    "test_penn": "mocha --exit --compilers js:babel-core/register test/test_penn.js --reporter mochawesome  --timeout 5000"
   },
   "dependencies": {
     "babel-plugin-wildcard": "^4.0.0",

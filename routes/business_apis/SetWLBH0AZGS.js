@@ -62,7 +62,7 @@ export default class SetWLBH0AZGS extends BusinessApiBase {
       },
       {
         where: {
-          ids: {
+          id: {
             $in: ids,
           },
         },

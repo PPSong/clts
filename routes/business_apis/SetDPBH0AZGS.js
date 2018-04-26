@@ -15,8 +15,14 @@ export default class SetDPBH0AZGS extends BusinessApiBase {
     const tmpDPBHs = await DBTables.DPBH.findAll({
       include: [
         {
-          model: DBTables.GT,
-          as: 'GT',
+          model: DBTables.DW,
+          as: 'DW',
+          include: [
+            {
+              model: DBTables.GT,
+              as: 'GT',
+            },
+          ],
         },
       ],
       where: {
@@ -35,7 +41,7 @@ export default class SetDPBH0AZGS extends BusinessApiBase {
     // end 检查ids存在
 
     // 是否属于同一PP
-    const tmpPPIds = tmpDPBHs.map(item => item.GT.PPId);
+    const tmpPPIds = tmpDPBHs.map(item => item.DW.GT.PPId);
     const tmpUniquePPId = [...new Set(tmpPPIds)];
     if (tmpUniquePPId.length > 1) {
       throw new Error('要属于同一品牌!');
@@ -62,7 +68,7 @@ export default class SetDPBH0AZGS extends BusinessApiBase {
       },
       {
         where: {
-          ids: {
+          id: {
             $in: ids,
           },
         },
