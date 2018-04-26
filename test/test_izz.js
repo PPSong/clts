@@ -212,7 +212,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it.only('small test', async () => {
+    it('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -2039,7 +2039,7 @@ describe('SPRT测试', () => {
         ];
         assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
-    });// TODO:ppLog Error: HY000:Field 'status' doesn't have a default value
+    });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
@@ -3373,7 +3373,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { WLId } });
         assert.notEqual(wlbh, null);
-      });
+      });//TODO:SequelizeValidationError: notNull Violation: WLBH.ZXNumber cannot be null
 
       it('AZG申请上市WLBH', async () => {
         const AZG3Token = await getToken('AZG3', '123456');
@@ -3398,7 +3398,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { WLId } });
         assert.notEqual(wlbh, null);
-      });
+      });//TODO:notNull Violation: WLBH.ZXNumber cannot be null
     });
     //   describe('失败', async () => {
     //     describe('数据不合法', async () => {
@@ -3451,7 +3451,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
-      });
+      });//TODO:ppUtils.createDPBH is not a function
 
       it('AZG申请上市DPBH', async () => {
         const AZG3Token = await getToken('AZG3', '123456');
@@ -3476,7 +3476,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
-      });
+      });//TODO:ppUtils.createDPBH is not a function
     });
     //   describe('失败', async () => {
     //     describe('数据不合法', async () => {
@@ -3531,7 +3531,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { WLId } });
         assert.notEqual(wlbh, null);
-      });
+      });//TODO:SequelizeValidationError: notNull Violation: WLBH.ZXNumber cannot be null
     });
     describe('失败', async () => {
 
@@ -3562,7 +3562,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await WLBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
-      });
+      });//TODO:Table is not a constructor
     });
     describe('失败', async () => {
 
@@ -3587,7 +3587,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
         assert.equal(wlbh.dataValues.status, WLBHStatus.KFJLSPTG);
-      });
+      });//TODO:Table is not a constructor
     });
     describe('失败', async () => {
 
@@ -3743,7 +3743,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
         assert.equal(wlbh.dataValues.AZGSId, AZGSId);
-      });
+      });//TODO:SequelizeDatabaseError: Unknown column 'ids' in 'where clause'
     });
     describe('失败', async () => {
 
@@ -3770,7 +3770,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
         assert.equal(dpbh.dataValues.AZGSId, AZGSId);
-      });
+      });//TODO:SequelizeEagerLoadingError: GT is not associated to DPBH!
     });
     describe('失败', async () => {
 
@@ -3912,7 +3912,11 @@ describe('SPRT测试', () => {
   describe('/danDuShengPiBoHuiDPBHb', async () => {
     describe('成功', async () => {
       it('PPJL单独审批驳回DPBH', async () => {
+<<<<<<< HEAD
         const PPJL3Token = await getToken('PPJL3', '123456');
+=======
+        let PPJL3Token = await getToken('PPJL3', '123456');
+>>>>>>> 538d9a3f39e96fcbf79931aaec4c2a8a3a5736ce
         const id = 7;
         const PPJLNote = '驳回';
 
@@ -3939,7 +3943,27 @@ describe('SPRT测试', () => {
   describe('/setWLBHs0YJZXTime', async () => {
     describe('成功', async () => {
       it('生产GYSGLY设置WLBH的YJZXTime', async () => {
+<<<<<<< HEAD
 
+=======
+        const ids = [8, 9, 33];
+        const YJZXTime = '2018-10-10';
+
+        let response = await post(
+          'setWLBHs0YJZXTime',
+          {
+            ids,
+            YJZXTime,
+          },
+          GYSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of ids) {
+          const wlbh = await WLBH.findOne({ where: { id: item } });
+          assert.equal(wlbh.dataValues.YJZXTime, YJZXTime);
+        }
+>>>>>>> 538d9a3f39e96fcbf79931aaec4c2a8a3a5736ce
       });
     });
     describe('失败', async () => {
@@ -3950,7 +3974,25 @@ describe('SPRT测试', () => {
   // setDPBHYJZXTime [生产GYSGLY]
   describe('/setDPBHs0YJZXTime', async () => {
     describe('成功', async () => {
-      it('生产GYSGLY设置DPBH的YJZXTime', async () => { });
+      it('生产GYSGLY设置DPBH的YJZXTime', async () => {
+        const ids = [8, 9, 33];
+        const YJZXTime = '2018-10-10';
+
+        let response = await post(
+          'setDPBHs0YJZXTime',
+          {
+            ids,
+            YJZXTime,
+          },
+          GYSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of ids) {
+          const dpbh = await DPBH.findOne({ where: { id: item } });
+          assert.equal(dpbh.dataValues.YJZXTime, YJZXTime);
+        }
+      });
     });
     describe('失败', async () => {
 
@@ -3960,7 +4002,23 @@ describe('SPRT测试', () => {
   // 为WLBH分配发货GYS [生产GYSGLY]
   describe('/fengPeiWLBHFaHuoGYS', async () => {
     describe('成功', async () => {
-      it('生产GYSGLY分配WLBH的发货GYS', async () => { });
+      it('生产GYSGLY分配WLBH的发货GYS', async () => {
+        const ids = [8];
+        const GYSId = 3;
+
+        let response = await post(
+          'fengPeiWLBHFaHuoGYS',
+          {
+            ids,
+            GYSId,
+          },
+          GYSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
+        assert.equal(wlbh.dataValues.status, WLBHStatus.YFPFHGYS);
+      });
     });
     describe('失败', async () => {
 
@@ -3970,7 +4028,23 @@ describe('SPRT测试', () => {
   // 为DPBH分配发货GYS [生产GYSGLY]
   describe('/fengPeiDPBHFaHuoGYS', async () => {
     describe('成功', async () => {
-      it('生产GYSGLY分配DPBH的发货GYS', async () => { });
+      it('生产GYSGLY分配DPBH的发货GYS', async () => {
+        const ids = [8];
+        const GYSId = 3;
+
+        let response = await post(
+          'fengPeiDPBHFaHuoGYS',
+          {
+            ids,
+            GYSId,
+          },
+          GYSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
+        assert.equal(dpbh.dataValues.status, DPBHStatus.YFPFHGYS);
+      });
     });
     describe('失败', async () => {
 
@@ -3980,7 +4054,25 @@ describe('SPRT测试', () => {
   // 分配WLBH的AZG [AZGSGLY]
   describe('/setWLBHs0AZG', async () => {
     describe('成功', async () => {
-      it('AZGSGLY分配WLBH的AZG', async () => { });
+      it('AZGSGLY分配WLBH的AZG', async () => {
+        const WLBHIds = [8, 32];
+        const AZGUserId = 36;
+
+        let response = await post(
+          'setWLBHs0AZG',
+          {
+            WLBHIds,
+            AZGUserId
+          },
+          AZGSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WLBHIds) {
+          const wlbh = await WLBH.findOne({ where: { id: item } });
+          assert.equal(wlbh.dataValues.AZGUserId, AZGUserId);
+        };
+      });
     });
     describe('失败', async () => {
 
@@ -3990,7 +4082,25 @@ describe('SPRT测试', () => {
   // 分配DPBH的AZG [AZGSGLY]
   describe('/setDPBHs0AZG', async () => {
     describe('成功', async () => {
-      it('AZGSGLY分配DPBH的AZG', async () => { });
+      it('AZGSGLY分配DPBH的AZG', async () => {
+        const DPBHIds = [8, 32];
+        const AZGUserId = 36;
+
+        let response = await post(
+          'setWLBHs0AZG',
+          {
+            DPBHIds,
+            AZGUserId
+          },
+          AZGSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WLBHIds) {
+          const dpbh = await DPBH.findOne({ where: { id: item } });
+          assert.equal(dpbh.dataValues.AZGUserId, AZGUserId);
+        };
+      });
     });
     describe('失败', async () => {
 
