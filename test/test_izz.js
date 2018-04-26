@@ -1545,7 +1545,7 @@ describe('SPRT测试', () => {
             number: 2,
           },
         ];
-        console.log('KFJLToken--->',KFJLToken)
+      
         const response = await post(
           'editEJZH',
           {
@@ -2193,7 +2193,7 @@ describe('SPRT测试', () => {
   describe('/setDDDWDPs0AZGS', async () => {
     describe('成功', async () => {
       it('PPJL配置DD_DW_DP的AZGS', async () => {
-        const PPJL3Token = await getToken('PPJL3', '123456');
+        const PPJL2Token = await getToken('PPJL2', '123456');
         const AZGSId = 1;
         const DD_DW_DPIds = [1, 2, 3];
 
@@ -2203,7 +2203,7 @@ describe('SPRT测试', () => {
             DD_DW_DPIds,
             AZGSId,
           },
-          PPJL3Token,
+          PPJL2Token,
         );
         assert.equal(response.data.code, 1);
 
@@ -2366,7 +2366,7 @@ describe('SPRT测试', () => {
             GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
-          console.log('GYSGLY设置还未审批通过的DD的DD_GT_WL的发货GYS---->', response.data.msg);
+          assert.include(response.data.msg, '状态');
         });
       });
       describe.skip('唯一性校验', async () => { });
@@ -2417,7 +2417,6 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('GYSGLY设置还未审批通过的DD的DD_DW_DP的发货GYS', async () => {
-          let GYSGLY6Token = await getToken('GYSGLY6', '123456');
           const DD_DW_DPIds = [1, 2];
           const GYSId = 1;
 
@@ -2427,10 +2426,10 @@ describe('SPRT测试', () => {
               DD_DW_DPIds,
               GYSId,
             },
-            GYSGLY6Token,
+            GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
-          console.log('GYSGLY设置还未审批通过的DD的DD_DW_DP的发货GYS---->', response.data.msg);
+          assert.include(response.data.msg, '状态');  
         });
       });
       describe('唯一性校验', async () => { });
@@ -2512,7 +2511,7 @@ describe('SPRT测试', () => {
             DD_DW_DPIds,
             AZGUserId,
           },
-          AZGSGLY5Token,
+          AZGSGLYToken,
         );
         assert.equal(response.data.code, 1);
 
@@ -2601,7 +2600,7 @@ describe('SPRT测试', () => {
           assert.equal(wywlcz.length, 1);
           assert.deepInclude(wywlczList[0].status, '入库');
         };
-      });
+      });//TODO:  Cannot read property 'uuid' of undefined
     });
 
     // describe('失败', async () => {
@@ -2733,7 +2732,7 @@ describe('SPRT测试', () => {
         //箱子如果不存在，要新建箱子；
         //装箱成功后物料待装箱数量相应减少；
         //装箱后货物状态更改为装箱；
-      });
+      });//TODO: Cannot read property 'filter' of undefined
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -2833,9 +2832,8 @@ describe('SPRT测试', () => {
           {
             HWEWMs,
           },
-          ZHY4Token,
+          ZHYToken,
         );
-        console.log('izz--->', response.data);
         assert.equal(response.data.code, 1);
 
         const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: HWEWMs[0].typeId } });
@@ -2861,7 +2859,7 @@ describe('SPRT测试', () => {
         //出箱货物需为同一个装货员，但无需为同一个柜台；
         //出箱后货物待装箱数量增加；
         //出箱后货物状态更改为待入库状态；
-      });
+      });//TODO:Cannot read property 'filter' of undefined
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -2947,7 +2945,7 @@ describe('SPRT测试', () => {
         assert.equal(isArrayEqual(wywlList, truewywlList), true);
         //快递箱成功关联后，快递箱状态转为发货状态；
         //快递箱成功关联后，箱中物料/灯片状态更改为发货状态
-      });
+      });//TODO: Cannot read property 'filter' of undefined
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -3022,7 +3020,7 @@ describe('SPRT测试', () => {
         };
         //解除关联后，快递箱状态更改为装箱状态；
         //解除关联后，箱中货物状态更改为装箱状态；
-      });
+      });//TODO: Cannot read property 'filter' of undefined
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -3080,7 +3078,7 @@ describe('SPRT测试', () => {
           assert.equal(item.status, '收箱');
         };
         //收箱后，快递箱及箱内货物状态更改为收箱状态；
-      });
+      });//TODO:Cannot read property 'filter' of undefined
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -3115,17 +3113,17 @@ describe('SPRT测试', () => {
   describe('/shouHuoWL', async () => {
     describe('成功', async () => {
       it('AZG收货', async () => {
-        let AZG6Token = await getToken('AZG6', '123456');
+        let AZG3Token = await getToken('AZG3', '123456');
         const HWEWMs = [
           {
             type: 'WL',
-            typeId: 27,
-            uuid: 'WL27_1',
+            typeId: 18,
+            uuid: 'WL18_1',
           },
           {
             type: 'WL',
-            typeId: 27,
-            uuid: 'WL27_2',
+            typeId: 18,
+            uuid: 'WL18_2',
           },
         ];
 
@@ -3134,7 +3132,7 @@ describe('SPRT测试', () => {
           {
             HWEWMs,
           },
-          AZG6Token,
+          AZG3Token,
         );
         assert.equal(response.data.code, 1);
 
@@ -3143,7 +3141,7 @@ describe('SPRT测试', () => {
           assert.equal(wywl.dataValues.status, '收货');
         };
         //收货后，货物状态更改为收货状态；
-      });
+      });//TODO: Cannot read property 'filter' of undefined
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -3185,79 +3183,41 @@ describe('SPRT测试', () => {
   });
 
   // 安装反馈DDWL状态 [GTBA, AZG]
-  describe('/anZhuangFanKuiZhuangTai', async () => {
+  describe('/anZhuangFanKuiDDWLZhuangTai', async () => {
     describe('成功', async () => {
       it('AZG反馈AZFKType', async () => {
-        let AZG6Token = await getToken('AZG6', '123456');
-        let GTBA8Token = await getToken('GTBA8', '123456');
-        const KDXEWMs = [
+        let WYWLPayloads = [
           {
-            type: 'KDX',
-            uuid: 'KDX3',
+            type: 'WL',
+            typeId: 19,
+            uuid: 'WL19_1',
+          },
+          {
+            type: 'WL',
+            typeId: 19,
+            uuid: 'WL19_2',
           },
         ];
-
-        let HWEWMs = [
-          { "type": "WL", "typeId": 26, "uuid": "WL26_1" },
-          { "type": "WL", "typeId": 26, "uuid": "WL26_2" },
-          { "type": "WL", "typeId": 26, "uuid": "WL26_3" },
-          { "type": "WL", "typeId": 26, "uuid": "WL26_4" },
-          { "type": "WL", "typeId": 26, "uuid": "WL26_5" },
-          { "type": "WL", "typeId": 26, "uuid": "WL26_6" },
-          { "type": "WL", "typeId": 26, "uuid": "WL26_7" },
-          { "type": "WL", "typeId": 26, "uuid": "WL26_8" },
-          { "type": "WL", "typeId": 27, "uuid": "WL27_1" },
-          { "type": "WL", "typeId": 27, "uuid": "WL27_2" },
-          { "type": "WL", "typeId": 27, "uuid": "WL27_3" },
-          { "type": "WL", "typeId": 27, "uuid": "WL27_4" },
-        ];
-        // for (let i = 12; i < 24; i++) {
-        //   const wywl = await WYWL.findOne({ where: { id: i } });
-        //   HWEWMs.push(wywl.dataValues.EWM);
-        // };
-        await post(
-          'shouXiang',
-          {
-            KDXEWMs,
-          },
-          GTBA8Token,
-        );
-        await post(
-          'shouHuo',
-          {
-            HWEWMs
-          },
-          AZG6Token,
-        );
-        let HWPayloads = [];
-        for (let i = 13; i < 26; i++) {
-          HWPayloads.push({
-            id: i,
-            AZFK: AZFKType.AZCG,
-          })
-        }
-        const DDId = 4;
+        const DDId = 3;
         const GTId = 8;
-        const ewmType = EWMType.WL;
 
         const response = await post(
-          'anZhuangFanKuiZhuangTai',
+          'anZhuangFanKuiDDWLZhuangTai',
           {
             DDId,
             GTId,
-            EWMType: ewmType,
-            HWPayloads,
+            WYWLPayloads,
           },
-          AZG6Token,
+          AZGToken,
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of HWPayloads) {
+        for (let item of WYWLPayloads) {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, '反馈');
         };
         //反馈状态后，货物状态更改为反馈状态；
-      });
+      });//TODO:Object.values(...).include is not a function
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -3307,31 +3267,23 @@ describe('SPRT测试', () => {
   // 装反馈全景WL图片 [GTBA, AZG]
   describe('/anZhuangFanKuiQuanJingWLTuPian', async () => {
     describe('成功', async () => {
-      it('AZG反馈安装反馈图', async () => {
-        let AZG6Token = await getToken('AZG6', '123456');
-        const DDId = 6;
-        const GTId = 10;
-        const ewmType = EWMType.WL;
-        const HWPayloads = [
-          {
-            id: 40,
-            imageUrl: 'imageUrl_FK40'
-          },
-          {
-            id: 41,
-            imageUrl: 'imageUrl_FK41'
-          },
+      it.skip('AZG反馈安装反馈图', async () => {
+        let AZG3Token = await getToken('AZG3', '123456');
+        const DDId = 3;
+        const GTId = 8;
+        const imageUrls = [
+          'imageUrl_FK40',
+          'imageUrl_FK40',
         ];
 
         const response = await post(
-          'anZhuangFanKuiZhuangTai',
+          'anZhuangFanKuiQuanJingWLTuPian',
           {
             DDId,
             GTId,
-            EWMType: ewmType,
-            HWPayloads,
+            imageUrls,
           },
-          AZG6Token,
+          AZG3Token,
         );
         assert.equal(response.data.code, 1);
 
@@ -3376,272 +3328,292 @@ describe('SPRT测试', () => {
     // });
   });
 
-// 安装反馈全景DP图片 [GTBA, AZG]
-describe('/anZhuangFanKuiQuanJingDPTuPian', async () => {
-  describe('成功', async () => {
+  // 安装反馈全景DP图片 [GTBA, AZG]
+  describe('/anZhuangFanKuiQuanJingDPTuPian', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
-  });
-});
-
-// 申请上市WLBH [GZ, GTBA, AZG]
+  // 申请上市WLBH [GZ, GTBA, AZG]
   describe('/shenQingShangShiWLBH', async () => {
-  //   describe('成功', async () => {
-  //     it('柜台BA、柜长申请日常补货成功', async () => {
-  //       //申请成功后，生成补货记录；
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+    //   describe('成功', async () => {
+    //     it('柜台BA、柜长申请日常补货成功', async () => {
+    //       //申请成功后，生成补货记录；
+    //     });
+    //   });
+    //   describe('失败', async () => {
+    //     describe('数据不合法', async () => {
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非柜台BA/柜长登入', async () => {
+    //     });
+    //     describe('没有权限', async () => {
+    //       it('非柜台BA/柜长登入', async () => {
 
-  //       });
-  //       it('该柜台非操作者权限范围内柜台', async () => {
+    //       });
+    //       it('该柜台非操作者权限范围内柜台', async () => {
 
-  //       });
+    //       });
 
-  //       it('该物料ID在该柜台不存在', async () => {
+    //       it('该物料ID在该柜台不存在', async () => {
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
+    //       });
+    //     });
+    //     describe('操作状态不正确', async () => {
 
-  //     });
-  //     describe('唯一性校验', async () => {
+    //     });
+    //     describe('唯一性校验', async () => {
 
-  //     });
-  //   });
+    //     });
+    //   });
   });
 
-// 申请上市DPBH [GZ, GTBA, AZG]  
+  // 申请上市DPBH [GZ, GTBA, AZG]  
   describe('/shenQingShangShiDPBH', async () => {
-  //   describe('成功', async () => {
-  //     it('柜台BA、安装工、柜长申请上市补货成功', async () => {
-  //       //申请成功后，生成补货记录；
-  //     });
-  //   });
-  //   describe('失败', async () => {
-  //     describe('数据不合法', async () => {
+    //   describe('成功', async () => {
+    //     it('柜台BA、安装工、柜长申请上市补货成功', async () => {
+    //       //申请成功后，生成补货记录；
+    //     });
+    //   });
+    //   describe('失败', async () => {
+    //     describe('数据不合法', async () => {
 
-  //     });
-  //     describe('没有权限', async () => {
-  //       it('非柜台BA/柜长/安装工登入', async () => {
+    //     });
+    //     describe('没有权限', async () => {
+    //       it('非柜台BA/柜长/安装工登入', async () => {
 
-  //       });
+    //       });
 
-  //       it('该柜台非操作者权限范围内柜台', async () => {
+    //       it('该柜台非操作者权限范围内柜台', async () => {
 
-  //       });
-  //       it('如果是安装工补货，该物料不属于该安装工安装', async () => {
+    //       });
+    //       it('如果是安装工补货，该物料不属于该安装工安装', async () => {
 
-  //       });
+    //       });
 
-  //       it('该物料ID在该柜台不存在', async () => {
+    //       it('该物料ID在该柜台不存在', async () => {
 
-  //       });
-  //     });
-  //     describe('操作状态不正确', async () => {
+    //       });
+    //     });
+    //     describe('操作状态不正确', async () => {
 
-  //     });
-  //     describe('唯一性校验', async () => {
+    //     });
+    //     describe('唯一性校验', async () => {
 
-  //     });
-  //   });
+    //     });
+    //   });
+  });
+
+  // 申请日常WLBH [GZ, GTBA]
+  describe('/shenQingRiChangWLBH', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
+  });
+
+  // 申请日常DPBH [GZ, GTBA]
+  describe('/shenQingRiChangWLBH', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
 
   // 批量审批通过WLBH [KFJL]
-describe('/piLiangShengPiTongGuoWLBHa', async () => {
-  describe('成功', async () => {
+  describe('/piLiangShengPiTongGuoWLBHa', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
+  // 批量审批通过DPBH [KFJL]
+  describe('/piLiangShengPiTongGuoDPBHa', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
-});
 
-// 批量审批通过DPBH [KFJL]
-describe('/piLiangShengPiTongGuoDPBHa', async () => {
-  describe('成功', async () => {
+  // 单独审批通过WLBH [KFJL]
+  describe('/danDuShengPiTongGuoWLBHa', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
+  // 单独审批驳回WLBH [KFJL]
+  describe('/danDuShengPiBoHuiWLBHa', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
-});
 
-// 单独审批通过WLBH [KFJL]
-describe('/danDuShengPiTongGuoWLBHa', async () => {
-  describe('成功', async () => {
+  // 单独审批驳回DPBH [KFJL]
+  describe('/danDuShengPiBoHuiDPBHa', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
+  // 为WLBH分配AZGS [PPJL]
+  describe('/setWLBH0AZGS', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
-});
 
-// 单独审批驳回WLBH [KFJL]
-describe('/danDuShengPiBoHuiWLBHa', async () => {
-  describe('成功', async () => {
+  // 为DPBH分配AZGS [PPJL]
+  describe('/setDPBH0AZGS', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
+  // 批量审批通过WLBH [PPJL]
+  describe('/piLiangShengPiTongGuoWLBHb', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
-});
 
-// 单独审批驳回DPBH [KFJL]
-describe('/danDuShengPiBoHuiDPBHa', async () => {
-  describe('成功', async () => {
+  // 批量审批通过DPBH [PPJL]
+  describe('/danDuShengPiTongGuoDPBHb', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
+  // 单独审批通过WLBH [PPJL]
+  describe('/danDuShengPiTongGuoWLBHb', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
-});
 
-// 为WLBH分配AZGS [PPJL]
-describe('/setWLBH0AZGS', async () => {
-  describe('成功', async () => {
+  // 单独审批通过DPBH [PPJL]
+  describe('/danDuShengPiTongGuoDPBHb', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
+  // 单独审批驳回WLBH [PPJL]
+  describe('/danDuShengPiBoHuiWLBHb', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
-});
 
-// 为DPBH分配AZGS [PPJL]
-describe('/setDPBH0AZGS', async () => {
-  describe('成功', async () => {
+  // 单独审批驳回DPBH [PPJL]
+  describe('/danDuShengPiBoHuiDPBHb', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
+  // setWLBHYJZXTime [生产GYSGLY]
+  describe('/setWLBHs0YJZXTime', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
-});
 
-// 批量审批通过WLBH [PPJL]
-describe('/piLiangShengPiTongGuoWLBHb', async () => {
-  describe('成功', async () => {
+  // setDPBHYJZXTime [生产GYSGLY]
+  describe('/setDPBHs0YJZXTime', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
+  // 为WLBH分配发货GYS [生产GYSGLY]
+  describe('/fengPeiWLBHFaHuoGYS', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
-});
 
-// 批量审批通过DPBH [PPJL]
-describe('/danDuShengPiTongGuoDPBHb', async () => {
-  describe('成功', async () => {
+  // 为DPBH分配发货GYS [生产GYSGLY]
+  describe('/fengPeiDPBHFaHuoGYS', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
 
+  // 分配WLBH的AZG [AZGSGLY]
+  describe('/setWLBHs0AZG', async () => {
+    describe('成功', async () => {
+
+    });
+    describe('失败', async () => {
+
+    });
   });
-});
 
-// 单独审批通过WLBH [PPJL]
-describe('/danDuShengPiTongGuoWLBHb', async () => {
-  describe('成功', async () => {
+  // 分配DPBH的AZG [AZGSGLY]
+  describe('/setDPBHs0AZG', async () => {
+    describe('成功', async () => {
 
+    });
+    describe('失败', async () => {
+
+    });
   });
-  describe('失败', async () => {
-
-  });
-});
-
-// 单独审批通过DPBH [PPJL]
-describe('/danDuShengPiTongGuoDPBHb', async () => {
-  describe('成功', async () => {
-
-  });
-  describe('失败', async () => {
-
-  });
-});
-
-// 单独审批驳回WLBH [PPJL]
-describe('/danDuShengPiBoHuiWLBHb', async () => {
-  describe('成功', async () => {
-
-  });
-  describe('失败', async () => {
-
-  });
-});
-
-// 单独审批驳回DPBH [PPJL]
-describe('/danDuShengPiBoHuiDPBHb', async () => {
-  describe('成功', async () => {
-
-  });
-  describe('失败', async () => {
-
-  });
-});
-
-// setWLBHYJZXTime [生产GYSGLY]
-describe('/setWLBHs0YJZXTime', async () => {
-  describe('成功', async () => {
-
-  });
-  describe('失败', async () => {
-
-  });
-});
-
-// setDPBHYJZXTime [生产GYSGLY]
-describe('/setDPBHs0YJZXTime', async () => {
-  describe('成功', async () => {
-
-  });
-  describe('失败', async () => {
-
-  });
-});
-
-// 为WLBH分配发货GYS [生产GYSGLY]
-describe('/fengPeiWLBHFaHuoGYS', async () => {
-  describe('成功', async () => {
-
-  });
-  describe('失败', async () => {
-
-  });
-});
-
-// 为DPBH分配发货GYS [生产GYSGLY]
-describe('/fengPeiDPBHFaHuoGYS', async () => {
-  describe('成功', async () => {
-
-  });
-  describe('失败', async () => {
-
-  });
-});
-
-// 分配WLBH的AZG [AZGSGLY]
-describe('/setWLBHs0AZG', async () => {
-  describe('成功', async () => {
-
-  });
-  describe('失败', async () => {
-
-  });
-});
-
-// 分配DPBH的AZG [AZGSGLY]
-describe('/setDPBHs0AZG', async () => {
-  describe('成功', async () => {
-
-  });
-  describe('失败', async () => {
-
-  });
-});
 
 });
