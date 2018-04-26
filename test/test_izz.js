@@ -30,7 +30,9 @@ import {
   YJZHXGT,
   DD,
   DD_GT_WL,
+  DD_GT_WLStatus,
   DD_DW_DP,
+  DD_DW_DPStatus,
   WYWL,
   WYDP,
   WYWLStatus,
@@ -151,7 +153,7 @@ const initData = async () => {
       const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
     }
   }
-}
+};
 
 const createViewAndProcedure = async () => {
   // 创建View
@@ -164,12 +166,14 @@ const createViewAndProcedure = async () => {
   // 创建Procedure
   const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
   const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
-  const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
+  const procedureSql2 = replaceAll(procedureSql1, '_DDStatus\\.YSP_', DDStatus.YSP);
+  const procedureSql3 = replaceAll(procedureSql, '_DD_GT_WLStatus\\.CS_', DD_GT_WLStatus.CS);
+  const procedureSql4 = replaceAll(procedureSql1, '_DD_DW_DPStatus\\.CS_', DD_DW_DPStatus.CS);
   await sequelize.query(procedureSql2, {
     type: sequelize.QueryTypes.SELECT,
   });
   // end 创建创建Procedure
-}
+};
 
 describe('SPRT测试', () => {
   before(async () => {
@@ -198,7 +202,7 @@ describe('SPRT测试', () => {
     AZGSGLYToken = await getToken('AZGSGLY1', '123456');
     ZHYToken = await getToken('ZHY1', '123456');
     AZGToken = await getToken('AZG1', '123456');
-  })
+  });
   beforeEach(async () => {
     await initData();
   });
@@ -209,7 +213,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  // 格式说明git 
+  // 格式说明git
   // describe('API名称', async () => {
   //   describe('成功', async () => {
   //   });
@@ -583,9 +587,9 @@ describe('SPRT测试', () => {
         for (let i = 0; i < gt.length; i++) {
           GTIdList.push(gt[i].dataValues.id);
         }
-        for (let item of GTIds) {
+        for (const item of GTIds) {
           assert.include(GTIdList, item);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -843,10 +847,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of DWIds) {
+        for (const item of DWIds) {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
-        };
+        }
       });
 
       it('KFJL将DP关联多个GT的DW', async () => {
@@ -862,10 +866,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of DWIds) {
+        for (const item of DWIds) {
           const dw = await DW.findOne({ where: { id: item } });
           assert.equal(dw.dataValues.DPId, DPId);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -931,8 +935,8 @@ describe('SPRT测试', () => {
         const fg = await FG.findOne({ where: { name: 'FG_T' } });
         assert.notEqual(fg, null);
 
-        let fg_testList = [];
-        for (let item of FGPayload.Testers) {
+        const fg_testList = [];
+        for (const item of FGPayload.Testers) {
           const tester = await Tester.findOne({ where: { name: item } });
           assert.notEqual(tester, null);
 
@@ -940,7 +944,7 @@ describe('SPRT测试', () => {
             FGId: fg.dataValues.id,
             TesterId: tester.dataValues.id,
           });
-        };
+        }
 
         const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id } });
         let fg_testDBList = [];
@@ -971,8 +975,8 @@ describe('SPRT测试', () => {
         const fg = await FG.findOne({ where: { name: 'FG1' } });
         assert.notEqual(fg, null);
 
-        let fg_testList = [];
-        for (let item of FGPayload.Testers) {
+        const fg_testList = [];
+        for (const item of FGPayload.Testers) {
           const tester = await Tester.findOne({ where: { name: item } });
           assert.notEqual(tester, null);
 
@@ -980,7 +984,7 @@ describe('SPRT测试', () => {
             FGId: fg.dataValues.id,
             TesterId: tester.dataValues.id,
           });
-        };
+        }
 
         const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id } });
         let fg_testDBList = [];
@@ -1013,8 +1017,8 @@ describe('SPRT测试', () => {
         const fg = await FG.findOne({ where: { name: 'FG_T' } });
         assert.notEqual(fg, null);
 
-        let fg_testList = [];
-        for (let item of FGPayload.Testers) {
+        const fg_testList = [];
+        for (const item of FGPayload.Testers) {
           const tester = await Tester.findOne({ where: { name: item } });
           assert.notEqual(tester, null);
 
@@ -1022,7 +1026,7 @@ describe('SPRT测试', () => {
             FGId: fg.dataValues.id,
             TesterId: tester.dataValues.id,
           });
-        };
+        }
 
         const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id } });
         let fg_testDBList = [];
@@ -1509,23 +1513,23 @@ describe('SPRT测试', () => {
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
         const FGTesterIdList = [];
-        for (let item of ejzh_fg_tester) {
+        for (const item of ejzh_fg_tester) {
           FGTesterIdList.push(item.dataValues.FGTesterId);
-        };
+        }
         assert.equal(FGTesterIdList.length, 2);
-        for (let item of FGTesters) {
+        for (const item of FGTesters) {
           assert.include(FGTesterIdList, item.id);
-        };
+        }
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
         const SJWLIdList = [];
-        for (let item of ejzh_sjwl) {
+        for (const item of ejzh_sjwl) {
           SJWLIdList.push(item.dataValues.WLId);
-        };
+        }
         assert.equal(SJWLIdList.length, 2);
-        for (let item of SJWLs) {
+        for (const item of SJWLs) {
           assert.include(SJWLIdList, item.id);
-        };
+        }
       });
 
       it('KFJL编辑EJZH-将原FGTester&SJWL修改成新的', async () => {
@@ -1562,23 +1566,23 @@ describe('SPRT测试', () => {
 
         const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
         const FGTesterIdList = [];
-        for (let item of ejzh_fg_tester) {
+        for (const item of ejzh_fg_tester) {
           FGTesterIdList.push(item.dataValues.FGTesterId);
-        };
+        }
         assert.equal(FGTesterIdList.length, 1);
-        for (let item of FGTesters) {
+        for (const item of FGTesters) {
           assert.include(FGTesterIdList, item.id);
-        };
+        }
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
         const SJWLIdList = [];
-        for (let item of ejzh_sjwl) {
+        for (const item of ejzh_sjwl) {
           SJWLIdList.push(item.dataValues.WLId);
-        };
+        }
         assert.equal(SJWLIdList.length, 1);
-        for (let item of SJWLs) {
+        for (const item of SJWLs) {
           assert.include(SJWLIdList, item.id);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -1832,13 +1836,13 @@ describe('SPRT测试', () => {
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId } });
 
         const EJZHIdList = [];
-        for (let item of yjzh_ejzh) {
+        for (const item of yjzh_ejzh) {
           EJZHIdList.push(item.dataValues.EJZHId);
-        };
+        }
         assert.equal(EJZHIdList.length, 1);
-        for (let item of EJZHs) {
+        for (const item of EJZHs) {
           assert.include(EJZHIdList, item.id);
-        };
+        }
       });
 
       it('KFJL编辑YJZH-替换原EJZH', async () => {
@@ -1869,13 +1873,13 @@ describe('SPRT测试', () => {
         const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId } });
 
         const EJZHIdList = [];
-        for (let item of yjzh_ejzh) {
+        for (const item of yjzh_ejzh) {
           EJZHIdList.push(item.dataValues.EJZHId);
-        };
+        }
         assert.equal(EJZHIdList.length, 1);
-        for (let item of EJZHs) {
+        for (const item of EJZHs) {
           assert.include(EJZHIdList, item.id);
-        };
+        }
       });
     });
     describe.skip('失败', async () => {
@@ -1914,13 +1918,13 @@ describe('SPRT测试', () => {
 
         const gt_yjzh = await GT_YJZH.findAll({ where: { YJZHId } });
         const GTIdList = [];
-        for (let item of gt_yjzh) {
+        for (const item of gt_yjzh) {
           GTIdList.push(item.dataValues.GTId);
-        };
+        }
         assert.equal(GTIdList.length, 2);
-        for (let item of GTs) {
+        for (const item of GTs) {
           assert.include(GTIdList, item.id);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -2031,7 +2035,7 @@ describe('SPRT测试', () => {
         ];
         assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
-    });//TODO:ppLog Error: HY000:Field 'status' doesn't have a default value
+    });// TODO:ppLog Error: HY000:Field 'status' doesn't have a default value
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
@@ -2142,10 +2146,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of DD_GT_WLIds) {
+        for (const item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.AZGSId, AZGSId);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -2207,10 +2211,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of DD_DW_DPIds) {
+        for (const item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.AZGSId, AZGSId);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -2328,10 +2332,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of DD_GT_WLIds) {
+        for (const item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.GYSId, GYSId);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -2390,10 +2394,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of DD_DW_DPIds) {
+        for (const item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.GYSId, GYSId);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -2453,10 +2457,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of DD_GT_WLIds) {
+        for (const item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.AZGUserId, AZGUserId);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -2515,10 +2519,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of DD_DW_DPIds) {
+        for (const item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.AZGUserId, AZGUserId);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -2591,12 +2595,12 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of EWMs) {
+        for (const item of EWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
-          let wywlczList = wywlcz.map(item => (item.dataValues));
+          const wywlczList = wywlcz.map(item => (item.dataValues));
           assert.equal(wywlcz.length, 1);
           assert.deepInclude(wywlczList[0].status, '入库');
         };
@@ -2720,7 +2724,7 @@ describe('SPRT测试', () => {
         const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWM) } });
         assert.notEqual(kdx, null);
 
-        for (let item of HWEWMs) {
+        for (const item of HWEWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
@@ -2821,9 +2825,9 @@ describe('SPRT测试', () => {
       it('ZHY出箱货物', async () => {
         const HWEWMs = [
           {
-            type: "WL",
+            type: 'WL',
             typeId: 14,
-            uuid: "WL14_1",
+            uuid: 'WL14_1',
           },
         ];
 
@@ -2845,7 +2849,7 @@ describe('SPRT测试', () => {
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
           assert.equal(wywlcz.length, 2);
           assert.include(wywlcz.map(item => (item.dataValues.status)), '入库');
-        };
+        }
 
         const wydp = await WYDP.findOne({ where: { EWM: JSON.stringify(HWEWMs[2]) } });
         assert.equal(wydp.dataValues.KDXId, null);
@@ -2854,7 +2858,7 @@ describe('SPRT测试', () => {
         assert.equal(wydpcz.length, 2);
         assert.include(wydpcz.map(item => (item.dataValues.status)), '入库');
 
-        const dddwdp = await DD_DW_DP.findOne({ where: { id: 7 } });//TODO:思考不写死的方法
+        const dddwdp = await DD_DW_DP.findOne({ where: { id: 7 } });// TODO:思考不写死的方法
         assert.equal(dddwdp.dataValues.ZXNumber, 0);
         //出箱货物需为同一个装货员，但无需为同一个柜台；
         //出箱后货物待装箱数量增加；
@@ -2904,11 +2908,11 @@ describe('SPRT测试', () => {
   describe('/guanLianKuaiDi', async () => {
     describe('成功', async () => {
       it('ZHY关联快递', async () => {
-        let ZHY4Token = await getToken('ZHY4', '123456');
+        const ZHY4Token = await getToken('ZHY4', '123456');
         const KDXEWMs = [
           {
-            type: "KDX",
-            uuid: "KDX1",
+            type: 'KDX',
+            uuid: 'KDX1',
           },
         ];
         const KDDCode = 'KDD_T';
@@ -2930,11 +2934,11 @@ describe('SPRT测试', () => {
         assert.equal(kdx.dataValues.status, '发货');
 
         const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
-        let wywlList = wywl.map(item => ({
+        const wywlList = wywl.map(item => ({
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        let truewywlList = [
+        const truewywlList = [
           { EWM: '{"type":"WL","typeId":23,"uuid":"WL23_3"}', status: '发货' },
           { EWM: '{"type":"WL","typeId":23,"uuid":"WL23_4"}', status: '发货' },
           { EWM: '{"type":"WL","typeId":23,"uuid":"WL23_5"}', status: '发货' },
@@ -2980,7 +2984,7 @@ describe('SPRT测试', () => {
   describe('/jieChuGuanLianKuaiDi', async () => {
     describe('成功', async () => {
       it('ZHY解除快递关联', async () => {
-        let ZHY4Token = await getToken('ZHY4', '123456');
+        const ZHY4Token = await getToken('ZHY4', '123456');
         const KDXEWMs = [
           {
             type: 'KDX',
@@ -3002,20 +3006,20 @@ describe('SPRT测试', () => {
         assert.equal(kdx.dataValues.status, '装箱');
 
         const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
-        let wywlList = wywl.map(item => ({
+        const wywlList = wywl.map(item => ({
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        for (let item of wywlList) {
+        for (const item of wywlList) {
           assert.equal(item.status, '装箱');
-        };
+        }
 
         const wydp = await WYDP.findAll({ where: { KDXId: kdx.dataValues.id } });
-        let wydpList = wydp.map(item => ({
+        const wydpList = wydp.map(item => ({
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        for (let item of wydpList) {
+        for (const item of wydpList) {
           assert.equal(item.status, '装箱');
         };
         //解除关联后，快递箱状态更改为装箱状态；
@@ -3049,7 +3053,7 @@ describe('SPRT测试', () => {
   describe('/shouXiang', async () => {
     describe('成功', async () => {
       it('GTBA收箱', async () => {
-        let GTBA8Token = await getToken('GTBA8', '123456');
+        const GTBA8Token = await getToken('GTBA8', '123456');
         const KDXEWMs = [
           {
             type: 'KDX',
@@ -3070,11 +3074,11 @@ describe('SPRT测试', () => {
         assert.equal(kdx.dataValues.status, '收箱');
 
         const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
-        let wywlList = wywl.map(item => ({
+        const wywlList = wywl.map(item => ({
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
         }));
-        for (let item of wywlList) {
+        for (const item of wywlList) {
           assert.equal(item.status, '收箱');
         };
         //收箱后，快递箱及箱内货物状态更改为收箱状态；
@@ -3136,7 +3140,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of HWEWMs) {
+        for (const item of HWEWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.equal(wywl.dataValues.status, '收货');
         };
@@ -3287,12 +3291,12 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of HWPayloads) {
+        for (const item of HWPayloads) {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, '反馈图');
-        };
-        //反馈图片后，货物状态更改为反馈图状态；
-        //反馈图片后，该BA/安装工的该订单_柜台全景反馈图重置为最新的全景反馈图；
+        }
+        // 反馈图片后，货物状态更改为反馈图状态；
+        // 反馈图片后，该BA/安装工的该订单_柜台全景反馈图重置为最新的全景反馈图；
       });
     });
     // describe('失败', async () => {

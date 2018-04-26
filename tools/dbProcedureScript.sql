@@ -122,12 +122,14 @@ BEGIN
     INSERT
     INTO
 		DD_DW_DP
-        (DDId, DWId, DPId, GYSId, createdAt, updatedAt)
+        (DDId, DWId, DPId, GYSId, status, ZXNumber, createdAt, updatedAt)
 	SELECT
 		aaa.DDId,
 		aaa.DWId,
 		aaa.DPId,
         bbb.GYSId,
+		'_DD_DW_DPStatus.CS_',
+		0,
         v_now, 
         v_now
 	FROM
@@ -199,13 +201,15 @@ BEGIN
     INSERT
     INTO
 		DD_GT_WL
-        (DDId, GTId, WLId, number, GYSId, createdAt, updatedAt)
+        (DDId, GTId, WLId, number, GYSId, status, ZXNumber, createdAt, updatedAt)
 	SELECT
 		aaa.DDId,
 		aaa.GTId,
 		aaa.WLId,
 		aaa.number,
 		bbb.GYSId,
+		'_DD_GT_WLStatus.CS_',
+		0,
 		v_now, 
         v_now
 	FROM
