@@ -212,7 +212,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it.only('small test', async () => {
+    it('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -2039,7 +2039,7 @@ describe('SPRT测试', () => {
         ];
         assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
-    });// TODO:ppLog Error: HY000:Field 'status' doesn't have a default value
+    });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
       describe('没有权限', async () => {
@@ -3372,7 +3372,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { WLId } });
         assert.notEqual(wlbh, null);
-      });
+      });//TODO:SequelizeValidationError: notNull Violation: WLBH.ZXNumber cannot be null
 
       it('AZG申请上市WLBH', async () => {
         let AZG3Token = await getToken('AZG3', '123456');
@@ -3397,7 +3397,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { WLId } });
         assert.notEqual(wlbh, null);
-      });
+      });//TODO:notNull Violation: WLBH.ZXNumber cannot be null
     });
     //   describe('失败', async () => {
     //     describe('数据不合法', async () => {
@@ -3450,7 +3450,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
-      });
+      });//TODO:ppUtils.createDPBH is not a function
 
       it('AZG申请上市DPBH', async () => {
         let AZG3Token = await getToken('AZG3', '123456');
@@ -3475,7 +3475,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
-      });
+      });//TODO:ppUtils.createDPBH is not a function
     });
     //   describe('失败', async () => {
     //     describe('数据不合法', async () => {
@@ -3530,7 +3530,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { WLId } });
         assert.notEqual(wlbh, null);
-      });
+      });//TODO:SequelizeValidationError: notNull Violation: WLBH.ZXNumber cannot be null
     });
     describe('失败', async () => {
 
@@ -3561,7 +3561,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await WLBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
-      });
+      });//TODO:Table is not a constructor
     });
     describe('失败', async () => {
 
@@ -3586,7 +3586,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
         assert.equal(wlbh.dataValues.status, WLBHStatus.KFJLSPTG);
-      });
+      });//TODO:Table is not a constructor
     });
     describe('失败', async () => {
 
@@ -3742,7 +3742,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
         assert.equal(wlbh.dataValues.AZGSId, AZGSId);
-      });
+      });//TODO:SequelizeDatabaseError: Unknown column 'ids' in 'where clause'
     });
     describe('失败', async () => {
 
@@ -3769,7 +3769,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
         assert.equal(dpbh.dataValues.AZGSId, AZGSId);
-      });
+      });//TODO:SequelizeEagerLoadingError: GT is not associated to DPBH!
     });
     describe('失败', async () => {
 
@@ -3938,7 +3938,7 @@ describe('SPRT测试', () => {
   describe('/setWLBHs0YJZXTime', async () => {
     describe('成功', async () => {
       it('生产GYSGLY设置WLBH的YJZXTime', async () => { 
-        
+
       });
     });
     describe('失败', async () => {
