@@ -69,6 +69,23 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
     }
     // end 检查KDXEWM
 
+    const tmpGYSId = await user.getGYSId(transaction);
+
+    // 如果不存在, 先在当前GYS处入库
+    for (const item of DPEWMs) {
+      const tmpWYDP = await DBTables.WYDP.findOne({
+        where: {
+          EWM: JSON.stringify(item),
+        },
+        transaction,
+      });
+
+      if (!tmpWYDP) {
+        await ppUtils.createWYDPAndRuKu(item, user, tmpGYSId, transaction);
+      }
+    }
+    // end 如果不存在, 先在当前GYS处入库
+
     // 检查DPEWMs
     const tmpWYDPs = await ppUtils.checkEWMsExistanceAndGetRecords(
       'WYDP',
@@ -90,7 +107,6 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
     }
 
     // 检查DPEWMs是否都是当前用户所属GYS作为发货GYS发往DDId_GTId的
-    const tmpGYSId = await user.getGYSId(transaction);
     const tmpTargetDPs = await checkDPEWMsFromUserGYSForSameDDGTAndGetTasks(
       DDId,
       GTId,

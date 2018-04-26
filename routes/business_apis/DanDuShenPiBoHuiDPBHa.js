@@ -16,8 +16,14 @@ export default class DanDuShenPiBoHuiDPBHa extends BusinessApiBase {
     const tmpDPBH = await DBTables.DPBH.findOne({
       include: [
         {
-          model: DBTables.GT,
-          as: 'GT',
+          model: DBTables.DW,
+          as: 'DW',
+          include: [
+            {
+              model: DBTables.GT,
+              as: 'GT',
+            },
+          ],
         },
       ],
       where: {
@@ -30,7 +36,7 @@ export default class DanDuShenPiBoHuiDPBHa extends BusinessApiBase {
       throw new Error(`灯片补货记录id:${id}不存在!`);
     }
 
-    await user.checkPPId(tmpDPBH.GT.PPId, transaction);
+    await user.checkPPId(tmpDPBH.DW.GT.PPId, transaction);
 
     if (tmpDPBH.status !== DBTables.DPBHStatus.CS) {
       throw new Error(`灯片补货记录:${tmpDPBH}状态不属于${DBTables.DPBHStatus.CS}!`);
@@ -39,6 +45,12 @@ export default class DanDuShenPiBoHuiDPBHa extends BusinessApiBase {
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-    ppUtils.changeDPBHsStatus([id], DBTables.DPBHStatus.BH, user, transaction, KFJLNote);
+    await ppUtils.changeDPBHsStatus(
+      [id],
+      DBTables.DPBHStatus.BH,
+      user,
+      transaction,
+      KFJLNote,
+    );
   }
 }

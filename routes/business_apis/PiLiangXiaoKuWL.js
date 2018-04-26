@@ -44,7 +44,7 @@ async function processWL(EWM, user, GYSId, transaction) {
 
   if (!tmpWYWL) {
     // 如果EWM不存在, 报错
-    throw new Error(`${EWM}不存在, 不可消库!`);
+    throw new Error(`${JSON.stringify(EWM)}不存在, 不可消库!`);
   } else {
     // 如果EWM存在, 只有状态在'装箱'前, 且不是'消库'状态可消库
     if (

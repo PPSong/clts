@@ -3041,7 +3041,7 @@ describe('SPRT测试', () => {
           {
             type: 'WL',
             typeId: 14,
-            uuid: 'WL14_1',
+            uuid: '14_1',
           },
         ];
 
@@ -3108,7 +3108,7 @@ describe('SPRT测试', () => {
   // 关联快递 [ZHY]
   describe('/guanLianKuaiDi', async () => {
     describe('成功', async () => {
-      it.only('ZHY关联快递', async () => {
+      it('ZHY关联快递', async () => {
         const ZHY4Token = await getToken('ZHY4', '123456');
         const EWMs = [
           {
@@ -3763,7 +3763,7 @@ describe('SPRT测试', () => {
   });
 
   // 申请日常DPBH [GZ, GTBA]
-  describe('/shenQingRiChangDPLBH', async () => {
+  describe('/shenQingRiChangDPBH', async () => {
     describe('成功', async () => {
       it('GTBA申请日常DPBH', async () => {
         const GTBA8Token = await getToken('GTBA8', '123456');
@@ -3773,7 +3773,7 @@ describe('SPRT测试', () => {
         const note = '货物损坏，申请补货';
 
         const response = await post(
-          'shenQingRiChangDPLBH',
+          'shenQingRiChangDPBH',
           {
             DWId,
             DPId,
@@ -3784,7 +3784,7 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const dpbh = await WLBH.findOne({ where: { DPId } });
+        const dpbh = await DPBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
       });//TODO:Table is not a constructor
     });
