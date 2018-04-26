@@ -40,7 +40,7 @@ export default class ChuXiangWL extends BusinessApiBase {
     // end 检查EWMs都在装箱状态
 
     // 检查EWMs都在当前用户所属GYS处
-    const tmpGYSId = await user.getGYSId({ transaction });
+    const tmpGYSId = await user.getGYSId(transaction);
     const notRightGYSRecords = tmpWYWLs.filter(item => item.GYSId !== tmpGYSId);
     if (notRightGYSRecords.length > 0) {
       throw new Error(`${notRightGYSRecords}不在当前用户所属供应商处, 不能出箱!`);

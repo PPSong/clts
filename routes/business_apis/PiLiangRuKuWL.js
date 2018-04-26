@@ -24,7 +24,7 @@ export default class PiLiangRuKuWL extends BusinessApiBase {
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
-    const tmpGYSId = await user.getGYSId({ transaction });
+    const tmpGYSId = await user.getGYSId(transaction);
 
     // 遍历处理每个EWM
     for (const item of EWMs) {
@@ -48,9 +48,9 @@ async function processWL(EWM, user, GYSId, transaction) {
   } else {
     // 如果EWM存在, 只有状态在'装箱'前, 且不是'消库'状态可入库
     if (
-      DBTables.WYWLStatusMap.get(tmpWYWL.statue) <
+      DBTables.WYWLStatusMap.get(tmpWYWL.status) <
         DBTables.WYWLStatusMap.get(DBTables.WYWLStatus.ZX) &&
-      tmpWYWL.statue !== DBTables.WYWLStatus.XK
+      tmpWYWL.status !== DBTables.WYWLStatus.XK
     ) {
       await ppUtils.changeWYWLStatusOnGYS(
         tmpWYWL,
