@@ -59,6 +59,10 @@ import {
   GT_YJZH,
   AZFKType,
   DD_GTFX,
+  WLBH,
+  WLBHStatus,
+  DPBHStatus,
+  HWType,
 } from '../models/Model';
 
 const isArrayEqual = function (x, y) {
@@ -208,7 +212,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it('small test', async () => {
+    it.only('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -1549,7 +1553,7 @@ describe('SPRT测试', () => {
             number: 2,
           },
         ];
-      
+
         const response = await post(
           'editEJZH',
           {
@@ -2433,7 +2437,7 @@ describe('SPRT测试', () => {
             GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '状态');  
+          assert.include(response.data.msg, '状态');
         });
       });
       describe('唯一性校验', async () => { });
@@ -3344,11 +3348,57 @@ describe('SPRT测试', () => {
 
   // 申请上市WLBH [GZ, GTBA, AZG]
   describe('/shenQingShangShiWLBH', async () => {
-    //   describe('成功', async () => {
-    //     it('柜台BA、柜长申请日常补货成功', async () => {
-    //       //申请成功后，生成补货记录；
-    //     });
-    //   });
+    describe('成功', async () => {
+      it('GTBA申请上市WLBH', async () => {
+        let GTBA10Token = await getToken('GTBA10', '123456');
+        const DDId = 5;
+        const GTId = 10;
+        const WLId = 26;
+        const imageUrl = 'imageUrl26';
+        const note = '货物损坏，申请补货';
+
+        let response = await post(
+          'shenQingShangShiWLBH',
+          {
+            DDId,
+            GTId,
+            WLId,
+            imageUrl,
+            note,
+          },
+          GTBA10Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { WLId } });
+        assert.notEqual(wlbh, null);
+      });
+
+      it('AZG申请上市WLBH', async () => {
+        let AZG3Token = await getToken('AZG3', '123456');
+        const DDId = 3;
+        const GTId = 8;
+        const WLId = 22;
+        const imageUrl = 'imageUrlWL22';
+        const note = '货物损坏，申请补货';
+
+        let response = await post(
+          'shenQingShangShiWLBH',
+          {
+            DDId,
+            GTId,
+            WLId,
+            imageUrl,
+            note,
+          },
+          AZG3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { WLId } });
+        assert.notEqual(wlbh, null);
+      });
+    });
     //   describe('失败', async () => {
     //     describe('数据不合法', async () => {
 
@@ -3376,11 +3426,57 @@ describe('SPRT测试', () => {
 
   // 申请上市DPBH [GZ, GTBA, AZG]  
   describe('/shenQingShangShiDPBH', async () => {
-    //   describe('成功', async () => {
-    //     it('柜台BA、安装工、柜长申请上市补货成功', async () => {
-    //       //申请成功后，生成补货记录；
-    //     });
-    //   });
+    describe('成功', async () => {
+      it('GTBA申请上市DPBH', async () => {
+        let GTBA10Token = await getToken('GTBA10', '123456');
+        const DDId = 5;
+        const DWId = 35;
+        const DPId = 32;
+        const imageUrl = 'imageUrlDP32'
+        const note = '货物损坏，申请补货';
+
+        let response = await post(
+          'shenQingShangShiDPBH',
+          {
+            DDId,
+            DWId,
+            DPId,
+            imageUrl,
+            note,
+          },
+          GTBA10Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { DPId } });
+        assert.notEqual(dpbh, null);
+      });
+
+      it('AZG申请上市DPBH', async () => {
+        let AZG3Token = await getToken('AZG3', '123456');
+        const DDId = 3;
+        const DWId = 31;
+        const DPId = 28;
+        const imageUrl = 'imageUrlDP28'
+        const note = '货物损坏，申请补货';
+
+        let response = await post(
+          'shenQingShangShiDPBH',
+          {
+            DDId,
+            DWId,
+            DPId,
+            imageUrl,
+            note,
+          },
+          AZG3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { DPId } });
+        assert.notEqual(dpbh, null);
+      });
+    });
     //   describe('失败', async () => {
     //     describe('数据不合法', async () => {
 
@@ -3413,7 +3509,28 @@ describe('SPRT测试', () => {
   // 申请日常WLBH [GZ, GTBA]
   describe('/shenQingRiChangWLBH', async () => {
     describe('成功', async () => {
+      it('GTBA申请日常WLBH', async () => {
+        let GTBA8Token = await getToken('GTBA8', '123456');
+        const GTId = 8;
+        const WLId = 16;
+        const imageUrl = 'imageUrlWL16';
+        const note = '货物损坏，申请补货'
 
+        let response = await post(
+          'shenQingRiChangWLBH',
+          {
+            GTId,
+            WLId,
+            imageUrl,
+            note
+          },
+          GTBA8Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { WLId } });
+        assert.notEqual(wlbh, null);
+      });
     });
     describe('失败', async () => {
 
@@ -3421,9 +3538,30 @@ describe('SPRT测试', () => {
   });
 
   // 申请日常DPBH [GZ, GTBA]
-  describe('/shenQingRiChangWLBH', async () => {
+  describe('/shenQingRiChangDPLBH', async () => {
     describe('成功', async () => {
+      it('GTBA申请日常DPBH', async () => {
+        let GTBA8Token = await getToken('GTBA8', '123456');
+        const DWId = 15;
+        const DPId = 12;
+        const imageUrl = 'imageUrlDP12';
+        const note = '货物损坏，申请补货'
 
+        let response = await post(
+          'shenQingRiChangDPLBH',
+          {
+            DWId,
+            DPId,
+            imageUrl,
+            note
+          },
+          GTBA8Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await WLBH.findOne({ where: { DPId } });
+        assert.notEqual(dpbh, null);
+      });
     });
     describe('失败', async () => {
 
@@ -3433,7 +3571,22 @@ describe('SPRT测试', () => {
   // 批量审批通过WLBH [KFJL]
   describe('/piLiangShengPiTongGuoWLBHa', async () => {
     describe('成功', async () => {
+      it('KFJL批量审批通过WLBH', async () => {
+        let KFJL3Token = await getToken('KFJL3', '123456');
+        const ids = [4];
 
+        let response = await post(
+          'piLiangShengPiTongGuoWLBHa',
+          {
+            ids
+          },
+          KFJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
+        assert.equal(wlbh.dataValues.status, WLBHStatus.KFJLSPTG);
+      });
     });
     describe('失败', async () => {
 
@@ -3443,7 +3596,22 @@ describe('SPRT测试', () => {
   // 批量审批通过DPBH [KFJL]
   describe('/piLiangShengPiTongGuoDPBHa', async () => {
     describe('成功', async () => {
+      it('KFJL批量审批通过DPBH', async () => {
+        let KFJL3Token = await getToken('KFJL3', '123456');
+        const ids = [4];
 
+        let response = await post(
+          'piLiangShengPiTongGuoDPBHa',
+          {
+            ids
+          },
+          KFJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
+        assert.equal(dpbh.dataValues.status, DPBHStatus.KFJLSPTG);
+      });
     });
     describe('失败', async () => {
 
@@ -3453,7 +3621,49 @@ describe('SPRT测试', () => {
   // 单独审批通过WLBH [KFJL]
   describe('/danDuShengPiTongGuoWLBHa', async () => {
     describe('成功', async () => {
+      it('KFJL单独审批通过WLBH', async () => {
+        let KFJL3Token = await getToken('KFJL3', '123456');
+        const id = 4;
+        const KFJLNote = '情况属实';
 
+        let response = await post(
+          'danDuShengPiTongGuoWLBHa',
+          {
+            id
+          },
+          KFJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { id } });
+        assert.equal(wlbh.dataValues.status, WLBHStatus.KFJLSPTG);
+      });
+    });
+    describe('失败', async () => {
+
+    });
+  });
+
+  // 单独审批通过DPBH [KFJL]
+  describe('/danDuShengPiTongGuoDPBHa', async () => {
+    describe('成功', async () => {
+      it('KFJL单独审批通过DPBH', async () => {
+        let KFJL3Token = await getToken('KFJL3', '123456');
+        const id = 4;
+        const KFJLNote = '情况属实';
+
+        let response = await post(
+          'danDuShengPiTongGuoDPBHa',
+          {
+            id
+          },
+          KFJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { id } });
+        assert.equal(dpbh.dataValues.status, DPBHStatus.KFJLSPTG);
+      });
     });
     describe('失败', async () => {
 
@@ -3463,7 +3673,23 @@ describe('SPRT测试', () => {
   // 单独审批驳回WLBH [KFJL]
   describe('/danDuShengPiBoHuiWLBHa', async () => {
     describe('成功', async () => {
+      it('KFJL单独审批驳回WLBH', async () => {
+        let KFJL3Token = await getToken('KFJL3', '123456');
+        const id = 4;
+        const KFJLNote = '情况不属实';
 
+        let response = await post(
+          'danDuShengPiBoHuiWLBHa',
+          {
+            id
+          },
+          KFJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { id } });
+        assert.equal(wlbh.dataValues.status, WLBHStatus.BH);
+      });
     });
     describe('失败', async () => {
 
@@ -3473,7 +3699,23 @@ describe('SPRT测试', () => {
   // 单独审批驳回DPBH [KFJL]
   describe('/danDuShengPiBoHuiDPBHa', async () => {
     describe('成功', async () => {
+      it('KFJL单独审批驳回DPBH', async () => {
+        let KFJL3Token = await getToken('KFJL3', '123456');
+        const id = 4;
+        const KFJLNote = '情况不属实';
 
+        let response = await post(
+          'danDuShengPiBoHuiDPBHa',
+          {
+            id
+          },
+          KFJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { id } });
+        assert.equal(dpbh.dataValues.status, DPBHStatus.BH);
+      });
     });
     describe('失败', async () => {
 
@@ -3483,7 +3725,24 @@ describe('SPRT测试', () => {
   // 为WLBH分配AZGS [PPJL]
   describe('/setWLBH0AZGS', async () => {
     describe('成功', async () => {
+      it('PPJL为WLBH分配AZGS', async () => {
+        let PPJL3Token = await getToken('PPJL3', '123456');
+        const ids = [5];
+        const AZGSId = 1;
 
+        let response = await post(
+          'setWLBH0AZGS',
+          {
+            ids,
+            AZGSId
+          },
+          PPJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
+        assert.equal(wlbh.dataValues.AZGSId, AZGSId);
+      });
     });
     describe('失败', async () => {
 
@@ -3493,7 +3752,24 @@ describe('SPRT测试', () => {
   // 为DPBH分配AZGS [PPJL]
   describe('/setDPBH0AZGS', async () => {
     describe('成功', async () => {
+      it('PPJL为DPBH分配AZGS', async () => {
+        let PPJL3Token = await getToken('PPJL3', '123456');
+        const ids = [5];
+        const AZGSId = 1;
 
+        let response = await post(
+          'setDPBH0AZGS',
+          {
+            ids,
+            AZGSId
+          },
+          PPJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
+        assert.equal(dpbh.dataValues.AZGSId, AZGSId);
+      });
     });
     describe('失败', async () => {
 
@@ -3503,7 +3779,22 @@ describe('SPRT测试', () => {
   // 批量审批通过WLBH [PPJL]
   describe('/piLiangShengPiTongGuoWLBHb', async () => {
     describe('成功', async () => {
+      it('PPJL批量审批通过WLBH', async () => {
+        let PPJL3Token = await getToken('PPJL3', '123456');
+        const ids = [7];
 
+        let response = await post(
+          'piLiangShengPiTongGuoWLBHb',
+          {
+            ids
+          },
+          PPJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
+        assert.equal(wlbh.dataValues.status, WLBHStatus.TG);
+      });
     });
     describe('失败', async () => {
 
@@ -3511,9 +3802,24 @@ describe('SPRT测试', () => {
   });
 
   // 批量审批通过DPBH [PPJL]
-  describe('/danDuShengPiTongGuoDPBHb', async () => {
+  describe('/piLiangShengPiTongGuoDPBHb', async () => {
     describe('成功', async () => {
+      it('PPJL批量审批通过DPBH', async () => {
+        let PPJL3Token = await getToken('PPJL3', '123456');
+        const ids = [7];
 
+        let response = await post(
+          'piLiangShengPiTongGuoDPBHb',
+          {
+            ids
+          },
+          PPJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
+        assert.equal(dpbh.dataValues.status, DPBHStatus.TG);
+      });
     });
     describe('失败', async () => {
 
@@ -3523,7 +3829,24 @@ describe('SPRT测试', () => {
   // 单独审批通过WLBH [PPJL]
   describe('/danDuShengPiTongGuoWLBHb', async () => {
     describe('成功', async () => {
+      it('PPJL单独审批通过WLBH', async () => {
+        let PPJL3Token = await getToken('PPJL3', '123456');
+        const id = 7;
+        const PPJLNote = '通过';
 
+        let response = await post(
+          'danDuShengPiTongGuoWLBHb',
+          {
+            id,
+            PPJLNote
+          },
+          PPJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { id } });
+        assert.equal(wlbh.dataValues.status, WLBHStatus.TG);
+       });
     });
     describe('失败', async () => {
 
@@ -3533,7 +3856,24 @@ describe('SPRT测试', () => {
   // 单独审批通过DPBH [PPJL]
   describe('/danDuShengPiTongGuoDPBHb', async () => {
     describe('成功', async () => {
+      it('PPJL单独审批通过DPBH', async () => {
+        let PPJL3Token = await getToken('PPJL3', '123456');
+        const id = 7;
+        const PPJLNote = '通过';
 
+        let response = await post(
+          'danDuShengPiTongGuoDPBHb',
+          {
+            id,
+            PPJLNote
+          },
+          PPJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { id } });
+        assert.equal(dpbh.dataValues.status, DPBHStatus.TG);
+       });
     });
     describe('失败', async () => {
 
@@ -3543,7 +3883,24 @@ describe('SPRT测试', () => {
   // 单独审批驳回WLBH [PPJL]
   describe('/danDuShengPiBoHuiWLBHb', async () => {
     describe('成功', async () => {
+      it('PPJL单独审批驳回WLBH', async () => {
+        let PPJL3Token = await getToken('PPJL3', '123456');
+        const id = 7;
+        const PPJLNote = '驳回';
 
+        let response = await post(
+          'danDuShengPiBoHuiWLBHb',
+          {
+            id,
+            PPJLNote
+          },
+          PPJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { id } });
+        assert.equal(wlbh.dataValues.status, WLBHStatus.BH);
+       });
     });
     describe('失败', async () => {
 
@@ -3553,7 +3910,24 @@ describe('SPRT测试', () => {
   // 单独审批驳回DPBH [PPJL]
   describe('/danDuShengPiBoHuiDPBHb', async () => {
     describe('成功', async () => {
+      it('PPJL单独审批驳回DPBH', async () => { 
+        let PPJL3Token = await getToken('PPJL3', '123456');
+        const id = 7;
+        const PPJLNote = '驳回';
 
+        let response = await post(
+          'danDuShengPiBoHuiDPBHb',
+          {
+            id,
+            PPJLNote
+          },
+          PPJL3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { id } });
+        assert.equal(dpbh.dataValues.status, DPBHStatus.BH);
+      });
     });
     describe('失败', async () => {
 
@@ -3563,7 +3937,9 @@ describe('SPRT测试', () => {
   // setWLBHYJZXTime [生产GYSGLY]
   describe('/setWLBHs0YJZXTime', async () => {
     describe('成功', async () => {
-
+      it('生产GYSGLY设置WLBH的YJZXTime', async () => { 
+        
+      });
     });
     describe('失败', async () => {
 
@@ -3573,7 +3949,7 @@ describe('SPRT测试', () => {
   // setDPBHYJZXTime [生产GYSGLY]
   describe('/setDPBHs0YJZXTime', async () => {
     describe('成功', async () => {
-
+      it('生产GYSGLY设置DPBH的YJZXTime', async () => { });
     });
     describe('失败', async () => {
 
@@ -3583,7 +3959,7 @@ describe('SPRT测试', () => {
   // 为WLBH分配发货GYS [生产GYSGLY]
   describe('/fengPeiWLBHFaHuoGYS', async () => {
     describe('成功', async () => {
-
+      it('生产GYSGLY分配WLBH的发货GYS', async () => { });
     });
     describe('失败', async () => {
 
@@ -3593,7 +3969,7 @@ describe('SPRT测试', () => {
   // 为DPBH分配发货GYS [生产GYSGLY]
   describe('/fengPeiDPBHFaHuoGYS', async () => {
     describe('成功', async () => {
-
+      it('生产GYSGLY分配DPBH的发货GYS', async () => { });
     });
     describe('失败', async () => {
 
@@ -3603,7 +3979,7 @@ describe('SPRT测试', () => {
   // 分配WLBH的AZG [AZGSGLY]
   describe('/setWLBHs0AZG', async () => {
     describe('成功', async () => {
-
+      it('AZGSGLY分配WLBH的AZG', async () => { });
     });
     describe('失败', async () => {
 
@@ -3613,7 +3989,7 @@ describe('SPRT测试', () => {
   // 分配DPBH的AZG [AZGSGLY]
   describe('/setDPBHs0AZG', async () => {
     describe('成功', async () => {
-
+      it('AZGSGLY分配DPBH的AZG', async () => { });
     });
     describe('失败', async () => {
 
