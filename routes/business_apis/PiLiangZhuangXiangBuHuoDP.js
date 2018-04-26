@@ -79,9 +79,9 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
       // 只有状态在'装箱'前, 且不是'消库'状态可装箱
       if (
         !(
-          DBTables.WYDPStatusMap.get(item.statue) <
+          DBTables.WYDPStatusMap.get(item.status) <
             DBTables.WYDPStatusMap.get(DBTables.WYDPStatus.ZX) &&
-          item.statue !== DBTables.WYDPStatus.XK
+          item.status !== DBTables.WYDPStatus.XK
         )
       ) {
         throw new Error(`${item}的状态不能装箱!`);

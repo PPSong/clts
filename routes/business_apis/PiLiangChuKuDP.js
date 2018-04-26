@@ -48,9 +48,9 @@ async function processDP(EWM, user, GYSId, transaction) {
   } else {
     // 如果EWM存在, 只有状态在'装箱'前, 且不是'消库'状态可出库
     if (
-      DBTables.WYDPStatusMap.get(tmpWYDP.statue) <
+      DBTables.WYDPStatusMap.get(tmpWYDP.status) <
         DBTables.WYDPStatusMap.get(DBTables.WYDPStatus.ZX) &&
-      tmpWYDP.statue !== DBTables.WYDPStatus.XK
+      tmpWYDP.status !== DBTables.WYDPStatus.XK
     ) {
       await ppUtils.changeWYDPStatusOnGYS(
         tmpWYDP,
