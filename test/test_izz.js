@@ -3846,7 +3846,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { id } });
         assert.equal(wlbh.dataValues.status, WLBHStatus.TG);
-       });
+      });
     });
     describe('失败', async () => {
 
@@ -3873,7 +3873,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { id } });
         assert.equal(dpbh.dataValues.status, DPBHStatus.TG);
-       });
+      });
     });
     describe('失败', async () => {
 
@@ -3900,7 +3900,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { id } });
         assert.equal(wlbh.dataValues.status, WLBHStatus.BH);
-       });
+      });
     });
     describe('失败', async () => {
 
@@ -3910,7 +3910,7 @@ describe('SPRT测试', () => {
   // 单独审批驳回DPBH [PPJL]
   describe('/danDuShengPiBoHuiDPBHb', async () => {
     describe('成功', async () => {
-      it('PPJL单独审批驳回DPBH', async () => { 
+      it('PPJL单独审批驳回DPBH', async () => {
         let PPJL3Token = await getToken('PPJL3', '123456');
         const id = 7;
         const PPJLNote = '驳回';
@@ -3937,8 +3937,24 @@ describe('SPRT测试', () => {
   // setWLBHYJZXTime [生产GYSGLY]
   describe('/setWLBHs0YJZXTime', async () => {
     describe('成功', async () => {
-      it('生产GYSGLY设置WLBH的YJZXTime', async () => { 
+      it('生产GYSGLY设置WLBH的YJZXTime', async () => {
+        const ids = [8, 9, 33];
+        const YJZXTime = '2018-10-10';
 
+        let response = await post(
+          'setWLBHs0YJZXTime',
+          {
+            ids,
+            YJZXTime,
+          },
+          GYSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of ids) {
+          const wlbh = await WLBH.findOne({ where: { id: item } });
+          assert.equal(wlbh.dataValues.YJZXTime, YJZXTime);
+        }
       });
     });
     describe('失败', async () => {
@@ -3949,7 +3965,25 @@ describe('SPRT测试', () => {
   // setDPBHYJZXTime [生产GYSGLY]
   describe('/setDPBHs0YJZXTime', async () => {
     describe('成功', async () => {
-      it('生产GYSGLY设置DPBH的YJZXTime', async () => { });
+      it('生产GYSGLY设置DPBH的YJZXTime', async () => {
+        const ids = [8, 9, 33];
+        const YJZXTime = '2018-10-10';
+
+        let response = await post(
+          'setDPBHs0YJZXTime',
+          {
+            ids,
+            YJZXTime,
+          },
+          GYSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of ids) {
+          const dpbh = await DPBH.findOne({ where: { id: item } });
+          assert.equal(dpbh.dataValues.YJZXTime, YJZXTime);
+        }
+      });
     });
     describe('失败', async () => {
 
@@ -3959,7 +3993,23 @@ describe('SPRT测试', () => {
   // 为WLBH分配发货GYS [生产GYSGLY]
   describe('/fengPeiWLBHFaHuoGYS', async () => {
     describe('成功', async () => {
-      it('生产GYSGLY分配WLBH的发货GYS', async () => { });
+      it('生产GYSGLY分配WLBH的发货GYS', async () => {
+        const ids = [8];
+        const GYSId = 3;
+
+        let response = await post(
+          'fengPeiWLBHFaHuoGYS',
+          {
+            ids,
+            GYSId,
+          },
+          GYSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
+        assert.equal(wlbh.dataValues.status, WLBHStatus.YFPFHGYS);
+      });
     });
     describe('失败', async () => {
 
@@ -3969,7 +4019,23 @@ describe('SPRT测试', () => {
   // 为DPBH分配发货GYS [生产GYSGLY]
   describe('/fengPeiDPBHFaHuoGYS', async () => {
     describe('成功', async () => {
-      it('生产GYSGLY分配DPBH的发货GYS', async () => { });
+      it('生产GYSGLY分配DPBH的发货GYS', async () => {
+        const ids = [8];
+        const GYSId = 3;
+
+        let response = await post(
+          'fengPeiDPBHFaHuoGYS',
+          {
+            ids,
+            GYSId,
+          },
+          GYSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
+        assert.equal(dpbh.dataValues.status, DPBHStatus.YFPFHGYS);
+      });
     });
     describe('失败', async () => {
 
@@ -3979,7 +4045,25 @@ describe('SPRT测试', () => {
   // 分配WLBH的AZG [AZGSGLY]
   describe('/setWLBHs0AZG', async () => {
     describe('成功', async () => {
-      it('AZGSGLY分配WLBH的AZG', async () => { });
+      it('AZGSGLY分配WLBH的AZG', async () => {
+        const WLBHIds = [8, 32];
+        const AZGUserId = 36;
+
+        let response = await post(
+          'setWLBHs0AZG',
+          {
+            WLBHIds,
+            AZGUserId
+          },
+          AZGSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WLBHIds) {
+          const wlbh = await WLBH.findOne({ where: { id: item } });
+          assert.equal(wlbh.dataValues.AZGUserId, AZGUserId);
+        };
+      });
     });
     describe('失败', async () => {
 
@@ -3989,7 +4073,25 @@ describe('SPRT测试', () => {
   // 分配DPBH的AZG [AZGSGLY]
   describe('/setDPBHs0AZG', async () => {
     describe('成功', async () => {
-      it('AZGSGLY分配DPBH的AZG', async () => { });
+      it('AZGSGLY分配DPBH的AZG', async () => {
+        const DPBHIds = [8, 32];
+        const AZGUserId = 36;
+
+        let response = await post(
+          'setWLBHs0AZG',
+          {
+            DPBHIds,
+            AZGUserId
+          },
+          AZGSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WLBHIds) {
+          const dpbh = await DPBH.findOne({ where: { id: item } });
+          assert.equal(dpbh.dataValues.AZGUserId, AZGUserId);
+        };
+      });
     });
     describe('失败', async () => {
 
