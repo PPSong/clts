@@ -72,12 +72,12 @@ export default class ShouHuoWL extends BusinessApiBase {
 
     // 更改相关WYWL状态为SH, 新建相关WYWLCZ
     const ids = tmpWYWLs.map(item => item.id);
-    await ppUtils.changeWYWLsStatus(
+    await ppUtils.changeWYWLsStatus({
       ids,
-      DBTables.WYWLStatus.SH,
+      status: DBTables.WYWLStatus.SH,
       user,
       transaction,
-    );
+    });
     // end 更改相关WYWL状态为SH, 新建相关WYWLCZ
   }
 }

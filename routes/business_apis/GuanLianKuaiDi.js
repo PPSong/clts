@@ -42,12 +42,12 @@ export default class GuanLianKuaiDi extends BusinessApiBase {
     // end 检查EWMs是属于ZX状态
 
     // 检查EWMs属于同一个GT
-    const tmpGTs = tmpKDXs.map(item => item.GTId);
-    const tmpUniqueGTs = [...new Set(tmpGTs)];
-    if (tmpUniqueGTs.length !== 1) {
-      throw new Error(`${tmpGTs}不属于同一个柜台!`);
+    const tmpGTIds = tmpKDXs.map(item => item.GTId);
+    const tmpUniqueGTIds = [...new Set(tmpGTIds)];
+    if (tmpUniqueGTIds.length !== 1) {
+      throw new Error(`${tmpKDXs}不属于同一个柜台!`);
     }
-    const tmpGTId = tmpUniqueGTs[0].id;
+    const tmpGTId = tmpUniqueGTIds[0];
     // end 检查EWMs属于同一个GT
 
     // 检查KDD

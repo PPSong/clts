@@ -354,7 +354,9 @@ export async function changeWYWLsInKDXsStatus(
   const tmpWYWLIds = tmpWYWLCZSqlR[0].map(item => item.id);
 
   // 更改相关WYWL状态为FH, 新建相关WYWLCZ
-  await changeWYWLsStatus(tmpWYWLIds, status, user, transaction);
+  await changeWYWLsStatus({
+    ids: tmpWYWLIds, status, user, transaction,
+  });
   // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
 }
 
@@ -509,7 +511,6 @@ export async function changeWLBHsStatus(
   });
   // end 新建相关WLBHCZ
 }
-
 
 export async function createDPBH(
   DWId,
