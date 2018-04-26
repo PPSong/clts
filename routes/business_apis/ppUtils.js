@@ -430,18 +430,6 @@ export async function changeKDXsStatus({
   // end 新建相关KDXCZ
 }
 
-//-----------------------
-export function checkSameEWMTypeAndGetTheType(EWMs) {
-  const tmpTypes = EWMs.map(item => item.type);
-  const tmpUniqueTypes = [...new Set(tmpTypes)];
-
-  if (tmpUniqueTypes.length === 1) {
-    return tmpUniqueTypes[0];
-  }
-
-  return false;
-}
-
 export async function createWLBH(
   GTId,
   WLId,
@@ -459,6 +447,7 @@ export async function createWLBH(
       note,
       DDId,
       status: DBTables.WLBHStatus.CS,
+      ZXNumber: 0,
     },
     { transaction },
   );
@@ -519,4 +508,85 @@ export async function changeWLBHsStatus(
     transaction,
   });
   // end 新建相关WLBHCZ
+}
+
+
+export async function createDPBH(
+  DWId,
+  DPId,
+  imageUrl,
+  note,
+  user,
+  transaction,
+  DDId = null,
+) {
+  const tmpDPBH = await DBTables.DPBH.create(
+    {
+      DWId,
+      DPId,
+      imageUrl,
+      note,
+      DDId,
+      status: DBTables.DPBHStatus.CS,
+      ZXNumber: 0,
+    },
+    { transaction },
+  );
+
+  // 新建相关DPBHCZ
+  await DBTables.DPBHCZ.create(
+    {
+      DPBHId: tmpDPBH.id,
+      status: tmpDPBH.status,
+      UserId: user.id,
+    },
+    {
+      transaction,
+    },
+  );
+  // end 新建相关DPBHCZ
+}
+
+export async function changeDPBHsStatus(
+  ids,
+  status,
+  user,
+  transaction,
+  KFJLNote = null,
+  PPJLNote = null,
+) {
+  let updateObj = {
+    status,
+  };
+  if (KFJLNote) {
+    updateObj = {
+      ...updateObj,
+      KFJLNote,
+    };
+  }
+  if (PPJLNote) {
+    updateObj = {
+      ...updateObj,
+      PPJLNote,
+    };
+  }
+  await DBTables.DPBH.update(updateObj, {
+    where: {
+      id: {
+        $in: ids,
+      },
+    },
+    transaction,
+  });
+
+  // 新建相关DPBHCZ
+  const tmpDPBHCZs = ids.map(item => ({
+    DPBHId: item,
+    status,
+    UserId: user.id,
+  }));
+  await DBTables.DPBHCZ.bulkCreate(tmpDPBHCZs, {
+    transaction,
+  });
+  // end 新建相关DPBHCZ
 }

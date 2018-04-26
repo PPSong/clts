@@ -3603,7 +3603,7 @@ describe('SPRT测试', () => {
 
   // 申请上市DPBH [GZ, GTBA, AZG]
   describe('/shenQingShangShiDPBH', async () => {
-    describe('成功', async () => {
+    describe.only('成功', async () => {
       it('GTBA申请上市DPBH', async () => {
         const GTBA10Token = await getToken('GTBA10', '123456');
         const DDId = 5;
