@@ -844,6 +844,12 @@ User.prototype.checkDWId = async function (id, transaction) {
         throw new Error('没有权限!');
       }
       break;
+    case JS.GTBA:
+      const tmpUser = await tmpGT.getGTBA({ transaction });
+      if (this.id !== tmpUser.id) {
+        throw new Error('没有权限!');
+      }
+      break;
     default:
       throw new Error('没有权限!');
   }
