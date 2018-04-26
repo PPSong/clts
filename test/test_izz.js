@@ -2574,7 +2574,7 @@ describe('SPRT测试', () => {
   });
 
   // 批量入库WL [ZHY]
-  describe.only('/piLiangRuKuWL', async () => {
+  describe('/piLiangRuKuWL', async () => {
     describe('成功', async () => {
       it('ZHY入库WL', async () => {
         const EWMs = [
@@ -3153,17 +3153,12 @@ describe('SPRT测试', () => {
   // 收货WL [GTBA, AZG]
   describe('/shouHuoWL', async () => {
     describe('成功', async () => {
-<<<<<<< HEAD
       it('GTBA收货WL', async () => {
 
       });
 
       it('AZG收货WL', async () => {
         let AZG3Token = await getToken('AZG3', '123456');
-=======
-      it('AZG收货', async () => {
-        const AZG3Token = await getToken('AZG3', '123456');
->>>>>>> e90a2d8448a0397e5fa05135764170031c28ab08
         const HWEWMs = [
           {
             type: 'WL',
@@ -3241,17 +3236,12 @@ describe('SPRT测试', () => {
   // 安装反馈DDWL状态 [GTBA, AZG]
   describe('/anZhuangFanKuiDDWLZhuangTai', async () => {
     describe('成功', async () => {
-<<<<<<< HEAD
       it('GTBA反馈DDWL的AZFKType', async () => {
 
       });
 
       it('AZG反馈DDWL的AZFKType', async () => {
         let WYWLPayloads = [
-=======
-      it('AZG反馈AZFKType', async () => {
-        const WYWLPayloads = [
->>>>>>> e90a2d8448a0397e5fa05135764170031c28ab08
           {
             type: 'WL',
             typeId: 19,
@@ -3338,17 +3328,12 @@ describe('SPRT测试', () => {
   // 装反馈全景WL图片 [GTBA, AZG]
   describe('/anZhuangFanKuiQuanJingWLTuPian', async () => {
     describe('成功', async () => {
-<<<<<<< HEAD
       it('GTBA反馈WL安装反馈图', async () => {
 
       });
 
       it.skip('AZG反馈WL安装反馈图', async () => {
         let AZG3Token = await getToken('AZG3', '123456');
-=======
-      it.skip('AZG反馈安装反馈图', async () => {
-        const AZG3Token = await getToken('AZG3', '123456');
->>>>>>> e90a2d8448a0397e5fa05135764170031c28ab08
         const DDId = 3;
         const GTId = 8;
         const imageUrls = [
@@ -3989,11 +3974,7 @@ describe('SPRT测试', () => {
   describe('/danDuShengPiBoHuiDPBHb', async () => {
     describe('成功', async () => {
       it('PPJL单独审批驳回DPBH', async () => {
-<<<<<<< HEAD
         const PPJL3Token = await getToken('PPJL3', '123456');
-=======
-        let PPJL3Token = await getToken('PPJL3', '123456');
->>>>>>> 538d9a3f39e96fcbf79931aaec4c2a8a3a5736ce
         const id = 7;
         const PPJLNote = '驳回';
 
@@ -4020,27 +4001,6 @@ describe('SPRT测试', () => {
   describe('/setWLBHs0YJZXTime', async () => {
     describe('成功', async () => {
       it('生产GYSGLY设置WLBH的YJZXTime', async () => {
-<<<<<<< HEAD
-
-=======
-        const ids = [8, 9, 33];
-        const YJZXTime = '2018-10-10';
-
-        let response = await post(
-          'setWLBHs0YJZXTime',
-          {
-            ids,
-            YJZXTime,
-          },
-          GYSGLYToken
-        );
-        assert.equal(response.data.code, 1);
-
-        for (let item of ids) {
-          const wlbh = await WLBH.findOne({ where: { id: item } });
-          assert.equal(wlbh.dataValues.YJZXTime, YJZXTime);
-        }
->>>>>>> 538d9a3f39e96fcbf79931aaec4c2a8a3a5736ce
       });
     });
     describe('失败', async () => {
