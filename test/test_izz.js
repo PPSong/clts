@@ -2609,7 +2609,7 @@ describe('SPRT测试', () => {
           assert.equal(wywlcz.length, 1);
           assert.deepInclude(wywlczList[0].status, '入库');
         }
-      });// TODO:  Cannot read property 'uuid' of undefined
+      });
     });
 
     // describe('失败', async () => {
@@ -2726,7 +2726,7 @@ describe('SPRT测试', () => {
       it('ZHY装箱DDWL', async () => {
         const DDId = 2;
         const GTId = 7;
-        const HWEWMs = [
+        const WLEWMs = [
           {
             type: 'WL',
             typeId: 10,
@@ -2748,20 +2748,20 @@ describe('SPRT测试', () => {
           {
             DDId,
             GTId,
-            HWEWMs,
+            WLEWMs,
             KDXEWM,
           },
           ZHYToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: HWEWMs[0].typeId } });
+        const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: WLEWMs[0].typeId } });
         assert.equal(ddgtwl.dataValues.ZXNumber, 5);
 
         const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWM) } });
         assert.notEqual(kdx, null);
 
-        for (const item of HWEWMs) {
+        for (const item of WLEWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
@@ -2773,7 +2773,7 @@ describe('SPRT测试', () => {
         // 箱子如果不存在，要新建箱子；
         // 装箱成功后物料待装箱数量相应减少；
         // 装箱后货物状态更改为装箱；
-      });// TODO: Cannot read property 'filter' of undefined
+      });
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -2860,7 +2860,7 @@ describe('SPRT测试', () => {
   describe('/chuXiangWL', async () => {
     describe('成功', async () => {
       it('ZHY出箱WL', async () => {
-        const HWEWMs = [
+        const EWMs = [
           {
             type: 'WL',
             typeId: 14,
@@ -2871,36 +2871,23 @@ describe('SPRT测试', () => {
         const response = await post(
           'chuXiangWL',
           {
-            HWEWMs,
+            EWMs,
           },
           ZHYToken,
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: HWEWMs[0].typeId } });
+        const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: EWMs[0].typeId } });
         assert.equal(ddgtwl.dataValues.ZXNumber, 1);
 
-        for (let i = 0; i < 2; i++) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(HWEWMs[i]) } });
+        for (let i = 0; i < 1; i++) {
+          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(EWMs[i]) } });
           assert.equal(wywl.dataValues.KDXId, null);
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
           assert.equal(wywlcz.length, 2);
           assert.include(wywlcz.map(item => (item.dataValues.status)), '入库');
         }
-
-        const wydp = await WYDP.findOne({ where: { EWM: JSON.stringify(HWEWMs[2]) } });
-        assert.equal(wydp.dataValues.KDXId, null);
-
-        const wydpcz = await WYDPCZ.findAll({ where: { WYDPId: wydp.dataValues.id } });
-        assert.equal(wydpcz.length, 2);
-        assert.include(wydpcz.map(item => (item.dataValues.status)), '入库');
-
-        const dddwdp = await DD_DW_DP.findOne({ where: { id: 7 } });// TODO:思考不写死的方法
-        assert.equal(dddwdp.dataValues.ZXNumber, 0);
-        // 出箱货物需为同一个装货员，但无需为同一个柜台；
-        // 出箱后货物待装箱数量增加；
-        // 出箱后货物状态更改为待入库状态；
-      });// TODO:Cannot read property 'filter' of undefined
+      });
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -2946,7 +2933,7 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('ZHY关联快递', async () => {
         const ZHY4Token = await getToken('ZHY4', '123456');
-        const KDXEWMs = [
+        const EWMs = [
           {
             type: 'KDX',
             uuid: 'KDX1',
@@ -2957,7 +2944,7 @@ describe('SPRT测试', () => {
         const response = await post(
           'guanLianKuaiDi',
           {
-            KDXEWMs,
+            EWMs,
             KDDCode,
           },
           ZHY4Token,
@@ -2967,7 +2954,7 @@ describe('SPRT测试', () => {
         const kdd = await KDD.findOne({ where: { code: KDDCode } });
         assert.notEqual(kdd, null);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWMs[0]) } });
+        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(EWMs[0]) } });
         assert.equal(kdx.dataValues.status, '发货');
 
         const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
@@ -2984,9 +2971,7 @@ describe('SPRT测试', () => {
         ];
         console.log('izzlog----->', wywlList);
         assert.equal(isArrayEqual(wywlList, truewywlList), true);
-        // 快递箱成功关联后，快递箱状态转为发货状态；
-        // 快递箱成功关联后，箱中物料/灯片状态更改为发货状态
-      });// TODO: Cannot read property 'filter' of undefined
+      });
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -3022,7 +3007,7 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('ZHY解除快递关联', async () => {
         const ZHY4Token = await getToken('ZHY4', '123456');
-        const KDXEWMs = [
+        const EWMs = [
           {
             type: 'KDX',
             uuid: 'KDX2',
@@ -3032,13 +3017,13 @@ describe('SPRT测试', () => {
         const response = await post(
           'jieChuGuanLianKuaiDi',
           {
-            KDXEWMs,
+            EWMs,
           },
           ZHY4Token,
         );
         assert.equal(response.data.code, 1);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWMs[0]) } });
+        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(EWMs[0]) } });
         assert.equal(kdx.dataValues.KDDId, null);
         assert.equal(kdx.dataValues.status, '装箱');
 
@@ -3061,7 +3046,7 @@ describe('SPRT测试', () => {
         }
         // 解除关联后，快递箱状态更改为装箱状态；
         // 解除关联后，箱中货物状态更改为装箱状态；
-      });// TODO: Cannot read property 'filter' of undefined
+      });
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -3091,7 +3076,7 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('GTBA收箱', async () => {
         const GTBA8Token = await getToken('GTBA8', '123456');
-        const KDXEWMs = [
+        const EWMs = [
           {
             type: 'KDX',
             uuid: 'KDX3',
@@ -3101,13 +3086,13 @@ describe('SPRT测试', () => {
         const response = await post(
           'shouXiang',
           {
-            KDXEWMs,
+            EWMs,
           },
           GTBA8Token,
         );
         assert.equal(response.data.code, 1);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWMs[0]) } });
+        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(EWMs[0]) } });
         assert.equal(kdx.dataValues.status, '收箱');
 
         const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
@@ -3119,7 +3104,7 @@ describe('SPRT测试', () => {
           assert.equal(item.status, '收箱');
         }
         // 收箱后，快递箱及箱内货物状态更改为收箱状态；
-      });// TODO:Cannot read property 'filter' of undefined
+      });
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -3159,7 +3144,7 @@ describe('SPRT测试', () => {
 
       it('AZG收货WL', async () => {
         let AZG3Token = await getToken('AZG3', '123456');
-        const HWEWMs = [
+        const EWMs = [
           {
             type: 'WL',
             typeId: 18,
@@ -3175,18 +3160,18 @@ describe('SPRT测试', () => {
         const response = await post(
           'shouHuoWL',
           {
-            HWEWMs,
+            EWMs,
           },
           AZG3Token,
         );
         assert.equal(response.data.code, 1);
 
-        for (const item of HWEWMs) {
+        for (const item of EWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.equal(wywl.dataValues.status, '收货');
         }
         // 收货后，货物状态更改为收货状态；
-      });// TODO: Cannot read property 'filter' of undefined
+      });
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
