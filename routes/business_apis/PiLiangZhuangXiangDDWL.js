@@ -79,9 +79,9 @@ export default class PiLiangZhuangXiangDDWL extends BusinessApiBase {
       // 只有状态在'装箱'前, 且不是'消库'状态可装箱
       if (
         !(
-          DBTables.WYWLStatusMap.get(item.statue) <
+          DBTables.WYWLStatusMap.get(item.status) <
             DBTables.WYWLStatusMap.get(DBTables.WYWLStatus.ZX) &&
-          item.statue !== DBTables.WYWLStatus.XK
+          item.status !== DBTables.WYWLStatus.XK
         )
       ) {
         throw new Error(`${item}的状态不能装箱!`);

@@ -61,9 +61,9 @@ export default class SetWLBHs0YJZXTime extends BusinessApiBase {
 
     // 检查状态在'通过' <= x < '装箱完成'
     const notOkRecords = tmpWLBHs.filter(item =>
-      DBTables.WLBHStatusMap.get(item.statue) >=
+      DBTables.WLBHStatusMap.get(item.status) >=
           DBTables.WLBHStatusMap.get(DBTables.WLBHStatusMap.TG) &&
-        DBTables.WLBHStatusMap.get(item.statue) <
+        DBTables.WLBHStatusMap.get(item.status) <
           DBTables.WLBHStatusMap.get(DBTables.WLBHStatusMap.ZXWC));
     if (notOkRecords.length > 0) {
       throw new Error(`${notOkRecords}状态不正确, 不能指定预计装箱时间!`);

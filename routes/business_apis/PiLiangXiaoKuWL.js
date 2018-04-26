@@ -48,9 +48,9 @@ async function processWL(EWM, user, GYSId, transaction) {
   } else {
     // 如果EWM存在, 只有状态在'装箱'前, 且不是'消库'状态可消库
     if (
-      DBTables.WYWLStatusMap.get(tmpWYWL.statue) <
+      DBTables.WYWLStatusMap.get(tmpWYWL.status) <
         DBTables.WYWLStatusMap.get(DBTables.WYWLStatus.ZX) &&
-      tmpWYWL.statue !== DBTables.WYWLStatus.XK
+      tmpWYWL.status !== DBTables.WYWLStatus.XK
     ) {
       await ppUtils.changeWYWLStatusOnGYS(
         tmpWYWL,
