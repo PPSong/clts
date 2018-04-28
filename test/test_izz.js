@@ -3580,7 +3580,7 @@ describe('SPRT测试', () => {
         it('ZHY将WLBH装入DD_GT_WL的箱子中', async => {
 
         });
-        
+
         it('ZHY装箱已经装满的WLBH任务', async => {
 
         });
@@ -3588,7 +3588,7 @@ describe('SPRT测试', () => {
         it('ZHY将同一批发货的GT1的WL和GT2的WL装入同一个KDX中', async => {
 
         });
-       });
+      });
       describe('唯一性校验', async () => { });
     });
   });
@@ -3627,45 +3627,40 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: EWMs[0].typeId } });
-        assert.equal(ddgtwl.dataValues.ZXNumber, 1);
+        for (let item of EWMs) {
+          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const ddgtwl = await DD_GT_WL.findOne({ where: { id: wywl.dataValues.DDGTWLId } });
+          assert.equal(ddgtwl.dataValues.ZXNumber, 0);
+          assert.equal(wywl.dataValues.status, WYWLStatus.RK);
+          assert.equal(wywl.dataValues.GYSId, 1);
 
-        for (let i = 0; i < 1; i++) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(EWMs[i]) } });
-          assert.equal(wywl.dataValues.KDXId, null);
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
-          assert.equal(wywlcz.length, 2);
-          assert.include(wywlcz.map(item => (item.dataValues.status)), WYWLStatus.RK);
+          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.RK } });
+          assert.notEqual(wywlcz, null);
+          assert.equal(wywlcz.dataValues.UserId, 30);
         }
       });
     });
-    // describe('失败', async () => {
-    //   describe('数据不合法', async () => {
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('ZHY出箱不属于自己DD_GT_WL的任务的WL', async () => {
 
-    //   });
-    //   describe('没有权限', async () => {
-    //     it('非装货员登入', async () => {
+        });
+        it('ZHY出箱WL和DP', async () => {
 
-    //     });
-    //     it('货物二维码信息非物料/灯片', async () => {
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('ZHY出箱已经发货的WL', async () => {
 
-    //     });
-    //     it('货物二维码组物料/灯片不属于同一个装货员所属的供应商/中转供应商', async () => {
+        });
 
-    //     });
-    //     it('出箱后箱内该货物唯一二维码记录未从箱中清除，货物应装数量未相应增加', async () => {
+        it('ZHY出箱入库的WL', async () => {
 
-    //     });
-    //   });
-    //   describe('操作状态不正确', async () => {
-    //     it('未出箱前，货物二维码状态非装箱状态', async () => {
-
-    //     });
-    //   });
-    //   describe('唯一性校验', async () => {
-
-    //   });
-    // });
+        });
+      });
+      describe('唯一性校验', async () => { });
+    });
   });
 
   // 出箱DP [ZHY]
@@ -3691,6 +3686,10 @@ describe('SPRT测试', () => {
             type: 'KDX',
             uuid: 'KDX1',
           },
+          {
+            type: 'KDX',
+            uuid: 'KDX9',
+          },
         ];
         const KDDCode = 'KDD_T';
 
@@ -3707,47 +3706,50 @@ describe('SPRT测试', () => {
         const kdd = await KDD.findOne({ where: { code: KDDCode } });
         assert.notEqual(kdd, null);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(EWMs[0]) } });
-        assert.equal(kdx.dataValues.status, KDXStatus.FH);
+        for (let item of EWMs) {
+          const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(item) } });
+          assert.equal(kdx.dataValues.status, KDXStatus.FH);
 
-        const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
-        const wywlList = wywl.map(item => ({
-          EWM: item.dataValues.EWM,
-          status: item.dataValues.status,
-        }));
-        const truewywlList = [
-          { EWM: '{"type":"WL","typeId":14,"uuid":"14_1"}', status: KDXStatus.FH },
-        ];
-        assert.equal(isArrayEqual(wywlList, truewywlList), true);
+          const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+          const wywlList = wywl.map(item => ({
+            id: item.dataValues.id,
+            status: item.dataValues.status,
+          }));
+
+          for (const item of wywlList) {
+            assert.equal(item.status, WYWLStatus.FH);
+
+            const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: item.id, status: WYWLStatus.FX } });
+            assert.notEqual(wywlcz, null);
+            assert.equal(wywlcz.length, 1);
+            assert.include(wywlcz[0].dataValues.UserId, 33);
+          }
+        }
       });
     });
-    // describe('失败', async () => {
-    //   describe('数据不合法', async () => {
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('ZHY关联不属于自己的DD_GT_WL任务的KDX', async () => {
 
-    //   });
-    //   describe('没有权限', async () => {
-    //     it('非装货员登入', async () => {
+        });
+        it('快递箱二维码信息非快递箱', async () => {
 
-    //     });
-    //     it('快递箱二维码信息非快递箱', async () => {
+        });
+        it('快递箱二维码不属于同一个柜台', async () => {
 
-    //     });
-    //     it('快递箱二维码不属于同一个柜台', async () => {
+        });
+        it('快递单未存在且无法新建', async () => {
 
-    //     });
-    //     it('快递单未存在且无法新建', async () => {
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('未关联快递前，快递箱二维码状态非装箱状态', async () => {
 
-    //     });
-    //   });
-    //   describe('操作状态不正确', async () => {
-    //     it('未关联快递前，快递箱二维码状态非装箱状态', async () => {
-
-    //     });
-    //   });
-    //   describe('唯一性校验', async () => {
-
-    //   });
-    // });
+        });
+      });
+      describe('唯一性校验', async () => { });
+    });
   });
 
   // 解除关联快递 [ZHY]
@@ -3838,16 +3840,23 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(EWMs[0]) } });
-        assert.equal(kdx.dataValues.status, KDXStatus.SX);
+        for (let item of EWMs) {
+          const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(item) } });
+          assert.equal(kdx.dataValues.status, KDXStatus.SX);
 
-        const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
-        const wywlList = wywl.map(item => ({
-          EWM: item.dataValues.EWM,
-          status: item.dataValues.status,
-        }));
-        for (const item of wywlList) {
-          assert.equal(item.status, WYWLStatus.SX);
+          const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+          const wywlList = wywl.map(item => ({
+            id: item.dataValues.id,
+            status: item.dataValues.status,
+          }));
+          for (const item of wywlList) {
+            assert.equal(item.status, WYWLStatus.SX);
+
+            const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: item.id, status: WYWLStatus.SX } });
+            assert.notEqual(wywlcz, null);
+            assert.equal(wywlcz.length, 1);
+            assert.include(wywlcz[0].dataValues.UserId, 24);
+          }
         }
       });
     });
@@ -3905,6 +3914,11 @@ describe('SPRT测试', () => {
         for (const item of EWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.equal(wywl.dataValues.status, WYWLStatus.SH);
+
+          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.SH } });
+          assert.notEqual(wywlcz, null);
+          assert.equal(wywlcz.length, 1);
+          assert.include(wywlcz[0].dataValues.UserId, 26);
         }
       });
 
@@ -3935,6 +3949,12 @@ describe('SPRT测试', () => {
         for (const item of EWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.equal(wywl.dataValues.status, WYWLStatus.SH);
+
+          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 38 } });
+          assert.notEqual(wywlcz, null);
+          let wywlczList = wywlcz.map(item => (item.dataValues.status));
+          assert.equal(wywlczList.length, 1);
+          assert.include(wywlczList, WYWLStatus.SH);
         }
       });
     });
@@ -4020,20 +4040,25 @@ describe('SPRT测试', () => {
         for (const item of WYWLPayloads) {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, WYWLStatus.FK);
+
+          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.FK } });
+          assert.notEqual(wywlcz, null);
+          assert.equal(wywlcz.length, 1);
+          assert.include(wywlcz[0].dataValues.UserId, 26);
         }
       });
 
       it('AZG反馈DDWL的AZFKType', async () => {
         let WYWLPayloads = [
           {
-            id: 28,
+            id: 32,
             AZFKType: AZFKType.AZCG,
-            imageUrl: 'imageUrlWL28'
+            imageUrl: 'imageUrlWL19'
           },
           {
-            id: 29,
+            id: 33,
             AZFKType: AZFKType.AZCG,
-            imageUrl: 'imageUrlWL29'
+            imageUrl: 'imageUrlWL19'
           },
         ];
         const DDId = 3;
@@ -4053,6 +4078,12 @@ describe('SPRT测试', () => {
         for (const item of WYWLPayloads) {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, WYWLStatus.FK);
+
+          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 36 } });
+          assert.notEqual(wywlcz, null);
+          let wywlczList = wywlcz.map(item => (item.dataValues.status));
+          assert.equal(wywlczList.length, 1);
+          assert.include(wywlczList, WYWLStatus.FK);
         }
       });
     });
@@ -4473,8 +4504,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
-        assert.equal(wlbh.dataValues.status, WLBHStatus.KFJLSPTG);
+        for (let item of ids) {
+          const wlbh = await WLBH.findOne({ where: { id: item } });
+          assert.equal(wlbh.dataValues.status, WLBHStatus.KFJLSPTG);
+        }
       });
     });
     describe('失败', async () => {
@@ -4501,8 +4534,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
-        assert.equal(dpbh.dataValues.status, DPBHStatus.KFJLSPTG);
+        for (let item of ids) {
+          const dpbh = await DPBH.findOne({ where: { id: item } });
+          assert.equal(dpbh.dataValues.status, DPBHStatus.KFJLSPTG);
+        }
       });
     });
     describe('失败', async () => {
@@ -4647,8 +4682,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
-        assert.equal(wlbh.dataValues.AZGSId, AZGSId);
+        for (let item of ids) {
+          const wlbh = await WLBH.findOne({ where: { id: item } });
+          assert.equal(wlbh.dataValues.AZGSId, AZGSId);
+        }
       });//TODO:SequelizeDatabaseError: Unknown column 'ids' in 'where clause'
     });
     describe('失败', async () => {
@@ -4705,8 +4742,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
-        assert.equal(wlbh.dataValues.status, WLBHStatus.TG);
+        for (let item of ids) {
+          const wlbh = await WLBH.findOne({ where: { id: item } });
+          assert.equal(wlbh.dataValues.status, WLBHStatus.TG);
+        }
       });
     });
     describe('失败', async () => {
@@ -4945,6 +4984,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
+        assert.equal(wlbh.dataValues.GYSId, GYSId);
         assert.equal(wlbh.dataValues.status, WLBHStatus.YFPFHGYS);
       });
     });
@@ -4988,9 +5028,29 @@ describe('SPRT测试', () => {
   // 分配WLBH的AZG [AZGSGLY]
   describe('/setWLBHs0AZG', async () => {
     describe('成功', async () => {
-      it('AZGSGLY分配WLBH的AZG', async () => {
+      it('AZGSGLY分配审批通过的WLBH的AZG', async () => {
         const WLBHIds = [8, 32];
         const AZGUserId = 36;
+
+        let response = await post(
+          'setWLBHs0AZG',
+          {
+            WLBHIds,
+            AZGUserId
+          },
+          AZGSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WLBHIds) {
+          const wlbh = await WLBH.findOne({ where: { id: item } });
+          assert.equal(wlbh.dataValues.AZGUserId, AZGUserId);
+        };
+      });
+
+      it('AZGSGLY分配已分配发货供应商的WLBH的AZG', async => {
+        const WLBHIds = [9];
+        const AZGUserId = 37;
 
         let response = await post(
           'setWLBHs0AZG',
