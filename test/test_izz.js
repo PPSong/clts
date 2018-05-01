@@ -3726,6 +3726,10 @@ describe('SPRT测试', () => {
           }
         }
       });
+
+      it('ZHY关联快递--箱子中包含丢失的WL', async () => {
+
+      });//TODOIzz:
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
@@ -3859,6 +3863,10 @@ describe('SPRT测试', () => {
           }
         }
       });
+
+      it('GTBA收箱--箱子中包含丢失的货物', async () => {
+
+      });//TODOIzz:
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
@@ -4086,6 +4094,20 @@ describe('SPRT测试', () => {
           assert.include(wywlczList, WYWLStatus.FK);
         }
       });
+
+      it('AZG反馈未收到货的WL的AZFKType', async () => {
+        let WYWLPayloads = [
+          {
+            id: 16,
+            AZFKType: AZFKType.DS,
+            imageUrl: 'imageUrlWL16'
+          },
+        ];
+        const DDId = 3;
+        const GTId = 8;
+
+
+      });//TODOIzz:未写完
     });
     // describe('失败', async () => {
     //   describe('数据不合法', async () => {
