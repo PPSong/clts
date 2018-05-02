@@ -1060,7 +1060,7 @@ User.prototype.checkFGTesterId = async function (id, transaction) {
 
   let tmpPPs;
   let tmpPPIds;
-  const tmpFGTester = await FG_Tester.findOne({
+  const tmpFGTester = await FGTester.findOne({
     where: {
       id,
     },
@@ -1856,6 +1856,14 @@ export const DW = sequelize.define(
     DPId: {
       type: Sequelize.INTEGER,
     },
+    CZ: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    CC: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     disabledAt: {
       type: Sequelize.DATE,
     },
@@ -1879,100 +1887,39 @@ DP.hasMany(DW, {
   onUpdate: 'RESTRICT',
 });
 
-// FG
-export const FG = sequelize.define(
-  'FG',
-  {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    name: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      unique: 'name_PPId',
-    },
-    PPId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      unique: 'name_PPId',
-    },
-    note: {
-      type: Sequelize.TEXT,
-    },
-    disabledAt: {
-      type: Sequelize.DATE,
-    },
-  },
-  {
-    version: true,
-    freezeTableName: true,
-  },
-);
-
-FG.belongsTo(PP);
-
-// Tester
-export const Tester = sequelize.define(
-  'Tester',
-  {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    name: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      unique: 'name_PPId',
-    },
-    PPId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      unique: 'name_PPId',
-    },
-    disabledAt: {
-      type: Sequelize.DATE,
-    },
-  },
-  {
-    version: true,
-    freezeTableName: true,
-  },
-);
-
-Tester.prototype.toString = function () {
-  return `[id: ${this.id}, name: ${this.name}]`;
-};
-
-Tester.belongsTo(PP, {
-  onDelete: 'RESTRICT',
-  onUpdate: 'RESTRICT',
-});
-
 // FGTester
-export const FG_Tester = sequelize.define(
-  'FG_Tester',
+export const FGTester = sequelize.define(
+  'FGTester',
   {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    FGId: {
+    name: {
       type: Sequelize.STRING,
       allowNull: false,
-      unique: 'FGId_TesterId',
-    },
-    TesterId: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      unique: 'FGId_TesterId',
+      unique: 'name_PPId',
     },
     PPId: {
       type: Sequelize.INTEGER,
+      unique: 'name_PPId',
       allowNull: false,
+    },
+    Code1: {
+      type: Sequelize.STRING,
+    },
+    Code2: {
+      type: Sequelize.STRING,
+    },
+    Code3: {
+      type: Sequelize.STRING,
+    },
+    Code4: {
+      type: Sequelize.STRING,
+    },
+    Code5: {
+      type: Sequelize.STRING,
     },
     disabledAt: {
       type: Sequelize.DATE,
@@ -1984,21 +1931,11 @@ export const FG_Tester = sequelize.define(
   },
 );
 
-FG.prototype.toString = function () {
-  return `[id: ${this.id}, name: ${this.name}]`;
+FGTester.prototype.toString = function () {
+  return this.name;
 };
 
-FG.belongsToMany(Tester, {
-  through: 'FG_Tester',
-  onDelete: 'RESTRICT',
-  onUpdate: 'RESTRICT',
-});
-Tester.belongsToMany(FG, {
-  through: 'FG_Tester',
-  onDelete: 'RESTRICT',
-  onUpdate: 'RESTRICT',
-});
-FG_Tester.belongsTo(PP, {
+FGTester.belongsTo(PP, {
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
@@ -2141,14 +2078,14 @@ export const EJZH_FGTester = sequelize.define(
   },
 );
 
-EJZH.belongsToMany(FG_Tester, {
+EJZH.belongsToMany(FGTester, {
   through: 'EJZH_FGTester',
   as: 'FGTesters',
   foreignKey: 'EJZHId',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
-FG_Tester.belongsToMany(EJZH, {
+FGTester.belongsToMany(EJZH, {
   through: 'EJZH_FGTester',
   as: 'EJZHs',
   foreignKey: 'FGTesterId',
@@ -2490,6 +2427,14 @@ export const DD_DW_DPSnapshot = sequelize.define(
       allowNull: false,
       unique: 'DDId_DWId_WLId',
     },
+    CC: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    CZ: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
   },
   {
     version: true,
@@ -2563,7 +2508,7 @@ DD_GT_FGTesterSnapshot.belongsTo(GT, {
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
-DD_GT_FGTesterSnapshot.belongsTo(FG_Tester, {
+DD_GT_FGTesterSnapshot.belongsTo(FGTester, {
   as: 'FGTester',
   foreignKey: 'FGTesterId',
   onDelete: 'RESTRICT',
@@ -2704,6 +2649,14 @@ export const DD_DW_DP = sequelize.define(
       allowNull: false,
       unique: 'DDId_DWId_DPId',
     },
+    CC: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    CZ: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     status: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -2823,7 +2776,7 @@ DD_GT_FGTester.belongsTo(GT, {
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
-DD_GT_FGTester.belongsTo(FG_Tester, {
+DD_GT_FGTester.belongsTo(FGTester, {
   as: 'FGTester',
   foreignKey: 'FGTesterId',
   onDelete: 'RESTRICT',

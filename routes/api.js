@@ -34,11 +34,6 @@ router.post('/createGYSWithGLY', businessApis.CreateGYSWithGLY.getApi());
 router.post('/createAZGSWithGLY', businessApis.CreateAZGSWithGLY.getApi());
 // 配置DP到DWs [KFJL]
 router.post('/setDPDWs', businessApis.SetDPDWs.getApi());
-// 创建FG, Tester, FGTester [KFJL]
-router.post(
-  '/createFGAndTesterAndFGTester',
-  businessApis.CreateFGAndTesterAndFGTester.getApi(),
-);
 // 创建EJZH [KFJL]
 router.post('/createEJZH', businessApis.CreateEJZH.getApi());
 // 编辑EJZH [KFJL]

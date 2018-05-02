@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run test_penn
+  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run test_izz
 
 PATH: 
   /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools
@@ -4516,7 +4516,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c mocha --exit --compilers js:babel-core/register test/test_penn.js --reporter mochawesome  --timeout 5000
+  Arguments: -c mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000
   Directory: /Users/penn/Desktop/clts
   Output:
   

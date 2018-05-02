@@ -1,3 +1,5 @@
+USE cltp;
+
 DROP PROCEDURE IF EXISTS throwError; 
 CREATE PROCEDURE throwError(IN msg VARCHAR(256) CHARACTER SET utf8)
 BEGIN
@@ -6,7 +8,7 @@ SIGNAL SQLSTATE
 SET
     MESSAGE_TEXT = msg,
     MYSQL_ERRNO = '1234';
-END; 
+END;
 
 DROP PROCEDURE IF EXISTS clearSnapShotAndDDRelatedData; 
 CREATE PROCEDURE clearSnapShotAndDDRelatedData(IN v_DDId INT)
@@ -52,11 +54,13 @@ BEGIN
 	INSERT
     INTO
 		DD_DW_DPSnapshot
-        (DDId, DWId, DPId, createdAt, updatedAt)
+        (DDId, DWId, DPId, CZ, CC, createdAt, updatedAt)
     SELECT
 		v_DDId,
         a.DWId, 
-        a.DPId, 
+        a.DPId,
+		b.CZ,
+		b.CC,
         v_now, 
         v_now
 	FROM 
@@ -122,11 +126,13 @@ BEGIN
     INSERT
     INTO
 		DD_DW_DP
-        (DDId, DWId, DPId, GYSId, status, ZXNumber, createdAt, updatedAt)
+        (DDId, DWId, DPId, CZ, CC, GYSId, status, ZXNumber, createdAt, updatedAt)
 	SELECT
 		aaa.DDId,
 		aaa.DWId,
 		aaa.DPId,
+		ccc.CZ,
+		ccc.CC,
         bbb.GYSId,
 		'_DD_DW_DPStatus.CS_',
 		0,
@@ -195,7 +201,11 @@ BEGIN
 	LEFT JOIN
 		DP bbb
 	ON
-		aaa.DPId = bbb.id;
+		aaa.DPId = bbb.id
+	LEFT JOIN
+		DW ccc
+	ON
+		aaa.DWId = ccc.id;
     
     -- 创建和订单相关的WL
     INSERT
