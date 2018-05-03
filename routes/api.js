@@ -4,6 +4,7 @@ import debug from 'debug';
 import _ from 'lodash';
 import Ajv from 'ajv';
 import localize from 'ajv-i18n';
+import apiSchema from './apiSchema';
 
 /* eslint-disable */
 import * as tables from '../tables';
@@ -22,31 +23,42 @@ const ajv = Ajv({ allErrors: true });
 
 function errorResponse(schemaErrors) {
   localize.zh(schemaErrors);
-  console.log(schemaErrors);
   const errors = schemaErrors.map(error => ({
     path: error.dataPath,
     message: error.message,
   }));
 
-  return {
-    code: -1,
-    msg: errors.reduce(
-      (result, item, index) =>
-        `${result}${index + 1}) ${item.path} ${item.message}; `,
-      '',
-    ),
+  return errors.reduce(
+    (result, item, index) =>
+      `${result}${index + 1}) ${item.path} ${item.message}; `,
+    '',
+  );
+}
+
+function validateParams(schema) {
+  return function (req, res, next) {
+    if (!ajv.validate(schema, req.body)) {
+      throw new Error(errorResponse(ajv.errors));
+    }
+
+    next();
   };
 }
 
-const validateParams = schema => function (req, res, next) {
-  if (!ajv.validate(schema, req.body)) {
-    return res.json(errorResponse(ajv.errors));
-  }
-  next();
-};
+function upperCaseHead(str) {
+  return str[0].toUpperCase() + str.slice(1);
+}
 
-// 新建PPJL [ADMIN]
-router.post('/createPPJL', businessApis.CreatePPJL.getApi());
+for (const key in apiSchema) {
+  router.post(
+    `/${key}`,
+    validateParams(apiSchema[key]),
+    businessApis[upperCaseHead(key)].getApi(),
+  );
+}
+
+// // 新建PPJL [ADMIN]
+// router.post('/createPPJL', businessApis.CreatePPJL.getApi());
 // 新建KFJL [PPJL]
 router.post('/createKFJL', businessApis.CreateKFJL.getApi());
 // 新建GT, GTBA [KFJL]
@@ -147,11 +159,11 @@ router.post(
   '/anZhuangFanKuiDDWLZhuangTai',
   businessApis.AnZhuangFanKuiDDWLZhuangTai.getApi(),
 );
-// 安装反馈DDDP状态 [GTBA, AZG]
-router.post(
-  '/anZhuangFanKuiDDDPZhuangTai',
-  businessApis.AnZhuangFanKuiDDDPZhuangTai.getApi(),
-);
+// // 安装反馈DDDP状态 [GTBA, AZG]
+// router.post(
+//   '/anZhuangFanKuiDDDPZhuangTai',
+//   businessApis.AnZhuangFanKuiDDDPZhuangTai.getApi(),
+// );
 // 安装反馈全景WL图片 [GTBA, AZG]
 router.post(
   '/anZhuangFanKuiQuanJingWLTuPian',

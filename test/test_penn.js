@@ -271,7 +271,7 @@ describe('SPRT测试', () => {
   });
 
   // 新建PPJL [ADMIN]
-  describe('/createPPJL', async () => {
+  describe.only('/createPPJL', async () => {
     describe('成功', async () => {
       it('admin为品牌创建PPJL', async () => {
         const PPId = 7;
@@ -2673,7 +2673,7 @@ describe('SPRT测试', () => {
           const wydpczList = wydpcz.map(item => (item.dataValues));
           assert.equal(wydpcz.length, 1);
           assert.deepInclude(wydpczList[0].status, WYDPStatus.RK);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -2685,7 +2685,7 @@ describe('SPRT测试', () => {
   describe('/piLiangChuKuWL', async () => {
     describe('成功', async () => {
       it('ZHY出库WL', async () => {
-        let ZHY4Toke = await getToken('ZHY4', '123456')
+        const ZHY4Toke = await getToken('ZHY4', '123456');
         const EWMs = [
           {
             type: 'WL',
@@ -2699,12 +2699,12 @@ describe('SPRT测试', () => {
           },
         ];
 
-        let response = await post(
+        const response = await post(
           'piLiangChuKuWL',
           {
-            EWMs
+            EWMs,
           },
-          ZHY4Toke
+          ZHY4Toke,
         );
         assert.equal(response.data.code, 1);
 
@@ -2716,7 +2716,7 @@ describe('SPRT测试', () => {
           const wywlczList = wywlcz.map(item => (item.dataValues));
           assert.equal(wywlcz.length, 2);
           assert.deepInclude(wywlczList[0].status, WYWLStatus.CK);
-        };
+        }
        });
     });
     describe('失败', async () => {
@@ -2728,7 +2728,7 @@ describe('SPRT测试', () => {
   describe('/piLiangChuKuDP', async () => {
     describe('成功', async () => {
       it('ZHY出库DP', async () => {
-        let ZHY4Toke = await getToken('ZHY4', '123456')
+        const ZHY4Toke = await getToken('ZHY4', '123456');
         const EWMs = [
           {
             type: 'DP',
@@ -2742,12 +2742,12 @@ describe('SPRT测试', () => {
           },
         ];
 
-        let response = await post(
+        const response = await post(
           'piLiangChuKuDP',
           {
-            EWMs
+            EWMs,
           },
-          ZHY4Toke
+          ZHY4Toke,
         );
         assert.equal(response.data.code, 1);
 
@@ -2759,7 +2759,7 @@ describe('SPRT测试', () => {
           const wydpczList = wydpcz.map(item => (item.dataValues));
           assert.equal(wydpcz.length, 2);
           assert.deepInclude(wydpczList[0].status, WYDPStatus.CK);
-        };
+        }
        });
     });
     describe('失败', async () => {
@@ -2771,7 +2771,7 @@ describe('SPRT测试', () => {
   describe('/piLiangXiaoKuWL', async () => {
     describe('成功', async () => {
       it('ZHY消库WL', async () => {
-        let ZHY4Toke = await getToken('ZHY4', '123456')
+        const ZHY4Toke = await getToken('ZHY4', '123456');
         const EWMs = [
           {
             type: 'WL',
@@ -2785,12 +2785,12 @@ describe('SPRT测试', () => {
           },
         ];
 
-        let response = await post(
+        const response = await post(
           'piLiangXiaoKuWL',
           {
-            EWMs
+            EWMs,
           },
-          ZHY4Toke
+          ZHY4Toke,
         );
         assert.equal(response.data.code, 1);
 
@@ -2802,7 +2802,7 @@ describe('SPRT测试', () => {
           const wywlczList = wywlcz.map(item => (item.dataValues));
           assert.equal(wywlcz.length, 2);
           assert.deepInclude(wywlczList[0].status, WYWLStatus.XK);
-        };
+        }
        });
     });
     describe('失败', async () => {
@@ -2813,8 +2813,8 @@ describe('SPRT测试', () => {
   // 批量消库DP [ZHY]
   describe('/piLiangXiaoKuDP', async () => {
     describe('成功', async () => {
-      it('ZHY消库DP', async () => { 
-        let ZHY4Toke = await getToken('ZHY4', '123456')
+      it('ZHY消库DP', async () => {
+        const ZHY4Toke = await getToken('ZHY4', '123456');
         const EWMs = [
           {
             type: 'DP',
@@ -2828,12 +2828,12 @@ describe('SPRT测试', () => {
           },
         ];
 
-        let response = await post(
+        const response = await post(
           'piLiangXiaoKuDP',
           {
-            EWMs
+            EWMs,
           },
-          ZHY4Toke
+          ZHY4Toke,
         );
         assert.equal(response.data.code, 1);
 
@@ -2845,7 +2845,7 @@ describe('SPRT测试', () => {
           const wydpczList = wydpcz.map(item => (item.dataValues));
           assert.equal(wydpcz.length, 2);
           assert.deepInclude(wydpczList[0].status, WYDPStatus.XK);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -2902,7 +2902,7 @@ describe('SPRT测试', () => {
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id } });
           assert.equal(wywlcz.length, 1);
           assert.include(wywlcz[0].dataValues.status, WYWLStatus.ZX);
-        };
+        }
       });
     });
     // describe('失败', async () => {
@@ -3005,7 +3005,7 @@ describe('SPRT测试', () => {
           const wydpcz = await WYDPCZ.findAll({ where: { WYWLId: wydp.dataValues.id } });
           assert.equal(wydpcz.length, 1);
           assert.include(wydpcz[0].dataValues.status, WYDPStatus.ZX);
-        };
+        }
        });
     });
     describe('失败', async () => {
@@ -3320,7 +3320,7 @@ describe('SPRT测试', () => {
       });
 
       it('AZG收货WL', async () => {
-        let AZG3Token = await getToken('AZG3', '123456');
+        const AZG3Token = await getToken('AZG3', '123456');
         const EWMs = [
           {
             type: 'WL',
@@ -3403,16 +3403,16 @@ describe('SPRT测试', () => {
       });
 
       it('AZG反馈DDWL的AZFKType', async () => {
-        let WYWLPayloads = [
+        const WYWLPayloads = [
           {
             id: 28,
             AZFKType: AZFKType.AZCG,
-            imageUrl: 'imageUrlWL28'
+            imageUrl: 'imageUrlWL28',
           },
           {
             id: 29,
             AZFKType: AZFKType.AZCG,
-            imageUrl: 'imageUrlWL29'
+            imageUrl: 'imageUrlWL29',
           },
         ];
         const DDId = 3;
@@ -3495,7 +3495,7 @@ describe('SPRT测试', () => {
       });
 
       it.skip('AZG反馈WL安装反馈图', async () => {
-        let AZG3Token = await getToken('AZG3', '123456');
+        const AZG3Token = await getToken('AZG3', '123456');
         const DDId = 3;
         const GTId = 8;
         const imageUrls = [
@@ -3597,7 +3597,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { WLId } });
         assert.notEqual(wlbh, null);
-      });//TODO:SequelizeValidationError: notNull Violation: WLBH.ZXNumber cannot be null
+      });// TODO:SequelizeValidationError: notNull Violation: WLBH.ZXNumber cannot be null
 
       it('AZG申请上市WLBH', async () => {
         const AZG3Token = await getToken('AZG3', '123456');
@@ -3622,7 +3622,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { WLId } });
         assert.notEqual(wlbh, null);
-      });//TODO:notNull Violation: WLBH.ZXNumber cannot be null
+      });// TODO:notNull Violation: WLBH.ZXNumber cannot be null
     });
     //   describe('失败', async () => {
     //     describe('数据不合法', async () => {
@@ -3675,7 +3675,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
-      });//TODO:ppUtils.createDPBH is not a function
+      });// TODO:ppUtils.createDPBH is not a function
 
       it('AZG申请上市DPBH', async () => {
         const AZG3Token = await getToken('AZG3', '123456');
@@ -3700,7 +3700,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
-      });//TODO:ppUtils.createDPBH is not a function
+      });// TODO:ppUtils.createDPBH is not a function
     });
     //   describe('失败', async () => {
     //     describe('数据不合法', async () => {
@@ -3755,7 +3755,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { WLId } });
         assert.notEqual(wlbh, null);
-      });//TODO:SequelizeValidationError: notNull Violation: WLBH.ZXNumber cannot be null
+      });// TODO:SequelizeValidationError: notNull Violation: WLBH.ZXNumber cannot be null
     });
     describe('失败', async () => {
 
@@ -3786,7 +3786,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { DPId } });
         assert.notEqual(dpbh, null);
-      });//TODO:Table is not a constructor
+      });// TODO:Table is not a constructor
     });
     describe('失败', async () => {
 
@@ -3811,7 +3811,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
         assert.equal(wlbh.dataValues.status, WLBHStatus.KFJLSPTG);
-      });//TODO:Table is not a constructor
+      });// TODO:Table is not a constructor
     });
     describe('失败', async () => {
 
@@ -3967,7 +3967,7 @@ describe('SPRT测试', () => {
 
         const wlbh = await WLBH.findOne({ where: { id: ids[0] } });
         assert.equal(wlbh.dataValues.AZGSId, AZGSId);
-      });//TODO:SequelizeDatabaseError: Unknown column 'ids' in 'where clause'
+      });// TODO:SequelizeDatabaseError: Unknown column 'ids' in 'where clause'
     });
     describe('失败', async () => {
 
@@ -3994,7 +3994,7 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
         assert.equal(dpbh.dataValues.AZGSId, AZGSId);
-      });//TODO:SequelizeEagerLoadingError: GT is not associated to DPBH!
+      });// TODO:SequelizeEagerLoadingError: GT is not associated to DPBH!
     });
     describe('失败', async () => {
 
@@ -4177,17 +4177,17 @@ describe('SPRT测试', () => {
         const ids = [8, 9, 33];
         const YJZXTime = '2018-10-10';
 
-        let response = await post(
+        const response = await post(
           'setDPBHs0YJZXTime',
           {
             ids,
             YJZXTime,
           },
-          GYSGLYToken
+          GYSGLYToken,
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of ids) {
+        for (const item of ids) {
           const dpbh = await DPBH.findOne({ where: { id: item } });
           assert.equal(dpbh.dataValues.YJZXTime, YJZXTime);
         }
@@ -4205,13 +4205,13 @@ describe('SPRT测试', () => {
         const ids = [8];
         const GYSId = 3;
 
-        let response = await post(
+        const response = await post(
           'fengPeiWLBHFaHuoGYS',
           {
             ids,
             GYSId,
           },
-          GYSGLYToken
+          GYSGLYToken,
         );
         assert.equal(response.data.code, 1);
 
@@ -4231,13 +4231,13 @@ describe('SPRT测试', () => {
         const ids = [8];
         const GYSId = 3;
 
-        let response = await post(
+        const response = await post(
           'fengPeiDPBHFaHuoGYS',
           {
             ids,
             GYSId,
           },
-          GYSGLYToken
+          GYSGLYToken,
         );
         assert.equal(response.data.code, 1);
 
@@ -4257,20 +4257,20 @@ describe('SPRT测试', () => {
         const WLBHIds = [8, 32];
         const AZGUserId = 36;
 
-        let response = await post(
+        const response = await post(
           'setWLBHs0AZG',
           {
             WLBHIds,
-            AZGUserId
+            AZGUserId,
           },
-          AZGSGLYToken
+          AZGSGLYToken,
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of WLBHIds) {
+        for (const item of WLBHIds) {
           const wlbh = await WLBH.findOne({ where: { id: item } });
           assert.equal(wlbh.dataValues.AZGUserId, AZGUserId);
-        };
+        }
       });
     });
     describe('失败', async () => {
@@ -4285,20 +4285,20 @@ describe('SPRT测试', () => {
         const DPBHIds = [8, 32];
         const AZGUserId = 36;
 
-        let response = await post(
+        const response = await post(
           'setWLBHs0AZG',
           {
             DPBHIds,
-            AZGUserId
+            AZGUserId,
           },
-          AZGSGLYToken
+          AZGSGLYToken,
         );
         assert.equal(response.data.code, 1);
 
-        for (let item of WLBHIds) {
+        for (const item of WLBHIds) {
           const dpbh = await DPBH.findOne({ where: { id: item } });
           assert.equal(dpbh.dataValues.AZGUserId, AZGUserId);
-        };
+        }
       });
     });
     describe('失败', async () => {
