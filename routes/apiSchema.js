@@ -26,7 +26,7 @@ const apiSchema = {
     properties: {
       // 品牌Id
       DDId: {
-        type: 'number',
+        type: 'string',
       },
       // 柜台Id
       GTId: {
@@ -36,6 +36,7 @@ const apiSchema = {
       WYDPPayloads: {
         type: 'array',
         minItems: 1,
+        uniqueItems: true,
         items: {
           type: 'object',
           properties: {

@@ -18,7 +18,7 @@ export default class AnZhuangFanKuiDDDPZhuangTai extends BusinessApiBase {
     const { DDId, GTId, WYDPPayloads } = req.body;
 
     // 检查AZFKType
-    const errorAZFKType = WYDPPayloads.filter(item => !Object.values(DBTables.AZFKType).includes(item));
+    const errorAZFKType = WYDPPayloads.filter(item => !Object.values(DBTables.AZFKType).includes(item.AZFKType));
     if (errorAZFKType.length > 0) {
       throw new Error(`${errorAZFKType}中反馈状态有误!`);
     }

@@ -65,7 +65,9 @@ import {
 } from '../models/Model';
 
 const isArrayEqual = function (x, y) {
-  return _(x).differenceWith(y, _.isEqual).isEmpty();
+  return _(x)
+    .differenceWith(y, _.isEqual)
+    .isEmpty();
 };
 
 const readFile = (path, opts = 'utf8') =>
@@ -128,7 +130,8 @@ const getUserIdList = (r) => {
   return userIdList;
 };
 
-const replaceAll = (str, target, replacement) => str.replace(new RegExp(target, 'g'), replacement);
+const replaceAll = (str, target, replacement) =>
+  str.replace(new RegExp(target, 'g'), replacement);
 
 process.env.NODE_ENV = 'test';
 const server = require('../app');
@@ -153,14 +156,20 @@ const initData = async () => {
 
   for (let i = 0; i < scriptArr.length; i++) {
     if (scriptArr[i].trim().length > 0) {
-      const r = await sequelize.query(scriptArr[i], null, { raw: true, type: 'INSERT' });
+      const r = await sequelize.query(scriptArr[i], null, {
+        raw: true,
+        type: 'INSERT',
+      });
     }
   }
 };
 
 const createViewAndProcedure = async () => {
   // 创建View
-  const viewSql = await readFile(`${__dirname}/../tools/dbViewScript.sql`, 'utf8');
+  const viewSql = await readFile(
+    `${__dirname}/../tools/dbViewScript.sql`,
+    'utf8',
+  );
   await sequelize.query(viewSql, {
     type: sequelize.QueryTypes.SELECT,
   });
@@ -168,10 +177,26 @@ const createViewAndProcedure = async () => {
 
   // 创建Procedure
   const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
-  const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
-  const procedureSql2 = replaceAll(procedureSql1, '_DDStatus\\.YSP_', DDStatus.YSP);
-  const procedureSql3 = replaceAll(procedureSql, '_DD_GT_WLStatus\\.CS_', DD_GT_WLStatus.CS);
-  const procedureSql4 = replaceAll(procedureSql1, '_DD_DW_DPStatus\\.CS_', DD_DW_DPStatus.CS);
+  const procedureSql1 = replaceAll(
+    procedureSql,
+    '_DDStatus\\.DSP_',
+    DDStatus.DSP,
+  );
+  const procedureSql2 = replaceAll(
+    procedureSql1,
+    '_DDStatus\\.YSP_',
+    DDStatus.YSP,
+  );
+  const procedureSql3 = replaceAll(
+    procedureSql,
+    '_DD_GT_WLStatus\\.CS_',
+    DD_GT_WLStatus.CS,
+  );
+  const procedureSql4 = replaceAll(
+    procedureSql1,
+    '_DD_DW_DPStatus\\.CS_',
+    DD_DW_DPStatus.CS,
+  );
   await sequelize.query(procedureSql2, {
     type: sequelize.QueryTypes.SELECT,
   });
@@ -248,9 +273,9 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
       describe('唯一性校验', async () => {
         it('admin新建重复的PP', async () => {
           const name = 'PP1';
@@ -320,10 +345,10 @@ describe('SPRT测试', () => {
       });
     });
     describe.skip('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -389,10 +414,10 @@ describe('SPRT测试', () => {
 
         const user1 = await User.findOne({ where: { username: 'KFJL1' } });
         assert.notInclude(userList, user1.dataValues.id);
-      });// PP1的KFJL_T变成KFJL1
+      }); // PP1的KFJL_T变成KFJL1
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('PPJL为不属于自己管理的PP创建PPJL', async () => {
           const PPId = 7;
@@ -412,8 +437,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -442,12 +467,14 @@ describe('SPRT测试', () => {
         const gt = await GT.findOne({ where: { name } });
         assert.notEqual(gt, null);
 
-        const user = await User.findOne({ where: { id: gt.dataValues.GTBAUserId } });
+        const user = await User.findOne({
+          where: { id: gt.dataValues.GTBAUserId },
+        });
         assert.notEqual(user, null);
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL为不属于自己管理的PP创建GT', async () => {
           const PPId = 2;
@@ -470,8 +497,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -496,7 +523,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL编辑不属于自己管理的PP的GT图片', async () => {
           const GTId = 6;
@@ -513,8 +540,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -545,7 +572,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL为不属于自己管理的PP创建GZ', async () => {
           const PPId = 2;
@@ -564,8 +591,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -596,7 +623,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL为不属于自己管理的GT分配GZ', async () => {
           const GZId = 15;
@@ -628,8 +655,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -658,16 +685,18 @@ describe('SPRT测试', () => {
         const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
 
-        const r = await GLY_GYS.findAll({ where: { GYSId: gys.dataValues.id } });
+        const r = await GLY_GYS.findAll({
+          where: { GYSId: gys.dataValues.id },
+        });
         const userList = await getUserIdList(r);
         assert.include(userList, user.dataValues.id);
       });
     });
     describe.skip('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -694,16 +723,18 @@ describe('SPRT测试', () => {
         const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
 
-        const r = await GLY_AZGS.findAll({ where: { AZGSId: azgs.dataValues.id } });
+        const r = await GLY_AZGS.findAll({
+          where: { AZGSId: azgs.dataValues.id },
+        });
         const userList = await getUserIdList(r);
         assert.include(userList, user.dataValues.id);
       });
     });
     describe.skip('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -729,7 +760,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL创建不属于自己管理的GT的DW', async () => {
           const name = 'DW_T';
@@ -747,7 +778,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
+      describe.skip('操作状态不正确', async () => {});
       describe('唯一性校验', async () => {
         it('KFJL创建GT已经存在的DW', async () => {
           const name = 'DW1';
@@ -792,7 +823,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL新建不属于自己管理的PP的DP', async () => {
           const name = 'DP_T';
@@ -812,7 +843,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
+      describe.skip('操作状态不正确', async () => {});
       describe('唯一性校验', async () => {
         it('KFJL新建已经存在的DP', async () => {
           const name = 'DP1';
@@ -876,8 +907,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => {
-      });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL配置不属于自己管理的PP的DP', async () => {
           const DPId = 5;
@@ -909,22 +939,19 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
   // KFJL 创建FGTester
   describe('/FGTester', async () => {
-    describe('成功', async () => {
-
-    });
+    describe('成功', async () => {});
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => {
-      });
+      describe.skip('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -958,12 +985,16 @@ describe('SPRT测试', () => {
         const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.equal(ejzh_fg_tester.length, 0);
 
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_sjwl = await EJZH_SJWL.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.equal(ejzh_sjwl.length, 0);
-      });// WL和FGTester均没有
+      }); // WL和FGTester均没有
 
       it('KFJL创建仅包含FGTester的EJZH', async () => {
         const PPId = 1;
@@ -1001,12 +1032,16 @@ describe('SPRT测试', () => {
         const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.notEqual(ejzh_fg_tester, null);
 
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_sjwl = await EJZH_SJWL.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.equal(ejzh_sjwl.length, 0);
-      });// 仅FGTesters
+      }); // 仅FGTesters
 
       it('KFJL创建仅包含SJWL的EJZH', async () => {
         const PPId = 1;
@@ -1040,12 +1075,16 @@ describe('SPRT测试', () => {
         const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.equal(ejzh_fg_tester.length, 0);
 
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_sjwl = await EJZH_SJWL.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.notEqual(ejzh_sjwl.length, 0);
-      });// 仅SJWLs
+      }); // 仅SJWLs
 
       it('KFJL创建包含FGTester和SJWL的EJZH-1', async () => {
         const PPId = 1;
@@ -1088,12 +1127,16 @@ describe('SPRT测试', () => {
         const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.equal(ejzh_fg_tester.length, 2);
 
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_sjwl = await EJZH_SJWL.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.equal(ejzh_sjwl.length, 1);
-      });// FGTesters&SJWLs
+      }); // FGTesters&SJWLs
 
       it('KFJL创建包含FGTester和SJWL的EJZH-2', async () => {
         const PPId = 1;
@@ -1136,12 +1179,16 @@ describe('SPRT测试', () => {
         const ejzh = await EJZH.findOne({ where: { name } });
         assert.notEqual(ejzh, null);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.equal(ejzh_fg_tester.length, 1);
 
-        const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId: ejzh.dataValues.id } });
+        const ejzh_sjwl = await EJZH_SJWL.findAll({
+          where: { EJZHId: ejzh.dataValues.id },
+        });
         assert.equal(ejzh_sjwl.length, 2);
-      });// FGTesters&SJWLs
+      }); // FGTesters&SJWLs
     });
     describe('失败', async () => {
       describe('数据不合法', async () => {
@@ -1254,8 +1301,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -1284,7 +1331,9 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({
+          where: { EJZHId },
+        });
         assert.equal(ejzh_fg_tester.length, 0);
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
@@ -1322,7 +1371,9 @@ describe('SPRT测试', () => {
         assert.equal(ejzh.dataValues.WLId, WLId);
         assert.equal(ejzh.dataValues.imageUrl, imageUrl);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({
+          where: { EJZHId },
+        });
         assert.notEqual(ejzh_fg_tester, null);
 
         const ejzh_sjwl = await EJZH_SJWL.findAll({ where: { EJZHId } });
@@ -1372,7 +1423,9 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({
+          where: { EJZHId },
+        });
         const FGTesterIdList = [];
         for (const item of ejzh_fg_tester) {
           FGTesterIdList.push(item.dataValues.FGTesterId);
@@ -1425,7 +1478,9 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ejzh_fg_tester = await EJZH_FGTester.findAll({ where: { EJZHId } });
+        const ejzh_fg_tester = await EJZH_FGTester.findAll({
+          where: { EJZHId },
+        });
         const FGTesterIdList = [];
         for (const item of ejzh_fg_tester) {
           FGTesterIdList.push(item.dataValues.FGTesterId);
@@ -1497,8 +1552,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -1530,9 +1585,11 @@ describe('SPRT测试', () => {
         const yjzh = await YJZH.findOne({ where: { name } });
         assert.notEqual(yjzh, null);
 
-        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: yjzh.dataValues.id } });
+        const yjzh_ejzh = await YJZH_EJZH.findAll({
+          where: { YJZHId: yjzh.dataValues.id },
+        });
         assert.equal(yjzh_ejzh.length, 0);
-      });// 没有EJZH
+      }); // 没有EJZH
 
       it('KFJL创建YJZH-包含多组EJZH', async () => {
         const PPId = 1;
@@ -1568,7 +1625,9 @@ describe('SPRT测试', () => {
         const yjzh = await YJZH.findOne({ where: { name } });
         assert.notEqual(yjzh, null);
 
-        const yjzh_ejzh = await YJZH_EJZH.findAll({ where: { YJZHId: yjzh.dataValues.id } });
+        const yjzh_ejzh = await YJZH_EJZH.findAll({
+          where: { YJZHId: yjzh.dataValues.id },
+        });
         assert.notEqual(yjzh_ejzh, null);
       }); // EJZH1
     });
@@ -1598,9 +1657,9 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '不是一级物料');
         });
       });
-      describe.skip('没有权限', async () => { });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('没有权限', async () => {});
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -1742,10 +1801,10 @@ describe('SPRT测试', () => {
       });
     });
     describe.skip('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -1787,7 +1846,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL将YJZH配置到不属于自己管理的GT', async () => {
           const YJZHId = 1;
@@ -1839,8 +1898,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe.skip('操作状态不正确', async () => { });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('操作状态不正确', async () => {});
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -1864,7 +1923,9 @@ describe('SPRT测试', () => {
         const dd = await DD.findOne({ where: { name } });
         assert.notEqual(dd, null);
 
-        const dd_gt_wl = await DD_GT_WL.findAll({ where: { DDId: dd.dataValues.id } });
+        const dd_gt_wl = await DD_GT_WL.findAll({
+          where: { DDId: dd.dataValues.id },
+        });
         let ddgtwlList = [];
         ddgtwlList = dd_gt_wl.map(item => ({
           GTId: item.dataValues.GTId,
@@ -1878,7 +1939,9 @@ describe('SPRT测试', () => {
         ];
         assert.equal(isArrayEqual(ddgtwlList, tureddgtwlList), true);
 
-        const dddwdp = await DD_DW_DP.findAll({ where: { DDId: dd.dataValues.id } });
+        const dddwdp = await DD_DW_DP.findAll({
+          where: { DDId: dd.dataValues.id },
+        });
         let dddwdpList = [];
         dddwdpList = dddwdp.map(item => ({
           DWId: item.dataValues.DWId,
@@ -1895,12 +1958,10 @@ describe('SPRT测试', () => {
         assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
 
-      it('KFJL创建DD--GT配置与上次DD一致', async () => {
-
-      });
+      it('KFJL创建DD--GT配置与上次DD一致', async () => {});
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL创建不属于自己管理的PP的DD', async () => {
           const PPId = 7;
@@ -1936,7 +1997,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '该品牌还有未审批通过的DD');
         });
       });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -1958,8 +2019,8 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
-      describe.skip('没有权限', async () => { });
+      describe.skip('数据不合法', async () => {});
+      describe.skip('没有权限', async () => {});
       describe('操作状态不正确', async () => {
         it('KFJL重新生成已经审批通过的DD', async () => {
           const KFJL3Token = await getToken('KFJL3', '123456');
@@ -1975,7 +2036,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
         });
       });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -1999,7 +2060,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL设置其他PP的GTFX', async () => {
           const id = 3;
@@ -2017,8 +2078,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有权限');
         });
       });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -2047,7 +2108,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('PPJL为不属于自己管理的DD配置AZGS', async () => {
           const AZGSId = 1;
@@ -2083,7 +2144,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '不能指定安装公司');
         });
       });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -2112,7 +2173,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('PPJL为不属于自己管理的DD配置AZGS', async () => {
           const AZGSId = 1;
@@ -2148,7 +2209,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '不能指定安装公司');
         });
       });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -2173,7 +2234,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('PPJL审批非自己管理的PP的DD', async () => {
           const id = 1;
@@ -2205,7 +2266,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '不能被审批');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -2233,7 +2294,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => { });
+      describe.skip('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('GYSGLY设置不属于自己管理的DD_GT_WL的发货GYS', async () => {
           const DD_GT_WLIds = [6];
@@ -2263,7 +2324,10 @@ describe('SPRT测试', () => {
             GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
-          console.log('生产GYS1将DD_GT_WL分配给其他生产GYS2', response.data.msg);
+          console.log(
+            '生产GYS1将DD_GT_WL分配给其他生产GYS2',
+            response.data.msg,
+          );
         });
       });
       describe('操作状态不正确', async () => {
@@ -2332,7 +2396,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe.skip('唯一性校验', async () => { });
+      describe.skip('唯一性校验', async () => {});
     });
   });
 
@@ -2360,7 +2424,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('GYSGLY设置不属于自己管理的DD_DW_DP的发货GYS', async () => {
           const DD_DW_DPIds = [6];
@@ -2428,7 +2492,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -2476,7 +2540,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的DD_GT_WL的AZG', async () => {
           const DD_GT_WLIds = [6];
@@ -2527,7 +2591,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -2555,7 +2619,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的DD_DW_DP的AZG', async () => {
           const DD_DW_DPIds = [6];
@@ -2606,7 +2670,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -2637,14 +2701,18 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.status, WYWLStatus.RK);
           assert.equal(wywl.dataValues.GYSId, 1);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 30 },
+          });
           assert.notEqual(wywlcz, null);
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 1);
           assert.include(wywlczList, WYWLStatus.RK);
         }
@@ -2669,14 +2737,18 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.status, WYWLStatus.RK);
           assert.equal(wywl.dataValues.GYSId, 1);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 30 },
+          });
           assert.notEqual(wywlcz, null);
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 1);
           assert.include(wywlczList, WYWLStatus.RK);
         }
@@ -2702,14 +2774,18 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.status, WYWLStatus.RK);
           assert.equal(wywl.dataValues.GYSId, 2);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 32 } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 32 },
+          });
           assert.notEqual(wywlcz, null);
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 1);
           assert.include(wywlczList, WYWLStatus.RK);
         }
@@ -2717,8 +2793,8 @@ describe('SPRT测试', () => {
     });
 
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
       describe('操作状态不正确', async () => {
         it('ZHY入库已经消库的WL', async () => {
           const EWMs = [
@@ -2840,7 +2916,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -2872,20 +2948,24 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.status, WYWLStatus.CK);
           assert.equal(wywl.dataValues.GYSId, 3);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 33 } });
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 33 },
+          });
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlcz.length, 1);
           assert.include(wywlczList, WYWLStatus.CK);
         }
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('ZHY出库其他GYS的库存WL', async () => {
           const EWMs = [
@@ -2933,7 +3013,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '权限');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -2965,13 +3045,17 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.status, WYWLStatus.XK);
           assert.equal(wywl.dataValues.GYSId, 3);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 33 } });
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 33 },
+          });
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           console.log(wywlczList);
           assert.equal(wywlcz.length, 1);
           assert.include(wywlczList, WYWLStatus.XK);
@@ -3002,21 +3086,25 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.status, WYWLStatus.XK);
           assert.equal(wywl.dataValues.GYSId, 1);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 30 },
+          });
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlcz.length, 1);
           assert.include(wywlczList, WYWLStatus.XK);
         }
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
       describe('操作状态不正确', async () => {
         it('ZHY消库已经装箱的WL', async () => {
           const EWMs = [
@@ -3038,7 +3126,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -3082,28 +3170,36 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: WLEWMs[0].typeId } });
+        const ddgtwl = await DD_GT_WL.findOne({
+          where: { WLId: WLEWMs[0].typeId },
+        });
         assert.equal(ddgtwl.dataValues.ZXNumber, 4);
         assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.ZXWC);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWM) } });
+        const kdx = await KDX.findOne({
+          where: { EWM: JSON.stringify(KDXEWM) },
+        });
         assert.notEqual(kdx, null);
 
         for (const item of WLEWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
           assert.equal(wywl.dataValues.status, WYWLStatus.ZX);
           assert.equal(wywl.dataValues.GYSId, 1);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
-          assert.equal(wywlcz.length, 2);// 未入库的物料直接装箱，系统先做入库操作，然后再装箱
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 30 },
+          });
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
+          assert.equal(wywlcz.length, 2); // 未入库的物料直接装箱，系统先做入库操作，然后再装箱
           assert.include(wywlczList, WYWLStatus.ZX);
         }
       });
 
-      it('ZHY装箱已经在其他GYS处入库的WL', async () => {});// TODOIzz
+      it('ZHY装箱已经在其他GYS处入库的WL', async () => {}); // TODOIzz
 
       it('ZHY往已经装过WL的箱子中添加WL', async () => {
         const DDId = 3;
@@ -3142,29 +3238,37 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: WLEWMs[0].typeId } });
+        const ddgtwl = await DD_GT_WL.findOne({
+          where: { WLId: WLEWMs[0].typeId },
+        });
         assert.equal(ddgtwl.dataValues.ZXNumber, 4);
         assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.ZXWC);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWM) } });
+        const kdx = await KDX.findOne({
+          where: { EWM: JSON.stringify(KDXEWM) },
+        });
         assert.notEqual(kdx, null);
 
         for (const item of WLEWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
           assert.equal(wywl.dataValues.status, WYWLStatus.ZX);
           assert.equal(wywl.dataValues.GYSId, 1);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 30 },
+          });
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlcz.length, 1);
           assert.include(wywlczList, WYWLStatus.ZX);
         }
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('ZHY装箱不属于自己的DD_GT_WL任务的WL', async () => {
           const DDId = 3;
@@ -3353,7 +3457,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -3392,31 +3496,39 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtdp = await DD_GT_WL.findOne({ where: { WLId: WLEWMs[0].typeId } });
+        const ddgtdp = await DD_GT_WL.findOne({
+          where: { WLId: WLEWMs[0].typeId },
+        });
         assert.equal(ddgtwl.dataValues.ZXNumber, 5);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWM) } });
+        const kdx = await KDX.findOne({
+          where: { EWM: JSON.stringify(KDXEWM) },
+        });
         assert.notEqual(kdx, null);
 
         for (const item of DPEWMs) {
-          const wydp = await WYDP.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wydp = await WYDP.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wydp, null);
           assert.equal(wydp.dataValues.KDXId, kdx.dataValues.id);
           assert.equal(wydp.dataValues.status, WYDPStatus.CK);
           assert.equal(wydp.dataValues.GYSId, 1);
 
-          const wydpcz = await WYDPCZ.findAll({ where: { WYWLId: wydp.dataValues.id, UserId: 30 } });
-          const wydpczList = wydpcz.map(item => (item.dataValues.status));
+          const wydpcz = await WYDPCZ.findAll({
+            where: { WYWLId: wydp.dataValues.id, UserId: 30 },
+          });
+          const wydpczList = wydpcz.map(item => item.dataValues.status);
           assert.equal(wydpcz.length, 1);
           assert.include(wydpczList, WYDPStatus.CK);
         }
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -3444,33 +3556,37 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(KDXEWM) } });
+        const kdx = await KDX.findOne({
+          where: { EWM: JSON.stringify(KDXEWM) },
+        });
         assert.notEqual(kdx, null);
 
         for (const item of WLEWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.status, WYWLStatus.ZX);
           assert.equal(wywl.dataValues.GYSId, 1);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 30 },
+          });
           assert.notEqual(wywlcz, null);
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 1);
           assert.include(wywlczList, WYWLStatus.RK);
         }
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('ZHY装不属于自己的WLBH任务', async () => {
           const YJZXTime = '2018-10-10';
           const GTId = 8;
-          const WLEWMs = [
-            { type: 'WL', typeId: 16, uuid: 'B16_100' },
-          ];
+          const WLEWMs = [{ type: 'WL', typeId: 16, uuid: 'B16_100' }];
           const KDXEWM = { type: 'KDX', uuid: 'KDX_T' };
 
           const response = await post(
@@ -3491,9 +3607,7 @@ describe('SPRT测试', () => {
         it('ZHY将WLBH装入DD_GT_WL的箱子中', async () => {
           const YJZXTime = '2018-10-10';
           const GTId = 7;
-          const WLEWMs = [
-            { type: 'WL', typeId: 10, uuid: 'B10_100' },
-          ];
+          const WLEWMs = [{ type: 'WL', typeId: 10, uuid: 'B10_100' }];
           const KDXEWM = { type: 'KDX', uuid: 'KDX1' };
 
           const response = await post(
@@ -3513,9 +3627,7 @@ describe('SPRT测试', () => {
         it('ZHY装箱已经装满的WLBH任务', async () => {
           const YJZXTime = '2018-01-04';
           const GTId = 7;
-          const WLEWMs = [
-            { type: 'WL', typeId: 10, uuid: 'B10_100' },
-          ];
+          const WLEWMs = [{ type: 'WL', typeId: 10, uuid: 'B10_100' }];
           const KDXEWM = { type: 'KDX', uuid: 'KDX_T' };
 
           const response = await post(
@@ -3535,9 +3647,7 @@ describe('SPRT测试', () => {
         it('ZHY将GT1的WL装入GT2的快递箱中', async () => {
           const YJZXTime = '2018-10-10';
           const GTId = 8;
-          const WLEWMs = [
-            { type: 'WL', typeId: 10, uuid: 'B10_100' },
-          ];
+          const WLEWMs = [{ type: 'WL', typeId: 10, uuid: 'B10_100' }];
           const KDXEWM = { type: 'KDX', uuid: 'KDX22' };
 
           const response = await post(
@@ -3551,22 +3661,22 @@ describe('SPRT测试', () => {
             ZHYToken,
           );
           assert.equal(response.data.code, -1);
-        });// todoizz
+        }); // todoizz
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
   // 批量装箱BHDP [ZHY]
   describe('/piLiangZhuangXiangBuHuoDP', async () => {
     describe('成功', async () => {
-      it('ZHY装箱BHDP', async () => { });
+      it('ZHY装箱BHDP', async () => {});
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -3592,21 +3702,27 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           console.log(wywl);
-          const ddgtwl = await DD_GT_WL.findOne({ where: { id: wywl.dataValues.DDGTWLId } });
+          const ddgtwl = await DD_GT_WL.findOne({
+            where: { id: wywl.dataValues.DDGTWLId },
+          });
           assert.equal(ddgtwl.ZXNumber, 0);
           assert.equal(wywl.dataValues.status, WYWLStatus.RK);
           assert.equal(wywl.dataValues.GYSId, 1);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.RK } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.RK },
+          });
           assert.notEqual(wywlcz, null);
           assert.equal(wywlcz.dataValues.UserId, 30);
         }
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('ZHY出箱不属于自己DD_GT_WL的任务的WL', async () => {
           const EWMs = [
@@ -3698,20 +3814,20 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
   // 出箱DP [ZHY]
   describe('/chuXiangDP', async () => {
     describe('成功', async () => {
-      it('ZHY出箱DP', async () => { });
+      it('ZHY出箱DP', async () => {});
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -3746,10 +3862,14 @@ describe('SPRT测试', () => {
         assert.notEqual(kdd, null);
 
         for (const item of EWMs) {
-          const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(item) } });
+          const kdx = await KDX.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.equal(kdx.dataValues.status, KDXStatus.FH);
 
-          const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+          const wywl = await WYWL.findAll({
+            where: { KDXId: kdx.dataValues.id },
+          });
           const wywlList = wywl.map(item => ({
             id: item.dataValues.id,
             status: item.dataValues.status,
@@ -3758,7 +3878,9 @@ describe('SPRT测试', () => {
           for (const item of wywlList) {
             assert.equal(item.status, WYWLStatus.FH);
 
-            const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: item.id, status: WYWLStatus.FX } });
+            const wywlcz = await WYWLCZ.findAll({
+              where: { WYWLId: item.id, status: WYWLStatus.FX },
+            });
             assert.notEqual(wywlcz, null);
             assert.equal(wywlcz.length, 1);
             assert.include(wywlcz[0].dataValues.UserId, 33);
@@ -3790,10 +3912,14 @@ describe('SPRT测试', () => {
         assert.notEqual(kdd, null);
 
         for (const item of EWMs) {
-          const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(item) } });
+          const kdx = await KDX.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.equal(kdx.dataValues.status, KDXStatus.FH);
 
-          const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+          const wywl = await WYWL.findAll({
+            where: { KDXId: kdx.dataValues.id },
+          });
           const wywlList = wywl.map(item => ({
             id: item.dataValues.id,
             status: item.dataValues.status,
@@ -3802,7 +3928,9 @@ describe('SPRT测试', () => {
           for (const item of wywlList) {
             assert.equal(item.status, WYWLStatus.FH);
 
-            const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: item.id, status: WYWLStatus.FX } });
+            const wywlcz = await WYWLCZ.findAll({
+              where: { WYWLId: item.id, status: WYWLStatus.FX },
+            });
             assert.notEqual(wywlcz, null);
             assert.equal(wywlcz.length, 1);
             assert.include(wywlcz[0].dataValues.UserId, 33);
@@ -3853,13 +3981,15 @@ describe('SPRT测试', () => {
         const kdd = await KDD.findOne({ where: { code: KDDCode } });
         assert.notEqual(kdd, null);
 
-        const wywlcz = await WYWLCZ.findOne({ where: { WYWLId: WYWLPayloads.id } });
+        const wywlcz = await WYWLCZ.findOne({
+          where: { WYWLId: WYWLPayloads.id },
+        });
         assert.notEqual(wywlcz, null);
         assert.equal(wywl.dataValues.status, WYWLStatus.ZX);
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('ZHY关联不属于自己的DD_GT_WL任务的KDX', async () => {
           const EWMs = [
@@ -3926,7 +4056,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -3951,11 +4081,15 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(EWMs[0]) } });
+        const kdx = await KDX.findOne({
+          where: { EWM: JSON.stringify(EWMs[0]) },
+        });
         assert.equal(kdx.dataValues.KDDId, null);
         assert.equal(kdx.dataValues.status, KDXStatus.ZX);
 
-        const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+        const wywl = await WYWL.findAll({
+          where: { KDXId: kdx.dataValues.id },
+        });
         const wywlList = wywl.map(item => ({
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
@@ -3964,7 +4098,9 @@ describe('SPRT测试', () => {
           assert.equal(item.status, WYWLStatus.ZX);
         }
 
-        const wydp = await WYDP.findAll({ where: { KDXId: kdx.dataValues.id } });
+        const wydp = await WYDP.findAll({
+          where: { KDXId: kdx.dataValues.id },
+        });
         const wydpList = wydp.map(item => ({
           EWM: item.dataValues.EWM,
           status: item.dataValues.status,
@@ -3975,7 +4111,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('ZHY解除不属于自己DD_GT_WL任务的快递关联', async () => {
           const EWMs = [
@@ -3996,8 +4132,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '权限');
         });
       });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -4023,10 +4159,14 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(item) } });
+          const kdx = await KDX.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.equal(kdx.dataValues.status, KDXStatus.SX);
 
-          const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+          const wywl = await WYWL.findAll({
+            where: { KDXId: kdx.dataValues.id },
+          });
           const wywlList = wywl.map(item => ({
             id: item.dataValues.id,
             status: item.dataValues.status,
@@ -4034,7 +4174,9 @@ describe('SPRT测试', () => {
           for (const item of wywlList) {
             assert.equal(item.status, WYWLStatus.SX);
 
-            const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: item.id, status: WYWLStatus.SX } });
+            const wywlcz = await WYWLCZ.findAll({
+              where: { WYWLId: item.id, status: WYWLStatus.SX },
+            });
             assert.notEqual(wywlcz, null);
             assert.equal(wywlcz.length, 1);
             assert.include(wywlcz[0].dataValues.UserId, 24);
@@ -4082,10 +4224,14 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const kdx = await KDX.findOne({ where: { EWM: JSON.stringify(item) } });
+          const kdx = await KDX.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.equal(kdx.dataValues.status, KDXStatus.SX);
 
-          const wywl = await WYWL.findAll({ where: { KDXId: kdx.dataValues.id } });
+          const wywl = await WYWL.findAll({
+            where: { KDXId: kdx.dataValues.id },
+          });
           const wywlList = wywl.map(item => ({
             id: item.dataValues.id,
             status: item.dataValues.status,
@@ -4097,7 +4243,9 @@ describe('SPRT测试', () => {
             } else {
               assert.equal(item.status, WYWLStatus.SX);
 
-              const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: item.id, status: WYWLStatus.SX } });
+              const wywlcz = await WYWLCZ.findAll({
+                where: { WYWLId: item.id, status: WYWLStatus.SX },
+              });
               assert.notEqual(wywlcz, null);
               assert.equal(wywlcz.length, 1);
               assert.include(wywlcz[0].dataValues.UserId, 24);
@@ -4107,7 +4255,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('GTBA收箱其他GT的箱子', async () => {
           const EWMs = [
@@ -4128,8 +4276,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '权限');
         });
       });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -4156,10 +4304,14 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.equal(wywl.dataValues.status, WYWLStatus.SH);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.SH } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.SH },
+          });
           assert.notEqual(wywlcz, null);
           assert.equal(wywlcz.length, 1);
           assert.include(wywlcz[0].dataValues.UserId, 26);
@@ -4191,19 +4343,23 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         for (const item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
           assert.equal(wywl.dataValues.status, WYWLStatus.SH);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 38 } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 38 },
+          });
           assert.notEqual(wywlcz, null);
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 1);
           assert.include(wywlczList, WYWLStatus.SH);
         }
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('GTBA收货不属于自己的任务', async () => {
           const EWMs = [
@@ -4267,7 +4423,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -4275,18 +4431,15 @@ describe('SPRT测试', () => {
   describe('/shouHuoDP', async () => {
     describe('成功', async () => {
       // it('GTBA收货DP', async () => {
-
       // });
-
       // it('AZG收货DP', async () => {
-
       // });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -4325,7 +4478,9 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, WYWLStatus.FK);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.FK } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.FK },
+          });
           assert.notEqual(wywlcz, null);
           assert.equal(wywlcz.length, 1);
           assert.include(wywlcz[0].dataValues.UserId, 26);
@@ -4363,9 +4518,11 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, WYWLStatus.FK);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 36 } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 36 },
+          });
           assert.notEqual(wywlcz, null);
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 1);
           assert.include(wywlczList, WYWLStatus.FK);
         }
@@ -4397,16 +4554,18 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { id: item.id } });
           assert.equal(wywl.dataValues.status, WYWLStatus.FK);
 
-          const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 36 } });
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 36 },
+          });
           assert.notEqual(wywlcz, null);
-          const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 1);
           assert.include(wywlczList, WYWLStatus.FK);
         }
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('GTBA反馈不属于自己的DDWL的AZFKType', async () => {
           const WYWLPayloads = [
@@ -4490,7 +4649,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -4503,25 +4662,31 @@ describe('SPRT测试', () => {
           {
             DDId: 1,
             GTId: 1,
-            WYDPPayloads: [{
-              id: 1,
-              AZFKType: 'test',
-            }],
+            WYDPPayloads: [
+              {
+                id: 1,
+                AZFKType: '安装成功',
+                imageUrl: 'imageUrl',
+              },
+              {
+                id: 1,
+                AZFKType: '安装成功',
+                imageUrl: 'imageUrl',
+              },
+            ],
           },
           AZGToken,
         );
         assert.equal(1, -1);
       });
 
-      it('AZG反馈DDDP的AZFKType', async () => {
-
-      });
+      it('AZG反馈DDDP的AZFKType', async () => {});
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -4532,10 +4697,7 @@ describe('SPRT测试', () => {
         const GTBA9Token = await getToken('GTBA9', '123456');
         const DDId = 4;
         const GTId = 9;
-        const imageUrls = [
-          'imageUrl_FK28',
-          'imageUrl_FK28',
-        ];
+        const imageUrls = ['imageUrl_FK28', 'imageUrl_FK28'];
 
         const response = await post(
           'anZhuangFanKuiQuanJingWLTuPian',
@@ -4554,9 +4716,7 @@ describe('SPRT测试', () => {
           id: item.dataValues.id,
           status: item.dataValues.status,
         }));
-        const trueddgtwlList = [
-          { id: 28, status: DD_GT_WLStatus.WC },
-        ];
+        const trueddgtwlList = [{ id: 28, status: DD_GT_WLStatus.WC }];
         assert.equal(isArrayEqual(ddgtwlList, trueddgtwlList), true);
       });
 
@@ -4564,10 +4724,7 @@ describe('SPRT测试', () => {
         const AZG3Token = await getToken('AZG3', '123456');
         const DDId = 5;
         const GTId = 10;
-        const imageUrls = [
-          'imageUrl_FK27',
-          'imageUrl_FK27',
-        ];
+        const imageUrls = ['imageUrl_FK27', 'imageUrl_FK27'];
 
         const response = await post(
           'anZhuangFanKuiQuanJingWLTuPian',
@@ -4586,22 +4743,17 @@ describe('SPRT测试', () => {
           id: item.dataValues.id,
           status: item.dataValues.status,
         }));
-        const trueddgtwlList = [
-          { id: 27, status: DD_GT_WLStatus.WC },
-        ];
+        const trueddgtwlList = [{ id: 27, status: DD_GT_WLStatus.WC }];
         assert.equal(isArrayEqual(ddgtwlList, trueddgtwlList), true);
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('GTBA反馈不属于自己的任务的柜台全景图', async () => {
           const DDId = 4;
           const GTId = 9;
-          const imageUrls = [
-            'imageUrl_FK28',
-            'imageUrl_FK28',
-          ];
+          const imageUrls = ['imageUrl_FK28', 'imageUrl_FK28'];
 
           const response = await post(
             'anZhuangFanKuiQuanJingWLTuPian',
@@ -4619,10 +4771,7 @@ describe('SPRT测试', () => {
         it('AZG反馈不属于自己的任务的柜台全景图', async () => {
           const DDId = 5;
           const GTId = 10;
-          const imageUrls = [
-            'imageUrl_FK27',
-            'imageUrl_FK27',
-          ];
+          const imageUrls = ['imageUrl_FK27', 'imageUrl_FK27'];
 
           const response = await post(
             'anZhuangFanKuiQuanJingWLTuPian',
@@ -4641,10 +4790,7 @@ describe('SPRT测试', () => {
         it('AZG在未完成状态反馈前，反馈柜台全景图', async () => {
           const DDId = 3;
           const GTId = 8;
-          const imageUrls = [
-            'imageUrl_FK27',
-            'imageUrl_FK27',
-          ];
+          const imageUrls = ['imageUrl_FK27', 'imageUrl_FK27'];
 
           const response = await post(
             'anZhuangFanKuiQuanJingWLTuPian',
@@ -4659,26 +4805,22 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
   // 安装反馈全景DP图片 [GTBA, AZG]
   describe('/anZhuangFanKuiQuanJingDPTuPian', async () => {
     describe('成功', async () => {
-      it('GTBA反馈DP安装反馈图', async () => {
+      it('GTBA反馈DP安装反馈图', async () => {});
 
-      });
-
-      it('AZG反馈WL安装反馈图', async () => {
-
-      });
+      it('AZG反馈WL安装反馈图', async () => {});
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -4736,7 +4878,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('GTBA申请其他GT的上市WLBH', async () => {
           const DDId = 5;
@@ -4782,8 +4924,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '权限');
         });
       });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -4896,7 +5038,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('GTBA申请其他GT的日常WLBH', async () => {
           const GTId = 8;
@@ -4938,8 +5080,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '权限');
         });
       });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -4970,10 +5112,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5000,7 +5142,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL批量审批通其他PP的WLBH', async () => {
           const KFJL3Token = await getToken('KFJL3', '123456');
@@ -5063,7 +5205,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5090,10 +5232,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5120,7 +5262,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL单独审批通其他PP的WLBH', async () => {
           const KFJL3Token = await getToken('KFJL3', '123456');
@@ -5157,7 +5299,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5184,10 +5326,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5214,7 +5356,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL单独驳回其他PP的WLBH', async () => {
           const KFJL3Token = await getToken('KFJL3', '123456');
@@ -5233,8 +5375,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '权限');
         });
       });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5261,10 +5403,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5293,7 +5435,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('PPJL为其他PP的WLBH分配AZGS', async () => {
           const ids = [5];
@@ -5363,7 +5505,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5387,13 +5529,13 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
         assert.equal(dpbh.dataValues.AZGSId, AZGSId);
-      });// TODO:SequelizeEagerLoadingError: GT is not associated to DPBH!
+      }); // TODO:SequelizeEagerLoadingError: GT is not associated to DPBH!
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5420,7 +5562,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('PPJL批量审批通其他PP的WLBH', async () => {
           const PPJL3Token = await getToken('PPJL3', '123456');
@@ -5498,7 +5640,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5523,10 +5665,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5553,7 +5695,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('PPJL单独审批通其他PP的WLBH', async () => {
           const PPJL3Token = await getToken('PPJL3', '123456');
@@ -5590,7 +5732,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5617,10 +5759,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5647,7 +5789,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('KFJL单独驳回其他PP的WLBH', async () => {
           const PPJL3Token = await getToken('PPJL3', '123456');
@@ -5666,8 +5808,8 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '权限');
         });
       });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5694,10 +5836,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5725,7 +5867,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('生产GYSGLY设置不属于自己任务的WLBH的YJZXTime', async () => {
           const GYSGLY2Token = await getToken('GYSGLY2', '123456');
@@ -5778,7 +5920,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5806,10 +5948,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5836,7 +5978,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('生产GYSGLY为不属于自己的WLBH分配发货GYS', async () => {
           const GYSGLY2Token = await getToken('GYSGLY2', '123456');
@@ -5935,7 +6077,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -5961,10 +6103,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -6012,7 +6154,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
+      describe('数据不合法', async () => {});
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的WLBH的AZG', async () => {
           const AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
@@ -6064,7 +6206,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
       });
-      describe('唯一性校验', async () => { });
+      describe('唯一性校验', async () => {});
     });
   });
 
@@ -6092,10 +6234,10 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
-      describe('唯一性校验', async () => { });
+      describe('数据不合法', async () => {});
+      describe('没有权限', async () => {});
+      describe('操作状态不正确', async () => {});
+      describe('唯一性校验', async () => {});
     });
   });
 });
