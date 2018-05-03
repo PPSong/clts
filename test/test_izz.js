@@ -3045,7 +3045,7 @@ describe('SPRT测试', () => {
   // 订单批量装箱DDWL [ZHY] 
   describe('/piLiangZhuangXiangDDWL', async () => {
     describe('成功', async () => {
-      it.only('ZHY装箱DDWL', async () => {
+      it('ZHY装箱DDWL', async () => {
         const DDId = 3;
         const GTId = 8;
         const WLEWMs = [
@@ -3093,15 +3093,17 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
-          assert.equal(wywl.dataValues.status, WYWLStatus.CK);
+          assert.equal(wywl.dataValues.status, WYWLStatus.ZX);
           assert.equal(wywl.dataValues.GYSId, 1);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
           const wywlczList = wywlcz.map(item => (item.dataValues.status));
-          assert.equal(wywlcz.length, 1);
-          assert.include(wywlczList, WYWLStatus.CK);
+          assert.equal(wywlcz.length, 2);// 未入库的物料直接装箱，系统先做入库操作，然后再装箱
+          assert.include(wywlczList, WYWLStatus.ZX);
         }
       });
+
+      it('ZHY装箱已经在其他GYS处入库的WL', async () => {});//TODOIzz
 
       it('ZHY往已经装过WL的箱子中添加WL', async () => {
         const DDId = 3;
@@ -3151,13 +3153,13 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
-          assert.equal(wywl.dataValues.status, WYWLStatus.CK);
+          assert.equal(wywl.dataValues.status, WYWLStatus.ZX);
           assert.equal(wywl.dataValues.GYSId, 1);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
           const wywlczList = wywlcz.map(item => (item.dataValues.status));
           assert.equal(wywlcz.length, 1);
-          assert.include(wywlczList, WYWLStatus.CK);
+          assert.include(wywlczList, WYWLStatus.ZX);
         }
       });
     });
@@ -3594,7 +3596,7 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           console.log(wywl);
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: wywl.dataValues.DDGTWLId } });
-          assert.equal(ddgtwl.dataValues.ZXNumber, 0);
+          assert.equal(ddgtwl.ZXNumber, 0);
           assert.equal(wywl.dataValues.status, WYWLStatus.RK);
           assert.equal(wywl.dataValues.GYSId, 1);
 
