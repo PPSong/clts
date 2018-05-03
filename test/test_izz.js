@@ -2584,7 +2584,7 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        it('AZGSGLY为收获的DD_GT_WL设置AZG', async () => {
+        it('AZGSGLY为收货的DD_GT_WL设置AZG', async () => {
           const DD_GT_WLIds = [13];
           const AZGUserId = 37;
 
@@ -5522,7 +5522,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
 
-        it('PPJL为通过状态的WLBH分配AZGS', async () => { 
+        it('PPJL为通过状态的WLBH分配AZGS', async () => {
           const PPJL3Token = await getToken('PPJL3', '123456');
           const ids = [8];
           const AZGSId = 1;
@@ -5596,7 +5596,7 @@ describe('SPRT测试', () => {
       });
     });
     describe('失败', async () => {
-      describe('数据不合法', async () => {});
+      describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('PPJL批量审批通其他PP的WLBH', async () => {
           const PPJL3Token = await getToken('PPJL3', '123456');
@@ -5612,7 +5612,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '权限');
         });
-       });
+      });
       describe('操作状态不正确', async () => {
         it('PPJL批量审批通过状态为驳回的WLBH', async () => {
           const PPJL3Token = await getToken('PPJL3', '123456');
@@ -5673,7 +5673,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
         });
-       });
+      });
       describe('唯一性校验', async () => { });
     });
   });
@@ -5747,7 +5747,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '权限');
         });
-       });
+      });
       describe('操作状态不正确', async () => {
         it('PPJL单独审批通过状态为驳回的WLBH', async () => {
           const PPJL3Token = await getToken('PPJL3', '123456');
@@ -5765,7 +5765,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
         });
-       });
+      });
       describe('唯一性校验', async () => { });
     });
   });
@@ -5841,7 +5841,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '权限');
         });
-       });
+      });
       describe('操作状态不正确', async () => { });
       describe('唯一性校验', async () => { });
     });
@@ -5907,7 +5907,7 @@ describe('SPRT测试', () => {
           let GYSGLY2Token = await getToken('GYSGLY2', '123456');
           const ids = [8, 9, 33];
           const YJZXTime = '2018-10-10';
-  
+
           let response = await post(
             'setWLBHs0YJZXTime',
             {
@@ -5924,7 +5924,7 @@ describe('SPRT测试', () => {
           let GYSGLY3Token = await getToken('GYSGLY3', '123456');
           const ids = [35, 36];
           const YJZXTime = '2018-02-02';
-  
+
           let response = await post(
             'setWLBHs0YJZXTime',
             {
@@ -5936,12 +5936,12 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '权限');
         });
-       });
+      });
       describe('操作状态不正确', async () => {
         it('生产GYSGLY设置已经装箱的WLBH的YJZXTime', async () => {
           const ids = [37, 38];
           const YJZXTime = '2018-02-02';
-  
+
           let response = await post(
             'setWLBHs0YJZXTime',
             {
@@ -5953,7 +5953,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
         });
-       });
+      });
       describe('唯一性校验', async () => { });
     });
   });
@@ -6013,12 +6013,12 @@ describe('SPRT测试', () => {
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
-      describe('没有权限', async () => { 
+      describe('没有权限', async () => {
         it('生产GYSGLY为不属于自己的WLBH分配发货GYS', async () => {
           let GYSGLY2Token = await getToken('GYSGLY2', '123456');
           const ids = [8];
           const GYSId = 3;
-  
+
           let response = await post(
             'fenPeiWLBHFaHuoGYS',
             {
@@ -6034,7 +6034,7 @@ describe('SPRT测试', () => {
         it('生产GYS1将WLBH分配给其他生产GYS2', async () => {
           const ids = [8];
           const GYSId = 2;
-  
+
           let response = await post(
             'fenPeiWLBHFaHuoGYS',
             {
@@ -6047,7 +6047,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '权限');
         });
       });
-      describe('操作状态不正确', async () => { 
+      describe('操作状态不正确', async () => {
         it('生产GYS1将WLBH分配给库存不足的中转GYS', async () => {
           const ids = [8, 72];
           const GYSId = 3;
@@ -6061,10 +6061,11 @@ describe('SPRT测试', () => {
             GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '库存不足');
         });
 
         it('GYSGLY设置还未审批通过的的WLBH的发货GYS', async () => {
-          const ids = [1, 2];
+          const ids = [1];
           const GYSId = 1;
 
           const response = await post(
@@ -6080,8 +6081,7 @@ describe('SPRT测试', () => {
         });
 
         it('GYSGLY为已经分配过发货GYS的WLBH再次分配发货GYS', async () => {
-          let GYSGLY2Token = await getToken('GYSGLY2', '123456');
-          const ids = [7];
+          const ids = [9];
           const GYSId = 3;
 
           const response = await post(
@@ -6090,13 +6090,13 @@ describe('SPRT测试', () => {
               ids,
               GYSId,
             },
-            GYSGLY2Token,
+            GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
         });
 
         it('GYSGLY设置装箱完成的WLBH的发货GYS', async () => {
-          const ids = [20];
+          const ids = [10];
           const GYSId = 3;
 
           const response = await post(
@@ -6189,8 +6189,43 @@ describe('SPRT测试', () => {
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
+      describe('没有权限', async () => {
+        it('AZGSGLY设置不属于自己管理的WLBH的AZG', async () => {
+          let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
+          const WLBHIds = [8, 32];
+          const AZGUserId = 36;
+
+          let response = await post(
+            'setWLBHs0AZG',
+            {
+              WLBHIds,
+              AZGUserId
+            },
+            AZGSGLY2Token
+          );
+          assert.equal(response.data.code, 1);
+          assert.include(response.data.msg, '没有权限');
+        });
+
+        it('AZGSGLY为WLBH设置不属于自己管理的AZG', async () => {
+          const WLBHIds = [4, 5];
+          const AZGUserId = 38;
+
+          const response = await post(
+            'setDDGTWLs0AZG',
+            {
+              WLBHIds,
+              AZGUserId,
+            },
+            AZGSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe('操作状态不正确', async () => {
+
+      });
       describe('唯一性校验', async () => { });
     });
   });
