@@ -211,7 +211,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it.only('small test', async () => {
+    it.skip('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -2376,7 +2376,8 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('生产GYS1将DD_GT_WL分配给库存不足的中转GYS', async () => {
-          const DD_GT_WLIds = [4];
+          let GYSGLY2Token = await getToken('GYSGLY2', '123456');
+          const DD_GT_WLIds = [3];
           const GYSId = 3;
 
           const response = await post(
@@ -2385,9 +2386,10 @@ describe('SPRT测试', () => {
               DD_GT_WLIds,
               GYSId,
             },
-            GYSGLYToken,
+            GYSGLY2Token,
           );
           assert.equal(response.data.code, -1);
+          console.log(response.data.msg)
         });
 
         it('GYSGLY设置还未审批通过的DD的DD_GT_WL的发货GYS', async () => {
@@ -2764,7 +2766,7 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.status, WYWLStatus.RK);
-          assert.equal(wywl.dataValues.GYSId, 3);
+          assert.equal(wywl.dataValues.GYSId, 2);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 32 } });
           assert.notEqual(wywlcz, null);
@@ -2952,7 +2954,7 @@ describe('SPRT测试', () => {
   describe('/piLiangChuKuWL', async () => {
     describe('成功', async () => {
       it('ZHY出库WL', async () => {
-        let ZHY4Toke = await getToken('ZHY4', '123456')
+        let ZHY4Token = await getToken('ZHY4', '123456')
         const EWMs = [
           {
             type: 'WL',
@@ -2971,7 +2973,7 @@ describe('SPRT测试', () => {
           {
             EWMs
           },
-          ZHY4Toke
+          ZHY4Token
         );
         assert.equal(response.data.code, 1);
 
@@ -3010,7 +3012,7 @@ describe('SPRT测试', () => {
             {
               EWMs
             },
-            ZHYToke
+            ZHYToken
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
@@ -3031,7 +3033,7 @@ describe('SPRT测试', () => {
             {
               EWMs
             },
-            ZHYToke
+            ZHYToken
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '权限');
@@ -3045,7 +3047,7 @@ describe('SPRT测试', () => {
   describe('/piLiangChuKuDP', async () => {
     describe('成功', async () => {
       it('ZHY出库DP', async () => {
-        let ZHY4Toke = await getToken('ZHY4', '123456')
+        let ZHY4Token = await getToken('ZHY4', '123456')
         const EWMs = [
           {
             type: 'DP',
@@ -3064,7 +3066,7 @@ describe('SPRT测试', () => {
           {
             EWMs
           },
-          ZHY4Toke
+          ZHY4Token
         );
         assert.equal(response.data.code, 1);
 
@@ -3091,7 +3093,7 @@ describe('SPRT测试', () => {
   describe('/piLiangXiaoKuWL', async () => {
     describe('成功', async () => {
       it('ZHY消库WL', async () => {
-        let ZHY4Toke = await getToken('ZHY4', '123456')
+        let ZHY4Token = await getToken('ZHY4', '123456')
         const EWMs = [
           {
             type: 'WL',
@@ -3110,7 +3112,7 @@ describe('SPRT测试', () => {
           {
             EWMs
           },
-          ZHY4Toke
+          ZHY4Token
         );
         assert.equal(response.data.code, 1);
 
@@ -3122,6 +3124,7 @@ describe('SPRT测试', () => {
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 33 } });
           const wywlczList = wywlcz.map(item => (item.dataValues.status));
+          console.log(wywlczList);
           assert.equal(wywlcz.length, 1);
           assert.include(wywlczList, WYWLStatus.XK);
         }
@@ -3146,7 +3149,7 @@ describe('SPRT测试', () => {
           {
             EWMs
           },
-          ZHYToke
+          ZHYToken
         );
         assert.equal(response.data.code, 1);
 
@@ -3181,7 +3184,7 @@ describe('SPRT测试', () => {
             {
               EWMs
             },
-            ZHYToke
+            ZHYToken
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
@@ -3195,7 +3198,7 @@ describe('SPRT测试', () => {
   describe('/piLiangXiaoKuDP', async () => {
     describe('成功', async () => {
       it('ZHY消库DP', async () => {
-        let ZHY4Toke = await getToken('ZHY4', '123456')
+        let ZHY4Token = await getToken('ZHY4', '123456')
         const EWMs = [
           {
             type: 'DP',
@@ -3214,7 +3217,7 @@ describe('SPRT测试', () => {
           {
             EWMs
           },
-          ZHY4Toke
+          ZHY4Token
         );
         assert.equal(response.data.code, 1);
 
@@ -3389,7 +3392,7 @@ describe('SPRT测试', () => {
         });
 
         it('ZHY装箱同一DD发往不同GT的WL', async () => {
-          let ZHY4Toke = await getToken('ZHY4', '123456');
+          let ZHY4Token = await getToken('ZHY4', '123456');
           const DDId = 3;
           const GTId = 8;
           const WLEWMs = [
@@ -3417,14 +3420,14 @@ describe('SPRT测试', () => {
               WLEWMs,
               KDXEWM,
             },
-            ZHY4Toke,
+            ZHY4Token,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '不属于');
         });
 
         it('ZHY将同一DD中GT1的WL装入GT2的箱子中', async () => {
-          let ZHY4Toke = await getToken('ZHY4', '123456');
+          let ZHY4Token = await getToken('ZHY4', '123456');
           const DDId = 3;
           const GTId = 8;
           const WLEWMs = [
@@ -3447,7 +3450,7 @@ describe('SPRT测试', () => {
               WLEWMs,
               KDXEWM,
             },
-            ZHY4Toke,
+            ZHY4Token,
           );
           assert.equal(response.data.code, -1);
           console.log('ZHY将同一DD中GT1的WL装入GT2的箱子中', response.data.msg);
@@ -3455,7 +3458,7 @@ describe('SPRT测试', () => {
         });
 
         it('ZHY将WL装入装DP的箱子中', async () => {
-          let ZHY4Toke = await getToken('ZHY4', '123456');
+          let ZHY4Token = await getToken('ZHY4', '123456');
           const DDId = 3;
           const GTId = 8;
           const WLEWMs = [
@@ -3478,7 +3481,7 @@ describe('SPRT测试', () => {
               WLEWMs,
               KDXEWM,
             },
-            ZHY4Toke,
+            ZHY4Token,
           );
           assert.equal(response.data.code, -1);
           console.log('ZHY将WL装入装DP的箱子中', response.data.msg);
@@ -3487,6 +3490,7 @@ describe('SPRT测试', () => {
 
       describe('操作状态不正确', async () => {
         it('ZHY装箱已经装箱的WL', async () => {
+          let ZHY4Token = await getToken('ZHY4', '123456');
           const DDId = 3;
           const GTId = 8;
           const WLEWMs = [
@@ -3509,14 +3513,14 @@ describe('SPRT测试', () => {
               WLEWMs,
               KDXEWM,
             },
-            ZHY4Toke,
+            ZHY4Token,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
         });
 
         it('ZHY装箱已经装满的DD_GT_WL任务', async () => {
-          let ZHY3Toke = await getToken('ZHY3', '123456');
+          let ZHY3Token = await getToken('ZHY3', '123456');
           const DDId = 3;
           const GTId = 8;
           const WLEWMs = [
@@ -3539,7 +3543,7 @@ describe('SPRT测试', () => {
               WLEWMs,
               KDXEWM,
             },
-            ZHY3Toke,
+            ZHY3Token,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
@@ -3817,7 +3821,7 @@ describe('SPRT测试', () => {
         });
 
         it('ZHY出箱WL和DP', async () => {
-          let ZHY3Toke = await getToken('ZHY3', '123456');
+          let ZHY3Token = await getToken('ZHY3', '123456');
           const EWMs = [
             {
               type: 'WL',
@@ -3845,7 +3849,7 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('ZHY出箱已经发货的WL', async () => {
-          let ZHY3Toke = await getToken('ZHY3', '123456');
+          let ZHY3Token = await getToken('ZHY3', '123456');
           const EWMs = [
             {
               type: 'WL',
@@ -3866,7 +3870,7 @@ describe('SPRT测试', () => {
         });
 
         it('ZHY出箱入库的WL', async () => {
-          let ZHY4Toke = await getToken('ZHY4', '123456');
+          let ZHY4Token = await getToken('ZHY4', '123456');
           const EWMs = [
             {
               type: 'WL',
@@ -4004,7 +4008,7 @@ describe('SPRT测试', () => {
         const WYWLPayloads = [
           {
             id: 1,
-            AZFKType: DS,
+            AZFKType: AZFKType.DS,
             imageUrl: 'imageUrl',
           },
         ];
@@ -4237,7 +4241,7 @@ describe('SPRT测试', () => {
         const WYWLPayloads = [
           {
             id: 20,
-            AZFKType: DS,
+            AZFKType: AZFKType.DS,
             imageUrl: 'imageUrl',
           },
         ];
@@ -5400,7 +5404,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'danDuShenPiBoHuiWLBHa',
             {
-              ids,
+              id,
               KFJLNote,
             },
             KFJL3Token,
@@ -5833,7 +5837,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'danDuShenPiBoHuiWLBHa',
             {
-              ids,
+              id,
               KFJLNote,
             },
             PPJL3Token,
@@ -6208,8 +6212,25 @@ describe('SPRT测试', () => {
         });
 
         it('AZGSGLY为WLBH设置不属于自己管理的AZG', async () => {
-          const WLBHIds = [4, 5];
+          const WLBHIds = [8, 32];
           const AZGUserId = 38;
+
+          let response = await post(
+            'setWLBHs0AZG',
+            {
+              WLBHIds,
+              AZGUserId
+            },
+            AZGSGLYToken
+          );
+          assert.equal(response.data.code, 1);
+          assert.include(response.data.msg, '没有权限');
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('AZGSGLY为收货的WLBH设置AZG', async () => {
+          const WLBHIds = [46];
+          const AZGUserId = 37;
 
           const response = await post(
             'setDDGTWLs0AZG',
@@ -6220,11 +6241,8 @@ describe('SPRT测试', () => {
             AZGSGLYToken,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '没有权限');
+          assert.include(response.data.msg, '状态');
         });
-      });
-      describe('操作状态不正确', async () => {
-
       });
       describe('唯一性校验', async () => { });
     });
