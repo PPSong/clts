@@ -106,7 +106,7 @@ export const GYSType = {
 
 export const WYWLStatus = {
   RK: '入库',
-  ZK: '出库',
+  CK: '出库',
   XK: '消库',
   ZX: '装箱',
   FH: '发货',
@@ -119,7 +119,7 @@ export const WYWLStatusMap = new Map(Object.entries(WYWLStatus).map((item, index
 
 export const WYDPStatus = {
   RK: '入库',
-  ZK: '出库',
+  CK: '出库',
   XK: '消库',
   ZX: '装箱',
   FH: '发货',
