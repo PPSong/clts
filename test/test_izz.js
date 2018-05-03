@@ -56,7 +56,7 @@ import {
   YJZH_EJZH,
   GT_YJZH,
   AZFKType,
-  DD_GTFX,
+  PP_GTFX,
   WLBH,
   WLBHStatus,
   DPBHStatus,
@@ -915,155 +915,13 @@ describe('SPRT测试', () => {
   });
 
   // KFJL 创建 FG, Tester, FGTester
-  describe('/createFGAndTesterAndFGTester', async () => {
+  describe('/FGTester', async () => {
     describe('成功', async () => {
-      it('KFJL创建系统中均不存在的FG、Tester组合', async () => {
-        const PPId = 1;
-        const FGPayload = {
-          name: 'FG_T',
-          note: 'note_T',
-          Testers: ['Tester_T1', 'Tester_T2'],
-        };
-
-        const response = await post(
-          'createFGAndTesterAndFGTester',
-          {
-            PPId,
-            FG: FGPayload,
-          },
-          KFJLToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const fg = await FG.findOne({ where: { name: 'FG_T' } });
-        assert.notEqual(fg, null);
-
-        const fg_testList = [];
-        for (const item of FGPayload.Testers) {
-          const tester = await Tester.findOne({ where: { name: item } });
-          assert.notEqual(tester, null);
-
-          fg_testList.push({
-            FGId: fg.dataValues.id,
-            TesterId: tester.dataValues.id,
-          });
-        }
-
-        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id } });
-        let fg_testDBList = [];
-        fg_testDBList = r.map(item => ({
-          FGId: item.dataValues.FGId,
-          TesterId: item.dataValues.TesterId,
-        }));
-        assert.equal(isArrayEqual(fg_testDBList, fg_testList), true);
-      });// 前置条件：FG_T,Tester1&Tester2数据库中不存在
-
-      it('KFJL创建FG已经存在，Tester均不存在的组合', async () => {
-        const PPId = 1;
-        const FGPayload = {
-          name: 'FG1',
-          note: 'note_T',
-          Testers: ['Tester_T1', 'Tester_T2'],
-        };
-        const response = await post(
-          'createFGAndTesterAndFGTester',
-          {
-            PPId,
-            FG: FGPayload,
-          },
-          KFJLToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const fg = await FG.findOne({ where: { name: 'FG1' } });
-        assert.notEqual(fg, null);
-
-        const fg_testList = [];
-        for (const item of FGPayload.Testers) {
-          const tester = await Tester.findOne({ where: { name: item } });
-          assert.notEqual(tester, null);
-
-          fg_testList.push({
-            FGId: fg.dataValues.id,
-            TesterId: tester.dataValues.id,
-          });
-        }
-
-        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id } });
-        let fg_testDBList = [];
-        fg_testDBList = r.map(item => ({
-          FGId: item.dataValues.FGId,
-          TesterId: item.dataValues.TesterId,
-        }));
-        assert.equal(fg_testList.length, 2);
-        assert.includeDeepMembers(fg_testDBList, fg_testList);
-      });// 前置条件：FG_T存在，Tester1&Tester2数据库中不存在
-
-      it('KFJL创建FG不存在，Tester存在的组合', async () => {
-        const PPId = 1;
-        const FGPayload = {
-          name: 'FG_T',
-          note: 'note_T',
-          Testers: ['Tester1', 'Tester2'],
-        };
-
-        const response = await post(
-          'createFGAndTesterAndFGTester',
-          {
-            PPId,
-            FG: FGPayload,
-          },
-          KFJLToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const fg = await FG.findOne({ where: { name: 'FG_T' } });
-        assert.notEqual(fg, null);
-
-        const fg_testList = [];
-        for (const item of FGPayload.Testers) {
-          const tester = await Tester.findOne({ where: { name: item } });
-          assert.notEqual(tester, null);
-
-          fg_testList.push({
-            FGId: fg.dataValues.id,
-            TesterId: tester.dataValues.id,
-          });
-        }
-
-        const r = await FG_Tester.findAll({ where: { FGId: fg.dataValues.id } });
-        let fg_testDBList = [];
-        fg_testDBList = r.map(item => ({
-          FGId: item.dataValues.FGId,
-          TesterId: item.dataValues.TesterId,
-        }));
-        assert.equal(isArrayEqual(fg_testDBList, fg_testList), true);
-      });// 前置条件：FG_T不存在，Tester1&Tester2数据库中存在
+     
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => {
-      });
-      describe('没有权限', async () => {
-        it('KFJL创建不属于自己管理的PP的FGTester', async () => {
-          const PPId = 3;
-          const FGPayload = {
-            name: 'FG_T',
-            note: 'note_T',
-            Testers: ['Tester_T1', 'Tester_T2'],
-          };
-
-          const response = await post(
-            'createFGAndTesterAndFGTester',
-            {
-              PPId,
-              FG: FGPayload,
-            },
-            KFJLToken,
-          );
-          assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '没有权限');
-        });
-      });
+      describe.skip('数据不合法', async () => {});
+      describe('没有权限', async () => {});
       describe.skip('操作状态不正确', async () => { });
       describe.skip('唯一性校验', async () => {
       });
@@ -2119,8 +1977,8 @@ describe('SPRT测试', () => {
     });
   });
 
-  // 设置DD_GTFXs [KFJL]
-  describe.skip('/setDDGTFXs', async () => {
+  // 设置PP_GTFXs [KFJL]
+  describe.skip('/setPPGTFXs', async () => {
     describe('成功', async () => { });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
@@ -2953,7 +2811,7 @@ describe('SPRT测试', () => {
   // 批量出库WL [ZHY]
   describe('/piLiangChuKuWL', async () => {
     describe('成功', async () => {
-      it('ZHY出库WL', async () => {
+      it.only('ZHY出库WL', async () => {
         let ZHY4Token = await getToken('ZHY4', '123456')
         const EWMs = [
           {

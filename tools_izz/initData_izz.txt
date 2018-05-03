@@ -1172,9 +1172,9 @@ id	WYDPId	status	UserId
 139	86	反馈	26										
 													
 //柜台翻新													
-[DD_GTFX]													
-DDId	GTId												
-1	6												
+[PP_GTFX]													
+PPId	GTId												
+2	6												
 													
 //物料补货													
 [WLBH]													
