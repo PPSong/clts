@@ -69,7 +69,24 @@ export default class PiLiangZhuangXiangBuHuoWL extends BusinessApiBase {
     }
     // end 检查KDXEWM
 
+    const tmpGYSId = await user.getGYSId(transaction);
+
     // 检查WLEWMs
+    // 如果不存在, 先在当前GYS处入库
+    for (const item of WLEWMs) {
+      const tmpWYWL = await DBTables.WYWL.findOne({
+        where: {
+          EWM: JSON.stringify(item),
+        },
+        transaction,
+      });
+
+      if (!tmpWYWL) {
+        await ppUtils.createWYWLAndRuKu(item, user, tmpGYSId, transaction);
+      }
+    }
+    // end 如果不存在, 先在当前GYS处入库
+
     const tmpWYWLs = await ppUtils.checkEWMsExistanceAndGetRecords(
       'WYWL',
       WLEWMs,
@@ -90,7 +107,6 @@ export default class PiLiangZhuangXiangBuHuoWL extends BusinessApiBase {
     }
 
     // 检查WLEWMs是否都是当前用户所属GYS作为发货GYS发往YJZXTime_GTId的
-    const tmpGYSId = await user.getGYSId(transaction);
     const tmpTargetWLs = await checkWLEWMsFromUserGYSForSameDDGTAndGetTasks(
       YJZXTime,
       GTId,

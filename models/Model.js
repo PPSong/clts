@@ -49,7 +49,7 @@ export const sequelize = new Sequelize('cltp', 'root', 'tcltcl', {
   dialectOptions: {
     multipleStatements: true,
   },
-  logging: false,
+  logging: true,
   operatorsAliases,
 });
 
@@ -3051,6 +3051,10 @@ export const WYWL = sequelize.define(
     freezeTableName: true,
   },
 );
+
+WYWL.prototype.toString = function () {
+  return this.EWM;
+};
 
 WYWL.belongsTo(WL, {
   as: 'WL',
