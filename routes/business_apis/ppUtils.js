@@ -35,6 +35,8 @@ export async function createDDKDXAndZhuangXiang({
     },
     { transaction },
   );
+
+  return tmpKDX;
   // end 新建KDXCZ
 }
 
@@ -161,6 +163,7 @@ export async function changeWYWLsStatus({
   transaction,
   GYSId = null,
   DDGTWLId = null,
+  KDXId = null,
   WLBHId = null,
   AZFKType = null,
   imageUrl = null,
@@ -178,6 +181,12 @@ export async function changeWYWLsStatus({
     updateObj = {
       ...updateObj,
       DDGTWLId,
+    };
+  }
+  if (KDXId) {
+    updateObj = {
+      ...updateObj,
+      KDXId,
     };
   }
   if (WLBHId) {

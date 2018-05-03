@@ -140,12 +140,15 @@ export default class PiLiangZhuangXiangDDWL extends BusinessApiBase {
       // end 装箱数量
 
       // 匹配DD_GT_WL
-      const tmpDD_GT_WL = tmpTargetWLs.find(item => item.DDId === DDId && item.GTId === GTId && item.WLId === key);
+      const tmpDD_GT_WL = tmpTargetWLs.find(item =>
+        item.DDId === +DDId && item.GTId === +GTId && item.WLId === +key);
       // end 匹配DD_GT_WL
 
       // 尝试装箱
       await tmpDD_GT_WL.update(
-        { ZXNumber: DBTables.literal(`ZXNumber + ${num}`) },
+        {
+          ZXNumber: DBTables.literal(`ZXNumber + ${num}`),
+        },
         {
           transaction,
         },
@@ -175,7 +178,7 @@ export default class PiLiangZhuangXiangDDWL extends BusinessApiBase {
 
       // 为每个WYWL绑定DD_GT_WL, 并改变状态为'装箱'
       const ids = tmpWYWLs
-        .filter(item => item.WLId === key)
+        .filter(item => item.WLId === +key)
         .map(item => item.id);
       await ppUtils.changeWYWLsStatus({
         ids,
@@ -184,6 +187,7 @@ export default class PiLiangZhuangXiangDDWL extends BusinessApiBase {
         transaction,
         GYSId: tmpGYSId,
         DDGTWLId: tmpDD_GT_WL.id,
+        KDXId: tmpKDX.id,
       });
       // end 为每个WYWL绑定DD_GT_WL, 并改变状态为'装箱'
     }

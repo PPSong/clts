@@ -3045,7 +3045,7 @@ describe('SPRT测试', () => {
   // 订单批量装箱DDWL [ZHY] 
   describe('/piLiangZhuangXiangDDWL', async () => {
     describe('成功', async () => {
-      it('ZHY装箱DDWL', async () => {
+      it.only('ZHY装箱DDWL', async () => {
         const DDId = 3;
         const GTId = 8;
         const WLEWMs = [
