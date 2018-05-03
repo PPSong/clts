@@ -48,8 +48,8 @@ router.post('/setYJZHGTs', businessApis.SetYJZHGTs.getApi());
 router.post('/createDD', businessApis.CreateDD.getApi());
 // 重新生成DD [KFJL]
 router.post('/reCreateDD', businessApis.ReCreateDD.getApi());
-// 设置DD_GTFXs [KFJL]
-router.post('/setDDGTFXs', businessApis.SetDDGTFXs.getApi());
+// 设置PP_GTFXs [KFJL]
+router.post('/setPPGTFXs', businessApis.SetPPGTFXs.getApi());
 // 批量设置DD_GT_WL的AZGS [PPJL]
 router.post('/setDDGTWLs0AZGS', businessApis.SetDDGTWLs0AZGS.getApi());
 // 批量设置DD_DW_DP的AZGS [PPJL]
@@ -229,9 +229,6 @@ router.post('/fenPeiDPBHFaHuoGYS', businessApis.FenPeiDPBHFaHuoGYS.getApi());
 router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
 // 分配DPBH的AZG [AZGSGLY]
 router.post('/setDPBHs0AZG', businessApis.SetDPBHs0AZG.getApi());
-
-// setDD_GTFXs [KFJL]
-// router.post('/setDD_GTFXs', businessApis.SetDD_GTFXs.getApi());
 
 
 // 常规RESTFUL API

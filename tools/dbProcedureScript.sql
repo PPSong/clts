@@ -182,10 +182,10 @@ BEGIN
 					a.DDId = v_lastDDId
 				) AS aa
 			LEFT JOIN
-				DD_GTFX bb
+				PP_GTFX bb
 			ON
-				-- 当前订单Id
-				bb.DDId = v_DDId
+				-- 当前订单PPId
+				bb.PPId = v_PPId
 			AND
 				aa.GTId = bb.GTId
 			WHERE
@@ -254,12 +254,12 @@ BEGIN
 			FROM
 				DD_GT_WLSnapshot a
 			LEFT JOIN
-				DD_GTFX b
+				PP_GTFX b
 			ON
 				a.GTId = b.GTId
 			AND 
-				-- 当次订单Id
-				b.DDId = v_DDId
+				-- 当次订单PPId
+				b.PPId = v_PPId
 			WHERE 
 				-- 上次订单Id
 				a.DDId = v_lastDDId

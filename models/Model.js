@@ -2783,19 +2783,19 @@ DD_GT_FGTester.belongsTo(FGTester, {
   onUpdate: 'RESTRICT',
 });
 
-// DD_GTFX
-export const DD_GTFX = sequelize.define(
-  'DD_GTFX',
+// PP_GTFX
+export const PP_GTFX = sequelize.define(
+  'PP_GTFX',
   {
-    DDId: {
+    PPId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: 'DDId_GTId',
+      unique: 'PPId_GTId',
     },
     GTId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: 'DDId_GTId',
+      unique: 'PPId_GTId',
     },
   },
   {
@@ -2804,8 +2804,8 @@ export const DD_GTFX = sequelize.define(
   },
 );
 
-DD.belongsToMany(GT, { through: 'DD_GTFX', as: 'FXGTs', foreignKey: 'DDId' });
-GT.belongsToMany(DD, { through: 'DD_GTFX', as: 'FXDDs', foreignKey: 'GTId' });
+PP.belongsToMany(GT, { through: 'PP_GTFX', as: 'FXGTs', foreignKey: 'PPId' });
+GT.belongsToMany(DD, { through: 'PP_GTFX', as: 'FXPPs', foreignKey: 'GTId' });
 
 // KDD
 export const KDD = sequelize.define(

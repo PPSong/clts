@@ -36,6 +36,15 @@ export default class ApproveDD extends BusinessApiBase {
       { transaction },
     );
 
+    // 清除当前PP的PP_GTFX
+    await DBTables.PP_GTFX.destroy({
+      where: {
+        PPId: tmpDD.PPId,
+      },
+      transaction,
+    });
+    // end 清除当前PP的PP_GTFX
+
     // 清除PP_DDOperationLock
     delete PP_DDOperationLock[tmpDD.PPId];
     // end 清除PP_DDOperationLock
