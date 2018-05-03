@@ -2,7 +2,7 @@ Arguments:
   /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run test_izz
 
 PATH: 
-  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/usr/local/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/usr/local/sbin
 
 Yarn version: 
   1.5.1
