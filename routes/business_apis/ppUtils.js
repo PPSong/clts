@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import localize from 'ajv-i18n';
 import * as DBTables from '../../models/Model';
 
 export async function createDDKDXAndZhuangXiang({
@@ -599,4 +600,18 @@ export async function changeDPBHsStatus(
     transaction,
   });
   // end 新建相关DPBHCZ
+}
+
+export function errorResponse(schemaErrors) {
+  localize.zh(schemaErrors);
+  const errors = schemaErrors.map(error => ({
+    path: error.dataPath,
+    message: error.message,
+  }));
+
+  return errors.reduce(
+    (result, item, index) =>
+      `${result}${index + 1}) ${item.path} ${item.message}; `,
+    '',
+  );
 }

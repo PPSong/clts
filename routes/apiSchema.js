@@ -1,6 +1,48 @@
 import * as DBTables from '../models/Model';
 
 const apiSchema = {
+  // 常规API
+  //----------------
+  // DPCreate
+  DPCreate: {
+    type: 'object',
+    properties: {
+      // 名称
+      name: {
+        type: 'string',
+      },
+      // PPId
+      PPId: {
+        type: 'number',
+      },
+      // GYSId
+      GYSId: {
+        type: 'number',
+      },
+      // 图片链接
+      imageUrl: {
+        type: 'string',
+      },
+    },
+    required: ['name', 'PPId', 'GYSId'],
+  },
+  // DPEdit
+  DPEdit: {
+    type: 'object',
+    properties: {
+      // 名称
+      name: {
+        type: 'string',
+      },
+      // 图片链接
+      imageUrl: {
+        type: 'string',
+      },
+    },
+    required: ['name', 'imageUrl'],
+  },
+  // business_apis
+  //----------------
   // 新建PPJL [ADMIN]
   createPPJL: {
     type: 'object',

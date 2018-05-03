@@ -9,6 +9,14 @@ export default class GYSTable extends BaseTable {
     return GYS;
   }
 
+  checkCreateParams() {
+    throw new Error('checkCreateParams should be overrided.');
+  }
+
+  checkEditParams() {
+    throw new Error('checkEditParams should be overrided.');
+  }
+
   checkCreateRight() {
     if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');

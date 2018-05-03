@@ -3,8 +3,8 @@ import bCrypt from 'bcryptjs';
 import debug from 'debug';
 import _ from 'lodash';
 import Ajv from 'ajv';
-import localize from 'ajv-i18n';
 import apiSchema from './apiSchema';
+import { errorResponse } from '../routes/business_apis/ppUtils';
 
 /* eslint-disable */
 import * as tables from '../tables';
@@ -19,21 +19,7 @@ const ppLog = (obj) => {
   console.log('ppLog', obj);
 };
 
-const ajv = Ajv({ allErrors: true });
-
-function errorResponse(schemaErrors) {
-  localize.zh(schemaErrors);
-  const errors = schemaErrors.map(error => ({
-    path: error.dataPath,
-    message: error.message,
-  }));
-
-  return errors.reduce(
-    (result, item, index) =>
-      `${result}${index + 1}) ${item.path} ${item.message}; `,
-    '',
-  );
-}
+export const ajv = Ajv({ allErrors: true });
 
 function validateParams(schema) {
   return function (req, res, next) {

@@ -1,5 +1,8 @@
 import debug from 'debug';
 import _ from 'lodash';
+import apiSchema from '../routes/apiSchema';
+import { ajv } from '../routes/api';
+import { errorResponse } from '../routes/business_apis/ppUtils';
 import BaseTable from './BaseTable';
 import { DP, JS, PP, GYS } from '../models/Model';
 
@@ -8,6 +11,18 @@ const ppLog = debug('ppLog');
 export default class DPTable extends BaseTable {
   getTable() {
     return DP;
+  }
+
+  checkCreateParams(fields) {
+    if (!ajv.validate(apiSchema.DPCreate, fields)) {
+      throw new Error(errorResponse(ajv.errors));
+    }
+  }
+
+  checkEditParams(fields) {
+    if (!ajv.validate(apiSchema.DPEdit, fields)) {
+      throw new Error(errorResponse(ajv.errors));
+    }
   }
 
   checkCreateRight() {
@@ -88,13 +103,17 @@ export default class DPTable extends BaseTable {
     // 根据用户操作记录范围加入where
     switch (this.user.JS) {
       case JS.PPJL:
-        PPIds = await this.user.getPPJLPPs({ transaction }).map(item => item.id);
+        PPIds = await this.user
+          .getPPJLPPs({ transaction })
+          .map(item => item.id);
         option.include[0].where.PPId = {
           $in: PPIds,
         };
         break;
       case JS.KFJL:
-        PPIds = await this.user.getKFJLPPs({ transaction }).map(item => item.id);
+        PPIds = await this.user
+          .getKFJLPPs({ transaction })
+          .map(item => item.id);
         option.include[0].where.PPId = {
           $in: PPIds,
         };
@@ -107,7 +126,9 @@ export default class DPTable extends BaseTable {
     // 把模糊搜索条件加入where
     if (keyword) {
       const fields = this.getLikeSearchFields();
-      const likeArr = fields.map(item => ({ [item]: { $like: `%${keyword}%` } }));
+      const likeArr = fields.map(item => ({
+        [item]: { $like: `%${keyword}%` },
+      }));
       option.where = {
         ...option.where,
         $or: likeArr,

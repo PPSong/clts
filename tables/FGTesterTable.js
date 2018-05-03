@@ -9,6 +9,14 @@ export default class FGTesterTable extends BaseTable {
     return FGTester;
   }
 
+  checkCreateParams() {
+    throw new Error('checkCreateParams should be overrided.');
+  }
+
+  checkEditParams() {
+    throw new Error('checkEditParams should be overrided.');
+  }
+
   checkCreateRight() {
     if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
@@ -55,7 +63,7 @@ export default class FGTesterTable extends BaseTable {
     switch (this.user.JS) {
       case JS.PPJL:
       case JS.KFJL:
-        await this.user.checkGTId(record.GTId, transaction);
+        await this.user.checkPPId(record.PPId, transaction);
         break;
       default:
         throw new Error('无此权限!');
