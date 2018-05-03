@@ -21,9 +21,7 @@ import {
   DP,
   DW,
   WL,
-  FG,
-  Tester,
-  FG_Tester,
+  FGTester,
   EJZH,
   EJZHXGT,
   YJZH,
@@ -2319,7 +2317,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  // 批量设置DD_GT_WL的发货GYS [GYSGLY]
+  // 批量设置DD_GT_WL的发货GYS [生产GYSGLY]
   describe('/setDDGTWLs0GYS', async () => {
     describe('成功', async () => {
       it('GYSGLY设置DD_GT_WL的发货GYS', async () => {
@@ -2347,7 +2345,7 @@ describe('SPRT测试', () => {
       describe('没有权限', async () => {
         it('GYSGLY设置不属于自己管理的DD_GT_WL的发货GYS', async () => {
           const DD_GT_WLIds = [6];
-          const GYSId = 1;
+          const GYSId = 3;
 
           const response = await post(
             'setDDGTWLs0GYS',
@@ -2359,8 +2357,39 @@ describe('SPRT测试', () => {
           );
           assert.equal(response.data.code, -1);
         });
+
+        it('生产GYS1将DD_GT_WL分配给其他生产GYS2', async () => {
+          const DD_GT_WLIds = [4];
+          const GYSId = 2;
+
+          const response = await post(
+            'setDDGTWLs0GYS',
+            {
+              DD_GT_WLIds,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          console.log('生产GYS1将DD_GT_WL分配给其他生产GYS2', response.data.msg);
+        });
       });
       describe('操作状态不正确', async () => {
+        it('生产GYS1将DD_GT_WL分配给库存不足的中转GYS', async () => {
+          const DD_GT_WLIds = [4];
+          const GYSId = 3;
+
+          const response = await post(
+            'setDDGTWLs0GYS',
+            {
+              DD_GT_WLIds,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+        });
+
         it('GYSGLY设置还未审批通过的DD的DD_GT_WL的发货GYS', async () => {
           const DD_GT_WLIds = [1, 2];
           const GYSId = 1;
@@ -2390,12 +2419,7 @@ describe('SPRT测试', () => {
             },
             GYSGLY2Token,
           );
-          assert.equal(response.data.code, 1);
-
-          for (const item of DD_GT_WLIds) {
-            const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
-            assert.equal(ddgtwl.dataValues.GYSId, GYSId);
-          }
+          assert.equal(response.data.code, -1);
         });
 
         it('GYSGLY设置装箱完成的DD_GT_WL的发货GYS', async () => {
@@ -2418,7 +2442,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  // 批量设置DD_DW_DP的发货GYS [GYSGLY]
+  // 批量设置DD_DW_DP的发货GYS [生产GYSGLY]
   describe('/setDDDWDPs0GYS', async () => {
     describe('成功', async () => {
       it('GYSGLY设置DD_DW_DP的发货GYS', async () => {
@@ -2446,7 +2470,7 @@ describe('SPRT测试', () => {
       describe('没有权限', async () => {
         it('GYSGLY设置不属于自己管理的DD_DW_DP的发货GYS', async () => {
           const DD_DW_DPIds = [6];
-          const GYSId = 1;
+          const GYSId = 3;
 
           const response = await post(
             'setDDDWDPs0GYS',
@@ -5989,8 +6013,104 @@ describe('SPRT测试', () => {
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
+      describe('没有权限', async () => { 
+        it('生产GYSGLY为不属于自己的WLBH分配发货GYS', async () => {
+          let GYSGLY2Token = await getToken('GYSGLY2', '123456');
+          const ids = [8];
+          const GYSId = 3;
+  
+          let response = await post(
+            'fenPeiWLBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLY2Token
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
+
+        it('生产GYS1将WLBH分配给其他生产GYS2', async () => {
+          const ids = [8];
+          const GYSId = 2;
+  
+          let response = await post(
+            'fenPeiWLBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
+      });
+      describe('操作状态不正确', async () => { 
+        it('生产GYS1将WLBH分配给库存不足的中转GYS', async () => {
+          const ids = [8, 72];
+          const GYSId = 3;
+
+          const response = await post(
+            'fenPeiWLBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+        });
+
+        it('GYSGLY设置还未审批通过的的WLBH的发货GYS', async () => {
+          const ids = [1, 2];
+          const GYSId = 1;
+
+          const response = await post(
+            'fenPeiWLBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
+
+        it('GYSGLY为已经分配过发货GYS的WLBH再次分配发货GYS', async () => {
+          let GYSGLY2Token = await getToken('GYSGLY2', '123456');
+          const ids = [7];
+          const GYSId = 3;
+
+          const response = await post(
+            'fenPeiWLBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLY2Token,
+          );
+          assert.equal(response.data.code, -1);
+        });
+
+        it('GYSGLY设置装箱完成的WLBH的发货GYS', async () => {
+          const ids = [20];
+          const GYSId = 3;
+
+          const response = await post(
+            'fenPeiWLBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
+      });
       describe('唯一性校验', async () => { });
     });
   });
