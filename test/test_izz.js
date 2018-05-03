@@ -917,11 +917,11 @@ describe('SPRT测试', () => {
   // KFJL 创建 FG, Tester, FGTester
   describe('/FGTester', async () => {
     describe('成功', async () => {
-     
+
     });
     describe('失败', async () => {
-      describe.skip('数据不合法', async () => {});
-      describe('没有权限', async () => {});
+      describe.skip('数据不合法', async () => { });
+      describe('没有权限', async () => { });
       describe.skip('操作状态不正确', async () => { });
       describe.skip('唯一性校验', async () => {
       });
@@ -1896,6 +1896,10 @@ describe('SPRT测试', () => {
         ];
         assert.equal(isArrayEqual(dddwdpList, truedddwdpList), true);
       });
+
+      it('KFJL创建DD--GT配置与上次DD一致', async () => {
+
+      });
     });
     describe('失败', async () => {
       describe.skip('数据不合法', async () => { });
@@ -1978,11 +1982,43 @@ describe('SPRT测试', () => {
   });
 
   // 设置PP_GTFXs [KFJL]
-  describe.skip('/setPPGTFXs', async () => {
-    describe('成功', async () => { });
+  describe('/setPPGTFXs', async () => {
+    describe('成功', async () => {
+      it('KFJL将GTFX', async () => {
+        let KFJL3Token = await getToken('KFJL3', '123456');
+        const id = 3;
+        const GTIds = [7];
+
+        let response = await post(
+          'setPPGTFXs',
+          {
+            id,
+            GTIds,
+          },
+          KFJL3Token
+        );
+        assert.equal(response.data.code, 1);
+      });
+    });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
+      describe('没有权限', async () => {
+        it('KFJL设置其他PP的GTFX', async () => {
+          const id = 3;
+          const GTIds = [7];
+  
+          let response = await post(
+            'setPPGTFXs',
+            {
+              id,
+              GTIds,
+            },
+            KFJLToken
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+       });
       describe('操作状态不正确', async () => { });
       describe('唯一性校验', async () => { });
     });
@@ -2811,7 +2847,7 @@ describe('SPRT测试', () => {
   // 批量出库WL [ZHY]
   describe('/piLiangChuKuWL', async () => {
     describe('成功', async () => {
-      it.only('ZHY出库WL', async () => {
+      it('ZHY出库WL', async () => {
         let ZHY4Token = await getToken('ZHY4', '123456')
         const EWMs = [
           {
@@ -3149,13 +3185,13 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
-          assert.equal(wywl.dataValues.status, WYWLStatus.ZK);
+          assert.equal(wywl.dataValues.status, WYWLStatus.CK);
           assert.equal(wywl.dataValues.GYSId, 1);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
           const wywlczList = wywlcz.map(item => (item.dataValues.status));
           assert.equal(wywlcz.length, 1);
-          assert.include(wywlczList, WYWLStatus.ZK);
+          assert.include(wywlczList, WYWLStatus.CK);
         }
       });
 
@@ -3207,13 +3243,13 @@ describe('SPRT测试', () => {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
-          assert.equal(wywl.dataValues.status, WYWLStatus.ZK);
+          assert.equal(wywl.dataValues.status, WYWLStatus.CK);
           assert.equal(wywl.dataValues.GYSId, 1);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, UserId: 30 } });
           const wywlczList = wywlcz.map(item => (item.dataValues.status));
           assert.equal(wywlcz.length, 1);
-          assert.include(wywlczList, WYWLStatus.ZK);
+          assert.include(wywlczList, WYWLStatus.CK);
         }
       });
     });
@@ -6091,7 +6127,7 @@ describe('SPRT测试', () => {
           const AZGUserId = 37;
 
           const response = await post(
-            'setDDGTWLs0AZG',
+            'setWLBHs0AZG',
             {
               WLBHIds,
               AZGUserId,
