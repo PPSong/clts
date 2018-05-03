@@ -2,6 +2,8 @@ import express from 'express';
 import bCrypt from 'bcryptjs';
 import debug from 'debug';
 import _ from 'lodash';
+import Ajv from 'ajv';
+import localize from 'ajv-i18n';
 
 /* eslint-disable */
 import * as tables from '../tables';
@@ -9,12 +11,39 @@ import * as businessApis from './business_apis';
 /* eslint-enable */
 import { sequelize } from '../models/Model';
 
+const router = express.Router();
+
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
   console.log('ppLog', obj);
 };
 
-const router = express.Router();
+const ajv = Ajv({ allErrors: true });
+
+function errorResponse(schemaErrors) {
+  localize.zh(schemaErrors);
+  console.log(schemaErrors);
+  const errors = schemaErrors.map(error => ({
+    path: error.dataPath,
+    message: error.message,
+  }));
+
+  return {
+    code: -1,
+    msg: errors.reduce(
+      (result, item, index) =>
+        `${result}${index + 1}) ${item.path} ${item.message}; `,
+      '',
+    ),
+  };
+}
+
+const validateParams = schema => function (req, res, next) {
+  if (!ajv.validate(schema, req.body)) {
+    return res.json(errorResponse(ajv.errors));
+  }
+  next();
+};
 
 // 新建PPJL [ADMIN]
 router.post('/createPPJL', businessApis.CreatePPJL.getApi());
@@ -144,15 +173,9 @@ router.post(
   businessApis.ShenQingShangShiDPBH.getApi(),
 );
 // 申请日常WLBH [GZ, GTBA]
-router.post(
-  '/shenQingRiChangWLBH',
-  businessApis.ShenQingRiChangWLBH.getApi(),
-);
+router.post('/shenQingRiChangWLBH', businessApis.ShenQingRiChangWLBH.getApi());
 // 申请日常DPBH [GZ, GTBA]
-router.post(
-  '/shenQingRiChangDPBH',
-  businessApis.ShenQingRiChangDPBH.getApi(),
-);
+router.post('/shenQingRiChangDPBH', businessApis.ShenQingRiChangDPBH.getApi());
 // 批量审批通过WLBH [KFJL]
 router.post(
   '/piLiangShenPiTongGuoWLBHa',
@@ -229,7 +252,6 @@ router.post('/fenPeiDPBHFaHuoGYS', businessApis.FenPeiDPBHFaHuoGYS.getApi());
 router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
 // 分配DPBH的AZG [AZGSGLY]
 router.post('/setDPBHs0AZG', businessApis.SetDPBHs0AZG.getApi());
-
 
 // 常规RESTFUL API
 router.post('/:table', async (req, res, next) => {
