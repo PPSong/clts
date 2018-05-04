@@ -3519,7 +3519,7 @@ describe('SPRT测试', () => {
   // 订单批量装箱DDDP [ZHY]
   describe('/piLiangZhuangXiangDDDP', async () => {
     describe('成功', async () => {
-      it('ZHY装箱DDDP', async () => {
+      it.only('ZHY装箱DDDP', async () => {
         const DDId = 3;
         const GTId = 8;
         const DPEWMs = [
@@ -3527,11 +3527,9 @@ describe('SPRT测试', () => {
             type: 'DP',
             typeId: 12,
             uuid: '12_100',
-          },
-          {
-            type: 'DP',
-            typeId: 12,
-            uuid: '12_101',
+            name: 'DW15',
+            CC: '100*100',
+            CZ: '铜板'
           },
         ];
         const KDXEWM = {
@@ -4610,7 +4608,7 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it.only('GTBA反馈不属于自己的DDWL的AZFKType', async () => {
+        it('GTBA反馈不属于自己的DDWL的AZFKType', async () => {
           const WYWLPayloads = [
             {
               id: 50,
@@ -5172,6 +5170,7 @@ describe('SPRT测试', () => {
           },
           KFJL3Token,
         );
+        console.log('izzlog', response.data)
         assert.equal(response.data.code, 1);
 
         for (const item of ids) {
@@ -5240,6 +5239,7 @@ describe('SPRT测试', () => {
             },
             KFJL4Token,
           );
+          console.log('izzlog', response.data)
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
         });
@@ -5488,7 +5488,7 @@ describe('SPRT测试', () => {
             },
             PPJLToken,
           );
-          assert.equal(response.data.code, 1);
+          assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '权限');
         });
       });
@@ -6208,7 +6208,7 @@ describe('SPRT测试', () => {
             },
             AZGSGLY2Token,
           );
-          assert.equal(response.data.code, 1);
+          assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
         });
 
@@ -6224,7 +6224,7 @@ describe('SPRT测试', () => {
             },
             AZGSGLYToken,
           );
-          assert.equal(response.data.code, 1);
+          assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '没有权限');
         });
       });
