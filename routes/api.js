@@ -2,6 +2,9 @@ import express from 'express';
 import bCrypt from 'bcryptjs';
 import debug from 'debug';
 import _ from 'lodash';
+import Ajv from 'ajv';
+import apiSchema from './apiSchema';
+import { errorResponse } from '../routes/business_apis/ppUtils';
 
 /* eslint-disable */
 import * as tables from '../tables';
@@ -9,15 +12,39 @@ import * as businessApis from './business_apis';
 /* eslint-enable */
 import { sequelize } from '../models/Model';
 
+const router = express.Router();
+
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
   console.log('ppLog', obj);
 };
 
-const router = express.Router();
+export const ajv = Ajv({ allErrors: true });
 
-// 新建PPJL [ADMIN]
-router.post('/createPPJL', businessApis.CreatePPJL.getApi());
+function validateParams(schema) {
+  return function (req, res, next) {
+    if (!ajv.validate(schema, req.body)) {
+      throw new Error(errorResponse(ajv.errors));
+    }
+
+    next();
+  };
+}
+
+function upperCaseHead(str) {
+  return str[0].toUpperCase() + str.slice(1);
+}
+
+for (const key in apiSchema) {
+  router.post(
+    `/${key}`,
+    validateParams(apiSchema[key]),
+    businessApis[upperCaseHead(key)].getApi(),
+  );
+}
+
+// // 新建PPJL [ADMIN]
+// router.post('/createPPJL', businessApis.CreatePPJL.getApi());
 // 新建KFJL [PPJL]
 router.post('/createKFJL', businessApis.CreateKFJL.getApi());
 // 新建GT, GTBA [KFJL]
@@ -118,11 +145,11 @@ router.post(
   '/anZhuangFanKuiDDWLZhuangTai',
   businessApis.AnZhuangFanKuiDDWLZhuangTai.getApi(),
 );
-// 安装反馈DDDP状态 [GTBA, AZG]
-router.post(
-  '/anZhuangFanKuiDDDPZhuangTai',
-  businessApis.AnZhuangFanKuiDDDPZhuangTai.getApi(),
-);
+// // 安装反馈DDDP状态 [GTBA, AZG]
+// router.post(
+//   '/anZhuangFanKuiDDDPZhuangTai',
+//   businessApis.AnZhuangFanKuiDDDPZhuangTai.getApi(),
+// );
 // 安装反馈全景WL图片 [GTBA, AZG]
 router.post(
   '/anZhuangFanKuiQuanJingWLTuPian',
@@ -144,15 +171,9 @@ router.post(
   businessApis.ShenQingShangShiDPBH.getApi(),
 );
 // 申请日常WLBH [GZ, GTBA]
-router.post(
-  '/shenQingRiChangWLBH',
-  businessApis.ShenQingRiChangWLBH.getApi(),
-);
+router.post('/shenQingRiChangWLBH', businessApis.ShenQingRiChangWLBH.getApi());
 // 申请日常DPBH [GZ, GTBA]
-router.post(
-  '/shenQingRiChangDPBH',
-  businessApis.ShenQingRiChangDPBH.getApi(),
-);
+router.post('/shenQingRiChangDPBH', businessApis.ShenQingRiChangDPBH.getApi());
 // 批量审批通过WLBH [KFJL]
 router.post(
   '/piLiangShenPiTongGuoWLBHa',
@@ -229,7 +250,6 @@ router.post('/fenPeiDPBHFaHuoGYS', businessApis.FenPeiDPBHFaHuoGYS.getApi());
 router.post('/setWLBHs0AZG', businessApis.SetWLBHs0AZG.getApi());
 // 分配DPBH的AZG [AZGSGLY]
 router.post('/setDPBHs0AZG', businessApis.SetDPBHs0AZG.getApi());
-
 
 // 常规RESTFUL API
 router.post('/:table', async (req, res, next) => {

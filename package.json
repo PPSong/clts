@@ -15,6 +15,8 @@
     "test_penn": "mocha --exit --compilers js:babel-core/register test/test_penn.js --reporter mochawesome  --timeout 5000"
   },
   "dependencies": {
+    "ajv": "^6.4.0",
+    "ajv-i18n": "^3.2.0",
     "babel-plugin-wildcard": "^4.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",

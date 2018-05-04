@@ -12,6 +12,14 @@ export default class BaseTable {
     throw new Error('getTable should be overrided.');
   }
 
+  checkCreateParams(fields) {
+    throw new Error('checkCreateParams should be overrided.');
+  }
+
+  checkEditParams(fields) {
+    throw new Error('checkEditParams should be overrided.');
+  }
+
   checkCreateRight() {
     throw new Error('checkCreateRight should be overrided.');
   }
@@ -61,6 +69,8 @@ export default class BaseTable {
   }
 
   async create(fields, transaction) {
+    this.checkCreateParams(fields);
+
     this.checkCreateRight();
 
     const newRecord = await this.getTable().build(fields);
@@ -108,6 +118,8 @@ export default class BaseTable {
 
   async edit(id, fields, transaction) {
     // todo: 考虑用乐观锁
+    this.checkEditParams(fields);
+
     this.checkEditRight();
 
     const record = await this.getTable().findOne({

@@ -48,6 +48,7 @@ app.use((req, res, next) => {
 // error handler
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
+  console.log(err.message);
   res.json({
     code: -1,
     msg: err.message,
