@@ -2396,7 +2396,6 @@ describe('SPRT测试', () => {
         });
 
         it('GYSGLY为已经分配过发货GYS的DD_DW_DP再次分配发货GYS', async () => {
-          let GYSGLY2Token = await getToken('GYSGLY2', '123456');
           const DD_DW_DPIds = [8];
           const GYSId = 3;
 
@@ -2406,7 +2405,7 @@ describe('SPRT测试', () => {
               DD_DW_DPIds,
               GYSId,
             },
-            GYSGLY2Token,
+            GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
@@ -2930,7 +2929,7 @@ describe('SPRT测试', () => {
             ZHYToken
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '权限');
+          assert.include(response.data.msg, '状态');
         });
       });
       describe('唯一性校验', async () => { });
@@ -3574,7 +3573,7 @@ describe('SPRT测试', () => {
   // 出箱WL [ZHY]
   describe('/chuXiangWL', async () => {
     describe('成功', async () => {
-      it.only('ZHY出箱WL', async () => {
+      it('ZHY出箱WL', async () => {
         const EWMs = [
           {
             type: 'WL',
@@ -3594,15 +3593,17 @@ describe('SPRT测试', () => {
 
         for (let item of EWMs) {
           const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
-          console.log(wywl);
-          const ddgtwl = await DD_GT_WL.findOne({ where: { id: wywl.dataValues.DDGTWLId } });
-          assert.equal(ddgtwl.ZXNumber, 0);
+          assert.equal(wywl.dataValues.DDGTWLId, null);
+          const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: wywl.dataValues.WLId } });
+          assert.equal(ddgtwl.dataValues.ZXNumber, 0);
           assert.equal(wywl.dataValues.status, WYWLStatus.RK);
           assert.equal(wywl.dataValues.GYSId, 1);
 
           const wywlcz = await WYWLCZ.findAll({ where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.RK } });
           assert.notEqual(wywlcz, null);
-          assert.equal(wywlcz.dataValues.UserId, 30);
+          for(let item of wywlcz) {
+            assert.equal(item.dataValues.UserId, 30);
+          }
         }
       });
     });
@@ -3613,8 +3614,8 @@ describe('SPRT测试', () => {
           const EWMs = [
             {
               type: 'WL',
-              typeId: 17,
-              uuid: '17_1',
+              typeId: 15,
+              uuid: '15_1',
             },
           ];
 
@@ -3626,7 +3627,7 @@ describe('SPRT测试', () => {
             ZHYToken,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '权限');
+          assert.include(response.data.msg, '不在当前用户所属');
         });
 
         it('ZHY出箱WL和DP', async () => {
@@ -3706,7 +3707,9 @@ describe('SPRT测试', () => {
   // 出箱DP [ZHY]
   describe('/chuXiangDP', async () => {
     describe('成功', async () => {
-      it('ZHY出箱DP', async () => { });
+      it('ZHY出箱DP', async () => { 
+        
+      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
@@ -4298,14 +4301,9 @@ describe('SPRT测试', () => {
         let GTBA10Token = await getToken('GTBA10', '123456');
         let WYWLPayloads = [
           {
-            id: 26,
+            id: 50,
             AZFKType: AZFKType.AZCG,
-            imageUrl: 'imageUrlWL26'
-          },
-          {
-            id: 26,
-            AZFKType: AZFKType.AZCG,
-            imageUrl: 'imageUrlWL26'
+            imageUrl: 'imageUrlWL50'
           },
         ];
         const DDId = 5;
