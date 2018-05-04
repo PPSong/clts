@@ -3551,9 +3551,9 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         const ddgtdp = await DD_GT_WL.findOne({
-          where: { WLId: DPEWMs[0].typeId },
+          where: { WLId: DPEWMs[0].DWId },
         });
-        assert.equal(ddgtwl.dataValues.ZXNumber, 5);
+        assert.equal(ddgtdp.dataValues.ZXNumber, 1);
 
         const kdx = await KDX.findOne({
           where: { EWM: JSON.stringify(KDXEWM) },
@@ -3565,6 +3565,7 @@ describe('SPRT测试', () => {
             where: { EWM: JSON.stringify(item) },
           });
           assert.notEqual(wydp, null);
+          console.log('izzlog', wydp.dataValues)
           assert.equal(wydp.dataValues.KDXId, kdx.dataValues.id);
           assert.equal(wydp.dataValues.status, WYDPStatus.CK);
           assert.equal(wydp.dataValues.GYSId, 1);
