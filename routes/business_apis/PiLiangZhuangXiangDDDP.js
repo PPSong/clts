@@ -123,12 +123,13 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
     // 装箱
 
     // 遍历处理每个灯片
-    for (const tmpWYDP in tmpWYDPs) {
+    for (const tmpWYDP of tmpWYDPs) {
       // 匹配DD_DW_DP
       const tmpDD_DW_DP = tmpTargetDPs.find(item =>
         item.DDId === DDId &&
           item.DW.GTId === GTId &&
-          item.DPId === tmpWYDP.DPId);
+          item.DPId === tmpWYDP.DPId &&
+          item.ZXNumber === 0);
       // end 匹配DD_DW_DP
 
       // 尝试装箱

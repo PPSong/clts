@@ -230,7 +230,7 @@ export async function changeWYWLsStatus({
   // end 新建相关WYWLCZ
 }
 
-export async function changeWYDPsStatus(
+export async function changeWYDPsStatus({
   ids,
   status,
   user,
@@ -239,7 +239,7 @@ export async function changeWYDPsStatus(
   DDDWDPId = null,
   AZFKType = null,
   imageUrl = null,
-) {
+}) {
   let updateObj = {
     status,
   };
@@ -365,7 +365,10 @@ export async function changeWYWLsInKDXsStatus(
 
   // 更改相关WYWL状态为FH, 新建相关WYWLCZ
   await changeWYWLsStatus({
-    ids: tmpWYWLIds, status, user, transaction,
+    ids: tmpWYWLIds,
+    status,
+    user,
+    transaction,
   });
   // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
 }
