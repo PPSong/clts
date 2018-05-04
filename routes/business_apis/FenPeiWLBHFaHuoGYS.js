@@ -36,7 +36,7 @@ export default class FenPeiWLBHFaHuoGYS extends BusinessApiBase {
     // end 检查ids存在
 
     // 生产供应商都属于当前操作用户的GYS
-    const tmpGYSIds = tmpWLBHs.filter(item => item.WL.GYSId);
+    const tmpGYSIds = tmpWLBHs.map(item => item.WL.GYSId);
     const tmpUniqueGYSId = [...new Set(tmpGYSIds)];
     if (tmpUniqueGYSId.length > 1) {
       throw new Error(`${tmpGYSIds}不属于同一生产供应商!`);

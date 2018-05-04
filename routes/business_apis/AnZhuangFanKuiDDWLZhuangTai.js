@@ -18,7 +18,7 @@ export default class AnZhuangFanKuiDDWLZhuangTai extends BusinessApiBase {
     const { DDId, GTId, WYWLPayloads } = req.body;
 
     // 检查AZFKType
-    const errorAZFKType = WYWLPayloads.filter(item => !(Object.values(DBTables.AZFKType).includes(item.AZFKType)));
+    const errorAZFKType = WYWLPayloads.filter(item => !Object.values(DBTables.AZFKType).includes(item.AZFKType));
     if (errorAZFKType.length > 0) {
       throw new Error(`${JSON.stringify(errorAZFKType)}中反馈状态有误!`);
     }
@@ -44,6 +44,13 @@ export default class AnZhuangFanKuiDDWLZhuangTai extends BusinessApiBase {
       transaction,
     );
     // end 检查ids的存在
+
+    // 检查是否属于当前用户的任务范围
+    for (const item of tmpWYWLs) {
+      const tmpDDGTWL = await item.getDD_GT_WL({ transaction });
+      await user.checkDD_GT_WLId(tmpDDGTWL.id, transaction);
+    }
+    // end 检查是否属于当前用户的任务范围
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
@@ -117,6 +124,7 @@ export default class AnZhuangFanKuiDDWLZhuangTai extends BusinessApiBase {
         },
         {
           where: tmpWhere,
+          transaction,
         },
       );
     }

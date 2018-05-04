@@ -73,11 +73,17 @@ export default class SetWLBHs0YJZXTime extends BusinessApiBase {
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 设置YJZXTime
-    await tmpWLBHs.update(
+
+    await DBTables.WLBH.update(
       {
         YJZXTime,
       },
       {
+        where: {
+          id: {
+            $in: ids,
+          },
+        },
         transaction,
       },
     );

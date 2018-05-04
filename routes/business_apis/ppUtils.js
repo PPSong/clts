@@ -511,14 +511,14 @@ export async function changeWLBHsStatus(
   });
 
   // 新建相关WLBHCZ
-  const tmpWLBHCZs = ids.map(item => ({
-    WLBHId: item,
-    status,
-    UserId: user.id,
-  }));
-  await DBTables.WLBHCZ.bulkCreate(tmpWLBHCZs, {
-    transaction,
-  });
+  // const tmpWLBHCZs = ids.map(item => ({
+  //   WLBHId: item,
+  //   status,
+  //   UserId: user.id,
+  // }));
+  // await DBTables.WLBHCZ.bulkCreate(tmpWLBHCZs, {
+  //   transaction,
+  // });
   // end 新建相关WLBHCZ
 }
 

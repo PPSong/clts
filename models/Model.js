@@ -1276,55 +1276,6 @@ User.prototype.checkYJZHId = async function (id, transaction) {
   return tmpYJZH;
 };
 
-User.prototype.checkGYSId = async function (id, transaction) {
-  if (!transaction) {
-    throw new Error('transaction不能为空!');
-  }
-
-  let tmpGYSs;
-  let tmpGYSIds;
-
-  const tmpGYS = await GYS.findOne({
-    where: {
-      id,
-    },
-    transaction,
-  });
-
-  if (!tmpGYS) {
-    throw new Error(`供应商id:${id}不存在!`);
-  }
-
-  if (tmpGYS.disabledAt !== null) {
-    throw new Error(`供应商id:${id}在屏蔽状态!`);
-  }
-
-  switch (this.JS) {
-    case JS.ADMIN:
-    case JS.PPJL:
-    case JS.KFJL:
-      break;
-    case JS.GYSGLY:
-      tmpGYSs = await this.getGLYGYSs({ transaction });
-      tmpGYSIds = tmpGYSs.map(item => item.id);
-      if (!tmpGYSIds.includes(id)) {
-        throw new Error('没有权限!');
-      }
-      break;
-    case JS.ZHY:
-      tmpGYSs = await this.getZHYGYSs({ transaction });
-      tmpGYSIds = tmpGYSs.map(item => item.id);
-      if (!tmpGYSIds.includes(id)) {
-        throw new Error('没有权限!');
-      }
-      break;
-    default:
-      throw new Error('没有权限!');
-  }
-
-  return tmpGYS;
-};
-
 User.prototype.checkAZGSId = async function (id, transaction) {
   if (!transaction) {
     throw new Error('transaction不能为空!');
