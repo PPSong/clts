@@ -3527,9 +3527,10 @@ describe('SPRT测试', () => {
             type: 'DP',
             typeId: 12,
             uuid: '12_100',
+            DWId: 15,
             name: 'DW15',
             CC: '100*100',
-            CZ: '铜板'
+            CZ: '铜板',
           },
         ];
         const KDXEWM = {
@@ -3550,7 +3551,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
 
         const ddgtdp = await DD_GT_WL.findOne({
-          where: { WLId: WLEWMs[0].typeId },
+          where: { WLId: DPEWMs[0].typeId },
         });
         assert.equal(ddgtwl.dataValues.ZXNumber, 5);
 
@@ -3576,11 +3577,35 @@ describe('SPRT测试', () => {
           assert.include(wydpczList, WYDPStatus.CK);
         }
       });
+
+      it('ZHY装箱DDDP--EWM中的CZ和CC与DW实际不一致', async () => {
+
+      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
+      describe('没有权限', async () => {
+        it('ZHY装箱不属于自己的DDDP任务的DP', async () => {
+
+        });
+
+        it('ZHY装箱同一DD发往不同GT的DP', async () => {
+
+        });
+
+        it('ZHY将同一DD中GT1的DP装入GT2的箱子中', async () => {
+
+        });
+
+        it('ZHY将DP装入装WL的箱子中', async () => {
+
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('ZHY装箱已经装满的DD_DW_DP任务', async () => {
+
+        });
+      });
       describe('唯一性校验', async () => { });
     });
   });
@@ -3723,12 +3748,30 @@ describe('SPRT测试', () => {
   // 批量装箱BHDP [ZHY]
   describe('/piLiangZhuangXiangBuHuoDP', async () => {
     describe('成功', async () => {
-      it('ZHY装箱BHDP', async () => { });
+      it('ZHY装箱BHDP', async () => {
+
+      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
-      describe('没有权限', async () => { });
-      describe('操作状态不正确', async () => { });
+      describe('没有权限', async () => {
+        it('ZHY装不属于自己的DPBH任务', async () => {
+
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('ZHY将WLBH装入DD_DW_DP的箱子中', async () => {
+
+        });
+
+        it('ZHY装箱已经装满的DPBH任务', async () => {
+
+        });
+
+        it('ZHY将GT1的装入GT2的快递箱中', async () => {
+
+        });
+      });
       describe('唯一性校验', async () => { });
     });
   });
@@ -3807,6 +3850,10 @@ describe('SPRT测试', () => {
               type: 'DP',
               typeId: 17,
               uuid: '17_1',
+              DWId: '20',
+              name: 'DW6',
+              CZ: '200*100',
+              CC: '铜板',
             },
           ];
 
