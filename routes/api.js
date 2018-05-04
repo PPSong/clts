@@ -3,7 +3,7 @@ import bCrypt from 'bcryptjs';
 import debug from 'debug';
 import _ from 'lodash';
 import Ajv from 'ajv';
-import apiSchema from './apiSchema';
+import { apiSchema } from './apiSchema';
 import { errorResponse } from '../routes/business_apis/ppUtils';
 
 /* eslint-disable */

@@ -1,6 +1,6 @@
 import debug from 'debug';
 import _ from 'lodash';
-import apiSchema from '../routes/apiSchema';
+import { normalApiSchema } from '../routes/apiSchema';
 import { ajv } from '../routes/api';
 import { errorResponse } from '../routes/business_apis/ppUtils';
 import BaseTable from './BaseTable';
@@ -14,13 +14,13 @@ export default class DPTable extends BaseTable {
   }
 
   checkCreateParams(fields) {
-    if (!ajv.validate(apiSchema.DPCreate, fields)) {
+    if (!ajv.validate(normalApiSchema.DPCreate, fields)) {
       throw new Error(errorResponse(ajv.errors));
     }
   }
 
   checkEditParams(fields) {
-    if (!ajv.validate(apiSchema.DPEdit, fields)) {
+    if (!ajv.validate(normalApiSchema.DPEdit, fields)) {
       throw new Error(errorResponse(ajv.errors));
     }
   }

@@ -1,6 +1,6 @@
 import * as DBTables from '../models/Model';
 
-const apiSchema = {
+export const normalApiSchema = {
   // 常规API
   //----------------
   // DPCreate
@@ -41,6 +41,9 @@ const apiSchema = {
     },
     required: ['name', 'imageUrl'],
   },
+};
+
+export const apiSchema = {
   // business_apis
   //----------------
   // 新建PPJL [ADMIN]
@@ -103,5 +106,3 @@ const apiSchema = {
     required: ['DDId', 'GTId', 'WYDPPayloads'],
   },
 };
-
-export default apiSchema;
