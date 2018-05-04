@@ -193,7 +193,7 @@ export async function changeWYWLsStatus({
   if (WLBHId) {
     updateObj = {
       ...updateObj,
-      DDGTWLId,
+      WLBHId,
     };
   }
   if (AZFKType) {
@@ -237,6 +237,8 @@ export async function changeWYDPsStatus({
   transaction,
   GYSId = null,
   DDDWDPId = null,
+  KDXId = null,
+  DPBHId = null,
   AZFKType = null,
   imageUrl = null,
 }) {
@@ -253,6 +255,18 @@ export async function changeWYDPsStatus({
     updateObj = {
       ...updateObj,
       DDDWDPId,
+    };
+  }
+  if (KDXId) {
+    updateObj = {
+      ...updateObj,
+      KDXId,
+    };
+  }
+  if (DPBHId) {
+    updateObj = {
+      ...updateObj,
+      DPBHId,
     };
   }
   if (AZFKType) {
