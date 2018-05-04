@@ -2460,10 +2460,7 @@ describe('SPRT测试', () => {
         });
 
         it('GYSGLY为已经分配过发货GYS的DD_DW_DP再次分配发货GYS', async () => {
-<<<<<<< HEAD
-=======
           const GYSGLY2Token = await getToken('GYSGLY2', '123456');
->>>>>>> 414d506fc6af3db8d310c55d76af79fb637375c3
           const DD_DW_DPIds = [8];
           const GYSId = 3;
 
@@ -3704,13 +3701,6 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-<<<<<<< HEAD
-        for (let item of EWMs) {
-          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
-          assert.equal(wywl.dataValues.DDGTWLId, null);
-          const ddgtwl = await DD_GT_WL.findOne({ where: { WLId: wywl.dataValues.WLId } });
-          assert.equal(ddgtwl.dataValues.ZXNumber, 0);
-=======
         for (const item of EWMs) {
           const wywl = await WYWL.findOne({
             where: { EWM: JSON.stringify(item) },
@@ -3720,7 +3710,6 @@ describe('SPRT测试', () => {
             where: { id: wywl.dataValues.DDGTWLId },
           });
           assert.equal(ddgtwl.ZXNumber, 0);
->>>>>>> 414d506fc6af3db8d310c55d76af79fb637375c3
           assert.equal(wywl.dataValues.status, WYWLStatus.RK);
           assert.equal(wywl.dataValues.GYSId, 1);
 
@@ -3728,7 +3717,7 @@ describe('SPRT测试', () => {
             where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.RK },
           });
           assert.notEqual(wywlcz, null);
-          for(let item of wywlcz) {
+          for (const item of wywlcz) {
             assert.equal(item.dataValues.UserId, 30);
           }
         }
@@ -3834,13 +3823,7 @@ describe('SPRT测试', () => {
   // 出箱DP [ZHY]
   describe('/chuXiangDP', async () => {
     describe('成功', async () => {
-<<<<<<< HEAD
-      it('ZHY出箱DP', async () => { 
-        
-      });
-=======
       it('ZHY出箱DP', async () => {});
->>>>>>> 414d506fc6af3db8d310c55d76af79fb637375c3
     });
     describe('失败', async () => {
       describe('数据不合法', async () => {});
@@ -4469,11 +4452,6 @@ describe('SPRT测试', () => {
         const GTBA10Token = await getToken('GTBA10', '123456');
         const WYWLPayloads = [
           {
-<<<<<<< HEAD
-            id: 50,
-            AZFKType: AZFKType.AZCG,
-            imageUrl: 'imageUrlWL50'
-=======
             id: 26,
             AZFKType: AZFKType.AZCG,
             imageUrl: 'imageUrlWL26',
@@ -4482,7 +4460,6 @@ describe('SPRT测试', () => {
             id: 26,
             AZFKType: AZFKType.AZCG,
             imageUrl: 'imageUrlWL26',
->>>>>>> 414d506fc6af3db8d310c55d76af79fb637375c3
           },
         ];
         const DDId = 5;
