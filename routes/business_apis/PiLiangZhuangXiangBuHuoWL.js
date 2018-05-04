@@ -29,8 +29,11 @@ export default class PiLiangZhuangXiangBuHuoWL extends BusinessApiBase {
 
   static async mainProcess(req, res, next, user, transaction) {
     const {
-      YJZXTime, GTId, WLEWMs, KDXEWM,
+      YJZXTime: time, GTId, WLEWMs, KDXEWM,
     } = req.body;
+
+    // 转换字符串为当地时间(东8区)
+    const YJZXTime = new Date(time);
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
@@ -92,6 +95,7 @@ export default class PiLiangZhuangXiangBuHuoWL extends BusinessApiBase {
       WLEWMs,
       transaction,
     );
+
     for (const item of tmpWYWLs) {
       // 只有状态在'装箱'前, 且不是'消库'状态可装箱
       if (
@@ -107,7 +111,7 @@ export default class PiLiangZhuangXiangBuHuoWL extends BusinessApiBase {
     }
 
     // 检查WLEWMs是否都是当前用户所属GYS作为发货GYS发往YJZXTime_GTId的
-    const tmpTargetWLs = await checkWLEWMsFromUserGYSForSameDDGTAndGetTasks(
+    const tmpTargetWLBHs = await checkWLEWMsFromUserGYSForSameDDGTAndGetTasks(
       YJZXTime,
       GTId,
       tmpGYSId,
@@ -121,14 +125,14 @@ export default class PiLiangZhuangXiangBuHuoWL extends BusinessApiBase {
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 装箱
-
     // 遍历处理每个物料
-    for (const tmpWYWL in tmpWYWLs) {
+    for (const tmpWYWL of tmpWYWLs) {
       // 匹配WLBH
-      const tmpWLBH = tmpTargetWLs.find(item =>
-        item.YJZXTime === YJZXTime &&
-          item.DW.GTId === GTId &&
-          item.WLId === tmpWYWL.WLId);
+      const tmpWLBH = tmpTargetWLBHs.find(item =>
+        item.YJZXTime.getTime() === YJZXTime.getTime() &&
+          item.GTId === GTId &&
+          item.WLId === tmpWYWL.WLId &&
+          item.ZXNumber === 0);
       // end 匹配WLBH
 
       // 尝试装箱
@@ -170,6 +174,7 @@ export default class PiLiangZhuangXiangBuHuoWL extends BusinessApiBase {
         transaction,
         GYSId: tmpGYSId,
         WLBHId: tmpWLBH.id,
+        KDXId: tmpKDX.id,
       });
       // end 为每个WYWL绑定WLBH, 并改变状态为'装箱'
     }
@@ -188,7 +193,7 @@ async function checkWLEWMsFromUserGYSForSameDDGTAndGetTasks(
 ) {
   const tmpWLIds = EWMs.map(item => item.typeId);
 
-  const tmpTargetWLs = await DBTables.WLBH.findAll({
+  const tmpTargetWLBHs = await DBTables.WLBH.findAll({
     where: {
       YJZXTime,
       GTId,
@@ -198,12 +203,12 @@ async function checkWLEWMsFromUserGYSForSameDDGTAndGetTasks(
     transaction,
   });
 
-  const tmpTargetWLIds = tmpTargetWLs.map(item => item.WLId);
+  const tmpTargetWLBHIds = tmpTargetWLBHs.map(item => item.WLId);
 
-  const diffWLIds = _.difference(tmpWLIds, tmpTargetWLIds);
+  const diffWLIds = _.difference(tmpWLIds, tmpTargetWLBHIds);
   if (diffWLIds.length > 0) {
     throw new Error(`${diffWLIds}不属于从你所属供应商发往目标订单_柜台任务!`);
   }
 
-  return tmpTargetWLs;
+  return tmpTargetWLBHs;
 }
