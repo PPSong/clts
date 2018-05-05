@@ -283,6 +283,8 @@ id	name	code	level	PPId	GYSId	imageUrl
 29	WL4_1_8	4_1_8	1	4	2	imageUrl4_1_8								
 30	WL5_1_2	5_1_2	1	5	2	imageUrl5_1_2								
 31	WL6_1_2	6_1_2	1	6	2	imageUrl6_1_2								
+32	WL5_1_3	5_1_3	1	5	2	imageUrl5_1_3								
+33	WL6_1_3	6_1_3	1	6	2	imageUrl6_1_3								
 														
 //二级组合														
 [EJZH]														
@@ -336,6 +338,8 @@ id	name	WLId	PPId	imageUrl
 16	YJZH16	29	4	imageUrlYJZH16										
 17	YJZH17	30	5	imageUrlYJZH17										
 18	YJZH18	31	6	imageUrlYJZH18										
+19	YJZH19	32	5	imageUrlYJZH19										
+20	YJZH20	33	6	imageUrlYJZH20										
 														
 //一级组合二级组合														
 [YJZH_EJZH]														
@@ -372,6 +376,8 @@ GTId	YJZHId	number
 11	16	4												
 9	17	1												
 10	18	2												
+9	19	1												
+10	20	2												
 														
 //一级组合相关图														
 [YJZHXGT]														
@@ -439,6 +445,7 @@ id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	AZGSId
 5	2	7	11	2	1	初始	0	1						
 6	2	7	12	2	2	初始	0	2						
 7	2	7	13	2	2	已分配发货供应商	0	2						
+30	5	10	33	2	2	初始	0	2						
 														
 [DD_GT_WL]														
 id	DDId	GTId	WLId	number	GYSId	status	ZXNumber							
@@ -446,6 +453,7 @@ id	DDId	GTId	WLId	number	GYSId	status	ZXNumber
 21	5	10	27	2	1	收货	2							
 22	5	10	28	2	2	收货	2							
 28	4	9	30	1	2	可拍全景图	1							
+29	4	9	32	1	2	初始	0							
 														
 [DD_GT_WL]														
 id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	AZGSId	AZGUserId	YJRKDate	YJZXDate	YJAZDate		
@@ -971,7 +979,7 @@ id	DDId	DWId	DPId	GYSId	status	ZXNumber	AZGSId	AZGUserId	YJRKDate	YJZXDate	YJAZD
 21	3	28	25	2	收货	1	2	38	2018-2-2	2018-2-2	2018-2-2	200*100	铜板	
 22	3	29	26	2	收货	1	2	38	2018-2-2	2018-2-2	2018-2-2	200*100	铜板	
 23	3	30	27	2	收货	1	2	38	2018-2-2	2018-2-2	2018-2-2	200*100	铜板	
-24	3	31	28	2	完成	1	2	38	2018-2-2	2018-2-2	2018-2-2	200*100	铜板	
+24	3	31	28	2	收货	1	2	38	2018-2-2	2018-2-2	2018-2-2	200*100	铜板	
 25	4	32	29	3	完成	1	2	38	2018-2-2	2018-2-2	2018-2-2	100*100	铜板	
 26	4	33	30	3	完成	1	2	38	2018-2-2	2018-2-2	2018-2-2	100*100	铜板	
 27	4	34	31	3	完成	1	2	38	2018-2-2	2018-2-2	2018-2-2	200*100	铜板	
@@ -1259,10 +1267,10 @@ id	GTId	WLId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	note	KFJLNote	
 65	8	16	3	收货	2	1	imagUrl	1	36	货物损坏	同意	同意	2018-01-13	
 66	8	16	3	收货	2	1	imagUrl	1	37	货物损坏	同意	同意	2018-01-13	
 67	8	16	3	收货	3	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-16	
-68	8	16	3	可拍全景图	2	1	imagUrl	1	36	货物损坏	同意	同意	2018-01-13	
-69	8	16	3	可拍全景图	2	1	imagUrl	1	37	货物损坏	同意	同意	2018-01-13	
-70	8	16	3	可拍全景图	3	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-16	
-71	8	16	3	完成	2	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-13	
+68	8	16	3	收货	2	1	imagUrl	1	36	货物损坏	同意	同意	2018-01-13	
+69	8	16	3	收货	2	1	imagUrl	1	37	货物损坏	同意	同意	2018-01-13	
+70	8	16	3	收货	3	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-16	
+71	8	16	3	收货	2	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-13	
 														
 //唯一物料														
 [WYWL]														
@@ -1338,6 +1346,7 @@ id	DWId	DPId	status	GYSId	ZXNumber	imageUrl
 id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	AZGSId							
 7	15	12	客服经理审批通过	1	0	imageUrl	1							
 8	11	8	通过	1	0	imageUrl	1							
+72	11	8	通过	1	0	imageUrl	1							
 														
 [DPBH]														
 id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	YJZXTime					
@@ -1354,9 +1363,9 @@ id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	YJZXTime
 19	11	8	装箱完成	1	1	imagUrl	2	38	2018-01-05					
 20	11	8	装箱完成	1	1	imagUrl	2	38	2018-01-06					
 21	11	8	收货	1	1	imagUrl	2	38	2018-01-06					
-22	11	8	可拍全景图	1	1	imagUrl	2	38	2018-01-06					
-23	11	8	可拍全景图	1	1	imagUrl	2	38	2018-01-06					
-24	11	8	完成	1	1	imagUrl	2	38	2018-01-06					
+22	11	8	收货	1	1	imagUrl	2	38	2018-01-06					
+23	11	8	收货	1	1	imagUrl	2	38	2018-01-06					
+24	11	8	收货	1	1	imagUrl	2	38	2018-01-06					
 														
 [DPBH]														
 id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl							
@@ -1409,10 +1418,10 @@ id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	note	KFJLNote	
 65	17	14	3	收货	2	1	imagUrl	1	36	货物损坏	同意	同意	2018-01-13	
 66	17	14	3	收货	2	1	imagUrl	1	37	货物损坏	同意	同意	2018-01-13	
 67	17	14	3	收货	3	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-16	
-68	17	14	3	可拍全景图	2	1	imagUrl	1	36	货物损坏	同意	同意	2018-01-13	
-69	17	14	3	可拍全景图	2	1	imagUrl	1	37	货物损坏	同意	同意	2018-01-13	
-70	17	14	3	可拍全景图	3	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-16	
-71	17	14	3	完成	2	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-13	
+68	17	14	3	收货	2	1	imagUrl	1	36	货物损坏	同意	同意	2018-01-13	
+69	17	14	3	收货	2	1	imagUrl	1	37	货物损坏	同意	同意	2018-01-13	
+70	17	14	3	收货	3	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-16	
+71	17	14	3	收货	2	1	imagUrl	2	38	货物损坏	同意	同意	2018-01-13	
 														
 //唯一灯片														
 [WYDP]														
