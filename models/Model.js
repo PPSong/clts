@@ -3592,6 +3592,18 @@ export const DPBH = sequelize.define(
   },
 );
 
+DPBH.belongsTo(GT, {
+  as: 'GT',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GT.hasMany(DPBH, {
+  as: 'DPBHs',
+  foreignKey: 'GTId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
 DPBH.belongsTo(DW, {
   as: 'DW',
   foreignKey: 'DWId',

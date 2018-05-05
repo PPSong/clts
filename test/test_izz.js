@@ -5552,7 +5552,7 @@ describe('SPRT测试', () => {
   // 批量审批通过DPBH [KFJL]
   describe('/piLiangShenPiTongGuoDPBHa', async () => {
     describe('成功', async () => {
-      it('KFJL批量审批通过DPBH', async () => {
+      it.only('KFJL批量审批通过DPBH', async () => {
         const KFJL3Token = await getToken('KFJL3', '123456');
         const ids = [4];
 
