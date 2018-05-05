@@ -406,7 +406,7 @@ export const apiSchema = {
     type: 'object',
     properties: {
       // GTId
-      Id: {
+      id: {
         type: 'number',
       },
       // 柜台图
@@ -414,7 +414,7 @@ export const apiSchema = {
         type: 'string',
       },
     },
-    required: ['Id', 'imageUrl'],
+    required: ['id', 'imageUrl'],
   },
   // 创建GZ [KFJL]
   createGZ: {
@@ -593,8 +593,6 @@ export const apiSchema = {
       'WLId',
       'imageUrl',
       'XGTs',
-      'FGTesters',
-      'SJWLs',
     ],
   },
   // 编辑EJZH [KFJL]
@@ -663,7 +661,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['id', 'WLId', 'imageUrl', 'XGTs', 'FGTesters', 'SJWLs'],
+    required: ['id', 'WLId', 'imageUrl', 'XGTs'],
   },
   // 创建YJZH [KFJL]
   createYJZH: {
@@ -1104,10 +1102,6 @@ export const apiSchema = {
       }, 
       // 快递箱二维码
       KDXEWM: {
-        type: 'array',
-        minItems: 1,
-        uniqueItems: true,
-        items: {
           type: 'object',
           properties: {
           // type
@@ -1121,7 +1115,6 @@ export const apiSchema = {
         },
         required: ['type', 'uuid'],
       },
-    },
   },
     required: ['DDId', 'GTId', 'WLEWMs', 'KDXEWM'],
   },
@@ -1163,10 +1156,6 @@ export const apiSchema = {
       }, 
       // 快递箱二维码
       KDXEWM: {
-        type: 'array',
-        minItems: 1,
-        uniqueItems: true,
-        items: {
           type: 'object',
           properties: {
           // type
@@ -1180,7 +1169,6 @@ export const apiSchema = {
         },
         required: ['type', 'uuid'],
       },
-    },
     },
     required: ['DDId', 'GTId', 'DPEWMs', 'KDXEWM'],
   },
@@ -1222,10 +1210,6 @@ export const apiSchema = {
       }, 
       // 快递箱二维码
       KDXEWM: {
-        type: 'array',
-        minItems: 1,
-        uniqueItems: true,
-        items: {
           type: 'object',
           properties: {
           // type
@@ -1239,7 +1223,6 @@ export const apiSchema = {
         },
         required: ['type', 'uuid'],
       },
-    },
     },
     required: ['YJZXTime', 'GTId', 'WLEWMs', 'KDXEWM'],
   },
@@ -1281,10 +1264,6 @@ export const apiSchema = {
       }, 
       // 快递箱二维码
       KDXEWM: {
-        type: 'array',
-        minItems: 1,
-        uniqueItems: true,
-        items: {
           type: 'object',
           properties: {
           // type
@@ -1298,7 +1277,6 @@ export const apiSchema = {
         },
         required: ['type', 'uuid'],
       },
-    },
     },
     required: ['YJZXTime', 'GTId', 'DPEWMs', 'KDXEWM'],
   },
@@ -1567,7 +1545,7 @@ export const apiSchema = {
       imageUrls: {
         type: 'array',
         minItems: 1,
-        uniqueItems: true,
+        //uniqueItems: true,
         items: {
           type: 'string',
         },
@@ -1591,7 +1569,7 @@ export const apiSchema = {
       imageUrls: {
         type: 'array',
         minItems: 1,
-        uniqueItems: true,
+        //uniqueItems: true,
         items: {
           type: 'string',
         },
@@ -1624,7 +1602,7 @@ export const apiSchema = {
         type: 'string',
       },
     },
-    required: ['DDId', ' GTId', 'WLId', 'imageUrl'],
+    required: ['DDId', 'GTId', 'WLId', 'imageUrl'],
   },
   // 申请上市DPBH [GZ, GTBA, AZG]
   shenQingShangShiDPBH: {
@@ -1651,7 +1629,7 @@ export const apiSchema = {
         type: 'string',
       },
     },
-    required: ['DDId', ' DWId', 'DPId', 'imageUrl'],
+    required: ['DDId', 'DWId', 'DPId', 'imageUrl'],
   },
   // 申请日常WLBH [GZ, GTBA]
   shenQingRiChangWLBH: {
