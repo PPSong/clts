@@ -3000,7 +3000,7 @@ describe('SPRT测试', () => {
           });
           const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 1);
-          assert.deepEqual(wywlczList, [WYWLStatus.RK, WYWLStatus.CK]);
+          assert.deepEqual(wywlczList, [WYWLStatus.CK]);
         }
       });
     });
@@ -3957,7 +3957,7 @@ describe('SPRT测试', () => {
   // 关联快递 [ZHY]
   describe('/guanLianKuaiDi', async () => {
     describe('成功', async () => {
-      it.only('ZHY关联快递', async () => {
+      it('ZHY关联快递', async () => {
         const ZHY4Token = await getToken('ZHY4', '123456');
         const EWMs = [
           {
@@ -4082,7 +4082,7 @@ describe('SPRT测试', () => {
             });
             assert.notEqual(wywlcz, null);
             assert.equal(wywlcz.length, 1);
-            assert.include(wywlcz[0].dataValues.UserId, 33);
+            assert.equal(wywlcz[0].dataValues.UserId, 33);
           }
         }
       });
@@ -4214,7 +4214,7 @@ describe('SPRT测试', () => {
   // 解除关联快递 [ZHY]
   describe('/jieChuGuanLianKuaiDi', async () => {
     describe('成功', async () => {
-      it.only('ZHY解除快递关联', async () => {
+      it('ZHY解除快递关联', async () => {
         const ZHY4Token = await getToken('ZHY4', '123456');
         const EWMs = [
           {
@@ -4379,10 +4379,10 @@ describe('SPRT测试', () => {
           }));
 
           for (const item of wywlList) {
-            if (item.id == WYWLPayloads.id) {
-              assert.equal(item.status, WYWLStatus.FH);
+            if (item.id == WYWLPayloads[0].id) {
+              assert.equal(item.status, WYWLStatus.FK);
             } else {
-              console.log('izzlog', item.status)
+              console.log('izzlog', item)
               assert.equal(item.status, WYWLStatus.SX);
 
               const wywlcz = await WYWLCZ.findAll({
@@ -4390,7 +4390,7 @@ describe('SPRT测试', () => {
               });
               assert.notEqual(wywlcz, null);
               assert.equal(wywlcz.length, 1);
-              assert.include(wywlcz[0].dataValues.UserId, 24);
+              assert.equal(wywlcz[0].dataValues.UserId, 24);
             }
           }
         }
@@ -4794,8 +4794,8 @@ describe('SPRT测试', () => {
   describe('/anZhuangFanKuiDDDPZhuangTai', async () => {
     describe('成功', async () => {
       it('GTBA反馈DDDP的AZFKType', async () => {
-        const DDId = 3
-        const GTId = 8
+        const DDId = '3';
+        const GTId = 8;
         const WYDPPayloads = [
           {
             id: 11,
@@ -4829,7 +4829,7 @@ describe('SPRT测试', () => {
           });
           assert.notEqual(wydpcz, null);
           assert.equal(wydpcz.length, 1);
-          assert.equal(wydpcz[0].dataValues.UserId, 26);
+          assert.equal(wydpcz[0].dataValues.UserId, 36);
         }
       });
 
@@ -4851,7 +4851,7 @@ describe('SPRT测试', () => {
   // 装反馈全景WL图片 [GTBA, AZG]
   describe('/anZhuangFanKuiQuanJingWLTuPian', async () => {
     describe('成功', async () => {
-      it('GTBA反馈WL安装反馈图', async () => {
+      it.only('GTBA反馈WL安装反馈图', async () => {
         const GTBA9Token = await getToken('GTBA9', '123456');
         const DDId = 4;
         const GTId = 9;
