@@ -3575,7 +3575,7 @@ describe('SPRT测试', () => {
           });
           const wydpczList = wydpcz.map(item => item.dataValues.status);
           assert.equal(wydpcz.length, 1);
-          assert.include(wydpczList, WYDPStatus.CK);
+          assert.include(wydpczList, [WYDPStatus.CK]);
         }
       });
 
