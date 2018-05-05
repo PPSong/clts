@@ -57,7 +57,7 @@ export default class JieChuGuanLianKuaiDi extends BusinessApiBase {
     }
     // end 解除EWMs绑上KDDId
 
-    // 转为状态FH, 新建相关KDXCZ
+    // 转为状态ZX, 新建相关KDXCZ
     const ids = tmpKDXs.map(item => item.id);
     await ppUtils.changeKDXsStatus({
       ids,
@@ -65,21 +65,21 @@ export default class JieChuGuanLianKuaiDi extends BusinessApiBase {
       user,
       transaction,
     });
-    // end 转为状态FH, 新建相关KDXCZ
+    // end 转为状态ZX, 新建相关KDXCZ
 
-    // 改变KDX中WL/DP的状态为FH(对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败), 并添加WYWLCZ/WYDPCZ
+    // 改变KDX中WL/DP的状态为ZX(对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败), 并添加WYWLCZ/WYDPCZ
     await ppUtils.changeWYWLsInKDXsStatus(
       EWMs,
-      DBTables.WYWLStatus.FH,
+      DBTables.WYWLStatus.ZX,
       user,
       transaction,
     );
     await ppUtils.changeWYDPsInKDXsStatus(
       EWMs,
-      DBTables.WYDPStatus.FH,
+      DBTables.WYDPStatus.ZX,
       user,
       transaction,
     );
-    // end 改变KDX中WL/DP的状态为FH(对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败), 并添加WYWLCZ/WYDPCZ
+    // end 改变KDX中WL/DP的状态为ZX(对于已经有AZFKType的记录不用处理, 有可能在这一步之前WYWL/WYDP已被反馈失败), 并添加WYWLCZ/WYDPCZ
   }
 }
