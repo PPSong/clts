@@ -4868,15 +4868,13 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtwl = await DD_GT_WL.findAll({ where: { AZGSId: null } });
-        let ddgtwlList = [];
-        ddgtwlList = ddgtwl.map(item => ({
-          id: item.dataValues.id,
-          status: item.dataValues.status,
-        }));
-        const trueddgtwlList = [{ id: 28, status: DD_GT_WLStatus.WC }];
-        console.log('izzlog', ddgtwlList)
-        assert.equal(isArrayEqual(ddgtwlList, trueddgtwlList), true);
+        const ddgtwl = await DD_GT_WL.findOne({ where: { id: 28 } });
+        assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.WC);
+
+        for(let item of imageUrls) {
+          const wlqjfkt = WLQJFKT.findOne({ where : { imageUrl: item}});
+          assert.equal(wlqjfkt.dataValues.UserId, 25);
+        }
       });
 
       it('AZG反馈WL安装反馈图', async () => {
