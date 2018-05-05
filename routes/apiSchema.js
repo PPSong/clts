@@ -549,7 +549,6 @@ export const apiSchema = {
       // FGTesters
       FGTesters: {
         type: 'array',
-        minItems: 1,
         uniqueItems: true,
         items: {
           type: 'object',
@@ -563,7 +562,7 @@ export const apiSchema = {
               type: 'number',
             },
           },
-          required: ['id', 'number'],
+          required: ['id', 'number', 'FGTesters'],
         },
       },
       // SJWLs
@@ -623,7 +622,6 @@ export const apiSchema = {
       // FGTesters
       FGTesters: {
         type: 'array',
-        minItems: 1,
         uniqueItems: true,
         items: {
           type: 'object',
@@ -637,7 +635,7 @@ export const apiSchema = {
               type: 'number',
             },
           },
-          required: ['id', 'number'],
+          required: ['id', 'number', 'FGTesters'],
         },
       },
       // SJWLs
@@ -695,7 +693,6 @@ export const apiSchema = {
       // EJZHs
       EJZHs: {
         type: 'array',
-        minItems: 1,
         uniqueItems: true,
         items: {
           type: 'object',
@@ -709,7 +706,7 @@ export const apiSchema = {
               type: 'number',
             },
           },
-          required: ['id', 'number'],
+          required: ['id', 'number', 'EJZHs'],
         },
       },
     },
@@ -743,7 +740,6 @@ export const apiSchema = {
       // EJZHs
       EJZHs: {
         type: 'array',
-        minItems: 1,
         uniqueItems: true,
         items: {
           type: 'object',
@@ -757,7 +753,7 @@ export const apiSchema = {
               type: 'number',
             },
           },
-          required: ['id', 'number'],
+          required: ['id', 'number', 'EJZHs'],
         },
       },
     },
