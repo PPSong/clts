@@ -967,8 +967,6 @@ describe('SPRT测试', () => {
         const WLId = 3;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
-        const FGTesters = [];
-        const SJWLs = [];
 
         const response = await post(
           'createEJZH',
@@ -978,8 +976,6 @@ describe('SPRT测试', () => {
             WLId,
             imageUrl,
             XGTs,
-            FGTesters,
-            SJWLs,
           },
           KFJLToken,
         );
@@ -1052,7 +1048,6 @@ describe('SPRT测试', () => {
         const WLId = 3;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
-        const FGTesters = [];
         const SJWLs = [
           {
             id: 1,
@@ -1068,7 +1063,6 @@ describe('SPRT测试', () => {
             WLId,
             imageUrl,
             XGTs,
-            FGTesters,
             SJWLs,
           },
           KFJLToken,
@@ -1201,8 +1195,6 @@ describe('SPRT测试', () => {
           const WLId = 1;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
-          const FGTesters = [];
-          const SJWLs = [];
 
           const response = await post(
             'createEJZH',
@@ -1212,8 +1204,6 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              FGTesters,
-              SJWLs,
             },
             KFJLToken,
           );
@@ -1227,7 +1217,6 @@ describe('SPRT测试', () => {
           const WLId = 3;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
-          const FGTesters = [];
           const SJWLs = [
             {
               id: 3,
@@ -1243,7 +1232,6 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              FGTesters,
               SJWLs,
             },
             KFJLToken,
@@ -1258,8 +1246,6 @@ describe('SPRT测试', () => {
           const WLId = 8;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
-          const FGTesters = [];
-          const SJWLs = [];
 
           const response = await post(
             'createEJZH',
@@ -1269,8 +1255,6 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              FGTesters,
-              SJWLs,
             },
             KFJLToken,
           );
@@ -1284,8 +1268,6 @@ describe('SPRT测试', () => {
           const WLId = 8;
           const imageUrl = 'imageUrl_T';
           const XGTs = ['XGT_T1', 'XGT_T2'];
-          const FGTesters = [];
-          const SJWLs = [];
 
           const response = await post(
             'createEJZH',
@@ -1295,8 +1277,6 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              FGTesters,
-              SJWLs,
             },
             KFJLToken,
           );
@@ -1317,8 +1297,6 @@ describe('SPRT测试', () => {
         const WLId = 3;
         const imageUrl = 'imageUrlEJZH1';
         const XGTs = ['EJZH1Url1'];
-        const FGTesters = [];
-        const SJWLs = [];
 
         const response = await post(
           'editEJZH',
@@ -1327,8 +1305,6 @@ describe('SPRT测试', () => {
             WLId,
             imageUrl,
             XGTs,
-            FGTesters,
-            SJWLs,
           },
           KFJLToken,
         );
@@ -1354,7 +1330,6 @@ describe('SPRT测试', () => {
             number: 2,
           },
         ];
-        const SJWLs = [];
 
         const response = await post(
           'editEJZH',
@@ -1364,7 +1339,6 @@ describe('SPRT测试', () => {
             imageUrl,
             XGTs,
             FGTesters,
-            SJWLs,
           },
           KFJLToken,
         );
@@ -1512,8 +1486,6 @@ describe('SPRT测试', () => {
           const WLId = 3;
           const imageUrl = 'imageUrlEJZH1';
           const XGTs = ['EJZH1Url1'];
-          const FGTesters = [];
-          const SJWLs = [];
 
           const response = await post(
             'editEJZH',
@@ -1522,8 +1494,6 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              FGTesters,
-              SJWLs,
             },
             KFJLToken,
           );
@@ -1536,8 +1506,6 @@ describe('SPRT测试', () => {
           const WLId = 8;
           const imageUrl = 'imageUrlEJZH1';
           const XGTs = ['EJZH1Url1'];
-          const FGTesters = [];
-          const SJWLs = [];
 
           const response = await post(
             'editEJZH',
@@ -1546,8 +1514,6 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              FGTesters,
-              SJWLs,
             },
             KFJLToken,
           );
@@ -1569,7 +1535,6 @@ describe('SPRT测试', () => {
         const WLId = 5;
         const imageUrl = 'imageUrlYJZH';
         const XGTs = ['YJZH1Url'];
-        const EJZHs = [];
 
         const response = await post(
           'createYJZH',
@@ -1579,7 +1544,6 @@ describe('SPRT测试', () => {
             WLId,
             imageUrl,
             XGTs,
-            EJZHs,
           },
           KFJLToken,
         );
@@ -1642,7 +1606,6 @@ describe('SPRT测试', () => {
           const WLId = 1;
           const imageUrl = 'imageUrlYJZH';
           const XGTs = ['YJZH1Url'];
-          const EJZHs = [];
 
           const response = await post(
             'createYJZH',
@@ -1652,7 +1615,6 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              EJZHs,
             },
             KFJLToken,
           );
@@ -1674,7 +1636,6 @@ describe('SPRT测试', () => {
         const WLId = 5;
         const imageUrl = 'imageUrlYJZH1';
         const XGTs = ['YJZH1Url1'];
-        const EJZHs = [];
 
         const response = await post(
           'editYJZH',
@@ -1683,7 +1644,6 @@ describe('SPRT测试', () => {
             WLId,
             imageUrl,
             XGTs,
-            EJZHs,
           },
           KFJLToken,
         );
@@ -4796,8 +4756,8 @@ describe('SPRT测试', () => {
   // 安装反馈DDDP状态 [GTBA, AZG]
   describe('/anZhuangFanKuiDDDPZhuangTai', async () => {
     describe('成功', async () => {
-      it('GTBA反馈DDDP的AZFKType', async () => {
-        const DDId = '3';
+      it.only('GTBA反馈DDDP的AZFKType', async () => {
+        const DDId = 3;
         const GTId = 8;
         const WYDPPayloads = [
           {
@@ -4810,7 +4770,7 @@ describe('SPRT测试', () => {
             AZFKType: '安装成功',
             imageUrl: 'imageUrl',
           },
-        ]
+        ];
 
         const response = await post(
           'anZhuangFanKuiDDDPZhuangTai',
@@ -4975,7 +4935,8 @@ describe('SPRT测试', () => {
     });
   });
 
-  // 安装反馈全景DP图片 [GTBA, AZG]
+  // 安装反馈全景DP图片 [GTBA, AZG] 
+  // izzTodo: 场景第一次分配给AZG的任务已经全部反馈完成，在还未反馈全景图时又分配了任务给该AZG
   describe('/anZhuangFanKuiQuanJingDPTuPian', async () => {
     describe('成功', async () => {
       it('GTBA反馈DP安装反馈图', async () => {
