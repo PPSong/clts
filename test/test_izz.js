@@ -62,6 +62,8 @@ import {
   DPBHStatus,
   HWType,
   DPBH,
+  WLQJFKT,
+  DPQJFKT,
 } from '../models/Model';
 import { it } from 'mocha';
 
@@ -4838,11 +4840,18 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('GTBA反馈不属于自己的DDDP的AZFKType', async () => { });
-        it('AZG反馈不属于自己的DDDP的AZFKType', async () => { });
+        it('GTBA反馈不属于自己的DDDP的AZFKType', async () => {
+
+         });
+
+        it('AZG反馈不属于自己的DDDP的AZFKType', async () => {
+
+         });
       });
       describe('操作状态不正确', async () => {
-        it('AZG将发货状态的DP反馈为安装成功', async () => { });
+        it('AZG将发货状态的DP反馈为安装成功', async () => { 
+
+        });
       });
       describe('唯一性校验', async () => { });
     });
@@ -4894,14 +4903,13 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtwl = await DD_GT_WL.findAll({ where: { AZGSId: null } });
-        let ddgtwlList = [];
-        ddgtwlList = ddgtwl.map(item => ({
-          id: item.dataValues.id,
-          status: item.dataValues.status,
-        }));
-        const trueddgtwlList = [{ id: 27, status: DD_GT_WLStatus.WC }];
-        assert.equal(isArrayEqual(ddgtwlList, trueddgtwlList), true);
+        const ddgtwl = await DD_GT_WL.findOne({ where: { id: 27 } });
+        assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.WC);
+
+        for(let item of imageUrls) {
+          const wlqjfkt = WLQJFKT.findOne({ where : { imageUrl: item}});
+          assert.equal(wlqjfkt.dataValues.UserId, 38);
+        }
       });
     });
     describe('失败', async () => {
@@ -6444,13 +6452,21 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('AZGSGLY设置不属于自己管理的DPBH的AZG', async () => { });
-        it('AZGSGLY为DPBH设置不属于自己管理的AZG', async () => { });
+        it('AZGSGLY设置不属于自己管理的DPBH的AZG', async () => {
+
+         });
+        it('AZGSGLY为DPBH设置不属于自己管理的AZG', async () => { 
+
+        });
       });
       describe('操作状态不正确', async () => {
-        it('AZGSGLY为收货的DPBH设置AZG', async () => { });
+        it('AZGSGLY为收货的DPBH设置AZG', async () => { 
+
+        });
       });
       describe('唯一性校验', async () => { });
     });
   });
+
+//izztodo: AZG的所有任务变成可拍全景图的状态，之后又分了一个任务给该AZG
 });
