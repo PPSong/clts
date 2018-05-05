@@ -1495,7 +1495,7 @@ export const apiSchema = {
     properties: {
       // DDId
       DDId: {
-        type: 'string',
+        type: 'number',
       },
       // GTId
       GTId: {
