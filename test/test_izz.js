@@ -239,7 +239,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it.skip('small test', async () => {
+    it('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -3758,7 +3758,8 @@ describe('SPRT测试', () => {
             ZHYToken,
           );
           assert.equal(response.data.code, -1);
-        }); // todoizz
+          assert.include(response.data.msg, '柜台');
+        });
       });
       describe('唯一性校验', async () => { });
     });
@@ -5763,11 +5764,23 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL单独审批驳回DPBH', async () => { });
+        it('KFJL单独驳回其他PP的DPBH', async () => {
+          const id = 4;
+          const KFJLNote = '情况不属实';
+
+          const response = await post(
+            'danDuShenPiBoHuiDPBHa',
+            {
+              id,
+              KFJLNote,
+            },
+            KFJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
       });
-      describe('操作状态不正确', async () => {
-        it('KFJL单独驳回其他PP的DPBH', async () => { });
-      });
+      describe('操作状态不正确', async () => { });
       describe('唯一性校验', async () => { });
     });
   });
@@ -5891,17 +5904,78 @@ describe('SPRT测试', () => {
 
         const dpbh = await DPBH.findOne({ where: { id: ids[0] } });
         assert.equal(dpbh.dataValues.AZGSId, AZGSId);
-      }); // TODO:SequelizeEagerLoadingError: GT is not associated to DPBH!
+      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('PPJL为其他PP的DPBH分配AZGS', async () => { });
+        it('PPJL为其他PP的DPBH分配AZGS', async () => {
+          const ids = [5];
+          const AZGSId = 1;
+
+          const response = await post(
+            'setDPBH0AZGS',
+            {
+              ids,
+              AZGSId,
+            },
+            PPJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
       });
       describe('操作状态不正确', async () => {
-        it('PPJL为初始状态的DPBH分配AZGS', async () => { });
-        it('PPJL为驳回状态的DPBH分配AZGS', async () => { });
-        it('PPJL为通过状态的DPBH分配AZGS', async () => { });
+        it('PPJL为初始状态的DPBH分配AZGS', async () => {
+          const PPJL3Token = await getToken('PPJL3', '123456');
+          const ids = [25];
+          const AZGSId = 1;
+
+          const response = await post(
+            'setDPBH0AZGS',
+            {
+              ids,
+              AZGSId,
+            },
+            PPJL3Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
+
+        it('PPJL为驳回状态的DPBH分配AZGS', async () => {
+          const PPJL3Token = await getToken('PPJL3', '123456');
+          const ids = [27];
+          const AZGSId = 1;
+
+          const response = await post(
+            'setDPBH0AZGS',
+            {
+              ids,
+              AZGSId,
+            },
+            PPJL3Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
+
+        it('PPJL为通过状态的DPBH分配AZGS', async () => {
+          const PPJL4Token = await getToken('PPJL4', '123456');
+          const ids = [32];
+          const AZGSId = 1;
+
+          const response = await post(
+            'setDPBH0AZGS',
+            {
+              ids,
+              AZGSId,
+            },
+            PPJL4Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
       });
       describe('唯一性校验', async () => { });
     });
@@ -6020,13 +6094,65 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('PPJL批量审批通其他PP的DPBH', async () => { });
+        it('PPJL批量审批通其他PP的DPBH', async () => {
+          const ids = [7];
+
+          const response = await post(
+            'piLiangShenPiTongGuoDPBHb',
+            {
+              ids,
+            },
+            PPJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
       });
       describe('操作状态不正确', async () => {
-        it('PPJL批量审批通过状态为驳回的DPBH', async () => { });
-        it('PPJL批量审批通过状态为初始的DPBH', async () => { });
-        it('PPJL批量审批通过状态为通过的DPBH', async () => { });
-        it('PPJL批量审批通过状态为初始的DPBH', async () => { });
+        it('PPJL批量审批通过状态为驳回的DPBH', async () => {
+          const PPJL4Token = await getToken('PPJL4', '123456');
+          const ids = [30];
+
+          const response = await post(
+            'piLiangShenPiTongGuoDPBHb',
+            {
+              ids,
+            },
+            PPJL4Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
+
+        it('PPJL批量审批通过状态为初始的DPBH', async () => {
+          const PPJL4Token = await getToken('PPJL4', '123456');
+          const ids = [28];
+
+          const response = await post(
+            'piLiangShenPiTongGuoDPBHb',
+            {
+              ids,
+            },
+            PPJL4Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
+
+        it('PPJL批量审批通过状态为通过的DPBH', async () => {
+          const PPJL4Token = await getToken('PPJL4', '123456');
+          const ids = [32];
+
+          const response = await post(
+            'piLiangShenPiTongGuoDPBHb',
+            {
+              ids,
+            },
+            PPJL4Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
       });
       describe('唯一性校验', async () => { });
     });
@@ -6037,7 +6163,7 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('PPJL单独审批通过WLBH', async () => {
         const PPJL3Token = await getToken('PPJL3', '123456');
-        const id = 8;
+        const id = 7;
         const PPJLNote = '通过';
 
         const response = await post(
@@ -6101,7 +6227,7 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('PPJL单独审批通过DPBH', async () => {
         const PPJL3Token = await getToken('PPJL3', '123456');
-        const id = 8;
+        const id = 7;
         const PPJLNote = '通过';
 
         const response = await post(
@@ -6121,10 +6247,39 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('PPJL单独审批通其他PP的DPBH', async () => { });
+        it('PPJL单独审批通其他PP的DPBH', async () => {
+          const id = 7;
+          const PPJLNote = '通过';
+
+          const response = await post(
+            'danDuShenPiTongGuoDPBHb',
+            {
+              id,
+              PPJLNote,
+            },
+            PPJLToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
       });
       describe('操作状态不正确', async () => {
-        it('PPJL单独审批通过状态为驳回的DPBH', async () => { });
+        it('PPJL单独审批通过状态为驳回的DPBH', async () => {
+          const PPJL3Token = await getToken('PPJL3', '123456');
+          const id = 6;
+          const PPJLNote = '通过';
+
+          const response = await post(
+            'danDuShenPiTongGuoDPBHb',
+            {
+              id,
+              PPJLNote,
+            },
+            PPJL3Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
       });
       describe('唯一性校验', async () => { });
     });
@@ -6135,7 +6290,7 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('PPJL单独审批驳回WLBH', async () => {
         const PPJL3Token = await getToken('PPJL3', '123456');
-        const id = 8;
+        const id = 7;
         const PPJLNote = '驳回';
 
         const response = await post(
@@ -6182,7 +6337,7 @@ describe('SPRT测试', () => {
     describe('成功', async () => {
       it('PPJL单独审批驳回DPBH', async () => {
         const PPJL3Token = await getToken('PPJL3', '123456');
-        const id = 8;
+        const id = 7;
         const PPJLNote = '驳回';
 
         const response = await post(
@@ -6202,7 +6357,21 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL单独驳回其他PP的DPBH', async () => { });
+        it('KFJL单独驳回其他PP的DPBH', async () => {
+          const id = 7;
+        const PPJLNote = '驳回';
+
+        const response = await post(
+          'danDuShenPiBoHuiDPBHb',
+          {
+            id,
+            PPJLNote,
+          },
+          PPJLToken,
+        );
+        assert.equal(response.data.code, -1);
+        assert.include(response.data.msg, '权限');
+         });
       });
       describe('操作状态不正确', async () => { });
       describe('唯一性校验', async () => { });
@@ -6316,11 +6485,56 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('生产GYSGLY设置不属于自己任务的DPBH的YJZXTime', async () => { });
-        it('中转GYSGLY设置DPBH的YJZXTime', async () => { });
+        it('生产GYSGLY设置不属于自己任务的DPBH的YJZXTime', async () => {
+          let GYSGLY2Token = await getToken('GYSGLY2', '123456');
+          const ids = [8, 9, 33];
+          const YJZXTime = '2018-10-10';
+  
+          const response = await post(
+            'setDPBHs0YJZXTime',
+            {
+              ids,
+              YJZXTime,
+            },
+            GYSGLY2Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+         });
+
+        it('中转GYSGLY设置DPBH的YJZXTime', async () => {
+          const GYSGLY3Token = await getToken('GYSGLY3', '123456');
+          const ids = [35, 36];
+          const YJZXTime = '2018-02-02';
+
+          const response = await post(
+            'setDPBHs0YJZXTime',
+            {
+              ids,
+              YJZXTime,
+            },
+            GYSGLY3Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+         });
       });
       describe('操作状态不正确', async () => {
-        it('生产GYSGLY设置已经装箱的DPBH的YJZXTime', async () => { });
+        it('生产GYSGLY设置已经装箱的DPBH的YJZXTime', async () => {
+          const ids = [37, 38];
+          const YJZXTime = '2018-02-02';
+
+          const response = await post(
+            'setDPBHs0YJZXTime',
+            {
+              ids,
+              YJZXTime,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+         });
       });
       describe('唯一性校验', async () => { });
     });
@@ -6430,6 +6644,7 @@ describe('SPRT测试', () => {
             GYSGLYToken,
           );
           assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
         });
 
         it('GYSGLY设置装箱完成的WLBH的发货GYS', async () => {
@@ -6476,14 +6691,103 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('生产GYSGLY为不属于自己的DPBH分配发货GYS', async () => { });
-        it('生产GYS1将DPBH分配给其他生产GYS2', async () => { });
+        it('生产GYSGLY为不属于自己的DPBH分配发货GYS', async () => {
+          let GYSGLY2Token = await getToken('GYSGLY2', '123456');
+          const ids = [8];
+          const GYSId = 3;
+  
+          const response = await post(
+            'fenPeiDPBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+         });
+
+        it('生产GYS1将DPBH分配给其他生产GYS2', async () => { 
+          const ids = [8];
+          const GYSId = 2;
+
+          const response = await post(
+            'fenPeiDPBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
       });
       describe('操作状态不正确', async () => {
-        it('生产GYS1将DPBH分配给库存不足的中转GYS', async () => { });
-        it('GYSGLY设置还未审批通过的的DPBH的发货GYS', async () => { });
-        it('GYSGLY为已经分配过发货GYS的DPBH再次分配发货GYS', async () => { });
-        it('GYSGLY设置装箱完成的DPBH的发货GYS', async () => { });
+        it('生产GYS1将DPBH分配给库存不足的中转GYS', async () => {
+          const ids = [8, 72];
+          const GYSId = 3;
+
+          const response = await post(
+            'fenPeiDPBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '库存');
+         });
+
+        it('GYSGLY设置还未审批通过的的DPBH的发货GYS', async () => {
+          const ids = [1];
+          const GYSId = 1;
+
+          const response = await post(
+            'fenPeiDPBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+         });
+
+        it('GYSGLY为已经分配过发货GYS的DPBH再次分配发货GYS', async () => {
+          const ids = [9];
+          const GYSId = 3;
+
+          const response = await post(
+            'fenPeiDPBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+         });
+
+        it('GYSGLY设置装箱完成的DPBH的发货GYS', async () => {
+          const ids = [10];
+          const GYSId = 3;
+
+          const response = await post(
+            'fenPeiDPBHFaHuoGYS',
+            {
+              ids,
+              GYSId,
+            },
+            GYSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+         });
       });
       describe('唯一性校验', async () => { });
     });
@@ -6597,7 +6901,7 @@ describe('SPRT测试', () => {
         const AZGUserId = 36;
 
         const response = await post(
-          'setWLBHs0AZG',
+          'setDPBHs0AZG',
           {
             DPBHIds,
             AZGUserId,
@@ -6606,32 +6910,86 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        for (const item of WLBHIds) {
+        for (const item of DPBHIds) {
           const dpbh = await DPBH.findOne({ where: { id: item } });
           assert.equal(dpbh.dataValues.AZGUserId, AZGUserId);
         }
       });
 
-      it('AZGSGLY分配已分配发货供应商的DPBH的AZG', async () => { });
+      it('AZGSGLY分配已分配发货供应商的DPBH的AZG', async () => {
+        const DPBHIds = [9];
+        const AZGUserId = 37;
+
+        const response = await post(
+          'setDPBHs0AZG',
+          {
+            DPBHIds,
+            AZGUserId,
+          },
+          AZGSGLYToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        for (const item of DPBHIds) {
+          const dpbh = await DPBH.findOne({ where: { id: item } });
+          assert.equal(dpbh.dataValues.AZGUserId, AZGUserId);
+        }
+       });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
         it('AZGSGLY设置不属于自己管理的DPBH的AZG', async () => {
+          const AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
+          const DPBHIds = [8, 32];
+          const AZGUserId = 36;
 
+          const response = await post(
+            'setDPBHs0AZG',
+            {
+              DPBHIds,
+              AZGUserId,
+            },
+            AZGSGLY2Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
-        it('AZGSGLY为DPBH设置不属于自己管理的AZG', async () => {
 
+        it('AZGSGLY为DPBH设置不属于自己管理的AZG', async () => {
+          const DPBHIds = [8, 32];
+          const AZGUserId = 38;
+
+          const response = await post(
+            'setDPBHs0AZG',
+            {
+              DPBHIds,
+              AZGUserId,
+            },
+            AZGSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
         });
       });
       describe('操作状态不正确', async () => {
         it('AZGSGLY为收货的DPBH设置AZG', async () => {
+          const DPBHIds = [46];
+          const AZGUserId = 37;
 
+          const response = await post(
+            'setDPBHs0AZG',
+            {
+              DPBHIds,
+              AZGUserId,
+            },
+            AZGSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
         });
       });
       describe('唯一性校验', async () => { });
     });
   });
-
-  //izztodo: AZG的所有任务变成可拍全景图的状态，之后又分了一个任务给该AZG
 });
