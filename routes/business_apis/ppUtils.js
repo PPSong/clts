@@ -417,7 +417,9 @@ export async function changeWYDPsInKDXsStatus(
   const tmpWYDPIds = tmpWYDPCZSqlR[0].map(item => item.id);
 
   // 更改相关WYWL状态为FH, 新建相关WYWLCZ
-  await changeWYDPsStatus(tmpWYDPIds, status, user, transaction);
+  await changeWYDPsStatus({
+    ids: tmpWYDPIds, status, user, transaction,
+  });
   // end 更改相关WYWL状态为FH, 新建相关WYWLCZ
 }
 

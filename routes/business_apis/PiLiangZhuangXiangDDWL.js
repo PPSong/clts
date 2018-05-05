@@ -205,7 +205,7 @@ async function checkWLEWMsFromUserGYSForSameDDGTAndGetTasks(
   transaction,
 ) {
   const tmpWLIds = EWMs.map(item => item.typeId);
-
+  console.log('ppt', DDId, GTId, GYSId);
   const tmpTargetWLs = await DBTables.DD_GT_WL.findAll({
     where: {
       DDId,
@@ -217,10 +217,9 @@ async function checkWLEWMsFromUserGYSForSameDDGTAndGetTasks(
   });
 
   const tmpTargetWLIds = tmpTargetWLs.map(item => item.WLId);
-
   const diffWLIds = _.difference(tmpWLIds, tmpTargetWLIds);
   if (diffWLIds.length > 0) {
-    throw new Error(`${diffWLIds}不属于从你所属供应商发往目标订单_柜台任务!`);
+    throw new Error(`${diffWLIds}不属于从你所属供应商发往目标订单_柜台任务或任务已超限额!`);
   }
 
   return tmpTargetWLs;
