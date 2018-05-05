@@ -713,7 +713,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['PPId', 'name', 'WLId', 'imageUrl', 'XGTs', 'EJZHs'],
+    required: ['PPId', 'name', 'WLId', 'imageUrl', 'XGTs'],
   },
   // 编辑YJZH [KFJL]
   editYJZH: {
@@ -761,7 +761,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['id', 'WLId', 'imageUrl', 'XGTs', 'EJZHs'],
+    required: ['id', 'WLId', 'imageUrl', 'XGTs'],
   },
   // 配置YJZH_GTs [KFJL]
   setYJZHGTs: {
@@ -1759,7 +1759,7 @@ export const apiSchema = {
     required: ['id', 'KFJLNote'],
   },
   // 单独审批驳回DPBHa [KFJL]
-  danDuShenPiTongGuoDPBHa: {
+  danDuShenPiBoHuiDPBHa: {
     type: 'object',
     properties: {
       // 灯片补货id:
@@ -1861,7 +1861,7 @@ export const apiSchema = {
     required: ['id'],
   },
   // 单独审批通过DPBHb [PPJL]
-  danDuShenPiTongGuoDPBHa: {
+  danDuShenPiTongGuoDPBHb: {
     type: 'object',
     properties: {
       // 灯片补货id:
