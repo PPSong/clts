@@ -21,5 +21,31 @@ export default class AnZhuangFanKuiQuanJingDPTuPian extends BusinessApiBase {
     await DBTables.DPQJFKT.bulkCreate(tmpRecords, {
       transaction,
     });
+
+    // 修改相关任务状态为'完成'
+    let tmpWhere;
+    if (user.JS === DBTables.JS.AZG) {
+      tmpWhere = {
+        DDId,
+        AZGUserId: user.id,
+      };
+    } else if (user.JS === DBTables.JS.GTBA) {
+      tmpWhere = {
+        DDId,
+        AZGSId: null,
+      };
+    } else {
+      throw new Error('没有权限!');
+    }
+
+    await DBTables.DD_DW_DP.update(
+      {
+        status: DBTables.DD_DW_DPStatus.KPQJT,
+      },
+      {
+        where: tmpWhere,
+      },
+    );
+    // end 修改相关任务状态为'完成'
   }
 }
