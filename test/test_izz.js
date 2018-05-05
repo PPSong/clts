@@ -3214,7 +3214,7 @@ describe('SPRT测试', () => {
         }
       });
 
-      it.only('ZHY装箱已经在其他GYS处入库的WL', async () => {
+      it('ZHY装箱已经在其他GYS处入库的WL', async () => {
         let ZHY4Token = await getToken('ZHY4', '123456');
         const DDId = 3;
         const GTId = 8;
@@ -3333,8 +3333,8 @@ describe('SPRT测试', () => {
             where: { WYWLId: wywl.dataValues.id, UserId: 30 },
           });
           const wywlczList = wywlcz.map(item => item.dataValues.status);
-          assert.equal(wywlcz.length, 1);
-          assert.include(wywlczList, WYWLStatus.ZX);
+          assert.equal(wywlczList.length, 2);
+          assert.deepEqual(wywlczList, [WYWLStatus.RK, WYWLStatus.ZX]);
         }
       });
     });
@@ -3498,7 +3498,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '状态');
         });
 
-        it('ZHY装箱已经装满的DD_GT_WL任务', async () => {
+        it.only('ZHY装箱已经装满的DD_GT_WL任务', async () => {
           const ZHY3Token = await getToken('ZHY3', '123456');
           const DDId = 3;
           const GTId = 8;
