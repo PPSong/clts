@@ -967,8 +967,8 @@ describe('SPRT测试', () => {
         const WLId = 3;
         const imageUrl = 'imageUrl_T';
         const XGTs = ['XGT_T1', 'XGT_T2'];
-        const FGTester = [];
-        const SJWL = [];
+        const FGTesters = [];
+        const SJWLs = [];
 
         const response = await post(
           'createEJZH',
@@ -978,8 +978,8 @@ describe('SPRT测试', () => {
             WLId,
             imageUrl,
             XGTs,
-            FGTester,
-            SJWL,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
@@ -1015,7 +1015,7 @@ describe('SPRT测试', () => {
             number: 2,
           },
         ];
-        const SJWL = [];
+        const SJWLs = [];
 
         const response = await post(
           'createEJZH',
@@ -1026,7 +1026,7 @@ describe('SPRT测试', () => {
             imageUrl,
             XGTs,
             FGTesters,
-            SJWL,
+            SJWLs,
           },
           KFJLToken,
         );
@@ -1303,8 +1303,8 @@ describe('SPRT测试', () => {
         const WLId = 3;
         const imageUrl = 'imageUrlEJZH1';
         const XGTs = ['EJZH1Url1'];
-        const FGTester = [];
-        const SJWL = [];
+        const FGTesters = [];
+        const SJWLs = [];
 
         const response = await post(
           'editEJZH',
@@ -1313,8 +1313,8 @@ describe('SPRT测试', () => {
             WLId,
             imageUrl,
             XGTs,
-            FGTester,
-            SJWL,
+            FGTesters,
+            SJWLs,
           },
           KFJLToken,
         );
@@ -1340,7 +1340,7 @@ describe('SPRT测试', () => {
             number: 2,
           },
         ];
-        const SJWL = [];
+        const SJWLs = [];
 
         const response = await post(
           'editEJZH',
@@ -1350,7 +1350,7 @@ describe('SPRT测试', () => {
             imageUrl,
             XGTs,
             FGTesters,
-            SJWL,
+            SJWLs,
           },
           KFJLToken,
         );
@@ -1498,8 +1498,8 @@ describe('SPRT测试', () => {
           const WLId = 3;
           const imageUrl = 'imageUrlEJZH1';
           const XGTs = ['EJZH1Url1'];
-          const FGTester = [];
-          const SJWL = [];
+          const FGTesters = [];
+          const SJWLs = [];
 
           const response = await post(
             'editEJZH',
@@ -1508,8 +1508,8 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              FGTester,
-              SJWL,
+              FGTesters,
+              SJWLs,
             },
             KFJLToken,
           );
@@ -1522,8 +1522,8 @@ describe('SPRT测试', () => {
           const WLId = 8;
           const imageUrl = 'imageUrlEJZH1';
           const XGTs = ['EJZH1Url1'];
-          const FGTester = [];
-          const SJWL = [];
+          const FGTesters = [];
+          const SJWLs = [];
 
           const response = await post(
             'editEJZH',
@@ -1532,8 +1532,8 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              FGTester,
-              SJWL,
+              FGTesters,
+              SJWLs,
             },
             KFJLToken,
           );
@@ -1628,7 +1628,7 @@ describe('SPRT测试', () => {
           const WLId = 1;
           const imageUrl = 'imageUrlYJZH';
           const XGTs = ['YJZH1Url'];
-          const EJZH = [];
+          const EJZHs = [];
 
           const response = await post(
             'createYJZH',
@@ -1638,7 +1638,7 @@ describe('SPRT测试', () => {
               WLId,
               imageUrl,
               XGTs,
-              EJZH,
+              EJZHs,
             },
             KFJLToken,
           );
