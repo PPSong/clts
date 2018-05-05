@@ -2588,17 +2588,16 @@ export const DD_DW_DP = sequelize.define(
     DDId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: 'DDId_DWId_DPId',
+      unique: 'DDId_DWId',
     },
     DWId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: 'DDId_DWId_DPId',
+      unique: 'DDId_DWId',
     },
     DPId: {
       type: Sequelize.INTEGER,
       allowNull: false,
-      unique: 'DDId_DWId_DPId',
     },
     CC: {
       type: Sequelize.STRING,
