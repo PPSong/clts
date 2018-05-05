@@ -29,7 +29,7 @@ export default class DanDuShenPiTongGuoWLBHb extends BusinessApiBase {
     if (!tmpWLBH) {
       throw new Error(`物料补货记录id:${id}不存在!`);
     }
-
+    
     await user.checkPPId(tmpWLBH.GT.PPId, transaction);
 
     if (tmpWLBH.status !== DBTables.WLBHStatus.KFJLSPTG) {
