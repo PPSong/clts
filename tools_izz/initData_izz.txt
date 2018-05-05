@@ -660,7 +660,7 @@ id	EWM	status	WLId	GYSId
 11	{"type":"WL","typeId":15,"uuid":"15_2"}	入库	15	3										
 12	{"type":"WL","typeId":15,"uuid":"15_3"}	入库	15	3										
 13	{"type":"WL","typeId":15,"uuid":"15_4"}	入库	15	3										
-105	{“type":"WL","typeId":14,"uuid":"15_5"}	入库	15	1										
+105	{“type":"WL","typeId":15,"uuid":"15_5"}	入库	15	1										
 														
 														
 [WYWL]														
@@ -873,6 +873,7 @@ id	WYWLId	status	UserId
 157	102	反馈	38											
 158	103	反馈	38											
 159	104	反馈	26											
+160	105	入库	30											
 														
 //订单灯位灯片快照														
 [DD_DW_DPSnapshot]														

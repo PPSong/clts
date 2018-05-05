@@ -2959,39 +2959,54 @@ describe('SPRT测试', () => {
             where: { WYWLId: wywl.dataValues.id, UserId: 33 },
           });
           const wywlczList = wywlcz.map(item => item.dataValues.status);
-          assert.equal(wywlcz.length, 1);
-          assert.include(wywlczList, WYWLStatus.CK);
+          assert.equal(wywlcz.length, 2);
+          assert.deepEqual(wywlczList, [WYWLStatus.RK, WYWLStatus.CK]);
+        }
+      });
+
+      it('ZHY出库其他GYS的库存WL', async () => {
+        const EWMs = [
+          {
+            type: 'WL',
+            typeId: 8,
+            uuid: '8_1',
+          },
+          {
+            type: 'WL',
+            typeId: 8,
+            uuid: '8_2',
+          },
+        ];
+
+        const response = await post(
+          'piLiangChuKuWL',
+          {
+            EWMs,
+          },
+          ZHYToken,
+        );
+        assert.equal(response.data.code, 1);
+        
+        for (const item of EWMs) {
+          const wywl = await WYWL.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
+          assert.notEqual(wywl, null);
+          assert.equal(wywl.dataValues.status, WYWLStatus.CK);
+          assert.equal(wywl.dataValues.GYSId, 1);
+
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 30 },
+          });
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
+          assert.equal(wywlczList.length, 1);
+          assert.deepEqual(wywlczList, [WYWLStatus.RK, WYWLStatus.CK]);
         }
       });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
-      describe('没有权限', async () => {
-        it('ZHY出库其他GYS的库存WL', async () => {
-          const EWMs = [
-            {
-              type: 'WL',
-              typeId: 8,
-              uuid: '8_1',
-            },
-            {
-              type: 'WL',
-              typeId: 8,
-              uuid: '8_2',
-            },
-          ];
-
-          const response = await post(
-            'piLiangChuKuWL',
-            {
-              EWMs,
-            },
-            ZHYToken,
-          );
-          assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '没有权限');
-        });
-      });
+      describe('没有权限', async () => {});
       describe('操作状态不正确', async () => {
         it('ZHY出库已经消库的WL', async () => {
           const EWMs = [
@@ -3057,8 +3072,8 @@ describe('SPRT测试', () => {
           });
           const wywlczList = wywlcz.map(item => item.dataValues.status);
           console.log(wywlczList);
-          assert.equal(wywlcz.length, 1);
-          assert.include(wywlczList, WYWLStatus.XK);
+          assert.equal(wywlcz.length, 2);
+          assert.deepEqual(wywlczList, [WYWLStatus.RK, WYWLStatus.XK]);
         }
       });
 
@@ -3199,7 +3214,7 @@ describe('SPRT测试', () => {
         }
       });
 
-      it('ZHY装箱已经在其他GYS处入库的WL', async () => {
+      it.only('ZHY装箱已经在其他GYS处入库的WL', async () => {
         let ZHY4Token = await getToken('ZHY4', '123456');
         const DDId = 3;
         const GTId = 8;
@@ -3245,13 +3260,14 @@ describe('SPRT测试', () => {
           assert.notEqual(wywl, null);
           assert.equal(wywl.dataValues.KDXId, kdx.dataValues.id);
           assert.equal(wywl.dataValues.status, WYWLStatus.ZX);
-          assert.equal(wywl.dataValues.GYSId, 1);
+          assert.equal(wywl.dataValues.GYSId, 3);
 
           const wywlcz = await WYWLCZ.findAll({
             where: { WYWLId: wywl.dataValues.id, UserId: 33 },
           });
           const wywlczList = wywlcz.map(item => item.dataValues.status);
-          assert.equal(wywlcz.length, 1); // 已入A库的物料，B直接装箱
+          console.log('izzlog', wywlczList)
+          assert.equal(wywlczList.length, 1); // 已入A库的物料，B直接装箱
           assert.include(wywlczList, WYWLStatus.ZX);
         }
       });
