@@ -171,6 +171,7 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
         transaction,
         GYSId: tmpGYSId,
         DDDWDPId: tmpDD_DW_DP.id,
+        KDXId: tmpKDX.id,
       });
       // end 为每个WYDP绑定DD_DW_DP, 并改变状态为'装箱'
     }
