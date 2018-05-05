@@ -62,6 +62,8 @@ import {
   DPBHStatus,
   HWType,
   DPBH,
+  WLQJFKT,
+  DPQJFKT,
 } from '../models/Model';
 import { it } from 'mocha';
 
@@ -4838,11 +4840,18 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('GTBA反馈不属于自己的DDDP的AZFKType', async () => { });
-        it('AZG反馈不属于自己的DDDP的AZFKType', async () => { });
+        it('GTBA反馈不属于自己的DDDP的AZFKType', async () => {
+
+        });
+
+        it('AZG反馈不属于自己的DDDP的AZFKType', async () => {
+
+        });
       });
       describe('操作状态不正确', async () => {
-        it('AZG将发货状态的DP反馈为安装成功', async () => { });
+        it('AZG将发货状态的DP反馈为安装成功', async () => {
+
+        });
       });
       describe('唯一性校验', async () => { });
     });
@@ -4871,8 +4880,8 @@ describe('SPRT测试', () => {
         const ddgtwl = await DD_GT_WL.findOne({ where: { id: 28 } });
         assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.WC);
 
-        for(let item of imageUrls) {
-          const wlqjfkt = WLQJFKT.findOne({ where : { imageUrl: item}});
+        for (let item of imageUrls) {
+          const wlqjfkt = await WLQJFKT.findOne({ where: { imageUrl: item } });
           assert.equal(wlqjfkt.dataValues.UserId, 25);
         }
       });
@@ -4894,14 +4903,13 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtwl = await DD_GT_WL.findAll({ where: { AZGSId: null } });
-        let ddgtwlList = [];
-        ddgtwlList = ddgtwl.map(item => ({
-          id: item.dataValues.id,
-          status: item.dataValues.status,
-        }));
-        const trueddgtwlList = [{ id: 27, status: DD_GT_WLStatus.WC }];
-        assert.equal(isArrayEqual(ddgtwlList, trueddgtwlList), true);
+        const ddgtwl = await DD_GT_WL.findOne({ where: { id: 27 } });
+        assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.WC);
+
+        for (let item of imageUrls) {
+          const wlqjfkt = await WLQJFKT.findOne({ where: { imageUrl: item } });
+          assert.equal(wlqjfkt.dataValues.UserId, 38);
+        }
       });
     });
     describe('失败', async () => {
@@ -4969,20 +4977,122 @@ describe('SPRT测试', () => {
   // 安装反馈全景DP图片 [GTBA, AZG]
   describe('/anZhuangFanKuiQuanJingDPTuPian', async () => {
     describe('成功', async () => {
-      it('GTBA反馈DP安装反馈图', async () => { });
+      it('GTBA反馈DP安装反馈图', async () => {
+        const GTBA9Token = await getToken('GTBA9', '123456');
+        const DDId = 4;
+        const GTId = 9;
+        const imageUrls = ['imageUrl_FK28', 'imageUrl_FK28'];
 
-      it('AZG反馈WL安装反馈图', async () => { });
+        const response = await post(
+          'anZhuangFanKuiQuanJingDPTuPian',
+          {
+            DDId,
+            GTId,
+            imageUrls,
+          },
+          GTBA9Token,
+        );
+        assert.equal(response.data.code, 1);
+
+        let dddwdpList = [42, 43, 44];
+        for (let item of dddwdpList) {
+          const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
+          assert.equal(dddwdp.dataValues.status, DD_DW_DPStatus.WC);
+        }
+
+        for (let item of imageUrls) {
+          const dpqjfkt = await DPQJFKT.findOne({ where: { imageUrl: item } });
+          assert.equal(dpqjfkt.dataValues.UserId, 25);
+        }
+      });
+
+      it('AZG反馈WL安装反馈图', async () => {
+        const AZG3Token = await getToken('AZG3', '123456');
+        const DDId = 5;
+        const GTId = 10;
+        const imageUrls = ['imageUrl_FK27', 'imageUrl_FK27'];
+
+        const response = await post(
+          'anZhuangFanKuiQuanJingWLTuPian',
+          {
+            DDId,
+            GTId,
+            imageUrls,
+          },
+          AZG3Token,
+        );
+        assert.equal(response.data.code, 1);
+
+        let dddwdpList = [39, 40, 41];
+        for (let item of dddwdpList) {
+          const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
+          assert.equal(dddwdp.dataValues.status, DD_DW_DPStatus.WC);
+        }
+
+        for (let item of imageUrls) {
+          const dpqjfkt = await DPQJFKT.findOne({ where: { imageUrl: item } });
+          assert.equal(dpqjfkt.dataValues.UserId, 38);
+        }
+      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('GTBA反馈不属于自己的任务的柜台全景图', async () => { });
-        it('AZG反馈不属于自己的任务的柜台全景图', async () => { });
+        it('GTBA反馈不属于自己的任务的柜台全景图', async () => {
+          const DDId = 4;
+          const GTId = 9;
+          const imageUrls = ['imageUrl_FK28', 'imageUrl_FK28'];
 
+          const response = await post(
+            'anZhuangFanKuiQuanJingDPTuPian',
+            {
+              DDId,
+              GTId,
+              imageUrls,
+            },
+            GTBAToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
+
+        it('AZG反馈不属于自己的任务的柜台全景图', async () => {
+          const DDId = 5;
+          const GTId = 10;
+          const imageUrls = ['imageUrl_FK27', 'imageUrl_FK27'];
+
+          const response = await post(
+            'anZhuangFanKuiQuanJingWLTuPian',
+            {
+              DDId,
+              GTId,
+              imageUrls,
+            },
+            AZGToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '没有权限');
+        });
       });
       describe('操作状态不正确', async () => {
-        it('AZG在未完成状态反馈前，反馈柜台全景图', async () => { });
+        it('AZG在未完成状态反馈前，反馈柜台全景图', async () => {
+          const AZG3Token = await getToken('AZG3', '123456');
+          const DDId = 3;
+          const GTId = 8;
+          const imageUrls = ['imageUrl_FK', 'imageUrl_FK'];
 
+          const response = await post(
+            'anZhuangFanKuiQuanJingWLTuPian',
+            {
+              DDId,
+              GTId,
+              imageUrls,
+            },
+            AZG3Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
       });
       describe('唯一性校验', async () => { });
     });
@@ -5149,9 +5259,49 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('GTBA申请其他GT的上市DPBH', async () => { });
+        it('GTBA申请其他GT的上市DPBH', async () => {
+          const DDId = 5;
+          const DWId = 35;
+          const DPId = 32;
+          const imageUrl = 'imageUrlDP32';
+          const note = '货物损坏，申请补货';
 
-        it('AZG申请不属于自己的任务的上市WLBH', async () => { });
+          const response = await post(
+            'shenQingShangShiDPBH',
+            {
+              DDId,
+              DWId,
+              DPId,
+              imageUrl,
+              note,
+            },
+            GTBAToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.code, '权限');
+        });
+
+        it('AZG申请不属于自己的任务的上市WLBH', async () => {
+          const DDId = 3;
+          const DWId = 31;
+          const DPId = 28;
+          const imageUrl = 'imageUrlDP28';
+          const note = '货物损坏，申请补货';
+
+          const response = await post(
+            'shenQingShangShiDPBH',
+            {
+              DDId,
+              DWId,
+              DPId,
+              imageUrl,
+              note,
+            },
+            AZGToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.code, '权限');
+        });
       });
       describe('操作状态不正确', async () => { });
       describe('唯一性校验', async () => { });
@@ -5261,8 +5411,46 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('GTBA申请其他GT的日常DPBH', async () => { });
-        it('AZG申请日常DPBH', async () => { });
+        it('GTBA申请其他GT的日常DPBH', async () => {
+          const DWId = 15;
+          const DPId = 12;
+          const imageUrl = 'imageUrlDP12';
+          const note = '货物损坏，申请补货';
+
+          const response = await post(
+            'shenQingRiChangDPBH',
+            {
+              DWId,
+              DPId,
+              imageUrl,
+              note,
+            },
+            GTBAToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.code, '权限');
+        });
+
+        it('AZG申请日常DPBH', async () => {
+          const AZG3Token = await getToken('AZG3', '123456');
+          const DWId = 31;
+          const DPId = 28;
+          const imageUrl = 'imageUrlDP28';
+          const note = '货物损坏，申请补货';
+
+          const response = await post(
+            'shenQingShangShiDPBH',
+            {
+              DWId,
+              DPId,
+              imageUrl,
+              note,
+            },
+            AZG3Token,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.code, '权限');
+        });
       });
       describe('操作状态不正确', async () => { });
       describe('唯一性校验', async () => { });
@@ -5386,18 +5574,18 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL批量审批通其他PP的DPBH', async () => { 
+        it('KFJL批量审批通其他PP的DPBH', async () => {
 
         });
       });
       describe('操作状态不正确', async () => {
-        it('KFJL批量审批通过状态为驳回的DPBH', async () => { 
+        it('KFJL批量审批通过状态为驳回的DPBH', async () => {
 
         });
         it('KFJL批量审批通过状态为客服经理审批通过的DPBH', async () => {
 
-         });
-        it('KFJL批量审批通过状态为通过的DPBH', async () => { 
+        });
+        it('KFJL批量审批通过状态为通过的DPBH', async () => {
 
         });
       });
@@ -6444,13 +6632,21 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('AZGSGLY设置不属于自己管理的DPBH的AZG', async () => { });
-        it('AZGSGLY为DPBH设置不属于自己管理的AZG', async () => { });
+        it('AZGSGLY设置不属于自己管理的DPBH的AZG', async () => {
+
+        });
+        it('AZGSGLY为DPBH设置不属于自己管理的AZG', async () => {
+
+        });
       });
       describe('操作状态不正确', async () => {
-        it('AZGSGLY为收货的DPBH设置AZG', async () => { });
+        it('AZGSGLY为收货的DPBH设置AZG', async () => {
+
+        });
       });
       describe('唯一性校验', async () => { });
     });
   });
+
+  //izztodo: AZG的所有任务变成可拍全景图的状态，之后又分了一个任务给该AZG
 });
