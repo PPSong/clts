@@ -4875,6 +4875,7 @@ describe('SPRT测试', () => {
           status: item.dataValues.status,
         }));
         const trueddgtwlList = [{ id: 28, status: DD_GT_WLStatus.WC }];
+        console.log('izzlog', ddgtwlList)
         assert.equal(isArrayEqual(ddgtwlList, trueddgtwlList), true);
       });
 
@@ -5387,12 +5388,20 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('KFJL批量审批通其他PP的DPBH', async () => { });
+        it('KFJL批量审批通其他PP的DPBH', async () => { 
+
+        });
       });
       describe('操作状态不正确', async () => {
-        it('KFJL批量审批通过状态为驳回的DPBH', async () => { });
-        it('KFJL批量审批通过状态为客服经理审批通过的DPBH', async () => { });
-        it('KFJL批量审批通过状态为通过的DPBH', async () => { });
+        it('KFJL批量审批通过状态为驳回的DPBH', async () => { 
+
+        });
+        it('KFJL批量审批通过状态为客服经理审批通过的DPBH', async () => {
+
+         });
+        it('KFJL批量审批通过状态为通过的DPBH', async () => { 
+
+        });
       });
       describe('唯一性校验', async () => { });
     });
