@@ -4851,7 +4851,7 @@ describe('SPRT测试', () => {
   // 装反馈全景WL图片 [GTBA, AZG]
   describe('/anZhuangFanKuiQuanJingWLTuPian', async () => {
     describe('成功', async () => {
-      it.only('GTBA反馈WL安装反馈图', async () => {
+      it('GTBA反馈WL安装反馈图', async () => {
         const GTBA9Token = await getToken('GTBA9', '123456');
         const DDId = 4;
         const GTId = 9;
@@ -5364,7 +5364,7 @@ describe('SPRT测试', () => {
   // 批量审批通过DPBH [KFJL]
   describe('/piLiangShenPiTongGuoDPBHa', async () => {
     describe('成功', async () => {
-      it('KFJL批量审批通过DPBH', async () => {
+      it.only('KFJL批量审批通过DPBH', async () => {
         const KFJL3Token = await getToken('KFJL3', '123456');
         const ids = [4];
 
