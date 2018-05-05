@@ -3519,7 +3519,7 @@ describe('SPRT测试', () => {
   // 订单批量装箱DDDP [ZHY]
   describe('/piLiangZhuangXiangDDDP', async () => {
     describe('成功', async () => {
-      it.only('ZHY装箱DDDP', async () => {
+      it('ZHY装箱DDDP', async () => {
         const DDId = 3;
         const GTId = 8;
         const DPEWMs = [
@@ -3550,10 +3550,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
 
-        const ddgtdp = await DD_GT_WL.findOne({
-          where: { WLId: DPEWMs[0].DWId },
+        const dddwdp = await DD_DW_DP.findOne({
+          where: { DPId: DPEWMs[0].DWId },
         });
-        assert.equal(ddgtdp.dataValues.ZXNumber, 1);
+        assert.equal(dddwdp.dataValues.ZXNumber, 1);
 
         const kdx = await KDX.findOne({
           where: { EWM: JSON.stringify(KDXEWM) },
@@ -3565,17 +3565,17 @@ describe('SPRT测试', () => {
             where: { EWM: JSON.stringify(item) },
           });
           assert.notEqual(wydp, null);
-          console.log('izzlog', wydp.dataValues)
           assert.equal(wydp.dataValues.KDXId, kdx.dataValues.id);
           assert.equal(wydp.dataValues.status, WYDPStatus.ZX);
           assert.equal(wydp.dataValues.GYSId, 1);
 
           const wydpcz = await WYDPCZ.findAll({
-            where: { WYWLId: wydp.dataValues.id, UserId: 30 },
+            where: { WYDPId: wydp.dataValues.id, UserId: 30 },
           });
           const wydpczList = wydpcz.map(item => item.dataValues.status);
-          assert.equal(wydpcz.length, 1);
-          assert.include(wydpczList, [WYDPStatus.ZX]);
+          assert.equal(wydpczList.length, 2); 
+          //从未做过入库操作的DP直接进行装箱操作，系统会先进行入库，然后再装箱操作。即在WYDPCZ中会有两条操作记录
+          assert.deepEqual(wydpczList, [WYDPStatus.RK, WYDPStatus.ZX]);
         }
       });
 
@@ -3962,7 +3962,7 @@ describe('SPRT测试', () => {
         const kdd = await KDD.findOne({ where: { code: KDDCode } });
         assert.notEqual(kdd, null);
 
-        for (const item of EWMs) {
+        for (let item; item = EWMs[0];) {
           const kdx = await KDX.findOne({
             where: { EWM: JSON.stringify(item) },
           });
@@ -3984,7 +3984,33 @@ describe('SPRT测试', () => {
             });
             assert.notEqual(wywlcz, null);
             assert.equal(wywlcz.length, 1);
-            assert.include(wywlcz[0].dataValues.UserId, 33);
+            assert.equal(wywlcz[0].dataValues.UserId, 33);
+          }
+        }
+
+        for (let item; item = EWMs[1];) {
+          const kdx = await KDX.findOne({
+            where: { EWM: JSON.stringify(item) },
+          });
+          assert.equal(kdx.dataValues.status, KDXStatus.FH);
+
+          const wydp = await WYDP.findAll({
+            where: { KDXId: kdx.dataValues.id },
+          });
+          const wydpList = wydp.map(item => ({
+            id: item.dataValues.id,
+            status: item.dataValues.status,
+          }));
+
+          for (const item of wydpList) {
+            assert.equal(item.status, WYDPStatus.FH);
+
+            const wydpcz = await WYDPCZ.findAll({
+              where: { WYDPId: item.id, status: WYDPStatus.FX },
+            });
+            assert.notEqual(wydpcz, null);
+            assert.equal(wydpcz.length, 1);
+            assert.equal(wydpcz[0].dataValues.UserId, 33);
           }
         }
       });//todoIzz
