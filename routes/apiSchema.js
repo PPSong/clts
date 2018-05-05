@@ -100,7 +100,6 @@ export const normalApiSchema = {
         type: 'number',
       },
       // Code
-      // ffto：五个code中至少必填1个
       Code: {
         type: 'object',
         properties: {
@@ -272,7 +271,7 @@ export const normalApiSchema = {
     required: ['name', 'code', 'level', 'PPId', 'GYSId'],
   },
   // WLEdit
-  // ffto：WL供应商暂未确定是否能修改
+  // fftd：WL供应商暂未确定是否能修改
   WLEdit: {
     type: 'object',
     properties: {
@@ -980,20 +979,24 @@ export const apiSchema = {
     properties: {
       // 物料二维码
       EWMs: {
-        type: 'object',
-        properties: {
-          // type
-          // ffto：WL
-          type: {
-            type: 'string',
-          },
-          // typeId
-          typeId: {
-            type: 'number',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // type
+            type: {
+              const: 'WL',
+            },
+            // typeId
+            typeId: {
+              type: 'number',
+            },
+            // uuid
+            uuid: {
+              type: 'string',
+            },
           },
           required: ['type', 'typeId', 'uuid'],
         },
@@ -1038,23 +1041,28 @@ export const apiSchema = {
     properties: {
       // 物料二维码
       EWMs: {
-        type: 'object',
-        properties: {
-          // type
-          type: {
-            const: 'WL',
-          },
-          // typeId
-          typeId: {
-            type: 'number',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // type
+            type: {
+              const: 'WL',
+            },
+            // typeId
+            typeId: {
+              type: 'number',
+            },
+            // uuid
+            uuid: {
+              type: 'string',
+            },
           },
           required: ['type', 'typeId', 'uuid'],
         },
-      },
+      }, 
     },
     required: ['EWMs'],
   },
@@ -1071,42 +1079,50 @@ export const apiSchema = {
         type: 'number',
       },
       // 物料二维码
-      WLEWMs: {
-        type: 'object',
-        properties: {
-          // type
-          // ffto:WL
-          type: {
-            type: 'string',
-          },
-          // typeId
-          typeId: {
-            type: 'number',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
+      EWMs: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // type
+            type: {
+              const: 'WL',
+            },
+            // typeId
+            typeId: {
+              type: 'number',
+            },
+            // uuid
+            uuid: {
+              type: 'string',
+            },
           },
           required: ['type', 'typeId', 'uuid'],
         },
-      },
+      }, 
       // 快递箱二维码
       KDXEWM: {
-        type: 'object',
-        properties: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
           // type
-          // ffto:KDX
           type: {
-            type: 'string',
+            const : 'KDX',
           },
           // uuid
           uuid: {
             type: 'string',
           },
-          required: ['type', 'uuid'],
         },
+        required: ['type', 'uuid'],
       },
     },
+  },
     required: ['DDId', 'GTId', 'WLEWMs', 'KDXEWM'],
   },
   // 订单批量装箱DDDP [ZHY]
@@ -1122,50 +1138,57 @@ export const apiSchema = {
         type: 'number',
       },
       // 灯片二维码
-      DPEWMs: {
-        type: 'object',
-        properties: {
-          // type
-          // ffto:DP
-          type: {
-            type: 'string',
-          },
-          // typeId
-          typeId: {
-            type: 'number',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
+      EWMs: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // type
+            type: {
+              const: 'DP',
+            },
+            // typeId
+            typeId: {
+              type: 'number',
+            },
+            // uuid
+            uuid: {
+              type: 'string',
+            },
           },
           required: ['type', 'typeId', 'uuid'],
         },
-      },
+      }, 
       // 快递箱二维码
       KDXEWM: {
-        type: 'object',
-        properties: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
           // type
-          // ffto:KDX
           type: {
-            type: 'string',
+            const : 'KDX',
           },
           // uuid
           uuid: {
             type: 'string',
           },
-          required: ['type', 'uuid'],
         },
+        required: ['type', 'uuid'],
       },
+    },
     },
     required: ['DDId', 'GTId', 'DPEWMs', 'KDXEWM'],
   },
-  // 订单批量装箱DDWL [ZHY]
+  // 订单批量装箱BHWL [ZHY]
   piLiangZhuangXiangBuHuoWL: {
     type: 'object',
     properties: {
       // YJZXTime
-      // ffto
       YJZXTime: {
         pattern: '\\d{4}-\\d{2}-\\d{2}',
       },
@@ -1173,26 +1196,50 @@ export const apiSchema = {
       GTId: {
         type: 'number',
       },
-      // 物料二维码
-      WLEWMs: {
-        type: 'object',
-        properties: {
-          // type
-          // ffto:WL
-          type: {
-            type: 'string',
+      // 补货物料二维码
+      EWMs: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // type
+            type: {
+              const: 'WL',
+            },
+            // typeId
+            typeId: {
+              type: 'number',
+            },
+            // uuid
+            uuid: {
+              type: 'string',
+            },
           },
-          // typeId
-          typeId: {
-            type: 'number',
+          required: ['type', 'typeId', 'uuid'],
+        },
+      }, 
+      // 快递箱二维码
+      KDXEWM: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+          // type
+          type: {
+            const : 'KDX',
           },
           // uuid
           uuid: {
             type: 'string',
           },
-          required: ['type', 'typeId', 'uuid'],
         },
+        required: ['type', 'uuid'],
       },
+    },
     },
     required: ['YJZXTime', 'GTId', 'WLEWMs', 'KDXEWM'],
   },
@@ -1201,7 +1248,6 @@ export const apiSchema = {
     type: 'object',
     properties: {
       // YJZXTime
-      // ffto
       YJZXTime: {
         pattern: '\\d{4}-\\d{2}-\\d{2}',
       },
@@ -1209,42 +1255,50 @@ export const apiSchema = {
       GTId: {
         type: 'number',
       },
-      // 灯片二维码
-      DPEWMs: {
-        type: 'object',
-        properties: {
-          // type
-          // ffto:DP
-          type: {
-            type: 'string',
-          },
-          // typeId
-          typeId: {
-            type: 'number',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
+      // 补货灯片二维码
+      EWMs: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // type
+            type: {
+              const: 'DP',
+            },
+            // typeId
+            typeId: {
+              type: 'number',
+            },
+            // uuid
+            uuid: {
+              type: 'string',
+            },
           },
           required: ['type', 'typeId', 'uuid'],
         },
-      },
+      }, 
       // 快递箱二维码
       KDXEWM: {
-        type: 'object',
-        properties: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
           // type
-          // ffto:KDX
           type: {
-            type: 'string',
+            const : 'KDX',
           },
           // uuid
           uuid: {
             type: 'string',
           },
-          required: ['type', 'uuid'],
         },
+        required: ['type', 'uuid'],
       },
+    },
     },
     required: ['YJZXTime', 'GTId', 'DPEWMs', 'KDXEWM'],
   },
@@ -1254,24 +1308,28 @@ export const apiSchema = {
     properties: {
       // 物料二维码
       EWMs: {
-        type: 'object',
-        properties: {
-          // type
-          // ffto:WL
-          type: {
-            type: 'string',
-          },
-          // typeId
-          typeId: {
-            type: 'number',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // type
+            type: {
+              const: 'WL',
+            },
+            // typeId
+            typeId: {
+              type: 'number',
+            },
+            // uuid
+            uuid: {
+              type: 'string',
+            },
           },
           required: ['type', 'typeId', 'uuid'],
         },
-      },
+      }, 
     },
     required: ['EWMs'],
   },
@@ -1279,26 +1337,30 @@ export const apiSchema = {
   chuXiangDP: {
     type: 'object',
     properties: {
-      // 灯片二维码
-      EWMs: {
-        type: 'object',
-        properties: {
-          // type
-          // ffto:DP
-          type: {
-            type: 'string',
-          },
-          // typeId
-          typeId: {
-            type: 'number',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
-          },
-          required: ['type', 'typeId', 'uuid'],
-        },
+ // 灯片二维码
+ EWMs: {
+  type: 'array',
+  minItems: 1,
+  uniqueItems: true,
+  items: {
+    type: 'object',
+    properties: {
+      // type
+      type: {
+        const: 'DP',
       },
+      // typeId
+      typeId: {
+        type: 'number',
+      },
+      // uuid
+      uuid: {
+        type: 'string',
+      },
+    },
+    required: ['type', 'typeId', 'uuid'],
+  },
+}, 
     },
     required: ['EWMs'],
   },
@@ -1306,49 +1368,57 @@ export const apiSchema = {
   guanLianKuaiDi: {
     type: 'object',
     properties: {
-      // 快递箱二维码
-      EWMs: {
+     // 快递箱二维码
+     KDXEWM: {
+      type: 'array',
+      minItems: 1,
+      uniqueItems: true,
+      items: {
         type: 'object',
         properties: {
-          // type
-          // ffto:KDX
-          type: {
-            type: 'string',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
-          },
-          required: ['type', 'uuid'],
+        // type
+        type: {
+          const : 'KDX',
+        },
+        // uuid
+        uuid: {
+          type: 'string',
         },
       },
+      required: ['type', 'uuid'],
     },
+  }, 
     // 快递单code
     KDDCode: {
       type: 'string',
     },
+  },
     required: ['EWMs', 'KDDCode'],
   },
   // 解除关联快递 [ZHY]
   jieChuGuanLianKuaiDi: {
     type: 'object',
     properties: {
-      // 快递箱二维码
-      EWMs: {
+    // 快递箱二维码
+    KDXEWM: {
+      type: 'array',
+      minItems: 1,
+      uniqueItems: true,
+      items: {
         type: 'object',
         properties: {
-          // type
-          // ffto:KDX
-          type: {
-            type: 'string',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
-          },
-          required: ['type', 'uuid'],
+        // type
+        type: {
+          const : 'KDX',
+        },
+        // uuid
+        uuid: {
+          type: 'string',
         },
       },
+      required: ['type', 'uuid'],
+    },
+  },   
     },
     required: ['EWMs'],
   },
@@ -1356,22 +1426,26 @@ export const apiSchema = {
   shouXiang: {
     type: 'object',
     properties: {
-      // 快递箱二维码
-      EWMs: {
+    // 快递箱二维码
+    KDXEWM: {
+      type: 'array',
+      minItems: 1,
+      uniqueItems: true,
+      items: {
         type: 'object',
         properties: {
-          // type
-          // ffto:KDX
-          type: {
-            type: 'string',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
-          },
-          required: ['type', 'uuid'],
+        // type
+        type: {
+          const : 'KDX',
+        },
+        // uuid
+        uuid: {
+          type: 'string',
         },
       },
+      required: ['type', 'uuid'],
+    },
+  },   
     },
     required: ['EWMs'],
   },
@@ -1379,14 +1453,17 @@ export const apiSchema = {
   shouHuoWL: {
     type: 'object',
     properties: {
-      // 物料二维码
-      EWMs: {
+     // 物料二维码
+     EWMs: {
+      type: 'array',
+      minItems: 1,
+      uniqueItems: true,
+      items: {
         type: 'object',
         properties: {
           // type
-          // ffto:WL
           type: {
-            type: 'string',
+            const: 'WL',
           },
           // typeId
           typeId: {
@@ -1396,9 +1473,10 @@ export const apiSchema = {
           uuid: {
             type: 'string',
           },
-          required: ['type', 'typeId', 'uuid'],
         },
+        required: ['type', 'typeId', 'uuid'],
       },
+    },  
     },
     required: ['EWMs'],
   },
@@ -1406,26 +1484,30 @@ export const apiSchema = {
   shouHuoDP: {
     type: 'object',
     properties: {
-      // 灯片二维码
-      EWMs: {
-        type: 'object',
-        properties: {
-          // type
-          // ffto:DP
-          type: {
-            type: 'string',
-          },
-          // typeId
-          typeId: {
-            type: 'number',
-          },
-          // uuid
-          uuid: {
-            type: 'string',
-          },
-          required: ['type', 'typeId', 'uuid'],
-        },
+    // 灯片二维码
+ EWMs: {
+  type: 'array',
+  minItems: 1,
+  uniqueItems: true,
+  items: {
+    type: 'object',
+    properties: {
+      // type
+      type: {
+        const: 'DP',
       },
+      // typeId
+      typeId: {
+        type: 'number',
+      },
+      // uuid
+      uuid: {
+        type: 'string',
+      },
+    },
+    required: ['type', 'typeId', 'uuid'],
+  },
+},   
     },
     required: ['EWMs'],
   },
@@ -1442,7 +1524,6 @@ export const apiSchema = {
         type: 'number',
       },
       // WYWL反馈
-      // ffto：反馈类型中参数未更改
       WYWLPayloads: {
         type: 'array',
         minItems: 1,
@@ -1486,7 +1567,7 @@ export const apiSchema = {
       imageUrls: {
         type: 'array',
         minItems: 1,
-        // uniqueItems: true,
+        uniqueItems: true,
         items: {
           type: 'string',
         },
@@ -1510,7 +1591,7 @@ export const apiSchema = {
       imageUrls: {
         type: 'array',
         minItems: 1,
-        // uniqueItems: true,
+        uniqueItems: true,
         items: {
           type: 'string',
         },
@@ -1623,7 +1704,7 @@ export const apiSchema = {
     type: 'object',
     properties: {
       // 物料补货ids:
-      // ffto:从这个API开始的的物料ids与“SetWLBHs0AZG”中的的物料ids未统一写法
+      // fftd:从这个API开始的的物料ids与“SetWLBHs0AZG”中的的物料ids未统一写法
       ids: {
         type: 'array',
         minItems: 1,
@@ -1640,7 +1721,7 @@ export const apiSchema = {
     type: 'object',
     properties: {
       // 灯片补货ids:
-      // ffto:从这个API开始的的灯片ids与“SetDPBHs0AZG”中的的灯片ids未统一写法
+      // fftd:从这个API开始的的灯片ids与“SetDPBHs0AZG”中的的灯片ids未统一写法
       ids: {
         type: 'array',
         minItems: 1,
@@ -1661,7 +1742,7 @@ export const apiSchema = {
         type: 'number',
       },
       // 客服经理备注:
-      // API中此处的KFJLNote应为非必填项
+      // fftd：API中此处的KFJLNote应为非必填项
       KFJLNote: {
         type: 'string',
       },
@@ -1677,7 +1758,7 @@ export const apiSchema = {
         type: 'number',
       },
       // 客服经理备注:
-      // API中此处的KFJLNote应为非必填项
+      // fftd：API中此处的KFJLNote应为非必填项
       KFJLNote: {
         type: 'string',
       },
@@ -1859,8 +1940,7 @@ export const apiSchema = {
           type: 'number',
         },
       },
-      // YJZX时间:
-      // ffto：时间参数未填写
+      // YJZX时间
       YJZXTime: {
         pattern: '\\d{4}-\\d{2}-\\d{2}',
       },
@@ -1881,7 +1961,6 @@ export const apiSchema = {
         },
       },
       // YJZX时间:
-      // ffto：时间参数未填写
       YJZXTime: {
         pattern: '\\d{4}-\\d{2}-\\d{2}',
       },
