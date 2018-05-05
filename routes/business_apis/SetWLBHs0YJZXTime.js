@@ -58,13 +58,16 @@ export default class SetWLBHs0YJZXTime extends BusinessApiBase {
     // 检查是否是用户所属GYS
     await user.checkGYSId(tmpGYSId, transaction);
     // end 检查是否是用户所属GYS
-
+    
     // 检查状态在'通过' <= x < '装箱完成'
-    const notOkRecords = tmpWLBHs.filter(item =>
-      DBTables.WLBHStatusMap.get(item.status) >=
-          DBTables.WLBHStatusMap.get(DBTables.WLBHStatusMap.TG) &&
-        DBTables.WLBHStatusMap.get(item.status) <
-          DBTables.WLBHStatusMap.get(DBTables.WLBHStatusMap.ZXWC));
+    const notOkRecords = tmpWLBHs.filter((item) => {
+      const indexTG = DBTables.WLBHStatusMap.get(DBTables.WLBHStatus.TG);
+      const indexZXWC = DBTables.WLBHStatusMap.get(DBTables.WLBHStatus.ZXWC);
+      const indexStatus = DBTables.WLBHStatusMap.get(item.status);
+
+      return indexStatus < indexTG || indexStatus >= indexZXWC;
+    });
+
     if (notOkRecords.length > 0) {
       throw new Error(`${notOkRecords}状态不正确, 不能指定预计装箱时间!`);
     }
