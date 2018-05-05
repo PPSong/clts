@@ -1489,8 +1489,8 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 安装反馈DDDP状态 [GTBA, AZG]
-  anZhuangFanKuiDDDPZhuangTai: {
+  // 安装反馈DDWL状态 [GTBA, AZG]
+  anZhuangFanKuiDDWLZhuangTai: {
     type: 'object',
     properties: {
       // DDId
