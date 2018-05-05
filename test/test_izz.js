@@ -3957,7 +3957,7 @@ describe('SPRT测试', () => {
   // 关联快递 [ZHY]
   describe('/guanLianKuaiDi', async () => {
     describe('成功', async () => {
-      it('ZHY关联快递', async () => {
+      it.only('ZHY关联快递', async () => {
         const ZHY4Token = await getToken('ZHY4', '123456');
         const EWMs = [
           {
@@ -3984,55 +3984,55 @@ describe('SPRT测试', () => {
         const kdd = await KDD.findOne({ where: { code: KDDCode } });
         assert.notEqual(kdd, null);
 
-        for (let item; item = EWMs[0];) {
-          const kdx = await KDX.findOne({
-            where: { EWM: JSON.stringify(item) },
-          });
-          assert.equal(kdx.dataValues.status, KDXStatus.FH);
-
-          const wywl = await WYWL.findAll({
-            where: { KDXId: kdx.dataValues.id },
-          });
-          const wywlList = wywl.map(item => ({
-            id: item.dataValues.id,
-            status: item.dataValues.status,
-          }));
-
-          for (const item of wywlList) {
-            assert.equal(item.status, WYWLStatus.FH);
-
-            const wywlcz = await WYWLCZ.findAll({
-              where: { WYWLId: item.id, status: WYWLStatus.FX },
+        for (let item of EWMs) {
+          if (item == EWMs[0]) {
+            const kdx = await KDX.findOne({
+              where: { EWM: JSON.stringify(item) },
             });
-            assert.notEqual(wywlcz, null);
-            assert.equal(wywlcz.length, 1);
-            assert.equal(wywlcz[0].dataValues.UserId, 33);
-          }
-        }
+            assert.equal(kdx.dataValues.status, KDXStatus.FH);
 
-        for (let item; item = EWMs[1];) {
-          const kdx = await KDX.findOne({
-            where: { EWM: JSON.stringify(item) },
-          });
-          assert.equal(kdx.dataValues.status, KDXStatus.FH);
-
-          const wydp = await WYDP.findAll({
-            where: { KDXId: kdx.dataValues.id },
-          });
-          const wydpList = wydp.map(item => ({
-            id: item.dataValues.id,
-            status: item.dataValues.status,
-          }));
-
-          for (const item of wydpList) {
-            assert.equal(item.status, WYDPStatus.FH);
-
-            const wydpcz = await WYDPCZ.findAll({
-              where: { WYDPId: item.id, status: WYDPStatus.FX },
+            const wywl = await WYWL.findAll({
+              where: { KDXId: kdx.dataValues.id },
             });
-            assert.notEqual(wydpcz, null);
-            assert.equal(wydpcz.length, 1);
-            assert.equal(wydpcz[0].dataValues.UserId, 33);
+            const wywlList = wywl.map(item => ({
+              id: item.dataValues.id,
+              status: item.dataValues.status,
+            }));
+
+            for (const item of wywlList) {
+              assert.equal(item.status, WYWLStatus.FH);
+
+              const wywlcz = await WYWLCZ.findAll({
+                where: { WYWLId: item.id, status: WYWLStatus.FX },
+              });
+              assert.notEqual(wywlcz, null);
+              assert.equal(wywlcz.length, 1);
+              assert.equal(wywlcz[0].dataValues.UserId, 33);
+            }
+          } else {
+            const kdx = await KDX.findOne({
+              where: { EWM: JSON.stringify(item) },
+            });
+            assert.equal(kdx.dataValues.status, KDXStatus.FH);
+
+            const wydp = await WYDP.findAll({
+              where: { KDXId: kdx.dataValues.id },
+            });
+            const wydpList = wydp.map(item => ({
+              id: item.dataValues.id,
+              status: item.dataValues.status,
+            }));
+
+            for (const item of wydpList) {
+              assert.equal(item.status, WYDPStatus.FH);
+
+              const wydpcz = await WYDPCZ.findAll({
+                where: { WYDPId: item.id, status: WYDPStatus.FX },
+              });
+              assert.notEqual(wydpcz, null);
+              assert.equal(wydpcz.length, 1);
+              assert.equal(wydpcz[0].dataValues.UserId, 33);
+            }
           }
         }
       });//todoIzz
