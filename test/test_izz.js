@@ -3567,7 +3567,7 @@ describe('SPRT测试', () => {
           assert.notEqual(wydp, null);
           console.log('izzlog', wydp.dataValues)
           assert.equal(wydp.dataValues.KDXId, kdx.dataValues.id);
-          assert.equal(wydp.dataValues.status, WYDPStatus.CK);
+          assert.equal(wydp.dataValues.status, WYDPStatus.ZX);
           assert.equal(wydp.dataValues.GYSId, 1);
 
           const wydpcz = await WYDPCZ.findAll({
@@ -3575,7 +3575,7 @@ describe('SPRT测试', () => {
           });
           const wydpczList = wydpcz.map(item => item.dataValues.status);
           assert.equal(wydpcz.length, 1);
-          assert.include(wydpczList, [WYDPStatus.CK]);
+          assert.include(wydpczList, [WYDPStatus.ZX]);
         }
       });
 
@@ -6067,7 +6067,7 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it.only('生产GYSGLY为不属于自己的WLBH分配发货GYS', async () => {
+        it('生产GYSGLY为不属于自己的WLBH分配发货GYS', async () => {
           const GYSGLY2Token = await getToken('GYSGLY2', '123456');
           const ids = [8];
           const GYSId = 3;
