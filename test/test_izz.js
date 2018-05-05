@@ -5401,7 +5401,7 @@ describe('SPRT测试', () => {
           const note = '货物损坏，申请补货';
 
           const response = await post(
-            'shenQingShangShiDPBH',
+            'shenQingRiChangDPBH',
             {
               DWId,
               DPId,
