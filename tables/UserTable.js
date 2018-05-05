@@ -11,11 +11,11 @@ export default class UserTable extends BaseTable {
   }
 
   checkCreateParams() {
-    throw new Error('checkCreateParams should be overrided.');
+    // throw new Error('checkCreateParams should be overrided.');
   }
 
   checkEditParams() {
-    throw new Error('checkEditParams should be overrided.');
+    // throw new Error('checkEditParams should be overrided.');
   }
 
   checkCreateRight() {
