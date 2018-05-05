@@ -72,8 +72,12 @@ export default class CreateYJZH extends BusinessApiBase {
     // 配置YJZH的EJZHs
     for (let i = 0; i < EJZHs.length; i++) {
       const tmpEJZH = EJZHs[i];
-      await tmpYJZH.addEJZH(tmpEJZH.id, { through: { number: tmpEJZH.number }, transaction });
+      await tmpYJZH.addEJZH(tmpEJZH.id, {
+        through: { number: tmpEJZH.number },
+        transaction,
+      });
     }
+
     // end 配置YJZH的EJZHs
 
     // end 创建YJZH
