@@ -4035,7 +4035,7 @@ describe('SPRT测试', () => {
             }
           }
         }
-      });//todoIzz
+      });
 
       it('ZHY往已经关联过快递箱的KDD中添加箱子', async () => {
         const ZHY4Token = await getToken('ZHY4', '123456');
@@ -4085,7 +4085,7 @@ describe('SPRT测试', () => {
             assert.include(wywlcz[0].dataValues.UserId, 33);
           }
         }
-      });//todoIzz
+      });
 
       it('ZHY关联快递--箱子中包含丢失的WL', async () => {
         const DDId = 3;
