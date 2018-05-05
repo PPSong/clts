@@ -4003,7 +4003,7 @@ describe('SPRT测试', () => {
               assert.equal(item.status, WYWLStatus.FH);
 
               const wywlcz = await WYWLCZ.findAll({
-                where: { WYWLId: item.id, status: WYWLStatus.FX },
+                where: { WYWLId: item.id, status: WYWLStatus.FH },
               });
               assert.notEqual(wywlcz, null);
               assert.equal(wywlcz.length, 1);
@@ -4027,7 +4027,7 @@ describe('SPRT测试', () => {
               assert.equal(item.status, WYDPStatus.FH);
 
               const wydpcz = await WYDPCZ.findAll({
-                where: { WYDPId: item.id, status: WYDPStatus.FX },
+                where: { WYDPId: item.id, status: WYDPStatus.FH },
               });
               assert.notEqual(wydpcz, null);
               assert.equal(wydpcz.length, 1);
@@ -4078,7 +4078,7 @@ describe('SPRT测试', () => {
             assert.equal(item.status, WYWLStatus.FH);
 
             const wywlcz = await WYWLCZ.findAll({
-              where: { WYWLId: item.id, status: WYWLStatus.FX },
+              where: { WYWLId: item.id, status: WYWLStatus.FH },
             });
             assert.notEqual(wywlcz, null);
             assert.equal(wywlcz.length, 1);
@@ -4731,6 +4731,7 @@ describe('SPRT测试', () => {
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '权限');
         });
+
         it('AZG反馈不属于自己的DDWL的AZFKType', async () => {
           let AZG2Token = await getToken('AZG2', '123456');
           const WYWLPayloads = [
@@ -4757,7 +4758,6 @@ describe('SPRT测试', () => {
             },
             AZG2Token,
           );
-          console.log(response.data, 'izzlog')
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '权限');
         });
@@ -4794,27 +4794,43 @@ describe('SPRT测试', () => {
   describe('/anZhuangFanKuiDDDPZhuangTai', async () => {
     describe('成功', async () => {
       it('GTBA反馈DDDP的AZFKType', async () => {
+        const DDId = 3
+        const GTId = 8
+        const WYDPPayloads = [
+          {
+            id: 11,
+            AZFKType: '安装成功',
+            imageUrl: 'imageUrl',
+          },
+          {
+            id: 12,
+            AZFKType: '安装成功',
+            imageUrl: 'imageUrl',
+          },
+        ]
+
         const response = await post(
           'anZhuangFanKuiDDDPZhuangTai',
           {
-            DDId: 1,
-            GTId: 1,
-            WYDPPayloads: [
-              {
-                id: 1,
-                AZFKType: '安装成功',
-                imageUrl: 'imageUrl',
-              },
-              {
-                id: 1,
-                AZFKType: '安装成功',
-                imageUrl: 'imageUrl',
-              },
-            ],
+            DDId,
+            GTId,
+            WYDPPayloads,
           },
           AZGToken,
         );
-        assert.equal(1, -1);
+        assert.equal(response.data.code, 1);
+
+        for (const item of WYDPPayloads) {
+          const wydp = await WYDP.findOne({ where: { id: item.id } });
+          assert.equal(wydp.dataValues.status, WYDPStatus.FK);
+
+          const wydpcz = await WYDPCZ.findAll({
+            where: { WYDPId: wydp.dataValues.id, status: WYDPStatus.FK },
+          });
+          assert.notEqual(wydpcz, null);
+          assert.equal(wydpcz.length, 1);
+          assert.equal(wydpcz[0].dataValues.UserId, 26);
+        }
       });
 
       it('AZG反馈DDDP的AZFKType', async () => { });
