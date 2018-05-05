@@ -1011,7 +1011,6 @@ describe('SPRT测试', () => {
             number: 2,
           },
         ];
-        const SJWLs = [];
 
         const response = await post(
           'createEJZH',
@@ -1022,7 +1021,6 @@ describe('SPRT测试', () => {
             imageUrl,
             XGTs,
             FGTesters,
-            SJWLs,
           },
           KFJLToken,
         );
@@ -4756,7 +4754,7 @@ describe('SPRT测试', () => {
   // 安装反馈DDDP状态 [GTBA, AZG]
   describe('/anZhuangFanKuiDDDPZhuangTai', async () => {
     describe('成功', async () => {
-      it.only('GTBA反馈DDDP的AZFKType', async () => {
+      it('GTBA反馈DDDP的AZFKType', async () => {
         const DDId = 3;
         const GTId = 8;
         const WYDPPayloads = [
@@ -4796,7 +4794,9 @@ describe('SPRT测试', () => {
         }
       });
 
-      it('AZG反馈DDDP的AZFKType', async () => { });
+      it('AZG反馈DDDP的AZFKType', async () => { 
+
+      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
@@ -4909,7 +4909,7 @@ describe('SPRT测试', () => {
             AZGToken,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '权限');
+          assert.include(response.data.msg, '没有任务');
         });
       });
       describe('操作状态不正确', async () => {
