@@ -42,18 +42,22 @@ export default class EditEJZH extends BusinessApiBase {
     // end 检查WLId
 
     // 检查FGTesterIds
-    const FGTesterIds = FGTesters.map(item => item.id);
-    for (let i = 0; i < FGTesterIds.length; i++) {
-      await user.checkFGTesterId(FGTesterIds[i], transaction);
+    if (FGTesters) {
+      const FGTesterIds = FGTesters.map(item => item.id);
+      for (let i = 0; i < FGTesterIds.length; i++) {
+        await user.checkFGTesterId(FGTesterIds[i], transaction);
+      }
     }
     // end 检查FGTesterIds
 
     // 检查SJWLIds
-    const SJWLIds = SJWLs.map(item => item.id);
-    for (let i = 0; i < SJWLIds.length; i++) {
-      const tmpSJWL = await user.checkWLId(SJWLIds[i], transaction);
-      if (tmpSJWL.level !== 3) {
-        throw new Error(`${tmpSJWL}不是三级物料!`);
+    if (SJWLs) {
+      const SJWLIds = SJWLs.map(item => item.id);
+      for (let i = 0; i < SJWLIds.length; i++) {
+        const tmpSJWL = await user.checkWLId(SJWLIds[i], transaction);
+        if (tmpSJWL.level !== 3) {
+          throw new Error(`${tmpSJWL}不是三级物料!`);
+        }
       }
     }
     // end 检查SJWLIds
@@ -90,21 +94,28 @@ export default class EditEJZH extends BusinessApiBase {
     // end 重置EJZHXGTs
 
     // 重置FGTesters
-    await tmpEJZH.setFGTesters(null, { transaction });
-    for (let i = 0; i < FGTesters.length; i++) {
-      const tmpFGTester = FGTesters[i];
-      await tmpEJZH.addFGTester(tmpFGTester.id, {
-        through: { number: tmpFGTester.number },
-        transaction,
-      });
+    if (FGTesters) {
+      await tmpEJZH.setFGTesters(null, { transaction });
+      for (let i = 0; i < FGTesters.length; i++) {
+        const tmpFGTester = FGTesters[i];
+        await tmpEJZH.addFGTester(tmpFGTester.id, {
+          through: { number: tmpFGTester.number },
+          transaction,
+        });
+      }
     }
     // end 重置FGTesters
 
     // 重置EJZH的SJWLs
-    await tmpEJZH.setSJWLs(null, { transaction });
-    for (let i = 0; i < SJWLs.length; i++) {
-      const tmpSJWL = SJWLs[i];
-      await tmpEJZH.addSJWL(tmpSJWL.id, { through: { number: tmpSJWL.number }, transaction });
+    if (SJWLs) {
+      await tmpEJZH.setSJWLs(null, { transaction });
+      for (let i = 0; i < SJWLs.length; i++) {
+        const tmpSJWL = SJWLs[i];
+        await tmpEJZH.addSJWL(tmpSJWL.id, {
+          through: { number: tmpSJWL.number },
+          transaction,
+        });
+      }
     }
     // end 重置EJZH的SJWLs
 
