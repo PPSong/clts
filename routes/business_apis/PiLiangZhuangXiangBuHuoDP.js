@@ -120,7 +120,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
       }
       // end 发往的柜台的id是GTId
 
-      // 装箱
+      // 尝试装箱
       await tmpDPBH.update(
         {
           ZXNumber: DBTables.literal('ZXNumber + 1'),
@@ -130,7 +130,17 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
           transaction,
         },
       );
-      // end 装箱
+      // end 尝试装箱
+
+      // 获取尝试装箱后任务ZXNumber
+      await tmpDPBH.reload({ transaction });
+      // end 获取尝试装箱后任务ZXNumber
+
+      // 判断是否任务超限
+      if (tmpDPBH.ZXNumber > 1) {
+        throw new Error(`${tmpDPBH}任务超限!`);
+      }
+      // end 判断是否任务超限
 
       // 创建WYDP并绑定DPBH, 状态为'装箱'
       tmpWYDP = await DBTables.WYDP.create(

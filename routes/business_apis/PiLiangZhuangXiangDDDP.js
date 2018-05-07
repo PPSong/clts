@@ -132,6 +132,16 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
       );
       // end 装箱
 
+      // 获取尝试装箱后任务ZXNumber
+      await tmpDD_DW_DP.reload({ transaction });
+      // end 获取尝试装箱后任务ZXNumber
+
+      // 判断是否任务超限
+      if (tmpDD_DW_DP.ZXNumber > 1) {
+        throw new Error(`${tmpDD_DW_DP}任务超限!`);
+      }
+      // end 判断是否任务超限
+
       // 创建WYDP并绑定DD_DW_DP, 状态为'装箱'
       tmpWYDP = await DBTables.WYDP.create(
         {
