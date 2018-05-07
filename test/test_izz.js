@@ -1095,147 +1095,24 @@ describe('SPRT测试', () => {
     });
   });
 
-  //ADMIN PPJL KFJL GYSGLY AZGSGLY 创建User
-  describe('/User', async () => {
+  //KFJL 创建AZGS
+  describe('/GYS', async () => {
     describe('成功', async () => {
-      it('admin创建PPJL', async () => {
-        const username = '品牌经理';
-        const password = '123456';
-        const tempJS = JS.PPJL;
+      it('KFJL创建AZGS', async () => {
+        const name = '安装公司A';
 
         const response = await post(
-          'User',
+          'GYS',
           {
-            username,
-            password,
-            JS: tempJS,
-          },
-          adminToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const user = await User.findOne({ where: { username } });
-        assert.notEqual(user, null);
-      });
-
-      it('PPJL创建KFJL', async () => {
-        const username = '客服经理';
-        const password = '123456';
-        const tempJS = JS.KFJL;
-
-        const response = await post(
-          'User',
-          {
-            username,
-            password,
-            JS: tempJS,
-          },
-          PPJLToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const user = await User.findOne({ where: { username } });
-        assert.notEqual(user, null);
-      });
-
-      it('KFJL创建GZ', async () => {
-        const username = '柜长';
-        const password = '123456';
-        const tempJS = JS.GZ;
-
-        const response = await post(
-          'User',
-          {
-            username,
-            password,
-            JS: tempJS,
+            name,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
 
-        const user = await User.findOne({ where: { username } });
-        assert.notEqual(user, null);
-      });
-
-      it('KFJL创建GYSGLY', async () => {
-        const username = '供应商管理员';
-        const password = '123456';
-        const tempJS = JS.GYSGLY;
-
-        const response = await post(
-          'User',
-          {
-            username,
-            password,
-            JS: tempJS,
-          },
-          KFJLToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const user = await User.findOne({ where: { username } });
-        assert.notEqual(user, null);
-      });
-
-      it('KFJL创建AZGSGLY', async () => {
-        const username = '安装公司管理员';
-        const password = '123456';
-        const tempJS = JS.AZGSGLY;
-
-        const response = await post(
-          'User',
-          {
-            username,
-            password,
-            JS: tempJS,
-          },
-          KFJLToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const user = await User.findOne({ where: { username } });
-        assert.notEqual(user, null);
-      });
-
-      it('GYSGLY创建ZHY', async () => {
-        const username = '装货员';
-        const password = '123456';
-        const tempJS = JS.ZHY;
-
-        const response = await post(
-          'User',
-          {
-            username,
-            password,
-            JS: tempJS,
-          },
-          GYSGLYToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const user = await User.findOne({ where: { username } });
-        assert.notEqual(user, null);
-      });
-
-      it('AZGSGLY创建AZG', async () => {
-        const username = '装货员';
-        const password = '123456';
-        const tempJS = JS.AZG;
-
-        const response = await post(
-          'User',
-          {
-            username,
-            password,
-            JS: tempJS,
-          },
-          AZGSGLYToken,
-        );
-        assert.equal(response.data.code, 1);
-
-        const user = await User.findOne({ where: { username } });
-        assert.notEqual(user, null);
+        const azgs = await AZGS.findOne({ where: { name } });
+        assert.notEqual(azgs, null);
+        assert.equal(azgs.dataValues.name, name);
       });
     });
     describe('失败', async () => {
