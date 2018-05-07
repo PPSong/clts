@@ -61,9 +61,12 @@ async function chuXiangWYDP(WYDP, user, GYSId, transaction) {
   if (WYDP.DDDWDPId !== null) {
     // 处理绑在DD_DW_DP的情况
 
-    // 减少DD_DW_DP ZXNumber
+    // 减少DD_DW_DP ZXNumber, 修改状态为YFPFHGYS
     await DBTables.DD_DW_DP.update(
-      { ZXNumber: DBTables.literal('ZXNumber - 1') },
+      {
+        ZXNumber: 0,
+        status: DBTables.DD_DW_DPStatus.YFPFHGYS,
+      },
       {
         where: {
           id: WYDP.DDDWDPId,
@@ -71,36 +74,16 @@ async function chuXiangWYDP(WYDP, user, GYSId, transaction) {
         transaction,
       },
     );
-    // end 减少DD_DW_DP ZXNumber
-
-    // 清除绑上KDXID, DD_DW_DP,
-    await WYDP.update(
-      {
-        DDDWDPId: null,
-        KDXId: null,
-      },
-      {
-        transaction,
-      },
-    );
-    // end 清除绑上KDXID, DD_DW_DP,
-
-    // 转为RK状态
-    const ids = [WYDP.id];
-    await ppUtils.changeWYDPsStatus({
-      ids,
-      status: DBTables.WYDPStatus.RK,
-      user,
-      transaction,
-      GYSId,
-    });
-    // end 转为RK状态
+    // end 减少DD_DW_DP ZXNumber, 修改状态为YFPFHGYS
   } else if (WYDP.DPBHId !== null) {
     // 处理绑在DPBH的情况
 
     // 减少DPBH的ZXNumber
     await DBTables.DPBH.update(
-      { ZXNumber: DBTables.literal('ZXNumber - 1') },
+      {
+        ZXNumber: 0,
+        status: DBTables.DPBHStatus.YFPFHGYS,
+      },
       {
         where: {
           id: WYDP.DPBHId,
@@ -109,30 +92,23 @@ async function chuXiangWYDP(WYDP, user, GYSId, transaction) {
       },
     );
     // end 减少DPBH的ZXNumber
-
-    // 清除绑上KDXID, DPBHId
-    await WYDP.update(
-      {
-        DPBHId: null,
-        KDXId: null,
-      },
-      {
-        transaction,
-      },
-    );
-    // end 清除绑上KDXID, DPBHId
-
-    // 转为RK状态
-    const ids = [WYDP.id];
-    await ppUtils.changeWYDPsStatus({
-      ids,
-      status: DBTables.WYDPStatus.RK,
-      user,
-      transaction,
-      GYSId,
-    });
-    // end 转为RK状态
   } else {
     throw new Error(`${WYDP}记录有问题!`);
   }
+
+  // 删除与此相关WYDPCZ, WYDP
+  await DBTables.WYDPCZ.destroy({
+    where: {
+      WYDPId: WYDP.id,
+    },
+    transaction,
+  });
+
+  await DBTables.WYDP.destroy({
+    where: {
+      id: WYDP.id,
+    },
+    transaction,
+  });
+  // end 删除与此相关WYDPCZ, WYDP
 }
