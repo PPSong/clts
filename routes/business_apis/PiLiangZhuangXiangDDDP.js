@@ -88,7 +88,7 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
 
       // 确认有这个订单需求
       const tmpDWId = item.DWId;
-      const tmpDPId = item.DPId;
+      const tmpDPId = item.typeId;
       const tmpDD_DW_DP = await DBTables.DD_DW_DP.findOne({
         where: {
           DDId,
@@ -104,7 +104,7 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
 
       // 发货供应商是当前用户所属GYS
       if (tmpDD_DW_DP.GYSId !== tmpGYSId) {
-        throw new Error(`${tmpWYDP}的发货供应商不匹配!`);
+        throw new Error(`DDId: ${DDId}, DWId: ${tmpDWId}, DPId: ${tmpDPId}的发货供应商不匹配!`);
       }
       // end 发货供应商是当前用户所属GYS
 
