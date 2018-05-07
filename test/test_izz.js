@@ -3699,13 +3699,12 @@ describe('SPRT测试', () => {
             where: { WYDPId: wydp.dataValues.id, UserId: 30 },
           });
           const wydpczList = wydpcz.map(item => item.dataValues.status);
-          assert.equal(wydpczList.length, 2);
-          //从未做过入库操作的DP直接进行装箱操作，系统会先进行入库，然后再装箱操作。即在WYDPCZ中会有两条操作记录
-          assert.deepEqual(wydpczList, [WYDPStatus.RK, WYDPStatus.ZX]);
+          assert.equal(wydpczList.length, 1);
+          assert.deepEqual(wydpczList, [WYDPStatus.ZX]);
         }
       });
 
-      it.only('ZHY装箱DDDP--EWM中的CZ和CC与DW实际不一致', async () => {
+      it('ZHY装箱DDDP--EWM中的CZ和CC与DW实际不一致', async () => {
         const DDId = 3;
         const GTId = 8;
         const DPEWMs = [
@@ -3910,7 +3909,7 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        it('ZHY装箱已经装满的DD_DW_DP任务', async () => {
+        it.only('ZHY装箱已经装满的DD_DW_DP任务', async () => {
           let ZHY3Token = await getToken('ZHY3', '123456');
           const DDId = 3;
           const GTId = 8;
@@ -4183,7 +4182,7 @@ describe('SPRT测试', () => {
           // assert.include(response.data.msg, '');
         });
 
-        it('ZHY装箱已经装满的DPBH任务', async () => {
+        it.only('ZHY装箱已经装满的DPBH任务', async () => {
           let ZHY3Token = await getToken('ZHY3', '123456');
           const YJZXTime = '2018-01-11';
           const GTId = 8;
@@ -4414,14 +4413,6 @@ describe('SPRT测试', () => {
           const dddwdp = await DD_DW_DP.findOne({ where: { DWId: item.DWId } });
           assert.equal(dddwdp.dataValues.ZXNumber, 0);
           assert.equal(dddwdp.dataValues.status, DD_DW_DPStatus.YFPFHGYS);
-
-          const wydpcz = await WYDPCZ.findAll({
-            where: { WYDPId: wydp.dataValues.id, status: WYDPStatus.RK },
-          });
-          assert.notEqual(wydpcz, null);
-          for (const item of wydpcz) {
-            assert.equal(item.dataValues.UserId, 32);
-          }
         }
       });
     });
