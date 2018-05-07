@@ -743,7 +743,7 @@ describe('SPRT测试', () => {
 
   // 创建 DW [KFJL]
   describe('DW', async () => {
-    describe.skip('成功', async () => {
+    describe('成功', async () => {
       it('KFJL新建DW', async () => {
         const name = 'DW_T';
         const GTId = 1;
@@ -3975,7 +3975,7 @@ describe('SPRT测试', () => {
             ZHY4Token,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '权限');
+          assert.include(response.data.msg, '不属于从你所属供应商');
         });
 
         it('ZHY装箱同一DD发往不同GT的DP', async () => {
@@ -4140,7 +4140,7 @@ describe('SPRT测试', () => {
         const response = await post(
           'piLiangZhuangXiangBuHuoWL',
           {
-            YJZXTime,
+            YJZXTime: new Date(YJZXTime).getTime(),
             GTId,
             WLEWMs,
             KDXEWM,
@@ -4185,7 +4185,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'piLiangZhuangXiangBuHuoWL',
             {
-              YJZXTime,
+              YJZXTime: new Date(YJZXTime).getTime(),
               GTId,
               WLEWMs,
               KDXEWM,
@@ -4206,7 +4206,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'piLiangZhuangXiangBuHuoWL',
             {
-              YJZXTime,
+              YJZXTime: new Date(YJZXTime).getTime(),
               GTId,
               WLEWMs,
               KDXEWM,
@@ -4226,7 +4226,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'piLiangZhuangXiangBuHuoWL',
             {
-              YJZXTime,
+              YJZXTime: new Date(YJZXTime).getTime(),
               GTId,
               WLEWMs,
               KDXEWM,
@@ -4276,7 +4276,7 @@ describe('SPRT测试', () => {
         const response = await post(
           'piLiangZhuangXiangBuHuoDP',
           {
-            YJZXTime,
+            YJZXTime: new Date(YJZXTime).getTime(),
             GTId,
             DPEWMs,
             KDXEWM,
@@ -4325,7 +4325,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'piLiangZhuangXiangBuHuoDP',
             {
-              YJZXTime,
+              YJZXTime: new Date(YJZXTime).getTime(),
               GTId,
               DPEWMs,
               KDXEWM,
@@ -4350,7 +4350,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'piLiangZhuangXiangBuHuoDP',
             {
-              YJZXTime,
+              YJZXTime: new Date(YJZXTime).getTime(),
               GTId,
               DPEWMs,
               KDXEWM,
@@ -4374,7 +4374,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'piLiangZhuangXiangBuHuoDP',
             {
-              YJZXTime,
+              YJZXTime: new Date(YJZXTime).getTime(),
               GTId,
               DPEWMs,
               KDXEWM,
@@ -4397,7 +4397,7 @@ describe('SPRT测试', () => {
           const response = await post(
             'piLiangZhuangXiangBuHuoDP',
             {
-              YJZXTime,
+              YJZXTime: new Date(YJZXTime).getTime(),
               GTId,
               DPEWMs,
               KDXEWM,
@@ -5640,12 +5640,7 @@ describe('SPRT测试', () => {
         const GTId = 8;
         const WYDPPayloads = [
           {
-            id: 34,
-            AZFKType: '安装成功',
-            imageUrl: 'imageUrl',
-          },
-          {
-            id: 35,
+            id: 26,
             AZFKType: '安装成功',
             imageUrl: 'imageUrl',
           },
@@ -5680,7 +5675,7 @@ describe('SPRT测试', () => {
         const GTId = 8;
         const WYDPPayloads = [
           {
-            id: 16,
+            id: 11,
             AZFKType: '安装成功',
             imageUrl: 'imageUrl',
           },
@@ -5718,12 +5713,7 @@ describe('SPRT测试', () => {
           const GTId = 8;
           const WYDPPayloads = [
             {
-              id: 34,
-              AZFKType: '安装成功',
-              imageUrl: 'imageUrl',
-            },
-            {
-              id: 35,
+              id: 26,
               AZFKType: '安装成功',
               imageUrl: 'imageUrl',
             },
@@ -5748,7 +5738,7 @@ describe('SPRT测试', () => {
           const GTId = 8;
           const WYDPPayloads = [
             {
-              id: 16,
+              id: 11,
               AZFKType: '安装成功',
               imageUrl: 'imageUrl',
             },
@@ -5773,7 +5763,7 @@ describe('SPRT测试', () => {
           const GTId = 8;
           const WYDPPayloads = [
             {
-              id: 11,
+              id: 7,
               AZFKType: '安装成功',
               imageUrl: 'imageUrl',
             },
