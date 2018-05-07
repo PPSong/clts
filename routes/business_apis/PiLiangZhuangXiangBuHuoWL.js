@@ -47,8 +47,8 @@ export default class PiLiangZhuangXiangBuHuoWL extends BusinessApiBase {
 
     if (tmpKDX) {
       // 如果存在则YJZXTime, GTId, HWType, status要符合条件
-      if (tmpKDX.YJZXTime !== YJZXTime) {
-        throw new Error(`${tmpKDX}不属于订单id:${YJZXTime}!`);
+      if (tmpKDX.YJZXTime.getTime() !== new Date(YJZXTime).getTime()) {
+        throw new Error(`${tmpKDX}不属于批次:${YJZXTime}!`);
       }
       if (tmpKDX.GTId !== GTId) {
         throw new Error(`${tmpKDX}不属于柜台id:${GTId}!`);
