@@ -1379,7 +1379,7 @@ id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	CZ	CC
 [DPBH]															
 id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId	CZ	CC					
 31	11	8	2	客服经理审批通过	1	0	imagUrl	1	100*100	铜板					
-32	17	14	3	通过	2	0	imagUrl	1							
+32	17	14	3	通过	2	0	imagUrl	1	100*100	铜板					
 															
 [DPBH]															
 id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	note	KFJLNote	PPJLNote	YJZXTime	CZ	CC

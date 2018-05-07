@@ -239,7 +239,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it.skip('small test', async () => {
+    it('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -7823,7 +7823,7 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it.only('AZGSGLY设置不属于自己管理的WLBH的AZG', async () => {
+        it('AZGSGLY设置不属于自己管理的WLBH的AZG', async () => {
           const AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
           const WLBHIds = [8];
           const AZGUserId = 36;
