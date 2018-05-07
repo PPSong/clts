@@ -88,7 +88,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
 
       // 确认有这个补货需求
       const tmpDWId = item.DWId;
-      const tmpDPId = item.DPId;
+      const tmpDPId = item.typeId;
       const tmpDPBH = await DBTables.DPBH.findOne({
         where: {
           DWId: tmpDWId,
@@ -96,7 +96,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
         },
         transaction,
       });
-      if (!tmpDD_DW_DP) {
+      if (!tmpDPBH) {
         throw new Error(`没有这个补货需求:${JSON.stringify(item)}`);
       }
       // end 确认有这个补货需求
@@ -108,13 +108,13 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
       // end 发货供应商是当前用户所属GYS
 
       // 发往的柜台的id是GTId
-      const tmpGTId = await DBTables.DW.findOne({
+      const tmpDW = await DBTables.DW.findOne({
         where: {
           id: tmpDWId,
         },
         transaction,
       });
-      if (tmpGTId !== GTId) {
+      if (tmpDW.GTId !== GTId) {
         throw new Error(`${tmpWYDP}不属于这个柜台id:${GTId}!`);
       }
       // end 发往的柜台的id是GTId
@@ -132,20 +132,30 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
       // end 装箱
 
       // 创建WYDP并绑定DPBH, 状态为'装箱'
-      tmpWYDP = await DBTables.WYDP.create({
-        EWM: JSON.stringify(item),
-        status: DBTables.WYDPStatus.ZX,
-        DPId: tmpDPId,
-        GYSId: tmpGYSId,
-        DPBHId: tmpDPBH.id,
-        KDXId: tmpKDX.id,
-      });
+      tmpWYDP = await DBTables.WYDP.create(
+        {
+          EWM: JSON.stringify(item),
+          status: DBTables.WYDPStatus.ZX,
+          DPId: tmpDPId,
+          GYSId: tmpGYSId,
+          DPBHId: tmpDPBH.id,
+          KDXId: tmpKDX.id,
+        },
+        {
+          transaction,
+        },
+      );
 
-      await DBTables.WYDPCZ.create({
-        WYDPId: tmpWYDP.id,
-        status: DBTables.WYDPStatus.ZX,
-        UserId: user.id,
-      });
+      await DBTables.WYDPCZ.create(
+        {
+          WYDPId: tmpWYDP.id,
+          status: DBTables.WYDPStatus.ZX,
+          UserId: user.id,
+        },
+        {
+          transaction,
+        },
+      );
       // end 创建WYDP并绑定DD_DW_DP, 状态为'装箱'
     }
     // end 检查DPEWMs

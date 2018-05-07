@@ -72,12 +72,12 @@ export default class ShouHuoDP extends BusinessApiBase {
 
     // 更改相关WYDP状态为SH, 新建相关WYDPCZ
     const ids = tmpWYDPs.map(item => item.id);
-    await ppUtils.changeWYDPsStatus(
+    await ppUtils.changeWYDPsStatus({
       ids,
-      DBTables.WYDPStatus.SH,
+      status: DBTables.WYDPStatus.SH,
       user,
       transaction,
-    );
+    });
     // end 更改相关WYDP状态为SH, 新建相关WYDPCZ
   }
 }
