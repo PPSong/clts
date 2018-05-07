@@ -71,149 +71,85 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
 
     const tmpGYSId = await user.getGYSId(transaction);
 
-    // 如果不存在, 先在当前GYS处入库
+    // 检查DPEWMs
     for (const item of DPEWMs) {
-      const tmpWYDP = await DBTables.WYDP.findOne({
+      // 确认WYDP不存在
+      let tmpWYDP = await DBTables.WYDP.findOne({
         where: {
           EWM: JSON.stringify(item),
         },
         transaction,
       });
 
-      if (!tmpWYDP) {
-        await ppUtils.createWYDPAndRuKu(item, user, tmpGYSId, transaction);
+      if (tmpWYDP) {
+        throw new Error(`${tmpWYDP}不属于可装箱状态!`);
       }
-    }
-    // end 如果不存在, 先在当前GYS处入库
+      // end 确认WYDP不存在
 
-    // 检查DPEWMs
-    const tmpWYDPs = await ppUtils.checkEWMsExistanceAndGetRecords(
-      'WYDP',
-      DPEWMs,
-      transaction,
-    );
-    for (const item of tmpWYDPs) {
-      // 只有状态在'装箱'前, 且不是'消库'状态可装箱
-      if (
-        !(
-          DBTables.WYDPStatusMap.get(item.status) <
-            DBTables.WYDPStatusMap.get(DBTables.WYDPStatus.ZX) &&
-          item.status !== DBTables.WYDPStatus.XK
-        )
-      ) {
-        throw new Error(`${item}的状态不能装箱!`);
+      // 确认有这个订单需求
+      const tmpDWId = item.DWId;
+      const tmpDPId = item.DPId;
+      const tmpDD_DW_DP = await DBTables.DD_DW_DP.findOne({
+        where: {
+          DDId,
+          DWId: tmpDWId,
+          DPId: tmpDPId,
+        },
+        transaction,
+      });
+      if (!tmpDD_DW_DP) {
+        throw new Error(`没有这个订单需求:${JSON.stringify(item)}`);
       }
-      // end 只有状态在'装箱'前, 且不是'消库'状态可装箱
-    }
+      // end 确认有这个订单需求
 
-    // 检查DPEWMs是否都是当前用户所属GYS作为发货GYS发往DDId_GTId的
-    const tmpTargetDPs = await checkDPEWMsFromUserGYSForSameDDGTAndGetTasks(
-      DDId,
-      GTId,
-      tmpGYSId,
-      DPEWMs,
-      transaction,
-    );
-    // end 检查DPEWMs是否都是当前用户所属GYS作为发货GYS发往DDId_GTId的
+      // 发货供应商是当前用户所属GYS
+      if (tmpDD_DW_DP.GYSId !== tmpGYSId) {
+        throw new Error(`${tmpWYDP}的发货供应商不匹配!`);
+      }
+      // end 发货供应商是当前用户所属GYS
 
-    // end 检查DPEWMs
+      // 发往的柜台的id是GTId
+      const tmpGTId = await DBTables.DW.findOne({
+        where: {
+          id: tmpDWId,
+        },
+        transaction,
+      });
+      if (tmpGTId !== GTId) {
+        throw new Error(`${tmpWYDP}不属于这个柜台id:${GTId}!`);
+      }
+      // end 发往的柜台的id是GTId
 
-    // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
-
-    // 装箱
-
-    // 遍历处理每个灯片
-    for (const tmpWYDP of tmpWYDPs) {
-      // 匹配DD_DW_DP
-      const tmpDD_DW_DP = tmpTargetDPs.find(item =>
-        item.DDId === DDId &&
-          item.DW.GTId === GTId &&
-          item.DPId === tmpWYDP.DPId &&
-          item.ZXNumber === 0);
-      // end 匹配DD_DW_DP
-
-      // 尝试装箱
+      // 装箱
       await tmpDD_DW_DP.update(
-        { ZXNumber: DBTables.literal('ZXNumber + 1') },
+        {
+          ZXNumber: DBTables.literal('ZXNumber + 1'),
+          status: `${DBTables.DD_DW_DPStatus.ZXWC}`,
+        },
         {
           transaction,
         },
       );
-      // end 尝试装箱
+      // end 装箱
 
-      // 获取尝试装箱后任务ZXNumber
-      await tmpDD_DW_DP.reload({ transaction });
-      // end 获取尝试装箱后任务ZXNumber
-
-      // 判断是否任务超限
-      if (tmpDD_DW_DP.ZXNumber > 1) {
-        throw new Error(`${tmpDD_DW_DP}任务超限!`);
-      }
-      // end 判断是否任务超限
-
-      // 判断是否任务'装箱完成'
-      if (tmpDD_DW_DP.ZXNumber === 1) {
-        await tmpDD_DW_DP.update(
-          { status: `${DBTables.DD_DW_DPStatus.ZXWC}` },
-          {
-            transaction,
-          },
-        );
-      }
-      // end 判断是否任务'装箱完成'
-
-      // 为每个WYDP绑定DD_DW_DP, 并改变状态为'装箱'
-      const ids = [tmpWYDP.id];
-      await ppUtils.changeWYDPsStatus({
-        ids,
+      // 创建WYDP并绑定DD_DW_DP, 状态为'装箱'
+      tmpWYDP = await DBTables.WYDP.create({
+        EWM: JSON.stringify(item),
         status: DBTables.WYDPStatus.ZX,
-        user,
-        transaction,
+        DPId: tmpDPId,
         GYSId: tmpGYSId,
         DDDWDPId: tmpDD_DW_DP.id,
         KDXId: tmpKDX.id,
       });
-      // end 为每个WYDP绑定DD_DW_DP, 并改变状态为'装箱'
+
+      await DBTables.WYDPCZ.create({
+        WYDPId: tmpWYDP.id,
+        status: DBTables.WYDPStatus.ZX,
+        UserId: user.id,
+      });
+      // end 创建WYDP并绑定DD_DW_DP, 状态为'装箱'
     }
-    // end 遍历处理每个灯片
-
-    // end 装箱
+    // end 检查DPEWMs
+    // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
   }
-}
-
-async function checkDPEWMsFromUserGYSForSameDDGTAndGetTasks(
-  DDId,
-  GTId,
-  GYSId,
-  EWMs,
-  transaction,
-) {
-  const tmpDPIds = EWMs.map(item => item.typeId);
-
-  const tmpTargetDPs = await DBTables.DD_DW_DP.findAll({
-    include: [
-      {
-        model: DBTables.DW,
-        as: 'DW',
-        where: {
-          GTId,
-        },
-      },
-    ],
-    where: {
-      DDId,
-      GYSId,
-      status: DBTables.DD_DW_DPStatus.YFPFHGYS,
-    },
-    transaction,
-  });
-
-  const tmpTargetDPIds = tmpTargetDPs.map(item => item.DPId);
-
-  const diffDPIds = _.difference(tmpDPIds, tmpTargetDPIds);
-  if (diffDPIds.length > 0) {
-    throw new Error(`${diffDPIds}不属于从你所属供应商发往目标订单_柜台任务!`);
-  }
-
-  return tmpTargetDPs;
 }

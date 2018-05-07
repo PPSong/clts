@@ -118,9 +118,6 @@ export const WYWLStatus = {
 export const WYWLStatusMap = new Map(Object.entries(WYWLStatus).map((item, index) => [item[1], index]));
 
 export const WYDPStatus = {
-  RK: '入库',
-  CK: '出库',
-  XK: '消库',
   ZX: '装箱',
   FH: '发货',
   SX: '收箱',
@@ -3539,6 +3536,14 @@ export const DPBH = sequelize.define(
     },
     DPId: {
       type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    CC: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    CZ: {
+      type: Sequelize.STRING,
       allowNull: false,
     },
     DDId: {
