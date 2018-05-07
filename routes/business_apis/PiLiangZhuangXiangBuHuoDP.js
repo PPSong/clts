@@ -44,7 +44,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
 
     if (tmpKDX) {
       // 如果存在则YJZXTime, GTId, HWType, status要符合条件
-      if (tmpKDX.YJZXTime !== YJZXTime) {
+      if (tmpKDX.YJZXTime.getTime() !== new Date(YJZXTime).getTime()) {
         throw new Error(`${tmpKDX}不属于订单id:${YJZXTime}!`);
       }
       if (tmpKDX.GTId !== GTId) {
@@ -114,6 +114,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
         },
         transaction,
       });
+
       if (tmpDW.GTId !== GTId) {
         throw new Error(`${tmpWYDP}不属于这个柜台id:${GTId}!`);
       }
