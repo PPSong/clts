@@ -552,27 +552,27 @@ id	EWM	GTId	KDDId	status	DDId	HWType
 55	{"type":"KDX","uuid":"KDX55"}	10	40	收箱	5	DP								
 														
 [KDX]														
-id	EWM	GTId	KDDId	status	HWType									
-23	{"type":"KDX","uuid":"KDX23"}	8	17	发货	WL									
-24	{"type":"KDX","uuid":"KDX24"}	8	18	收箱	WL									
-26	{"type":"KDX","uuid":"KDX26"}	7	19	发货	WL									
-27	{"type":"KDX","uuid":"KDX27"}	7	20	收箱	WL									
-29	{"type":"KDX","uuid":"KDX29"}	7	21	发货	WL									
-30	{"type":"KDX","uuid":"KDX30"}	7	22	收箱	WL									
-32	{"type":"KDX","uuid":"KDX32"}	8	23	发货	WL									
-33	{"type":"KDX","uuid":"KDX33"}	8	24	收箱	WL									
-35	{"type":"KDX","uuid":"KDX35"}	8	25	发货	WL									
-36	{"type":"KDX","uuid":"KDX36"}	8	26	收箱	WL									
-38	{"type":"KDX","uuid":"KDX38"}	8	27	发货	DP									
-39	{"type":"KDX","uuid":"KDX39"}	8	28	收箱	DP									
-41	{"type":"KDX","uuid":"KDX41"}	7	29	发货	DP									
-42	{"type":"KDX","uuid":"KDX42"}	7	30	收箱	DP									
-44	{"type":"KDX","uuid":"KDX44"}	7	31	发货	DP									
-45	{"type":"KDX","uuid":"KDX45"}	7	32	收箱	DP									
-47	{"type":"KDX","uuid":"KDX47"}	8	33	发货	DP									
-48	{"type":"KDX","uuid":"KDX48"}	8	34	收箱	DP									
-50	{"type":"KDX","uuid":"KDX50"}	8	35	发货	DP									
-51	{"type":"KDX","uuid":"KDX51"}	8	36	收箱	DP									
+id	EWM	GTId	KDDId	status	HWType	YJZXTime								
+23	{"type":"KDX","uuid":"KDX23"}	8	17	发货	WL	2018-1-3								
+24	{"type":"KDX","uuid":"KDX24"}	8	18	收箱	WL	2018-1-2								
+26	{"type":"KDX","uuid":"KDX26"}	7	19	发货	WL	2018-1-5								
+27	{"type":"KDX","uuid":"KDX27"}	7	20	收箱	WL	2018-1-6								
+29	{"type":"KDX","uuid":"KDX29"}	7	21	发货	WL	2018-1-8								
+30	{"type":"KDX","uuid":"KDX30"}	7	22	收箱	WL	2018-1-17								
+32	{"type":"KDX","uuid":"KDX32"}	8	23	发货	WL	2018-1-12								
+33	{"type":"KDX","uuid":"KDX33"}	8	24	收箱	WL	2018-1-13								
+35	{"type":"KDX","uuid":"KDX35"}	8	25	发货	WL	2018-1-15								
+36	{"type":"KDX","uuid":"KDX36"}	8	26	收箱	WL	2018-1-16								
+38	{"type":"KDX","uuid":"KDX38"}	8	27	发货	DP	2018-1-3								
+39	{"type":"KDX","uuid":"KDX39"}	8	28	收箱	DP	2018-1-2								
+41	{"type":"KDX","uuid":"KDX41"}	7	29	发货	DP	2018-1-5								
+42	{"type":"KDX","uuid":"KDX42"}	7	30	收箱	DP	2018-1-6								
+44	{"type":"KDX","uuid":"KDX44"}	7	31	发货	DP	2018-1-8								
+45	{"type":"KDX","uuid":"KDX45"}	7	32	收箱	DP	2018-1-17								
+47	{"type":"KDX","uuid":"KDX47"}	8	33	发货	DP	2018-1-12								
+48	{"type":"KDX","uuid":"KDX48"}	8	34	收箱	DP	2018-1-13								
+50	{"type":"KDX","uuid":"KDX50"}	8	35	发货	DP	2018-1-15								
+51	{"type":"KDX","uuid":"KDX51"}	8	36	收箱	DP	2018-1-16								
 														
 [KDX]														
 id	EWM	GTId	status	DDId	HWType									
@@ -582,17 +582,17 @@ id	EWM	GTId	status	DDId	HWType
 20	{"type":"KDX","uuid":"KDX20"}	8	装箱	3	WL									
 														
 [KDX]														
-id	EWM	GTId	status	HWType										
-22	{"type":"KDX","uuid":"KDX22"}	8	装箱	WL										
-25	{"type":"KDX","uuid":"KDX25"}	7	装箱	WL										
-28	{"type":"KDX","uuid":"KDX28"}	7	装箱	WL										
-31	{"type":"KDX","uuid":"KDX31"}	8	装箱	WL										
-34	{"type":"KDX","uuid":"KDX34"}	8	装箱	WL										
-37	{"type":"KDX","uuid":"KDX37"}	8	装箱	DP										
-40	{"type":"KDX","uuid":"KDX40"}	7	装箱	DP										
-43	{"type":"KDX","uuid":"KDX43"}	7	装箱	DP										
-46	{"type":"KDX","uuid":"KDX46"}	8	装箱	DP										
-49	{"type":"KDX","uuid":"KDX49"}	8	装箱	DP										
+id	EWM	GTId	status	HWType	YJZXTime									
+22	{"type":"KDX","uuid":"KDX22"}	8	装箱	WL	2018-1-1									
+25	{"type":"KDX","uuid":"KDX25"}	7	装箱	WL	2018-1-4									
+28	{"type":"KDX","uuid":"KDX28"}	7	装箱	WL	2018-1-7									
+31	{"type":"KDX","uuid":"KDX31"}	8	装箱	WL	2018-1-11									
+34	{"type":"KDX","uuid":"KDX34"}	8	装箱	WL	2018-1-14									
+37	{"type":"KDX","uuid":"KDX37"}	8	装箱	DP	2018-1-1									
+40	{"type":"KDX","uuid":"KDX40"}	7	装箱	DP	2018-1-4									
+43	{"type":"KDX","uuid":"KDX43"}	7	装箱	DP	2018-1-7									
+46	{"type":"KDX","uuid":"KDX46"}	8	装箱	DP	2018-1-11									
+49	{"type":"KDX","uuid":"KDX49"}	8	装箱	DP	2018-1-14									
 														
 														
 //快递箱操作														
