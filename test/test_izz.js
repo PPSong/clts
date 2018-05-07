@@ -4094,10 +4094,10 @@ describe('SPRT测试', () => {
           const DPEWMs = [
             {
               type: 'DP',
-              typeId: 12,
-              uuid: '12_100',
-              DWId: 16,
-              name: 'DW16',
+              typeId: 14,
+              uuid: '14_100',
+              DWId: 17,
+              name: 'DW17',
               CC: '100*100',
               CZ: '铜板',
             },
@@ -4238,10 +4238,10 @@ describe('SPRT测试', () => {
         });
 
         it('ZHY将GT1的WL装入GT2的快递箱中', async () => {
-          const YJZXTime = '2018-10-10';
+          const YJZXTime = '2018-01-04';
           const GTId = 8;
           const WLEWMs = [{ type: 'WL', typeId: 10, uuid: 'B10_100' }];
-          const KDXEWM = { type: 'KDX', uuid: 'KDX22' };
+          const KDXEWM = { type: 'KDX', uuid: 'KDX25' };
 
           const response = await post(
             'piLiangZhuangXiangBuHuoWL',
@@ -4369,7 +4369,7 @@ describe('SPRT测试', () => {
             { type: 'DP', typeId: 14, uuid: 'B14_100', DWId: 17, name: 'DW3', CC: '200*200', CZ: '铜板' },
             { type: 'DP', typeId: 14, uuid: 'B14_101', DWId: 17, name: 'DW3', CC: '200*200', CZ: '铜板' },
           ];
-          const KDXEWM = { type: 'KDX', uuid: 'KDX9' };
+          const KDXEWM = { type: 'KDX', uuid: 'KDX_T' };
 
           const response = await post(
             'piLiangZhuangXiangBuHuoDP',
@@ -4386,13 +4386,21 @@ describe('SPRT测试', () => {
         });
 
         it('ZHY将GT1的装入GT2的快递箱中', async () => {
-          const YJZXTime = '2018-10-10';
-          const GTId = 7;
+          let ZHY3Token = await getToken('ZHY3', '123456');
+          const YJZXTime = '2018-01-01';
+          const GTId = 8;
           const DPEWMs = [
-            { type: 'DP', typeId: 8, uuid: 'B8_100', DWId: 11, name: 'DW1', CC: '100*100', CZ: '铜板' },
-            { type: 'DP', typeId: 8, uuid: 'B8_101', DWId: 11, name: 'DW1', CC: '100*100', CZ: '铜板' },
+            {
+              type: 'DP',
+              typeId: 14,
+              uuid: 'B14_100',
+              DWId: 17,
+              name: 'DW3',
+              CC: '200*100',
+              CZ: '铜板'
+            },
           ];
-          const KDXEWM = { type: 'KDX', uuid: 'KDX9' };
+          const KDXEWM = { type: 'KDX', uuid: 'KDX37' };
 
           const response = await post(
             'piLiangZhuangXiangBuHuoDP',
@@ -4402,7 +4410,7 @@ describe('SPRT测试', () => {
               DPEWMs,
               KDXEWM,
             },
-            ZHYToken,
+            ZHY3Token,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '柜台');
@@ -4558,13 +4566,15 @@ describe('SPRT测试', () => {
       it('ZHY出箱DP', async () => {
         let ZHY3Token = await getToken('ZHY3', '123456');
         const EWMs = [
-          {"type":"DP",
-          "typeId":16,
-          "uuid":"16_1",
-          "DWId":19,
-          "name":"DW5",
-          "CZ":"200*100",
-          "CC":"铜板"},
+          {
+            "type": "DP",
+            "typeId": 16,
+            "uuid": "16_1",
+            "DWId": 19,
+            "name": "DW5",
+            "CZ": "200*100",
+            "CC": "铜板"
+          },
         ];
 
         const response = await post(
@@ -4632,15 +4642,17 @@ describe('SPRT测试', () => {
         it('ZHY出箱已经发货的DP', async () => {
           let ZHY3Token = await getToken('ZHY3', '123456');
           const EWMs = [
-            {"type":"DP",
-            "typeId":17,
-            "uuid":"17_1",
-            "DWId":20,
-            "name":"DW6",
-            "CZ":"200*100",
-            "CC":"铜板"},
+            {
+              "type": "DP",
+              "typeId": 17,
+              "uuid": "17_1",
+              "DWId": 20,
+              "name": "DW6",
+              "CZ": "200*100",
+              "CC": "铜板"
+            },
           ];
-  
+
           const response = await post(
             'chuXiangDP',
             {
@@ -5276,12 +5288,12 @@ describe('SPRT测试', () => {
         const GTBA10Token = await getToken('GTBA10', '123456');
         const EWMs = [
           {
-            "type": "DP", 
-            "typeId": 34, 
-            "uuid": "34_1", 
-            "DWId": 37, 
-            "name": "DW3", 
-            "CZ": "200*100", 
+            "type": "DP",
+            "typeId": 34,
+            "uuid": "34_1",
+            "DWId": 37,
+            "name": "DW3",
+            "CZ": "200*100",
             "CC": "铜板"
           },
         ];
@@ -5314,13 +5326,13 @@ describe('SPRT测试', () => {
         const AZG3Token = await getToken('AZG3', '123456');
         const EWMs = [
           {
-            "type":"DP",
-            "typeId":19,
-            "uuid":"19_1",
-            "DWId":22,
-            "name":"DW8",
-            "CZ":"200*100",
-            "CC":"铜板"
+            "type": "DP",
+            "typeId": 19,
+            "uuid": "19_1",
+            "DWId": 22,
+            "name": "DW8",
+            "CZ": "200*100",
+            "CC": "铜板"
           },
         ];
 
@@ -5355,16 +5367,16 @@ describe('SPRT测试', () => {
         it('GTBA收货不属于自己的任务', async () => {
           const EWMs = [
             {
-              "type": "DP", 
-              "typeId": 34, 
-              "uuid": "34_1", 
-              "DWId": 37, 
-              "name": "DW3", 
-              "CZ": "200*100", 
+              "type": "DP",
+              "typeId": 34,
+              "uuid": "34_1",
+              "DWId": 37,
+              "name": "DW3",
+              "CZ": "200*100",
               "CC": "铜板"
             },
           ];
-  
+
           const response = await post(
             'shouHuoDP',
             {
@@ -5379,16 +5391,16 @@ describe('SPRT测试', () => {
         it('AZG收货不属于自己的任务', async () => {
           const EWMs = [
             {
-              "type":"DP",
-              "typeId":19,
-              "uuid":"19_1",
-              "DWId":22,
-              "name":"DW8",
-              "CZ":"200*100",
-              "CC":"铜板"
+              "type": "DP",
+              "typeId": 19,
+              "uuid": "19_1",
+              "DWId": 22,
+              "name": "DW8",
+              "CZ": "200*100",
+              "CC": "铜板"
             },
           ];
-  
+
           const response = await post(
             'shouHuoDP',
             {
@@ -5405,16 +5417,16 @@ describe('SPRT测试', () => {
           const AZG3Token = await getToken('AZG3', '123456');
           const EWMs = [
             {
-              "type":"DP",
-              "typeId":17,
-              "uuid":"17_1",
-              "DWId":20,
-              "name":"DW6",
-              "CZ":"200*100",
-              "CC":"铜板"
+              "type": "DP",
+              "typeId": 17,
+              "uuid": "17_1",
+              "DWId": 20,
+              "name": "DW6",
+              "CZ": "200*100",
+              "CC": "铜板"
             },
           ];
-  
+
           const response = await post(
             'shouHuoDP',
             {
@@ -5641,7 +5653,7 @@ describe('SPRT测试', () => {
         const WYDPPayloads = [
           {
             id: 26,
-            AZFKType: '安装成功',
+            AZFKType: AZFKType.AZCG,
             imageUrl: 'imageUrl',
           },
         ];
@@ -5666,7 +5678,7 @@ describe('SPRT测试', () => {
           });
           assert.notEqual(wydpcz, null);
           assert.equal(wydpcz.length, 1);
-          assert.equal(wydpcz[0].dataValues.UserId, 36);
+          assert.equal(wydpcz[0].dataValues.UserId, 26);
         }
       });
 
@@ -5676,7 +5688,7 @@ describe('SPRT测试', () => {
         const WYDPPayloads = [
           {
             id: 11,
-            AZFKType: '安装成功',
+            AZFKType: AZFKType.AZCG,
             imageUrl: 'imageUrl',
           },
         ];
@@ -5714,7 +5726,7 @@ describe('SPRT测试', () => {
           const WYDPPayloads = [
             {
               id: 26,
-              AZFKType: '安装成功',
+              AZFKType: AZFKType.AZCG,
               imageUrl: 'imageUrl',
             },
           ];
@@ -5739,7 +5751,7 @@ describe('SPRT测试', () => {
           const WYDPPayloads = [
             {
               id: 11,
-              AZFKType: '安装成功',
+              AZFKType: AZFKType.AZCG,
               imageUrl: 'imageUrl',
             },
           ];
@@ -5753,7 +5765,7 @@ describe('SPRT测试', () => {
             },
             AZG2Token,
           );
-          assert.equal(response.data.code, 1);
+          assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '权限');
         });
       });
@@ -5764,7 +5776,7 @@ describe('SPRT测试', () => {
           const WYDPPayloads = [
             {
               id: 7,
-              AZFKType: '安装成功',
+              AZFKType: AZFKType.AZCG,
               imageUrl: 'imageUrl',
             },
           ];
@@ -5778,7 +5790,7 @@ describe('SPRT测试', () => {
             },
             AZGToken,
           );
-          assert.equal(response.data.code, 1);
+          assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
         });
       });
@@ -7811,7 +7823,7 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('AZGSGLY设置不属于自己管理的WLBH的AZG', async () => {
+        it.only('AZGSGLY设置不属于自己管理的WLBH的AZG', async () => {
           const AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
           const WLBHIds = [8];
           const AZGUserId = 36;
