@@ -1232,7 +1232,7 @@ id	GTId	WLId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId
 															
 [WLBH]															
 id	GTId	WLId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	note	KFJLNote	PPJLNote	YJZXTime		
-33	7	10	2	已分配发货供应商	1	0	imagUrl	1	36	货物损坏	同意	同意	2018-01-04		
+33	7	10	2	已分配发货供应商	1	0	imagUrl	1	36	货物损坏	同意	同意	2018-10-10		
 34	7	10	2	已分配发货供应商	1	0	imagUrl	1	37	货物损坏	同意	同意	2018-10-10		
 35	7	10	2	已分配发货供应商	3	0	imagUrl	2	38	货物损坏	同意	同意	2018-10-10		
 36	7	10	2	已分配发货供应商	3	0	imagUrl	2	38	货物损坏	同意	同意	2018-10-10		

@@ -747,12 +747,16 @@ describe('SPRT测试', () => {
       it('KFJL新建DW', async () => {
         const name = 'DW_T';
         const GTId = 1;
+        const CC = '100*100';
+        const CZ = '铜板';
 
         const response = await post(
           'DW',
           {
             name,
             GTId,
+            CC,
+            CZ,
           },
           KFJLToken,
         );
@@ -3701,7 +3705,7 @@ describe('SPRT测试', () => {
         }
       });
 
-      it('ZHY装箱DDDP--EWM中的CZ和CC与DW实际不一致', async () => {
+      it.only('ZHY装箱DDDP--EWM中的CZ和CC与DW实际不一致', async () => {
         const DDId = 3;
         const GTId = 8;
         const DPEWMs = [
@@ -3755,8 +3759,8 @@ describe('SPRT测试', () => {
             where: { WYDPId: wydp.dataValues.id, UserId: 30 },
           });
           const wydpczList = wydpcz.map(item => item.dataValues.status);
-          assert.equal(wydpczList.length, 2);
-          assert.deepEqual(wydpczList, [WYDPStatus.RK, WYDPStatus.ZX]);
+          assert.equal(wydpczList.length, 1);
+          assert.deepEqual(wydpczList, [WYDPStatus.ZX]);
         }
       });
     });
@@ -4053,7 +4057,6 @@ describe('SPRT测试', () => {
             ZHYToken,
           );
           assert.equal(response.data.code, -1);
-          console.log('ZHY装不属于自己的WLBH任务', response.data.msg);
         });
 
         it('ZHY将GT1的WL装入GT2的快递箱中', async () => {
@@ -4204,7 +4207,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '没有任务');
         });
 
-        it.only('ZHY将GT1的装入GT2的快递箱中', async () => {
+        it('ZHY将GT1的装入GT2的快递箱中', async () => {
           let ZHY3Token = await getToken('ZHY3', '123456');
           const YJZXTime = '2018-01-04';
           const GTId = 8;
@@ -4407,12 +4410,10 @@ describe('SPRT测试', () => {
 
         for (let item of EWMs) {
           const wydp = await WYDP.findOne({ where: { EWM: JSON.stringify(item) } });
-          assert.equal(wydp.dataValues.DDDWDPId, null);
+          assert.equal(wydp, null);
           const dddwdp = await DD_DW_DP.findOne({ where: { DWId: item.DWId } });
           assert.equal(dddwdp.dataValues.ZXNumber, 0);
           assert.equal(dddwdp.dataValues.status, DD_DW_DPStatus.YFPFHGYS);
-          assert.equal(wydp.dataValues.status, WYDPStatus.RK);
-          assert.equal(wydp.dataValues.GYSId, 1);
 
           const wydpcz = await WYDPCZ.findAll({
             where: { WYDPId: wydp.dataValues.id, status: WYDPStatus.RK },
@@ -5563,7 +5564,7 @@ describe('SPRT测试', () => {
           assert.include(response.data.msg, '权限');
         });
 
-        it.only('AZG反馈不属于自己的DDDP的AZFKType', async () => {
+        it('AZG反馈不属于自己的DDDP的AZFKType', async () => {
           let AZG2Token = await getToken('AZG2', '123456');
           const DDId = 3;
           const GTId = 8;
@@ -5590,6 +5591,7 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it('AZG将装箱状态的DP反馈为安装成功', async () => {
+          let AZG3Token = await getToken('AZG3', '123456');
           const DDId = 3;
           const GTId = 8;
           const WYDPPayloads = [
@@ -5607,7 +5609,7 @@ describe('SPRT测试', () => {
               GTId,
               WYDPPayloads,
             },
-            AZGToken,
+            AZG3Token,
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
