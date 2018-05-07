@@ -45,6 +45,13 @@ export default class AnZhuangFanKuiDDDPZhuangTai extends BusinessApiBase {
     );
     // end 检查ids的存在
 
+    // 检查是否属于当前用户的任务范围
+    for (const item of tmpWYDPs) {
+      const tmpDDDWDP = await item.getDD_DW_DP({ transaction });
+      await user.checkDD_DW_DPId(tmpDDDWDP.id, transaction);
+    }
+    // end 检查是否属于当前用户的任务范围
+
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 反馈

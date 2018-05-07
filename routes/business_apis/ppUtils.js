@@ -544,6 +544,8 @@ export async function changeWLBHsStatus(
 export async function createDPBH(
   DWId,
   DPId,
+  CZ,
+  CC,
   imageUrl,
   note,
   user,
@@ -554,6 +556,8 @@ export async function createDPBH(
     {
       DWId,
       DPId,
+      CZ,
+      CC,
       imageUrl,
       note,
       DDId,

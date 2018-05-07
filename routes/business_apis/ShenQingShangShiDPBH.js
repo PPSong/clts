@@ -1,6 +1,7 @@
 import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 import * as ppUtils from './ppUtils';
+import { DH_UNABLE_TO_CHECK_GENERATOR } from 'constants';
 
 export default class ShenQingShangShiDPBH extends BusinessApiBase {
   static getAllowAccessJSs() {
@@ -38,10 +39,21 @@ export default class ShenQingShangShiDPBH extends BusinessApiBase {
     }
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
+    // 获取DW的CZ, CC
+    const tmpDW = await DBTables.DW.findOne({
+      where: {
+        id: tmpDDDWDP.DWId,
+      },
+      transaction,
+    });
+    // end 获取DW的CZ, CC
+
     // 新建灯片补货
     await ppUtils.createDPBH(
       DWId,
       DPId,
+      tmpDW.CZ,
+      tmpDW.CC,
       imageUrl,
       note,
       user,
