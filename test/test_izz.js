@@ -4304,8 +4304,8 @@ describe('SPRT测试', () => {
           });
           assert.notEqual(wydpcz, null);
           const wydpczList = wydpcz.map(item => item.dataValues.status);
-          assert.equal(wydpczList.length, 2);
-          assert.deepEqual(wydpczList, [WYDPStatus.RK, WYDPStatus.ZX]);
+          assert.equal(wydpczList.length, 1);
+          assert.deepEqual(wydpczList, [WYDPStatus.ZX]);
         }
       });
     });
@@ -4510,7 +4510,7 @@ describe('SPRT测试', () => {
           );
           assert.equal(response.data.code, -1);
           console.log('ZHY出箱WL和DP', response.data.msg);
-          assert.include(response.data.msg, '状态');
+          assert.include(response.data.msg, 'type');
         });
       });
       describe('操作状态不正确', async () => {
@@ -4635,7 +4635,7 @@ describe('SPRT测试', () => {
             ZHY3Token,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '状态');
+          assert.include(response.data.msg, 'type');
         });
       });
       describe('操作状态不正确', async () => {

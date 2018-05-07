@@ -126,7 +126,7 @@ id	name
 [GLY_AZGS]															
 UserId	AZGSId														
 34	1														
-35	1														
+35	2														
 															
 [AZG_AZGS]															
 UserId	AZGSId														
