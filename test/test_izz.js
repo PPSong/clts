@@ -4182,7 +4182,7 @@ describe('SPRT测试', () => {
           // assert.include(response.data.msg, '');
         });
 
-        it.only('ZHY装箱已经装满的DPBH任务', async () => {
+        it('ZHY装箱已经装满的DPBH任务', async () => {
           let ZHY3Token = await getToken('ZHY3', '123456');
           const YJZXTime = '2018-01-11';
           const GTId = 8;
@@ -5415,7 +5415,7 @@ describe('SPRT测试', () => {
           assert.notEqual(wywlcz, null);
           const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 2);
-          assert.equal(wywlczList, [WYWLStatus.SH, WYWLStatus.FK]);
+          assert.deepEqual(wywlczList, [WYWLStatus.SH, WYWLStatus.FK]);
         }
       });
     });
