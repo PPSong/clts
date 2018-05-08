@@ -8052,7 +8052,7 @@ describe('SPRT测试', () => {
         let GTBA7Token = await getToken('GTBA7', '123456');
         const WYDPPayloads = [
           {
-            id: 63,
+            id: 42,
             AZFKType: AZFKType.AZCG,
             imageUrl: 'imageUrl',
           },
@@ -8202,7 +8202,7 @@ describe('SPRT测试', () => {
   });
 
   describe('特殊案例', async () => {
-    it('AZG反馈完成当前他负责的所有DD_GT_WL任务后，又分配了一个任务给该AZG，做全景图FK', async () => {
+    it.only('AZG反馈完成当前他负责的所有DD_GT_WL任务后，又分配了一个任务给该AZG，做全景图FK', async () => {
       let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
       const DD_GT_WLIds = [30];
       const AZGUserId = 38;
