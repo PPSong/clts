@@ -5369,7 +5369,7 @@ describe('SPRT测试', () => {
         }
       });
 
-      it('AZG反馈所有属于他的WL任务的AZFKType', async () => {
+      it.only('AZG反馈所有属于他的WL任务的AZFKType', async () => {
         let AZG3Token = await getToken('AZG3', '123456');
         const WYWLPayloads = [
           {
