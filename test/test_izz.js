@@ -5414,8 +5414,8 @@ describe('SPRT测试', () => {
           });
           assert.notEqual(wywlcz, null);
           const wywlczList = wywlcz.map(item => item.dataValues.status);
-          assert.equal(wywlczList.length, 1);
-          assert.include(wywlczList, WYWLStatus.FK);
+          assert.equal(wywlczList.length, 2);
+          assert.include(wywlczList, [WYWLStatus.SH, WYWLStatus.FK]);
         }
       });
     });
@@ -7986,7 +7986,7 @@ describe('SPRT测试', () => {
               imageUrl: 'imageUrl',
             },
           ];
-  
+
           const response = await post(
             'anZhuangFanKuiBHWLZhuangTai',
             {
@@ -8007,7 +8007,7 @@ describe('SPRT测试', () => {
               imageUrl: 'imageUrl',
             },
           ];
-  
+
           const response = await post(
             'anZhuangFanKuiBHWLZhuangTai',
             {
@@ -8029,7 +8029,7 @@ describe('SPRT测试', () => {
               imageUrl: 'imageUrl',
             },
           ];
-  
+
           const response = await post(
             'anZhuangFanKuiBHWLZhuangTai',
             {
@@ -8079,7 +8079,7 @@ describe('SPRT测试', () => {
       it('AZG反馈BHDP的AZFKType', async () => {
         const WYDPPayloads = [
           {
-            id: 73,
+            id: 64,
             AZFKType: AZFKType.AZCG,
             imageUrl: 'imageUrl',
           },
@@ -8104,7 +8104,7 @@ describe('SPRT测试', () => {
       });
 
       it('AZG反馈未收到货的BHDP的AZFKType', async () => {
-        let AZG3Token = await getToken('AZG3', '123456');
+        let AZG2Token = await getToken('AZG2', '123456');
         const WYDPPayloads = [
           {
             id: 56,
@@ -8118,7 +8118,7 @@ describe('SPRT测试', () => {
           {
             WYDPPayloads,
           },
-          AZG3Token
+          AZG2Token
         );
         assert.equal(response.data.code, 1);
 
@@ -8142,7 +8142,7 @@ describe('SPRT测试', () => {
               imageUrl: 'imageUrl',
             },
           ];
-  
+
           const response = await post(
             'anZhuangFanKuiBHDPZhuangTai',
             {
@@ -8163,7 +8163,7 @@ describe('SPRT测试', () => {
               imageUrl: 'imageUrl',
             },
           ];
-  
+
           const response = await post(
             'anZhuangFanKuiBHDPZhuangTai',
             {
@@ -8176,7 +8176,7 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        it('AZG将发货状态的BHDP反馈为安装成功', async () => {
+        it.only('AZG将发货状态的BHDP反馈为安装成功', async () => {
           let AZG3Token = await getToken('AZG3', '123456');
           const WYDPPayloads = [
             {
@@ -8185,7 +8185,7 @@ describe('SPRT测试', () => {
               imageUrl: 'imageUrl',
             },
           ];
-  
+
           const response = await post(
             'anZhuangFanKuiBHDPZhuangTai',
             {
@@ -8202,7 +8202,7 @@ describe('SPRT测试', () => {
   });
 
   describe('特殊案例', async () => {
-    it.only('AZG反馈完成当前他负责的所有DD_GT_WL任务后，又分配了一个任务给该AZG，做全景图FK', async () => {
+    it('AZG反馈完成当前他负责的所有DD_GT_WL任务后，又分配了一个任务给该AZG，做全景图FK', async () => {
       let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
       const DD_GT_WLIds = [30];
       const AZGUserId = 38;
@@ -8256,31 +8256,31 @@ describe('SPRT测试', () => {
       );
 
       const AZG3Token = await getToken('AZG3', '123456');
-        const DDId = 5;
-        const GTId = 10;
-        const imageUrls = ['imageUrl_FK27', 'imageUrl_FK28'];
+      const DDId = 5;
+      const GTId = 10;
+      const imageUrls = ['imageUrl_FK27', 'imageUrl_FK28'];
 
-        const response = await post(
-          'anZhuangFanKuiQuanJingDPTuPian',
-          {
-            DDId,
-            GTId,
-            imageUrls,
-          },
-          AZG3Token,
-        );
-        assert.equal(response.data.code, 1);
+      const response = await post(
+        'anZhuangFanKuiQuanJingDPTuPian',
+        {
+          DDId,
+          GTId,
+          imageUrls,
+        },
+        AZG3Token,
+      );
+      assert.equal(response.data.code, 1);
 
-        let dddwdpList = [39, 40, 41];
-        for (let item of dddwdpList) {
-          const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
-          assert.equal(dddwdp.dataValues.status, DD_DW_DPStatus.WC);
-        }
+      let dddwdpList = [39, 40, 41];
+      for (let item of dddwdpList) {
+        const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
+        assert.equal(dddwdp.dataValues.status, DD_DW_DPStatus.WC);
+      }
 
-        for (let item of imageUrls) {
-          const dpqjfkt = await DPQJFKT.findOne({ where: { imageUrl: item } });
-          assert.equal(dpqjfkt.dataValues.UserId, 38);
-        }
+      for (let item of imageUrls) {
+        const dpqjfkt = await DPQJFKT.findOne({ where: { imageUrl: item } });
+        assert.equal(dpqjfkt.dataValues.UserId, 38);
+      }
     });
   });
 });
