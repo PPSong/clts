@@ -4182,7 +4182,7 @@ describe('SPRT测试', () => {
           // assert.include(response.data.msg, '');
         });
 
-        it('ZHY装箱已经装满的DPBH任务', async () => {
+        it.only('ZHY装箱已经装满的DPBH任务', async () => {
           let ZHY3Token = await getToken('ZHY3', '123456');
           const YJZXTime = '2018-01-11';
           const GTId = 8;
@@ -4203,7 +4203,7 @@ describe('SPRT测试', () => {
             ZHY3Token,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '任务超限');
+          assert.include(response.data.msg, '补货需求');
         });
 
         it('ZHY将GT1的装入GT2的快递箱中', async () => {
@@ -5415,7 +5415,7 @@ describe('SPRT测试', () => {
           assert.notEqual(wywlcz, null);
           const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 2);
-          assert.include(wywlczList, [WYWLStatus.SH, WYWLStatus.FK]);
+          assert.equal(wywlczList, [WYWLStatus.SH, WYWLStatus.FK]);
         }
       });
     });
@@ -8048,7 +8048,7 @@ describe('SPRT测试', () => {
   // 安装反馈BHDP状态 [GTBA, AZG]
   describe('/anZhuangFanKuiBHDPZhuangTai', async () => {
     describe('成功', async () => {
-      it.only('GTBA反馈BHDP的AZFKType', async () => {
+      it('GTBA反馈BHDP的AZFKType', async () => {
         let GTBA7Token = await getToken('GTBA7', '123456');
         const WYDPPayloads = [
           {
