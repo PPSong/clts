@@ -8201,7 +8201,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  describe.only('特殊案例', async () => {
+  describe('特殊案例', async () => {
     it('AZG反馈完成当前他负责的所有DD_GT_WL任务后，又分配了一个任务给该AZG，做全景图FK', async () => {
       let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
       const DD_GT_WLIds = [30];
