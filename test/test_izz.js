@@ -3998,7 +3998,7 @@ describe('SPRT测试', () => {
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {
-        it('ZHY装不属于自己的WLBH任务', async () => {
+        it.only('ZHY装不属于自己的WLBH任务', async () => {
           const YJZXTime = '2018-10-10';
           const GTId = 8;
           const WLEWMs = [{ type: 'WL', typeId: 16, uuid: 'B16_100' }];
@@ -8201,7 +8201,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  describe.only('特殊案例', async () => {
+  describe('特殊案例', async () => {
     it('AZG反馈完成当前他负责的所有DD_GT_WL任务后，又分配了一个任务给该AZG', async () => {
       let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
       const DD_GT_WLIds = [30];
