@@ -56,11 +56,16 @@ export default class AnZhuangFanKuiQuanJingWLTuPian extends BusinessApiBase {
 
     // 修改相关任务状态为'完成'
 
-    await tmpDD_GT_WLs.update(
+    await DBTables.DD_GT_WL.update(
       {
         status: DBTables.DD_GT_WLStatus.WC,
       },
       {
+        where: {
+          id: {
+            $in: tmpDD_GT_WLs.map(item => item.id),
+          },
+        },
         transaction,
       },
     );

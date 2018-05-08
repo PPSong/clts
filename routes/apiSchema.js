@@ -1065,7 +1065,7 @@ export const apiSchema = {
         type: 'number',
       },
       // 物料二维码
-      EWMs: {
+      WLEWMs: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -1227,7 +1227,7 @@ export const apiSchema = {
         type: 'number',
       },
       // 补货灯片二维码
-      EWMs: {
+      DPEWMs: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,

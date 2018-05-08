@@ -93,6 +93,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
         where: {
           DWId: tmpDWId,
           DPId: tmpDPId,
+          status: DBTables.DPBHStatus.YFPFHGYS,
         },
         transaction,
       });
