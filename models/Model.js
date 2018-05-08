@@ -580,8 +580,14 @@ User.prototype.checkDPBHId = async function (id, transaction) {
   const tmpDPBH = await DPBH.findOne({
     include: [
       {
-        model: GT,
-        as: 'GT',
+        model: DW,
+        as: 'DW',
+        include: [
+          {
+            model: GT,
+            as: 'GT',
+          },
+        ],
       },
     ],
     where: {
@@ -594,7 +600,7 @@ User.prototype.checkDPBHId = async function (id, transaction) {
     throw new Error(`物料补货id:${id}不存在!`);
   }
 
-  const tmpPPId = tmpDPBH.GT.PPId;
+  const tmpPPId = tmpDPBH.DW.GT.PPId;
 
   switch (this.JS) {
     case JS.ADMIN:

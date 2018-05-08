@@ -118,7 +118,7 @@ export default class AnZhuangFanKuiDDWLZhuangTai extends BusinessApiBase {
     });
 
     if (noImageUrlTargetWYWLs.length === 0) {
-      DBTables.DD_GT_WL.update(
+      await DBTables.DD_GT_WL.update(
         {
           status: DBTables.DD_GT_WLStatus.KPQJT,
         },
