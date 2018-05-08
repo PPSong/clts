@@ -629,7 +629,7 @@ User.prototype.checkDPBHId = async function (id, transaction) {
       if (tmpDPBH.AZGUserId !== null) {
         throw new Error('没有权限!');
       }
-      await this.checkGTId(tmpDPBH.GT.id, transaction);
+      await this.checkGTId(tmpDPBH.DW.GT.id, transaction);
       break;
     default:
       throw new Error('没有权限!');
