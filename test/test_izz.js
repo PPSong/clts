@@ -8177,7 +8177,7 @@ describe('SPRT测试', () => {
       });
       describe('操作状态不正确', async () => {
         it.only('AZG将发货状态的BHDP反馈为安装成功', async () => {
-          let AZG3Token = await getToken('AZG3', '123456');
+          let AZG2Token = await getToken('AZG2', '123456');
           const WYDPPayloads = [
             {
               id: 56,
@@ -8191,7 +8191,7 @@ describe('SPRT测试', () => {
             {
               WYDPPayloads,
             },
-            AZG3Token
+            AZG2Token
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
