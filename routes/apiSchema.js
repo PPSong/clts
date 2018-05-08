@@ -2013,4 +2013,68 @@ export const apiSchema = {
     },
     required: ['AZGUserId', 'DPBHIds'],
   },
+  // 安装反馈补货物料状态 [AZG, GTBA]
+  anZhuangFanKuiBHWLZhuangTai: {
+    type: 'object',
+    properties: {
+      // WYWL反馈
+      WYWLPayloads: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // WYWLId
+            id: {
+              type: 'number',
+            },
+            // 反馈类型
+            AZFKType: {
+              type: 'string',
+              enum: Object.values(DBTables.AZFKType),
+            },
+            // 反馈图片地址
+            imageUrl: {
+              type: 'string',
+            },
+          },
+          required: ['id', 'AZFKType', 'imageUrl'],
+        },
+      },
+    },
+    required: ['WYWLPayloads'],
+  },
+  // 安装反馈补货灯片状态 [AZG, GTBA]
+  anZhuangFanKuiBHDPZhuangTai: {
+    type: 'object',
+    properties: {
+      // DPWL反馈
+      WYDPPayloads: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // DPWLId
+            id: {
+              type: 'number',
+            },
+            // 反馈类型
+            AZFKType: {
+              type: 'string',
+              enum: Object.values(DBTables.AZFKType),
+            },
+            // 反馈图片地址
+            imageUrl: {
+              type: 'string',
+            },
+          },
+          required: ['id', 'AZFKType', 'imageUrl'],
+        },
+      },
+    },
+    required: ['WYDPPayloads'],
+  },
 };
