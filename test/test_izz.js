@@ -5369,7 +5369,7 @@ describe('SPRT测试', () => {
         }
       });
 
-      it.only('AZG反馈所有属于他的WL任务的AZFKType', async () => {
+      it('AZG反馈所有属于他的WL任务的AZFKType', async () => {
         let AZG3Token = await getToken('AZG3', '123456');
         const WYWLPayloads = [
           {
@@ -5582,31 +5582,19 @@ describe('SPRT测试', () => {
         let AZG3Token = await getToken('AZG3', '123456');
         const WYDPPayloads = [
           {
-            "type": "DP",
-            "typeId": 29,
-            "uuid": "29_1",
-            "DWId": 32,
-            "name": "DW1",
-            "CZ": "100*100",
-            "CC": "铜板"
+            id: 20,
+            AZFKType: AZFKType.AZCG,
+            imageUrl: 'imageUrl',
           },
           {
-            "type": "DP",
-            "typeId": 30,
-            "uuid": "30_1",
-            "DWId": 33,
-            "name": "DW2",
-            "CZ": "100*100",
-            "CC": "铜板"
+            id: 21,
+            AZFKType: AZFKType.AZCG,
+            imageUrl: 'imageUrl',
           },
           {
-            "type": "DP",
-            "typeId": 31,
-            "uuid": "31_1",
-            "DWId": 34,
-            "name": "DW3",
-            "CZ": "200*100",
-            "CC": "铜板"
+            id: 22,
+            AZFKType: AZFKType.AZCG,
+            imageUrl: 'imageUrl',
           },
         ];
         const DDId = 4;
@@ -5635,8 +5623,8 @@ describe('SPRT测试', () => {
           });
           assert.notEqual(wydpcz, null);
           const wydpczList = wydpcz.map(item => item.dataValues.status);
-          assert.equal(wydpczList.length, 1);
-          assert.include(wydpczList, WYDPStatus.FK);
+          assert.equal(wydpczList.length, 2);
+          assert.deepEqual(wydpczList, [WYDPStatus.SH, WYDPStatus.FK]);
         }
       });
     });
@@ -8213,7 +8201,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  describe('特殊案例', async () => {
+  describe.only('特殊案例', async () => {
     it('AZG反馈完成当前他负责的所有DD_GT_WL任务后，又分配了一个任务给该AZG', async () => {
       let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
       const DD_GT_WLIds = [30];
