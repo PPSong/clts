@@ -239,7 +239,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it('small test', async () => {
+    it.skip('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -4085,7 +4085,7 @@ describe('SPRT测试', () => {
   // 批量装箱BHDP [ZHY] 
   describe('/piLiangZhuangXiangBuHuoDP', async () => {
     describe('成功', async () => {
-      it.only('ZHY装箱BHDP', async () => {
+      it('ZHY装箱BHDP', async () => {
         const YJZXTime = '2018-10-10';
         const GTId = 7;
         const DPEWMs = [
@@ -7892,6 +7892,318 @@ describe('SPRT测试', () => {
               AZGUserId,
             },
             AZGSGLYToken,
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
+      });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // 安装反馈BHWL状态 [GTBA, AZG]
+  describe('/anZhuangFanKuiBHWLZhuangTai', async () => {
+    describe('成功', async () => {
+      it('GTBA反馈BHWL的AZFKType', async () => {
+        let GTBA7Token = await getToken('GTBA7', '123456');
+        const WYWLPayloads = [
+          {
+            id: 63,
+            AZFKType: AZFKType.AZCG,
+            imageUrl: 'imageUrl',
+          },
+        ];
+
+        const response = await post(
+          'anZhuangFanKuiBHWLZhuangTai',
+          {
+            WYWLPayloads,
+          },
+          GTBA7Token
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WYWLPayloads) {
+          const wywl = await WYWL.findOne({ where: { id: item.id } });
+          assert.equal(wywl.dataValues.status, WYWLStatus.FK);
+
+          const wlbh = await WLBH.findOne({ where: { id: wywl.dataValues.WLBHId } });
+          assert.equal(wlbh.dataValues.status, WLBHStatus.WC);
+        }
+      });
+
+      it('AZG反馈BHWL的AZFKType', async () => {
+        const WYWLPayloads = [
+          {
+            id: 73,
+            AZFKType: AZFKType.AZCG,
+            imageUrl: 'imageUrl',
+          },
+        ];
+
+        const response = await post(
+          'anZhuangFanKuiBHWLZhuangTai',
+          {
+            WYWLPayloads,
+          },
+          AZGToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WYWLPayloads) {
+          const wywl = await WYWL.findOne({ where: { id: item.id } });
+          assert.equal(wywl.dataValues.status, WYWLStatus.FK);
+
+          const wlbh = await WLBH.findOne({ where: { id: wywl.dataValues.WLBHId } });
+          assert.equal(wlbh.dataValues.status, WLBHStatus.WC);
+        }
+      });
+
+      it('AZG反馈未收到货的BHWL的AZFKType', async () => {
+        let AZG3Token = await getToken('AZG3', '123456');
+        const WYWLPayloads = [
+          {
+            id: 56,
+            AZFKType: AZFKType.DS,
+            imageUrl: 'imageUrl',
+          },
+        ];
+
+        const response = await post(
+          'anZhuangFanKuiBHWLZhuangTai',
+          {
+            WYWLPayloads,
+          },
+          AZG3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WYWLPayloads) {
+          const wywl = await WYWL.findOne({ where: { id: item.id } });
+          assert.equal(wywl.dataValues.status, WYWLStatus.FK);
+
+          const wlbh = await WLBH.findOne({ where: { id: wywl.dataValues.WLBHId } });
+          assert.equal(wlbh.dataValues.status, WLBHStatus.WC);
+        }
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('GTBA反馈不属于自己的BHWL的AZFKType', async () => {
+          const WYWLPayloads = [
+            {
+              id: 63,
+              AZFKType: AZFKType.AZCG,
+              imageUrl: 'imageUrl',
+            },
+          ];
+  
+          const response = await post(
+            'anZhuangFanKuiBHWLZhuangTai',
+            {
+              WYWLPayloads,
+            },
+            GTBAToken
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
+
+        it('AZG反馈不属于自己的BHWL的AZFKType', async () => {
+          let AZG2Token = await getToken('AZG2', '123456');
+          const WYWLPayloads = [
+            {
+              id: 73,
+              AZFKType: AZFKType.AZCG,
+              imageUrl: 'imageUrl',
+            },
+          ];
+  
+          const response = await post(
+            'anZhuangFanKuiBHWLZhuangTai',
+            {
+              WYWLPayloads,
+            },
+            AZG2Token
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('AZG将发货状态的BHWL反馈为安装成功', async () => {
+          let AZG3Token = await getToken('AZG3', '123456');
+          const WYWLPayloads = [
+            {
+              id: 56,
+              AZFKType: AZFKType.AZCG,
+              imageUrl: 'imageUrl',
+            },
+          ];
+  
+          const response = await post(
+            'anZhuangFanKuiBHWLZhuangTai',
+            {
+              WYWLPayloads,
+            },
+            AZG3Token
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '状态');
+        });
+      });
+      describe('唯一性校验', async () => { });
+    });
+  });
+
+  // 安装反馈BHDP状态 [GTBA, AZG]
+  describe('/anZhuangFanKuiBHDPZhuangTai', async () => {
+    describe('成功', async () => {
+      it('GTBA反馈BHDP的AZFKType', async () => {
+        let GTBA7Token = await getToken('GTBA7', '123456');
+        const WYDPPayloads = [
+          {
+            id: 63,
+            AZFKType: AZFKType.AZCG,
+            imageUrl: 'imageUrl',
+          },
+        ];
+
+        const response = await post(
+          'anZhuangFanKuiBHDPZhuangTai',
+          {
+            WYDPPayloads,
+          },
+          GTBA7Token
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WYDPPayloads) {
+          const wydp = await WYDP.findOne({ where: { id: item.id } });
+          assert.equal(wydp.dataValues.status, WYDPStatus.FK);
+
+          const dpbh = await DPBH.findOne({ where: { id: wydp.dataValues.DPBHId } });
+          assert.equal(dpbh.dataValues.status, DPBHStatus.WC);
+        }
+      });
+
+      it('AZG反馈BHDP的AZFKType', async () => {
+        const WYDPPayloads = [
+          {
+            id: 73,
+            AZFKType: AZFKType.AZCG,
+            imageUrl: 'imageUrl',
+          },
+        ];
+
+        const response = await post(
+          'anZhuangFanKuiBHDPZhuangTai',
+          {
+            WYDPPayloads,
+          },
+          AZGToken
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WYDPPayloads) {
+          const wydp = await WYDP.findOne({ where: { id: item.id } });
+          assert.equal(wydp.dataValues.status, WYDPStatus.FK);
+
+          const dpbh = await DPBH.findOne({ where: { id: wydp.dataValues.DPBHId } });
+          assert.equal(dpbh.dataValues.status, DPBHStatus.WC);
+        }
+      });
+
+      it('AZG反馈未收到货的BHDP的AZFKType', async () => {
+        let AZG3Token = await getToken('AZG3', '123456');
+        const WYDPPayloads = [
+          {
+            id: 56,
+            AZFKType: AZFKType.DS,
+            imageUrl: 'imageUrl',
+          },
+        ];
+
+        const response = await post(
+          'anZhuangFanKuiBHDPZhuangTai',
+          {
+            WYDPPayloads,
+          },
+          AZG3Token
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of WYDPPayloads) {
+          const wydp = await WYDP.findOne({ where: { id: item.id } });
+          assert.equal(wydp.dataValues.status, WYDPStatus.FK);
+
+          const dpbh = await DPBH.findOne({ where: { id: wydp.dataValues.DPBHId } });
+          assert.equal(dpbh.dataValues.status, DPBHStatus.WC);
+        }
+      });
+    });
+    describe('失败', async () => {
+      describe('数据不合法', async () => { });
+      describe('没有权限', async () => {
+        it('GTBA反馈不属于自己的BHDP的AZFKType', async () => {
+          const WYDPPayloads = [
+            {
+              id: 63,
+              AZFKType: AZFKType.AZCG,
+              imageUrl: 'imageUrl',
+            },
+          ];
+  
+          const response = await post(
+            'anZhuangFanKuiBHDPZhuangTai',
+            {
+              WYDPPayloads,
+            },
+            GTBAToken
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
+
+        it('AZG反馈不属于自己的BHDP的AZFKType', async () => {
+          let AZG2Token = await getToken('AZG2', '123456');
+          const WYDPPayloads = [
+            {
+              id: 73,
+              AZFKType: AZFKType.AZCG,
+              imageUrl: 'imageUrl',
+            },
+          ];
+  
+          const response = await post(
+            'anZhuangFanKuiBHDPZhuangTai',
+            {
+              WYDPPayloads,
+            },
+            AZG2Token
+          );
+          assert.equal(response.data.code, -1);
+          assert.include(response.data.msg, '权限');
+        });
+      });
+      describe('操作状态不正确', async () => {
+        it('AZG将发货状态的BHDP反馈为安装成功', async () => {
+          let AZG3Token = await getToken('AZG3', '123456');
+          const WYDPPayloads = [
+            {
+              id: 56,
+              AZFKType: AZFKType.AZCG,
+              imageUrl: 'imageUrl',
+            },
+          ];
+  
+          const response = await post(
+            'anZhuangFanKuiBHDPZhuangTai',
+            {
+              WYDPPayloads,
+            },
+            AZG3Token
           );
           assert.equal(response.data.code, -1);
           assert.include(response.data.msg, '状态');
