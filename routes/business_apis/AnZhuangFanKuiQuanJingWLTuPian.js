@@ -31,7 +31,7 @@ export default class AnZhuangFanKuiQuanJingWLTuPian extends BusinessApiBase {
       throw new Error('没有权限!');
     }
 
-    const tmpDD_GT_WL = await DBTables.DD_GT_WL.findOne({
+    const tmpDD_GT_WLs = await DBTables.DD_GT_WL.findAll({
       where: {
         ...tmpWhere,
         status: DBTables.DD_GT_WLStatus.KPQJT,
@@ -39,7 +39,7 @@ export default class AnZhuangFanKuiQuanJingWLTuPian extends BusinessApiBase {
       transaction,
     });
 
-    if (!tmpDD_GT_WL) {
+    if (tmpDD_GT_WLs.length === 0) {
       throw new Error('没有任务可拍全景图!');
     }
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
@@ -56,7 +56,7 @@ export default class AnZhuangFanKuiQuanJingWLTuPian extends BusinessApiBase {
 
     // 修改相关任务状态为'完成'
 
-    await tmpDD_GT_WL.update(
+    await tmpDD_GT_WLs.update(
       {
         status: DBTables.DD_GT_WLStatus.WC,
       },
