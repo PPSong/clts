@@ -8048,7 +8048,7 @@ describe('SPRT测试', () => {
   // 安装反馈BHDP状态 [GTBA, AZG]
   describe('/anZhuangFanKuiBHDPZhuangTai', async () => {
     describe('成功', async () => {
-      it('GTBA反馈BHDP的AZFKType', async () => {
+      it.only('GTBA反馈BHDP的AZFKType', async () => {
         let GTBA7Token = await getToken('GTBA7', '123456');
         const WYDPPayloads = [
           {
@@ -8176,7 +8176,7 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        it.only('AZG将发货状态的BHDP反馈为安装成功', async () => {
+        it('AZG将发货状态的BHDP反馈为安装成功', async () => {
           let AZG2Token = await getToken('AZG2', '123456');
           const WYDPPayloads = [
             {
