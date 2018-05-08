@@ -3909,7 +3909,7 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        it.only('ZHY装箱已经装满的DD_DW_DP任务', async () => {
+        it('ZHY装箱已经装满的DD_DW_DP任务', async () => {
           let ZHY3Token = await getToken('ZHY3', '123456');
           const DDId = 3;
           const GTId = 8;
@@ -3940,7 +3940,7 @@ describe('SPRT测试', () => {
             ZHY3Token,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, 'null');
+          assert.include(response.data.msg, '任务超限');
         });
       });
       describe('唯一性校验', async () => { });
@@ -4085,7 +4085,7 @@ describe('SPRT测试', () => {
   // 批量装箱BHDP [ZHY] 
   describe('/piLiangZhuangXiangBuHuoDP', async () => {
     describe('成功', async () => {
-      it('ZHY装箱BHDP', async () => {
+      it.only('ZHY装箱BHDP', async () => {
         const YJZXTime = '2018-10-10';
         const GTId = 7;
         const DPEWMs = [
@@ -4182,7 +4182,7 @@ describe('SPRT测试', () => {
           // assert.include(response.data.msg, '');
         });
 
-        it.only('ZHY装箱已经装满的DPBH任务', async () => {
+        it('ZHY装箱已经装满的DPBH任务', async () => {
           let ZHY3Token = await getToken('ZHY3', '123456');
           const YJZXTime = '2018-01-11';
           const GTId = 8;
@@ -4203,7 +4203,7 @@ describe('SPRT测试', () => {
             ZHY3Token,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '没有任务');
+          assert.include(response.data.msg, '任务超限');
         });
 
         it('ZHY将GT1的装入GT2的快递箱中', async () => {
@@ -4381,7 +4381,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  // 出箱DP [ZHY] --izztodo
+  // 出箱DP [ZHY] 
   describe('/chuXiangDP', async () => {
     describe('成功', async () => {
       it('ZHY出箱DP', async () => {
@@ -5368,6 +5368,56 @@ describe('SPRT测试', () => {
           assert.include(wywlczList, WYWLStatus.FK);
         }
       });
+
+      it('AZG反馈所有属于他的WL任务的AZFKType', async () => {
+        let AZG3Token = await getToken('AZG3', '123456');
+        const WYWLPayloads = [
+          {
+            id: 44,
+            AZFKType: AZFKType.DS,
+            imageUrl: 'imageUrlWL23',
+          },
+          {
+            id: 45,
+            AZFKType: AZFKType.DS,
+            imageUrl: 'imageUrlWL24',
+          },
+          {
+            id: 46,
+            AZFKType: AZFKType.DS,
+            imageUrl: 'imageUrlWL25',
+          },
+        ];
+        const DDId = 4;
+        const GTId = 9;
+
+        const response = await post(
+          'anZhuangFanKuiDDWLZhuangTai',
+          {
+            DDId,
+            GTId,
+            WYWLPayloads,
+          },
+          AZG3Token,
+        );
+        assert.equal(response.data.code, 1);
+
+        for (const item of WYWLPayloads) {
+          const wywl = await WYWL.findOne({ where: { id: item.id } });
+          assert.equal(wywl.dataValues.status, WYWLStatus.FK);
+
+          const ddgtwl = await DD_GT_WL.findOne({ where: { id: wywl.dataValues.DDGTWLId } });
+          assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.KPQJT);
+
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, UserId: 38 },
+          });
+          assert.notEqual(wywlcz, null);
+          const wywlczList = wywlcz.map(item => item.dataValues.status);
+          assert.equal(wywlczList.length, 1);
+          assert.include(wywlczList, WYWLStatus.FK);
+        }
+      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
@@ -5527,6 +5577,68 @@ describe('SPRT测试', () => {
           assert.equal(wydpcz[0].dataValues.UserId, 36);
         }
       });
+
+      it('AZG反馈所有属于他的DP任务的AZFKType', async () => {
+        let AZG3Token = await getToken('AZG3', '123456');
+        const WYDPPayloads = [
+          {
+            "type": "DP",
+            "typeId": 29,
+            "uuid": "29_1",
+            "DWId": 32,
+            "name": "DW1",
+            "CZ": "100*100",
+            "CC": "铜板"
+          },
+          {
+            "type": "DP",
+            "typeId": 30,
+            "uuid": "30_1",
+            "DWId": 33,
+            "name": "DW2",
+            "CZ": "100*100",
+            "CC": "铜板"
+          },
+          {
+            "type": "DP",
+            "typeId": 31,
+            "uuid": "31_1",
+            "DWId": 34,
+            "name": "DW3",
+            "CZ": "200*100",
+            "CC": "铜板"
+          },
+        ];
+        const DDId = 4;
+        const GTId = 9;
+
+        const response = await post(
+          'anZhuangFanKuiDDDPZhuangTai',
+          {
+            DDId,
+            GTId,
+            WYDPPayloads,
+          },
+          AZG3Token,
+        );
+        assert.equal(response.data.code, 1);
+
+        for (const item of WYDPPayloads) {
+          const wydp = await WYDP.findOne({ where: { id: item.id } });
+          assert.equal(wydp.dataValues.status, WYDPStatus.FK);
+
+          const dddwdp = await DD_DW_DP.findOne({ where: { id: wydp.dataValues.DDDWDPId } });
+          assert.equal(dddwdp.dataValues.status, DD_DW_DPStatus.KPQJT);
+
+          const wydpcz = await WYDPCZ.findAll({
+            where: { WYDPId: wydp.dataValues.id, UserId: 38 },
+          });
+          assert.notEqual(wydpcz, null);
+          const wydpczList = wydpcz.map(item => item.dataValues.status);
+          assert.equal(wydpczList.length, 1);
+          assert.include(wydpczList, WYDPStatus.FK);
+        }
+      });
     });
     describe('失败', async () => {
       describe('数据不合法', async () => { });
@@ -5643,7 +5755,7 @@ describe('SPRT测试', () => {
         const AZG3Token = await getToken('AZG3', '123456');
         const DDId = 5;
         const GTId = 10;
-        const imageUrls = ['imageUrl_FK27', 'imageUrl_FK27'];
+        const imageUrls = ['imageUrl_FK27', 'imageUrl_FK28'];
 
         const response = await post(
           'anZhuangFanKuiQuanJingWLTuPian',
@@ -5764,7 +5876,7 @@ describe('SPRT测试', () => {
         const AZG3Token = await getToken('AZG3', '123456');
         const DDId = 5;
         const GTId = 10;
-        const imageUrls = ['imageUrl_FK27', 'imageUrl_FK27'];
+        const imageUrls = ['imageUrl_FK27', 'imageUrl_FK28'];
 
         const response = await post(
           'anZhuangFanKuiQuanJingDPTuPian',
@@ -7786,6 +7898,122 @@ describe('SPRT测试', () => {
         });
       });
       describe('唯一性校验', async () => { });
+    });
+  });
+
+  describe('特殊案例', async () => {
+    it('AZG反馈完成当前他负责的所有DD_GT_WL任务后，又分配了一个任务给该AZG', async () => {
+      let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
+      const DD_GT_WLIds = [30];
+      const AZGUserId = 38;
+
+      await post(
+        'setDDGTWLs0AZG',
+        {
+          DD_GT_WLIds,
+          AZGUserId,
+        },
+        AZGSGLY2Token,
+      );
+
+      let ddgtwlId = [27, 30];
+      for (let item of ddgtwlId) {
+        const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
+        assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.SH);
+      }
+    });
+
+    it('AZG反馈完成当前他负责的所有DD_DW_DP任务后，又分配了一个任务给该AZG', async () => {
+      let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
+      const DD_DW_DPIds = [45];
+      const AZGUserId = 38;
+
+      await post(
+        'setDDDWDPs0AZG',
+        {
+          DD_DW_DPIds,
+          AZGUserId,
+        },
+        AZGSGLY2Token,
+      );
+
+      let dddwdpId = [39, 40, 41, 45];
+      for (let item of dddwdpId) {
+        const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
+        assert.equal(dddwdp.dataValues.status, DD_DW_DPStatus.SH);
+      }
+    });
+
+    it('AZG的DD_GT_WL任务完成后，又分配了一个任务给该AZG', async () => {
+      const AZG3Token = await getToken('AZG3', '123456');
+      const DDId = 5;
+      const GTId = 10;
+      const imageUrls = ['imageUrl_FK27', 'imageUrl_FK28'];
+
+      await post(
+        'anZhuangFanKuiQuanJingWLTuPian',
+        {
+          DDId,
+          GTId,
+          imageUrls,
+        },
+        AZG3Token,
+      );
+
+      let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
+      const DD_GT_WLIds = [30];
+      const AZGUserId = 38;
+
+      await post(
+        'setDDGTWLs0AZG',
+        {
+          DD_GT_WLIds,
+          AZGUserId,
+        },
+        AZGSGLY2Token,
+      );
+
+      let ddgtwlId = [27, 30];
+      for (let item of ddgtwlId) {
+        const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
+        assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.SH);
+      }
+    });
+
+    it('AZG的DD_DW_DP任务后，又分配了一个任务给该AZG', async () => {
+      const AZG3Token = await getToken('AZG3', '123456');
+      const DDId = 5;
+      const GTId = 10;
+      const imageUrls = ['imageUrl_FK27', 'imageUrl_FK28'];
+
+      await post(
+        'anZhuangFanKuiQuanJingDPTuPian',
+        {
+          DDId,
+          GTId,
+          imageUrls,
+        },
+        AZG3Token,
+      );
+
+      let AZGSGLY2Token = await getToken('AZGSGLY2', '123456');
+      const DD_DW_DPIds = [45];
+      const AZGUserId = 38;
+
+      await post(
+        'setDDDWDPs0AZG',
+        {
+          DD_DW_DPIds,
+          AZGUserId,
+        },
+        AZGSGLY2Token,
+      );
+
+      let dddwdpId = [39, 40, 41, 45];
+      for (let item of dddwdpId) {
+        const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
+        assert.equal(dddwdp.dataValues.status, DD_DW_DPStatus.SH);
+      }
     });
   });
 });
