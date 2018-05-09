@@ -106,7 +106,7 @@ export default class DPTable extends BaseTable {
         PPIds = await this.user
           .getPPJLPPs({ transaction })
           .map(item => item.id);
-        option.include[0].where.PPId = {
+        option.include[0].where.id = {
           $in: PPIds,
         };
         break;
@@ -114,7 +114,7 @@ export default class DPTable extends BaseTable {
         PPIds = await this.user
           .getKFJLPPs({ transaction })
           .map(item => item.id);
-        option.include[0].where.PPId = {
+        option.include[0].where.id = {
           $in: PPIds,
         };
         break;

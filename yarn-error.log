@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run test_izz
+  /usr/local/Cellar/node/9.6.1/bin/node /usr/local/Cellar/yarn/1.5.1/libexec/bin/yarn.js run babel-node ./bin/www
 
 PATH: 
-  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/usr/local/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/usr/local/sbin
+  /Users/penn/Desktop/clts/node_modules/.bin:/Users/penn/.config/yarn/link/node_modules/.bin:/Users/penn/Desktop/clts/node_modules/.bin:/Users/penn/.config/yarn/link/node_modules/.bin:/usr/local/Cellar/node/9.6.1/libexec/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/Cellar/node/9.6.1/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/Cellar/node/9.6.1/bin/node_modules/npm/bin/node-gyp-bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/usr/local/sbin:/Users/penn/Library/Android/sdk/platform-tools:/Users/penn/Library/Android/sdk/tools:/usr/local/sbin
 
 Yarn version: 
   1.5.1
@@ -4541,7 +4541,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000
+  Arguments: -c DEBUG=ppLog babel-node ./bin/www
   Directory: /Users/penn/Desktop/clts
   Output:
   

@@ -1778,10 +1778,26 @@ export const DP = sequelize.define(
 );
 
 DP.belongsTo(GYS, {
+  as: 'GYS',
+  foreignKey: 'GYSId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+GYS.hasMany(DP, {
+  as: 'DPs',
+  foreignKey: 'GYSId',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
 DP.belongsTo(PP, {
+  as: 'PP',
+  foreignKey: 'PPId',
+  onDelete: 'RESTRICT',
+  onUpdate: 'RESTRICT',
+});
+PP.hasMany(DP, {
+  as: 'DPs',
+  foreignKey: 'PPId',
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
