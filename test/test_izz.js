@@ -4203,7 +4203,7 @@ describe('SPRT测试', () => {
             ZHY3Token,
           );
           assert.equal(response.data.code, -1);
-          assert.include(response.data.msg, '任务超限');
+          assert.include(response.data.msg, '补货需求');
         });
 
         it('ZHY将GT1的装入GT2的快递箱中', async () => {
@@ -5415,7 +5415,7 @@ describe('SPRT测试', () => {
           assert.notEqual(wywlcz, null);
           const wywlczList = wywlcz.map(item => item.dataValues.status);
           assert.equal(wywlczList.length, 2);
-          assert.include(wywlczList, [WYWLStatus.SH, WYWLStatus.FK]);
+          assert.deepEqual(wywlczList, [WYWLStatus.SH, WYWLStatus.FK]);
         }
       });
     });
@@ -8176,7 +8176,7 @@ describe('SPRT测试', () => {
         });
       });
       describe('操作状态不正确', async () => {
-        it.only('AZG将发货状态的BHDP反馈为安装成功', async () => {
+        it('AZG将发货状态的BHDP反馈为安装成功', async () => {
           let AZG2Token = await getToken('AZG2', '123456');
           const WYDPPayloads = [
             {
