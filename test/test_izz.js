@@ -4036,7 +4036,6 @@ describe('SPRT测试', () => {
             ZHYToken,
           );
           assert.equal(response.data.code, -1);
-          console.log('ZHY装不属于自己的WLBH任务', response.data.msg);
         });
 
         it('ZHY装箱已经装满的WLBH任务', async () => {
