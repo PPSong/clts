@@ -2,13 +2,13 @@ import bCrypt from 'bcryptjs';
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class GetDDGT0DDWLZhuangXiangList extends BusinessQueryApiBase {
+export default class GetYJZXTimeGT0BHWLYiZhuangXiangWYWLList extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.ZHY];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { curPage, DDId, GTId } = req.body;
+    const { curPage, YJZXTime, GTId } = req.body;
 
     const perPage = 50;
 
@@ -17,20 +17,27 @@ export default class GetDDGT0DDWLZhuangXiangList extends BusinessQueryApiBase {
     // 查询记录
     const sql = `
     SELECT
-      a.WLId,
-      b.name WLName,
-      b.code WLCode,
-      a.number,
-      a.ZXNumber,
-      a.status DD_GT_WLStatus
+      c.id WLId,
+      c.name WLName,
+      c.code WLCode,
+      b.EWM WYWLEWM,
+      d.EWM KDXEWM
     FROM
-      DD_GT_WL a
+      WLBH a
     JOIN
-      WL b
+      WYWL b
     ON
-      a.WLId = b.id
+      b.WLBHId = a.id
+    JOIN
+      WL c
+    ON
+      a.WLId = c.id
+    JOIN
+      KDX d
+    ON
+      b.KDXId = d.id
     WHERE
-      a.DDId = ${DDId}
+      a.YJZXTime = ${YJZXTime}
     AND
       a.GTId = ${GTId}
     AND

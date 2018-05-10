@@ -2092,6 +2092,21 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
+  // 获取BHWL装箱任务 [ZHY]
+  getBHWLZhuangXiangList: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
   // 获取指定DDGT的DDWL装箱任务 [ZHY]
   getDDGT0DDWLZhuangXiangList: {
     type: 'object',
@@ -2109,6 +2124,23 @@ export const apiSchema = {
     },
     required: ['curPage', 'DDId', 'GTId'],
   },
+  // 获取指定DDGT的BHWL装箱任务 [ZHY]
+  getYJZXTimeGT0BHWLZhuangXiangList: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      YJZXTime: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+      GTId: {
+        type: 'number',
+      },
+    },
+    required: ['curPage', 'YJZXTime', 'GTId'],
+  },
   // 获取指定DDGT的DDWL已装箱WYWL [ZHY]
   getDDGT0DDWLYiZhuangXiangWYWLList: {
     type: 'object',
@@ -2125,5 +2157,22 @@ export const apiSchema = {
       },
     },
     required: ['curPage', 'DDId', 'GTId'],
+  },
+  // 获取指定YJZXTimeGT的BHWL已装箱WYWL [ZHY]
+  getYJZXTimeGT0BHWLYiZhuangXiangWYWLList: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      YJZXTime: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+      GTId: {
+        type: 'number',
+      },
+    },
+    required: ['curPage', 'YJZXTime', 'GTId'],
   },
 };

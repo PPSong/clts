@@ -2,7 +2,7 @@ import bCrypt from 'bcryptjs';
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class GetDDWLZhuangXiangList extends BusinessQueryApiBase {
+export default class GetBHWLZhuangXiangList extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.ZHY];
   }
@@ -27,43 +27,40 @@ export default class GetDDWLZhuangXiangList extends BusinessQueryApiBase {
     // 查询记录
     const sql = `
     SELECT
-      bb.id PPId,
+      bb.PPId,
       cc.name PPName,
-      aa.DDId,
-      bb.name DDName,
+      aa.YJZXTime,
       aa.GTId,
-      dd.name GTName,
+      bb.name GTName,
       aa.totalNumber,
       aa.totalZXNumber
     FROM
       (
       SELECT
-        a.DDId,
+        a.YJZXTime,
         a.GTId,
-        SUM(a.number) totalNumber,
+        SUM(1) totalNumber,
         SUM(a.ZXNumber) totalZXNumber
       FROM
-        DD_GT_WL a
+        WLBH a
       WHERE
-        a.status = '${DBTables.DD_GT_WLStatus.YFPFHGYS}'
+        a.status = '${DBTables.WLBHStatus.YFPFHGYS}'
       AND
         a.GYSId = ${tmpGYSId}
+      AND
+        a.YJZXTime IS NOT NULL
       GROUP BY
-        a.DDId,
+        a.YJZXTime,
         a.GTId
       ) aa
-    JOIN
-      DD bb
+      JOIN
+      GT bb
     ON
-      aa.DDId = bb.id
+      aa.GTId = bb.id
     JOIN
       PP cc
     ON
       bb.PPId = cc.id
-    JOIN
-      GT dd
-    ON
-      aa.GTId = dd.id
     WHERE
       1
     AND
