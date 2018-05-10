@@ -2,13 +2,13 @@ import bCrypt from 'bcryptjs';
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class GetDDGT0DDWLZhuangXiangList extends BusinessQueryApiBase {
+export default class GetYJZXTimeGT0BHDPZhuangXiangList extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.ZHY];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { curPage, DDId, GTId } = req.body;
+    const { curPage, YJZXTime, GTId } = req.body;
 
     const perPage = 50;
 
@@ -20,17 +20,17 @@ export default class GetDDGT0DDWLZhuangXiangList extends BusinessQueryApiBase {
       a.WLId,
       b.name WLName,
       b.code WLCode,
-      a.number,
+      1 number,
       a.ZXNumber,
-      a.status DD_GT_WLStatus
+      a.status WLBHStatus
     FROM
-      DD_GT_WL a
+      WLBH a
     JOIN
       WL b
     ON
       a.WLId = b.id
     WHERE
-      a.DDId = ${DDId}
+      a.YJZXTime = ${YJZXTime}
     AND
       a.GTId = ${GTId}
     AND

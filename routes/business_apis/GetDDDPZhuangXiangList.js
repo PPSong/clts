@@ -2,7 +2,7 @@ import bCrypt from 'bcryptjs';
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class GetDDWLZhuangXiangList extends BusinessQueryApiBase {
+export default class GetDDDPZhuangXiangList extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.ZHY];
   }
@@ -39,18 +39,22 @@ export default class GetDDWLZhuangXiangList extends BusinessQueryApiBase {
       (
       SELECT
         a.DDId,
-        a.GTId,
-        SUM(a.number) totalNumber,
+        b.GTId,
+        SUM(1) totalNumber,
         SUM(a.ZXNumber) totalZXNumber
       FROM
-        DD_GT_WL a
+        DD_DW_DP a
+      JOIN
+        DW b
+      ON
+        a.DWId = b.id
       WHERE
-        a.status = '${DBTables.DD_GT_WLStatus.YFPFHGYS}'
+        a.status = '${DBTables.DD_DW_DPStatus.YFPFHGYS}'
       AND
         a.GYSId = ${tmpGYSId}
       GROUP BY
         a.DDId,
-        a.GTId
+        b.GTId
       ) aa
     JOIN
       DD bb
