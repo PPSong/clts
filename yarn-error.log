@@ -27,7 +27,7 @@ npm manifest:
       "genData": "yarn run babel-node -- ./tools/initData.js",
       "test": "mocha --exit --compilers js:babel-core/register test --reporter mochawesome",
       "genData_izz": "yarn run babel-node -- ./tools_izz/initData_izz.js",
-      "test_izz": "mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000",
+      "test_izz": "mocha --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000",
       "test_penn": "mocha --exit --compilers js:babel-core/register test/test_penn.js --reporter mochawesome  --timeout 5000"
     },
     "dependencies": {
@@ -51,6 +51,7 @@ npm manifest:
       "pug": "^2.0.1",
       "sequelize": "^4.36.1",
       "serve-favicon": "^2.4.5",
+      "squel": "^5.12.1",
       "uuid": "^3.2.1"
     },
     "devDependencies": {
@@ -4065,6 +4066,10 @@ Lockfile:
     version "2.3.1"
     resolved "https://registry.yarnpkg.com/sqlstring/-/sqlstring-2.3.1.tgz#475393ff9e91479aea62dcaf0ca3d14983a7fb40"
   
+  squel@^5.12.1:
+    version "5.12.1"
+    resolved "https://registry.yarnpkg.com/squel/-/squel-5.12.1.tgz#ab8fd473b6e28464004918caecedecdb08f7e3ee"
+  
   sshpk@^1.7.0:
     version "1.14.1"
     resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.14.1.tgz#130f5975eddad963f1d56f92b9ac6c51fa9f83eb"
@@ -4541,7 +4546,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000
+  Arguments: -c mocha --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000
   Directory: /Users/penn/Desktop/clts
   Output:
   

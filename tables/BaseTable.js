@@ -1,5 +1,6 @@
 import debug from 'debug';
 import moment from 'moment';
+import { sequelize } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
@@ -52,8 +53,12 @@ export default class BaseTable {
     throw new Error('checkUserAccess should be overrided.');
   }
 
-  getLikeSearchFields() {
-    throw new Error('getLikeSearchFields should be overrided.');
+  getDisplayFields() {
+    throw new Error('getDisplayFields should be overrided.');
+  }
+
+  getOrderByFields() {
+    throw new Error('getOrderByFields should be overrided.');
   }
 
   async getQueryOption(keyword, transaction) {
@@ -155,19 +160,36 @@ export default class BaseTable {
     this.checkListRight();
 
     const curPage = parseInt(queryObj.curPage) || 0;
-    const perPage = parseInt(queryObj.perPage) || 10;
-    const { keyword } = queryObj;
+    const perPage = parseInt(queryObj.perPage) || 50;
+    const { keyword, orderBy } = queryObj;
 
-    const option = await this.getQueryOption(keyword, transaction);
+    const totalSquel = await this.getQueryOption(keyword, transaction);
 
-    option.limit = perPage;
-    option.offset = perPage * curPage;
+    const total = await sequelize.query(
+      totalSquel.field('count(1) total').toString(),
+      { type: sequelize.QueryTypes.SELECT },
+    );
 
-    const r = await this.getTable().findAndCountAll(option);
+    const resultSquel = await this.getQueryOption(keyword, transaction);
+    resultSquel.limit(perPage);
+    resultSquel.offset(perPage * curPage);
+
+    const orderByObj = JSON.parse(this.getOrderByFields(orderBy));
+
+    orderByObj.reduce(
+      (result, item) => result.order(item.name, !item.desc),
+      resultSquel,
+    );
+
+    const r = await sequelize.query(
+      resultSquel.fields(this.getDisplayFields()).toString(),
+      { type: sequelize.QueryTypes.SELECT },
+    );
+
     return {
       code: 1,
-      data: r.rows.map(item => item.toJSON()),
-      total: r.count,
+      data: r,
+      total: total[0].total,
     };
   }
 
@@ -175,7 +197,10 @@ export default class BaseTable {
     // todo: 考虑用乐观锁
     this.checkDisableRight();
 
-    const record = await this.getTable().findOne({ where: { id, disabledAt: null }, transaction });
+    const record = await this.getTable().findOne({
+      where: { id, disabledAt: null },
+      transaction,
+    });
 
     if (!record) {
       throw new Error('没有找到对应记录!');
@@ -239,7 +264,10 @@ export default class BaseTable {
   async findOne(id, transaction) {
     this.checkFindOneRight();
 
-    const record = await this.getTable().findOne({ where: { id }, transaction });
+    const record = await this.getTable().findOne({
+      where: { id },
+      transaction,
+    });
 
     if (!record) {
       throw new Error('没有找到对应记录!');
