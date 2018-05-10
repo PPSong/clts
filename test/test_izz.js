@@ -4278,7 +4278,83 @@ describe('SPRT测试', () => {
           }
         }
       });
+
+      it.only('ZHY出箱WL--原DDGTWL装箱完成', async () => {
+        let ZHY3Token = await getToken('ZHY3', '123456');
+        const EWMs = [
+          {
+            type: 'WL',
+            typeId: 16,
+            uuid: '16_1',
+          },
+        ];
+
+        const response = await post(
+          'chuXiangWL',
+          {
+            EWMs,
+          },
+          ZHY3Token,
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of EWMs) {
+          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          assert.equal(wywl.dataValues.DDGTWLId, null);
+          const ddgtwl = await DD_GT_WL.findOne({ where: { id: 10 } });
+          assert.equal(ddgtwl.dataValues.ZXNumber, 3);
+          assert.equal(ddgtwl.dataValues.status, DD_GT_WLStatus.YFPFHGYS);
+          assert.equal(wywl.dataValues.status, WYWLStatus.RK);
+          assert.equal(wywl.dataValues.GYSId, 2);
+
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.RK },
+          });
+          assert.notEqual(wywlcz, null);
+          for (const item of wywlcz) {
+            assert.equal(item.dataValues.UserId, 32);
+          }
+        }
+      });
+
+      it.only('ZHY出箱WL--原BHWL装箱完成', async () => {
+        const EWMs = [
+          {
+            type: 'WL',
+            typeId: 14,
+            uuid: 'B14_2',
+          },
+        ];
+
+        const response = await post(
+          'chuXiangWL',
+          {
+            EWMs,
+          },
+          ZHYToken,
+        );
+        assert.equal(response.data.code, 1);
+
+        for (let item of EWMs) {
+          const wywl = await WYWL.findOne({ where: { EWM: JSON.stringify(item) } });
+          assert.equal(wywl.dataValues.WLBHId, null);
+          const wlbh = await WLBH.findOne({ where: { id: 10 } });
+          assert.equal(wlbh.dataValues.ZXNumber, 0);
+          assert.equal(wlbh.dataValues.status, DD_GT_WLStatus.YFPFHGYS);
+          assert.equal(wywl.dataValues.status, WYWLStatus.RK);
+          assert.equal(wywl.dataValues.GYSId, 1);
+
+          const wywlcz = await WYWLCZ.findAll({
+            where: { WYWLId: wywl.dataValues.id, status: WYWLStatus.RK },
+          });
+          assert.notEqual(wywlcz, null);
+          for (const item of wywlcz) {
+            assert.equal(item.dataValues.UserId, 30);
+          }
+        }
+      });
     });
+
     describe('失败', async () => {
       describe('数据不合法', async () => { });
       describe('没有权限', async () => {

@@ -66,6 +66,7 @@ import {
   DPQJFKT,
 } from '../models/Model';
 import { it } from 'mocha';
+import { resolve } from 'path';
 
 const isArrayEqual = function (x, y) {
   return _(x)
@@ -142,16 +143,7 @@ const server = require('../app');
 const ppLog = debug('ppLog');
 const baseUrl = 'http://localhost:3001';
 const api = `${baseUrl}/api`;
-let adminToken;
-let PPJLToken;
-let KFJLToken;
-let GZToken;
-let GTBAToken;
-let GYSGLYToken;
-let AZGSGLYToken;
 let ZHYToken;
-let AZGToken;
-
 let scriptArr;
 
 const initData = async () => {
@@ -218,21 +210,14 @@ describe('SPRT_Search测试', () => {
     await con.query('DROP DATABASE IF EXISTS cltp');
     await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
 
-    const data = await readFile(`${__dirname}/../tools_izz/initDataScript_izz.sql`);
+    const data = await readFile(`${__dirname}/../tools_izz/initDataSearchScript_izz.sql`);
     scriptArr = data.split(';');
 
     await initData();
     await createViewAndProcedure();
 
-    adminToken = await getToken('admin', '123456');
-    PPJLToken = await getToken('PPJL1', '123456');
-    KFJLToken = await getToken('KFJL1', '123456');
-    GZToken = await getToken('GZ1', '123456');
-    GTBAToken = await getToken('GTBA1', '123456');
-    GYSGLYToken = await getToken('GYSGLY1', '123456');
-    AZGSGLYToken = await getToken('AZGSGLY1', '123456');
+
     ZHYToken = await getToken('ZHY1', '123456');
-    AZGToken = await getToken('AZG1', '123456');
   });
 
   describe('test', async () => {
@@ -254,10 +239,82 @@ describe('SPRT_Search测试', () => {
   // });
 
   // 装货 [ZHY]
-  describe('装货查询', async () => {
-    it('ZHY物料', async () => {
-      const name = 'PP_T';
-      
+  describe('getDDWLZhuangXiangList', async () => {
+    it('ZHY进入WL装箱任务列表', async () => {
+      const curPage = 0;
+      const trueList = [{
+        PPId: 1,
+        PPName: 'PP1',
+        DDId: 1,
+        DDName: 'DD1',
+        GTId: 1,
+        GTName: 'GT1',
+        totalNumber: '10',
+        totalZXNumber: '0',
+      }];
+
+      const response = await post(
+        'getDDWLZhuangXiangList',
+        {
+          curPage,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.deepEqual(response.data.data, trueList);
+    });
+
+    it('ZHY模糊搜索WL装箱任务列表', async () => {
+      const curPage = 0;
+      const keyword = 'PP1'
+      const trueList = [{
+        PPId: 1,
+        PPName: 'PP1',
+        DDId: 1,
+        DDName: 'DD1',
+        GTId: 1,
+        GTName: 'GT1',
+        totalNumber: '10',
+        totalZXNumber: '0',
+      }];
+
+      const response = await post(
+        'getDDWLZhuangXiangList',
+        {
+          curPage,
+          keyword,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.deepEqual(response.data.data, trueList);
+    });
+  });
+
+describe('getDDGT0DDWLZhuangXiangList', async () => {
+    it('ZHY进入某个DD_GT任务', async () => {
+      const curPage = 0;
+      const DDId = 1;
+      const GTId = 1;
+      const trueList = [{
+        WLId: 1,
+        WLName: 'WL1_3_1',
+        WLCode: '1_3_1',
+        number: 10,
+        ZXNumber: 0,
+      }];
+
+      const response = await post(
+        'getDDGT0DDWLZhuangXiangList',
+        {
+          curPage,
+          DDId,
+          GTId,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.deepEqual(response.data.data, trueList);
     });
   });
 

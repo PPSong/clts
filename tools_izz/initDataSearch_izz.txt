@@ -1,0 +1,47 @@
+//用户															
+[User]															
+Id	username	password	JS												
+1	ZHY1	password(123456)	装货员												
+100	GTBA1	password(123456)	柜台BA												
+															
+//品牌															
+[PP]															
+id	name														
+1	PP1														
+															
+//柜台															
+[GT]															
+id	name	code	PPId	QY	GTBAUserId	CS									
+1	GT1	1	1	南区	100	上海									
+															
+//供应商															
+[GYS]															
+id	Name	type													
+1	GYS1	生产													
+															
+[ZHY_GYS]															
+UserId	GYSId														
+1	1														
+															
+//物料															
+[WL]															
+id	name	code	level	PPId	GYSId	imageUrl									
+1	WL1_3_1	1_3_1	3	1	1	imageUrl1_3_1									
+															
+//订单信息															
+[DD]															
+id	name	status	PPId												
+1	DD1	已审批	1												
+															
+//订单柜台物料															
+[DD_GT_WL]															
+id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	YJRKDate	YJZXDate						
+1	1	1	1	10	1	已分配发货供应商	0	2018-2-2	2018-2-2						
+															
+//快递箱															
+[KDX]															
+id	EWM	GTId	status	DDId	HWType										
+1	{"type":"KDX","uuid":"KDX1"}	1	装箱	1	WL										
+															
+															
+[end]															
