@@ -2,7 +2,7 @@ import bCrypt from 'bcryptjs';
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class GetWLZhuangXiangDDGT extends BusinessQueryApiBase {
+export default class GetDDWLZhuangXiangList extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.ZHY];
   }

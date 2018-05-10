@@ -2077,8 +2077,23 @@ export const apiSchema = {
     },
     required: ['WYDPPayloads'],
   },
-  // 获取物料安装DDGT [ZHY]
-  getDDGTWLZhuangXiang: {
+  // 获取DDWL装箱任务 [ZHY]
+  getDDWLZhuangXiangList: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取指定DDGT物料装箱任务 [ZHY]
+  getDDGT0DDWLZhuangXiangList: {
     type: 'object',
     properties: {
       // 当前页码
