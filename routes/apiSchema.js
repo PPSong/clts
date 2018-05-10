@@ -2092,8 +2092,25 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
-  // 获取指定DDGT物料装箱任务 [ZHY]
+  // 获取指定DDGT的DDWL装箱任务 [ZHY]
   getDDGT0DDWLZhuangXiangList: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      DDId: {
+        type: 'number',
+      },
+      GTId: {
+        type: 'number',
+      },
+    },
+    required: ['curPage', 'DDId', 'GTId'],
+  },
+  // 获取指定DDGT的DDWL已装箱WYWL [ZHY]
+  getDDGT0DDWLYiZhuangXiangWYWLList: {
     type: 'object',
     properties: {
       // 当前页码
