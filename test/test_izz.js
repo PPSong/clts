@@ -2613,12 +2613,14 @@ describe('SPRT测试', () => {
       it('AZGSGLY设置DD_GT_WL的AZG', async () => {
         const DD_GT_WLIds = [4, 5];
         const AZGUserId = 36;
+        const YJAZDate = '2018-01-01';
 
         const response = await post(
           'setDDGTWLs0AZG',
           {
             DD_GT_WLIds,
             AZGUserId,
+            YJAZDate,
           },
           AZGSGLYToken,
         );
@@ -2627,6 +2629,7 @@ describe('SPRT测试', () => {
         for (const item of DD_GT_WLIds) {
           const ddgtwl = await DD_GT_WL.findOne({ where: { id: item } });
           assert.equal(ddgtwl.dataValues.AZGUserId, AZGUserId);
+          assert.equal(ddgtwl.dataValues.YJAZDate, new Date(YJAZDate).getTime());
         }
       });
 
@@ -2712,12 +2715,14 @@ describe('SPRT测试', () => {
       it('AZGSGLY设置DD_DW_DP的AZG', async () => {
         const DD_DW_DPIds = [4, 5];
         const AZGUserId = 36;
+        const YJAZDate = '2018-01-01';
 
         const response = await post(
           'setDDDWDPs0AZG',
           {
             DD_DW_DPIds,
             AZGUserId,
+            YJAZDate,
           },
           AZGSGLYToken,
         );
@@ -2726,6 +2731,7 @@ describe('SPRT测试', () => {
         for (const item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.AZGUserId, AZGUserId);
+          assert.equal(ddgtwl.dataValues.YJAZDate, new Date(YJAZDate).getTime());
         }
       });
     });
@@ -7775,12 +7781,14 @@ describe('SPRT测试', () => {
       it('AZGSGLY分配审批通过的WLBH的AZG', async () => {
         const WLBHIds = [8, 32];
         const AZGUserId = 36;
+        const YJAZDate = '2018-01-01';
 
         const response = await post(
           'setWLBHs0AZG',
           {
             WLBHIds,
             AZGUserId,
+            YJAZDate,
           },
           AZGSGLYToken,
         );
@@ -7789,6 +7797,7 @@ describe('SPRT测试', () => {
         for (const item of WLBHIds) {
           const wlbh = await WLBH.findOne({ where: { id: item } });
           assert.equal(wlbh.dataValues.AZGUserId, AZGUserId);
+          assert.equal(ddgtwl.dataValues.YJAZDate, new Date(YJAZDate).getTime());
         }
       });
 
@@ -7875,12 +7884,14 @@ describe('SPRT测试', () => {
       it('AZGSGLY分配DPBH的AZG', async () => {
         const DPBHIds = [8, 32];
         const AZGUserId = 36;
+        const YJAZDate = '2018-01-01'
 
         const response = await post(
           'setDPBHs0AZG',
           {
             DPBHIds,
             AZGUserId,
+            YJAZDate,
           },
           AZGSGLYToken,
         );
@@ -7889,6 +7900,7 @@ describe('SPRT测试', () => {
         for (const item of DPBHIds) {
           const dpbh = await DPBH.findOne({ where: { id: item } });
           assert.equal(dpbh.dataValues.AZGUserId, AZGUserId);
+          assert.equal(ddgtwl.dataValues.YJAZDate, new Date(YJAZDate).getTime());
         }
       });
 
