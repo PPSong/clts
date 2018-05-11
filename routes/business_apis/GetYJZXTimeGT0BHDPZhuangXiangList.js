@@ -19,6 +19,7 @@ export default class GetYJZXTimeGT0BHDPZhuangXiangList extends BusinessQueryApiB
     SELECT
       a.DPId,
       b.name DPName,
+      c.id DWId,
       c.name DWName,
       c.CC,
       c.CZ,
