@@ -958,7 +958,7 @@ describe('SPRT_testSearch', () => {
       assert.sameDeepMembers(response.data.data, trueList);
     });
 
-    it.only('GTBA模糊搜索GT的KDX列表', async () => {
+    it('GTBA模糊搜索GT的KDX列表', async () => {
       const curPage = 0;
       const keyword = '装箱';
       const trueList = [
@@ -1007,7 +1007,7 @@ describe('SPRT_testSearch', () => {
 
   // 获取AZG的DD任务列表 [AZG]
   describe('getAZGDDTasks', async () => {
-    it('AZG获取DD任务列表', async () => {
+    it.only('AZG获取DD任务列表', async () => {
       const curPage = 0;
       const trueList = [
         {
