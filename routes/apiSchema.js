@@ -2300,7 +2300,7 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
-  // 获取GT的KDXs [ZHY]
+  // 获取GT的KDXs [GTBA]
   getGTKDXs: {
     type: 'object',
     properties: {
@@ -2315,7 +2315,7 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
-  // 获取AZG的DD任务列表 [ZHY]
+  // 获取AZG的DD任务列表 [AZG]
   getAZGDDTasks: {
     type: 'object',
     properties: {
@@ -2330,7 +2330,7 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
-  // 获取GTBA的DD任务列表 [ZHY]
+  // 获取GTBA的DD任务列表 [GTBA]
   getGTBADDTasks: {
     type: 'object',
     properties: {
