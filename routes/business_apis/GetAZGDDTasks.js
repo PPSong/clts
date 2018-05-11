@@ -43,6 +43,14 @@ export default class GetAZGDDTasks extends BusinessQueryApiBase {
       FROM
         DD_GT_WL a
       WHERE
+      (
+        a.Status = '${DBTables.DD_GT_WLStatus.ZXWC}'
+      OR
+        a.Status = '${DBTables.DD_GT_WLStatus.SH}'
+      OR
+        a.Status = '${DBTables.DD_GT_WLStatus.KPQJT}'
+      )
+      AND
         a.AZGUserId = ${user.id}
       GROUP BY
         a.DDId,
@@ -63,6 +71,13 @@ export default class GetAZGDDTasks extends BusinessQueryApiBase {
       ON
         a.DWId = b.id
       WHERE
+      (
+        a.Status = '${DBTables.DD_DW_DPStatus.ZXWC}'
+      OR
+        a.Status = '${DBTables.DD_DW_DPStatus.SH}'
+      OR
+        a.Status = '${DBTables.DD_DW_DPStatus.KPQJT}'
+      )
         a.AZGUserId = ${user.id}
       GROUP BY
         a.DDId,
