@@ -2345,4 +2345,23 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
+  // 获取GT的DDWL安装列表 [GTBA]
+  getGT0DDWLAnZhuangTasks: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      // GTId
+      GTId: {
+        type: 'number',
+      },
+    },
+    required: ['curPage', 'GTId'],
+  },
 };
