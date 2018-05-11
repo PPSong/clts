@@ -144,6 +144,8 @@ const ppLog = debug('ppLog');
 const baseUrl = 'http://localhost:3001';
 const api = `${baseUrl}/api`;
 let ZHYToken;
+let AZGToken;
+let GTBAToken;
 let scriptArr;
 
 const initData = async () => {
@@ -218,6 +220,8 @@ describe('SPRT_Search测试', () => {
 
 
     ZHYToken = await getToken('ZHY1', '123456');
+    AZGToken = await getToken('AZG1', '123456');
+    GTBAToken = await getToken('GTBA1', '123456');
   });
 
   describe('test', async () => {
@@ -263,7 +267,8 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      console.log(response.data.data,'izzlog');
+      assert.sameDeepMembers(response.data.data, trueList);
     });
 
     it('ZHY模糊搜索WL装箱任务列表', async () => {
@@ -291,7 +296,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -303,7 +308,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-10',
+          YJZXTime: '2018-10-10T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -312,7 +317,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-11',
+          YJZXTime: '2018-10-11T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -321,7 +326,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-12',
+          YJZXTime: '2018-10-12T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -330,7 +335,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-13',
+          YJZXTime: '2018-10-13T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '3',
@@ -342,12 +347,11 @@ describe('SPRT_Search测试', () => {
         'getBHWLZhuangXiangList',
         {
           curPage,
-          GTId,
         },
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
 
     it('ZHY模糊搜索BHWL的装箱任务', async () => {
@@ -357,7 +361,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-10',
+          YJZXTime: '2018-10-10T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -366,7 +370,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-11',
+          YJZXTime: '2018-10-11T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -375,7 +379,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-12',
+          YJZXTime: '2018-10-12T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -384,7 +388,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-13',
+          YJZXTime: '2018-10-13T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '3',
@@ -401,7 +405,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -472,13 +476,13 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
   // 获取指定YJZXTimeGT的BHWL装箱任务 [ZHY]
   describe('getYJZXTimeGT0BHWLZhuangXiangList', async () => {
-    it.only('ZHY进入BHWL装箱任务', async () => {
+    it('ZHY进入BHWL装箱任务', async () => {
       const curPage = 0;
       const YJZXTime = '2018-10-10';
       const GTId = 1;
@@ -494,7 +498,7 @@ describe('SPRT_Search测试', () => {
       ];
 
       const response = await post(
-        'getDDGT0DDWLZhuangXiangList',
+        'getYJZXTimeGT0BHWLZhuangXiangList',
         {
           curPage,
           YJZXTime: new Date(YJZXTime).getTime(),
@@ -504,7 +508,7 @@ describe('SPRT_Search测试', () => {
       );
       assert.equal(response.data.code, 1);
       console.log('izzlog', response.data);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -516,18 +520,18 @@ describe('SPRT_Search测试', () => {
       const GTId = 1;
       const trueList = [
         {
+          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
+          WLCode: '1_3_2',
           WLId: 2,
           WLName: 'WL1_3_2',
-          WLCode: '1_3_2',
           WYWLEWM: '{"type":"WL","typeId":2,"uuid":"2_1"}',
-          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
         },
         {
+          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
+          WLCode: '1_3_3',
           WLId: 3,
           WLName: 'WL1_3_3',
-          WLCode: '1_3_3',
           WYWLEWM: '{"type":"WL","typeId":3,"uuid":"3_1"}',
-          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
         },
       ];
 
@@ -541,7 +545,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -571,7 +575,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -600,7 +604,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
 
     it('ZHY模糊搜索DP装箱任务列表', async () => {
@@ -627,7 +631,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -639,7 +643,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-10',
+          YJZXTime: '2018-10-10T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -648,7 +652,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-11',
+          YJZXTime: '2018-10-11T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -657,7 +661,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-12',
+          YJZXTime: '2018-10-12T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -666,7 +670,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-13',
+          YJZXTime: '2018-10-13T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '3',
@@ -682,7 +686,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
 
     it('ZHY模糊搜索BHDP装箱任务', async () => {
@@ -692,7 +696,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-10',
+          YJZXTime: '2018-10-10T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -701,7 +705,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-11',
+          YJZXTime: '2018-10-11T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -710,7 +714,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-12',
+          YJZXTime: '2018-10-12T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '1',
@@ -719,7 +723,7 @@ describe('SPRT_Search测试', () => {
         {
           PPId: 1,
           PPName: 'PP1',
-          YJZXTime: '2018-10-13',
+          YJZXTime: '2018-10-13T00:00:00.000Z',
           GTId: 1,
           GTName: 'GT1',
           totalNumber: '3',
@@ -736,7 +740,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -830,12 +834,13 @@ describe('SPRT_Search测试', () => {
         'getDDGT0DDDPZhuangXiangList',
         {
           curPage,
-          keyword,
+          DDId,
+          GTId,
         },
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -869,7 +874,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -889,7 +894,7 @@ describe('SPRT_Search测试', () => {
       ];
 
       const response = await post(
-        'getYJZXTimeGT0BHDPZhuangXiangList',
+        'getDDGT0DDDPYiZhuangXiangWYDPList',
         {
           curPage,
           DDId,
@@ -898,12 +903,12 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
   // 获取指定YJZXTimeGT的BHDP已装箱WYDP [ZHY]
-  describe('getDDGT0DDDPYiZhuangXiangWYDPList', async () => {
+  describe('getYJZXTimeGT0BHDPYiZhuangXiangWYDPList', async () => {
     it('ZHY获取指定YJZXTimeGT的已装箱WYDP', async () => {
       const curPage = 0;
       const YJZXTime = '2018-10-11';
@@ -918,7 +923,7 @@ describe('SPRT_Search测试', () => {
       ];
 
       const response = await post(
-        'getDDGT0DDDPYiZhuangXiangWYDPList',
+        'getYJZXTimeGT0BHDPYiZhuangXiangWYDPList',
         {
           curPage,
           YJZXTime,
@@ -927,7 +932,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -1001,8 +1006,9 @@ describe('SPRT_Search测试', () => {
         },
         ZHYToken,
       );
+      console.log('izzlog', response.data.data)
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -1027,7 +1033,7 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
 
     it('ZHY模糊搜索库存', async () => {
@@ -1050,14 +1056,182 @@ describe('SPRT_Search测试', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      assert.deepInclude(response.data.data, trueList);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
-  // // 获取GT的KDXs [ZHY]
-  // describe('getGTKDXs', async () => {
-  //   const curPage = 0;
+  // 获取GT的KDXs [GTBA]
+  describe('getGTKDXs', async () => {
+    it('GTBA查看GT的KDX列表', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          PPName: 'PP1',
+          taskName: '',
+          GTName: 'GT1',
+          taskType: 'BH',
+          HWType: 'DP',
+        },
+      ];
 
-  //   const keyword;
-  // });
+    });
+
+    it('GTBA模糊搜索GT的KDX列表', async () => {
+      const curPage = 0;
+      const keyword = 'PP1';
+      
+    });
+  });
+
+  // 获取AZG的DD任务列表 [AZG]
+  describe('getAZGDDTasks', async () => {
+    it('AZG获取DD任务列表', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: '2018-01-01T00:00:00.000Z',
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'WL',
+        },
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: '2018-01-01T00:00:00.000Z',
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'DP',
+        },
+      ];
+
+      const response = await post(
+        'getAZGDDTasks',
+        {
+          curPage,
+        },
+        AZGToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('AZG模糊搜索DD任务列表', async () => {
+      const curPage = 0;
+      const keyword = 'DD1';
+      const trueList = [
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: '2018-01-01T00:00:00.000Z',
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'WL',
+        },
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: '2018-01-01T00:00:00.000Z',
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'DP',
+        },
+      ];
+
+      const response = await post(
+        'getAZGDDTasks',
+        {
+          curPage,
+        },
+        AZGToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+  });
+
+  // 获取GTBA的DD任务列表 [GTBA]
+  describe('getGTBADDTasks', async () => {
+    it('GTBA获取DD任务列表', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: null,
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'WL',
+        },
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: null,
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'DP',
+        },
+      ];
+
+      const response = await post(
+        'getGTBADDTasks',
+        {
+          curPage,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('GTBA模糊搜索DD任务列表', async () => {
+      const curPage = 0;
+      const keyword = 'DD1';
+      const trueList = [
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: null,
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'WL',
+        },
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: null,
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'DP',
+        },
+      ];
+
+      const response = await post(
+        'getGTBADDTasks',
+        {
+          curPage,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+  });
 });

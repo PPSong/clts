@@ -53,16 +53,16 @@ id	name	status	PPId
 															
 //订单柜台物料															
 [DD_GT_WL]															
-id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	AZGSId							
-1	1	1	1	10	1	已分配发货供应商	0	1							
-2	1	1	2	2	1	已分配发货供应商	1	1							
-3	1	1	3	3	1	装箱完成	3	1							
+id	DDId	GTId	WLId	number	GYSId	status	ZXNumber								
+1	1	1	1	10	1	已分配发货供应商	0								
+2	1	1	2	2	1	已分配发货供应商	1								
+3	1	1	3	3	1	装箱完成	3								
 															
 [DD_GT_WL]															
-id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	AZGSId	AZGUserId						
-4	1	1	4	2	1	收货	2	1	2						
-5	1	1	5	2	1	可拍全景图	2	1	2						
-6	1	1	6	2	1	完成	2	1	2						
+id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	AZGSId	AZGUserId	YJAZDate					
+4	1	1	4	2	1	收货	2	1	2	2018-01-01					
+5	1	1	5	2	1	可拍全景图	2	1	2	2018-01-01					
+6	1	1	6	2	1	完成	2	1	2	2018-01-01					
 															
 //快递单															
 [KDD]															
@@ -80,7 +80,7 @@ id	code	GTId
 [KDX]															
 id	EWM	GTId	status	DDId	HWType	GYSId									
 1	{"type":"KDX","uuid":"KDX1"}	1	装箱	1	WL	1									
-101	{"type":"KDX","uuid":"KDX100"}	1	装箱	1	DP	1									
+101	{"type":"KDX","uuid":"KDX101"}	1	装箱	1	DP	1									
 															
 [KDX]															
 id	EWM	GTId	status	DDId	HWType	KDDId	GYSId								
@@ -145,7 +145,7 @@ id	name	PPId	GYSId
 															
 //灯位															
 [DW]															
-id	name	GTId	DPId	CZ	CC										
+id	name	GTId	DPId	CC	CZ										
 1	DW1	1	1	100*100	铜板										
 2	DW2	1	1	100*100	铜板										
 3	DW3	1	1	100*100	铜板										
@@ -156,27 +156,30 @@ id	name	GTId	DPId	CZ	CC
 															
 //订单灯位灯片															
 [DD_DW_DP]															
-id	DDId	DWId	DPId	GYSId	status	ZXNumber	CZ	CC							
+id	DDId	DWId	DPId	GYSId	status	ZXNumber	CC	CZ							
 1	1	1	1	1	已分配发货供应商	0	100*100	铜板							
 2	1	2	1	1	装箱完成	1	100*100	铜板							
 3	1	3	1	1	装箱完成	1	100*100	铜板							
 4	1	4	1	1	装箱完成	1	100*100	铜板							
-5	1	5	1	1	收货	1	100*100	铜板							
-6	1	6	1	1	可拍全景图	1	100*100	铜板							
-7	1	7	1	1	完成	1	100*100	铜板							
+															
+[DD_DW_DP]															
+id	DDId	DWId	DPId	GYSId	status	ZXNumber	CC	CZ	AZGSId	AZGUserId	YJAZDate				
+5	1	5	1	1	收货	1	100*100	铜板	1	2	2018-01-01				
+6	1	6	1	1	可拍全景图	1	100*100	铜板	1	2	2018-01-01				
+7	1	7	1	1	完成	1	100*100	铜板	1	2	2018-01-01				
 															
 //唯一灯片															
 [WYDP]															
 id	EWM	status	DPId	GYSId	DDDWDPId	KDXId									
-1	{"type":"DP","typeId":1,"uuid":"1_1","DWId":1,"name":"DW1","CZ":"100*100","CC":"铜板"}	装箱	1	1	2	101									
+1	{"type":"DP","typeId":1,"uuid":"1_1","DWId":1,"name":"DW1","CC":"100*100","CZ":"铜板"}	装箱	1	1	2	101									
 															
 [WYDP]															
 id	EWM	status	DPId	GYSId	DDDWDPId	KDXId									
-2	{"type":"DP","typeId":1,"uuid":"1_2","DWId":2,"name":"DW2","CZ":"100*100","CC":"铜板"}	发货	1	1	3	102									
-3	{"type":"DP","typeId":1,"uuid":"1_3","DWId":3,"name":"DW3","CZ":"100*100","CC":"铜板"}	收箱	1	1	4	103									
-4	{"type":"DP","typeId":1,"uuid":"1_4","DWId":4,"name":"DW4","CZ":"100*100","CC":"铜板"}	收货	1	1	5	103									
-5	{"type":"DP","typeId":1,"uuid":"1_5","DWId":5,"name":"DW5","CZ":"100*100","CC":"铜板"}	反馈	1	1	6	103									
-6	{"type":"DP","typeId":1,"uuid":"1_6","DWId":6,"name":"DW6","CZ":"100*100","CC":"铜板"}	反馈	1	1	7	103									
+2	{"type":"DP","typeId":1,"uuid":"1_2","DWId":2,"name":"DW2","CC":"100*100","CZ":"铜板"}	发货	1	1	3	102									
+3	{"type":"DP","typeId":1,"uuid":"1_3","DWId":3,"name":"DW3","CC":"100*100","CZ":"铜板"}	收箱	1	1	4	103									
+4	{"type":"DP","typeId":1,"uuid":"1_4","DWId":4,"name":"DW4","CC":"100*100","CZ":"铜板"}	收货	1	1	5	103									
+5	{"type":"DP","typeId":1,"uuid":"1_5","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}	反馈	1	1	6	103									
+6	{"type":"DP","typeId":1,"uuid":"1_6","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}	反馈	1	1	7	103									
 															
 //灯片补货															
 [DPBH]															
@@ -193,11 +196,11 @@ id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	CZ	CC	YJZXTime	AZGSId	AZGUserId
 															
 [WYDP]															
 id	EWM	status	DPId	GYSId	DPBHId	KDXId									
-7	{"type":"DP","typeId":1,"uuid":"1_7","DWId":2,"name":"DW2","CZ":"100*100","CC":"铜板"}	装箱	1	1	2	104									
-8	{"type":"DP","typeId":1,"uuid":"1_8","DWId":3,"name":"DW3","CZ":"100*100","CC":"铜板"}	发货	1	1	3	105									
-9	{"type":"DP","typeId":1,"uuid":"1_9","DWId":4,"name":"DW4","CZ":"100*100","CC":"铜板"}	收货	1	1	4	106									
-10	{"type":"DP","typeId":1,"uuid":"1_10","DWId":5,"name":"DW5","CZ":"100*100","CC":"铜板"}	反馈	1	1	5	106									
-11	{"type":"DP","typeId":1,"uuid":"1_11","DWId":6,"name":"DW6","CZ":"100*100","CC":"铜板"}	完成	1	1	6	106									
+7	{"type":"DP","typeId":1,"uuid":"1_7","DWId":2,"name":"DW2","CC":"100*100","CZ":"铜板"}	装箱	1	1	2	104									
+8	{"type":"DP","typeId":1,"uuid":"1_8","DWId":3,"name":"DW3","CC":"100*100","CZ":"铜板"}	发货	1	1	3	105									
+9	{"type":"DP","typeId":1,"uuid":"1_9","DWId":4,"name":"DW4","CC":"100*100","CZ":"铜板"}	收货	1	1	4	106									
+10	{"type":"DP","typeId":1,"uuid":"1_10","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}	反馈	1	1	5	106									
+11	{"type":"DP","typeId":1,"uuid":"1_11","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}	完成	1	1	6	106									
 															
 															
 [end]															
