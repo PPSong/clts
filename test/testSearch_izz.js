@@ -1203,6 +1203,7 @@ describe('SPRT_testSearch', () => {
   describe('getGT0DDWLAnZhuangTasks', async () => {
     it('GTBA获取DDGT的WYWL', async () => {
       const curPage = 0;
+      const GTId = 1;
       const trueList = [
         {
           WLName: 'WL1_3_2',
@@ -1234,6 +1235,7 @@ describe('SPRT_testSearch', () => {
         'getGT0DDWLAnZhuangTasks',
         {
           curPage,
+          GTId,
         },
         GTBAToken,
       );
@@ -1243,6 +1245,7 @@ describe('SPRT_testSearch', () => {
 
     it('GTBA模糊搜索DDGT的WYWL', async () => {
       const curPage = 0;
+      const GTId = 1;
       const keyword = '1_3_2';
       const trueList = [
         {
@@ -1257,6 +1260,7 @@ describe('SPRT_testSearch', () => {
         'getGT0DDWLAnZhuangTasks',
         {
           curPage,
+          GTId,
           keyword,
         },
         GTBAToken,
@@ -1267,6 +1271,7 @@ describe('SPRT_testSearch', () => {
 
     it('AZG获取DDGT的WYWL', async () => {
       const curPage = 0;
+      const GTId = 1;
       const trueList = [
         {
           WLName: 'WL1_3_4',
@@ -1298,6 +1303,7 @@ describe('SPRT_testSearch', () => {
         'getGT0DDWLAnZhuangTasks',
         {
           curPage,
+          GTId,
         },
         AZGToken,
       );
@@ -1308,6 +1314,7 @@ describe('SPRT_testSearch', () => {
     it('AZG模糊搜索DDGT的WYWL', async () => {
       const curPage = 0;
       const keyword = '1_3_4';
+      const GTId = 1;
       const trueList = [
         {
           WLName: 'WL1_3_4',
@@ -1328,6 +1335,7 @@ describe('SPRT_testSearch', () => {
         {
           curPage,
           keyword,
+          GTId,
         },
         AZGToken,
       );
@@ -1340,6 +1348,7 @@ describe('SPRT_testSearch', () => {
   describe('getGT0DDDPAnZhuangTasks', async () => {
     it('GTBA获取DDGT的WYDP', async () => {
       const curPage = 0;
+      const GTId = 1;
       const trueList = [
         {
           DWName: 'DW2',
@@ -1366,6 +1375,7 @@ describe('SPRT_testSearch', () => {
         'getGT0DDDPAnZhuangTasks',
         {
           curPage,
+          GTId,
         },
         GTBAToken,
       );
@@ -1375,6 +1385,7 @@ describe('SPRT_testSearch', () => {
 
     it('GTBA模糊搜索DDGT的WYDP', async () => {
       const curPage = 0;
+      const GTId = 1;
       const keyword = 'DW2';
       const trueList = [
         {
@@ -1390,6 +1401,7 @@ describe('SPRT_testSearch', () => {
         {
           curPage,
           keyword,
+          GTId,
         },
         GTBAToken,
       );
@@ -1399,6 +1411,7 @@ describe('SPRT_testSearch', () => {
 
     it('AZG获取DDGT的WYDP', async () => {
       const curPage = 0;
+      const GTId = 1;
       const trueList = [
         {
           DWName: 'DW5',
@@ -1424,6 +1437,7 @@ describe('SPRT_testSearch', () => {
         'getGT0DDDPAnZhuangTasks',
         {
           curPage,
+          GTId,
         },
         AZGToken,
       );
@@ -1433,6 +1447,7 @@ describe('SPRT_testSearch', () => {
 
     it('AZG模糊搜索DDGT的WYDP', async () => {
       const curPage = 0;
+      const GTId = 1;
       const keyword = 'DW5';
       const trueList = [
         {
@@ -1448,6 +1463,7 @@ describe('SPRT_testSearch', () => {
         {
           curPage,
           keyword,
+          GTId,
         },
         AZGToken,
       );
@@ -1475,7 +1491,7 @@ describe('SPRT_testSearch', () => {
           WLName: 'WL1_3_1',
           WLCode: '1_3_1',
           WLEWM: '{"type":"WL","typeId":1,"uuid":"1_2"}',
-          status: '装箱',
+          status: '发货',
         },
       ];
 
@@ -1627,7 +1643,7 @@ describe('SPRT_testSearch', () => {
 
     it('GTBA模糊搜索BHDP的WYDP', async () => {
       const curPage = 0;
-      const YJAZDate = null;
+      const keyword = null;
       const trueList = [
         {
           GTName: 'GT1',
@@ -1701,7 +1717,7 @@ describe('SPRT_testSearch', () => {
 
     it('AZG模糊搜索BHDP的WYDP', async () => {
       const curPage = 0;
-      const YJAZDate = '2018-01-02';
+      const keyword = '2018-01-02';
       const trueList = [
         {
           GTName: 'GT1',
