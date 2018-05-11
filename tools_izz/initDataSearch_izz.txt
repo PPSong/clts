@@ -103,6 +103,10 @@ id	EWM	GTId	status	DDId	HWType	YJZXTime	KDDId	GYSId
 															
 //唯一物料															
 [WYWL]															
+id	EWM	status	WLId	GYSId											
+200	{"type":"WL","typeId":1,"uuid":"1_200"}	入库	1	1											
+															
+[WYWL]															
 id	EWM	status	WLId	GYSId	DDGTWLId	KDXId									
 1	{"type":"WL","typeId":2,"uuid":"2_1"}	装箱	2	1	2	1									
 2	{"type":"WL","typeId":3,"uuid":"3_1"}	装箱	3	1	3	1									
