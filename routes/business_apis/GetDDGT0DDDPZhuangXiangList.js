@@ -37,6 +37,8 @@ export default class GetDDGT0DDDPZhuangXiangList extends BusinessQueryApiBase {
     ON
       a.DWId = c.id
     WHERE
+      a.status = '${DBTables.DD_DW_DPStatus.YFPFHGYS}'
+    AND
       a.DDId = ${DDId}
     AND
       c.GTId = ${GTId}

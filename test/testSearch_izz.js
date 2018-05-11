@@ -415,7 +415,7 @@ describe('SPRT_testSearch', () => {
         'getYJZXTimeGT0BHWLZhuangXiangList',
         {
           curPage,
-          YJZXTime: new Date(YJZXTime).getTime(),
+          YJZXTime,
           GTId,
         },
         ZHYToken,
@@ -428,7 +428,7 @@ describe('SPRT_testSearch', () => {
 
   // 获取指定DDGT的DDWL已装箱WYWL [ZHY]
   describe('getDDGT0DDWLYiZhuangXiangWYWLList', async () => {
-    it.only('ZHY进入已装箱WYWL', async () => {
+    it('ZHY进入已装箱WYWL', async () => {
       const curPage = 0;
       const DDId = 1;
       const GTId = 1;
@@ -483,7 +483,7 @@ describe('SPRT_testSearch', () => {
         'getYJZXTimeGT0BHWLYiZhuangXiangWYWLList',
         {
           curPage,
-          YJZXTime: new Date(YJZXTime).getTime(),
+          YJZXTime,
           GTId,
         },
         ZHYToken,
@@ -662,7 +662,7 @@ describe('SPRT_testSearch', () => {
         'getYJZXTimeGT0BHDPZhuangXiangList',
         {
           curPage,
-          YJZXTime: new Date(YJZXTime).getTime(),
+          YJZXTime,
           GTId,
         },
         ZHYToken,

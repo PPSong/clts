@@ -19,8 +19,6 @@ export default class GetBHWLZhuangXiangList extends BusinessQueryApiBase {
         cc.name LIKE '%${keyword}%'
       OR
         bb.name LIKE '%${keyword}%'
-      OR
-        dd.name LIKE '%${keyword}%'
       )
     ` : '1';
 

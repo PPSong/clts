@@ -37,7 +37,9 @@ export default class GetYJZXTimeGT0BHWLYiZhuangXiangWYWLList extends BusinessQue
     ON
       b.KDXId = d.id
     WHERE
-      a.YJZXTime = ${YJZXTime}
+      b.status = '${DBTables.WYWLStatus.ZX}'
+    AND
+      a.YJZXTime = '${YJZXTime}'
     AND
       a.GTId = ${GTId}
     AND

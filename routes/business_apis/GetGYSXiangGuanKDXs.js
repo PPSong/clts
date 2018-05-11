@@ -41,6 +41,12 @@ export default class GetGYSXiangGuanKDXs extends BusinessQueryApiBase {
     ON
       a.KDDId = e.id
     WHERE
+    (  
+      a.status = '${DBTables.KDXStatus.ZX}'
+    OR
+      a.status = '${DBTables.KDXStatus.FH}'
+    )
+    AND 
       GYSId = ${tmpGYSId}
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}

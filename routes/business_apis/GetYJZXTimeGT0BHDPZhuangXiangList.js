@@ -41,7 +41,9 @@ export default class GetYJZXTimeGT0BHDPZhuangXiangList extends BusinessQueryApiB
     ON
       c.GTId = d.id
     WHERE
-      a.YJZXTime = ${YJZXTime}
+      a.status = '${DBTables.DPBHStatus.YFPFHGYS}'
+    AND
+      a.YJZXTime = '${YJZXTime}'
     AND
       c.GTId = ${GTId}
     AND

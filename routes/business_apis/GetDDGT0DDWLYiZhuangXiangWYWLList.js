@@ -37,7 +37,7 @@ export default class GetDDGT0DDWLYiZhuangXiangWYWLList extends BusinessQueryApiB
     ON
       a.KDXId = d.id
     WHERE
-      a.status = '装箱'
+      a.status = '${DBTables.WYWLStatus.ZX}'
     AND
         b.DDId = ${DDId}
     AND

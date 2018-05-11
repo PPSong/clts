@@ -35,10 +35,16 @@ export default class GetYJZXTimeGT0BHDPYiZhuangXiangWYDPList extends BusinessQue
       KDX d
     ON
       b.KDXId = d.id
+    JOIN
+      DW e
+    ON
+      a.DWId = e.id
     WHERE
-      a.YJZXTime = ${YJZXTime}
+      b.status = '${DBTables.WYDPStatus.ZX}'
     AND
-      a.GTId = ${GTId}
+      a.YJZXTime = '${YJZXTime}'
+    AND
+      e.GTId = ${GTId}
     AND
       a.GYSId = ${tmpGYSId}
     LIMIT ${perPage}
