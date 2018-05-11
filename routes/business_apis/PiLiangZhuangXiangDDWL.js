@@ -33,6 +33,7 @@ export default class PiLiangZhuangXiangDDWL extends BusinessApiBase {
     } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+    const tmpGYSId = await user.getGYSId(transaction);
 
     // 检查KDXEWM
     let tmpKDX = await DBTables.KDX.findOne({
@@ -63,13 +64,12 @@ export default class PiLiangZhuangXiangDDWL extends BusinessApiBase {
         GTId,
         HWType: DBTables.HWType.WL,
         user,
+        GYSId: tmpGYSId,
         transaction,
         DDId,
       });
     }
     // end 检查KDXEWM
-
-    const tmpGYSId = await user.getGYSId(transaction);
 
     // 检查WLEWMs
     // 如果不存在, 先在当前GYS处入库

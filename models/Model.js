@@ -2861,6 +2861,9 @@ export const KDX = sequelize.define(
         },
       },
     },
+    GYSId: {
+      type: Sequelize.INTEGER,
+    },
   },
   {
     version: true,

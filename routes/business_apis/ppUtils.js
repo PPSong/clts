@@ -7,6 +7,7 @@ export async function createDDKDXAndZhuangXiang({
   GTId,
   HWType,
   user,
+  GYSId,
   transaction,
   DDId = null,
   YJZXTime = null,
@@ -22,6 +23,7 @@ export async function createDDKDXAndZhuangXiang({
       DDId,
       YJZXTime,
       HWType,
+      GYSId,
     },
     { transaction },
   );
@@ -427,11 +429,13 @@ export async function changeKDXsStatus({
   ids,
   status,
   user,
+  GYSId,
   transaction,
   KDDId = null,
 }) {
   let updateObj = {
     status,
+    GYSId,
   };
   if (KDDId) {
     updateObj = {

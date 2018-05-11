@@ -59,6 +59,7 @@ export default class ShouXiang extends BusinessApiBase {
       ids,
       status: DBTables.KDXStatus.SX,
       user,
+      GYSId: null,
       transaction,
     });
     // end 转为状态SX, 新建相关KDXCZ
