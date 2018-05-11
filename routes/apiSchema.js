@@ -2274,4 +2274,15 @@ export const apiSchema = {
     },
     required: ['curPage', 'YJZXTime', 'GTId'],
   },
+  // 获取GYS相关快递箱 [ZHY]
+  getGYSXiangGuanKDXs: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
 };

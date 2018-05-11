@@ -78,10 +78,12 @@ export default class GuanLianKuaiDi extends BusinessApiBase {
 
     // EWMs绑上KDDId, 转为状态FH, 新建相关KDXC
     const ids = tmpKDXs.map(item => item.id);
+    const tmpGYSId = await user.getGYSId(transaction);
     await ppUtils.changeKDXsStatus({
       ids,
       status: DBTables.KDXStatus.FH,
       user,
+      GYSId: tmpGYSId,
       transaction,
       KDDId: tmpKDD.id,
     });

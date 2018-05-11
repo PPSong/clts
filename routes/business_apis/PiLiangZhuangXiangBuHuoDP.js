@@ -36,6 +36,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
     const YJZXTime = new Date(time);
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+    const tmpGYSId = await user.getGYSId(transaction);
 
     // 检查KDXEWM
     let tmpKDX = await DBTables.KDX.findOne({
@@ -66,13 +67,12 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
         GTId,
         HWType: DBTables.HWType.DP,
         user,
+        GYSId: tmpGYSId,
         transaction,
         YJZXTime,
       });
     }
     // end 检查KDXEWM
-
-    const tmpGYSId = await user.getGYSId(transaction);
 
     // 检查DPEWMs
     for (const item of DPEWMs) {

@@ -59,10 +59,13 @@ export default class JieChuGuanLianKuaiDi extends BusinessApiBase {
 
     // 转为状态ZX, 新建相关KDXCZ
     const ids = tmpKDXs.map(item => item.id);
+    const tmpGYSId = await user.getGYSId(transaction);
+
     await ppUtils.changeKDXsStatus({
       ids,
       status: DBTables.KDXStatus.ZX,
       user,
+      GYSId: tmpGYSId,
       transaction,
     });
     // end 转为状态ZX, 新建相关KDXCZ
