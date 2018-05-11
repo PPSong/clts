@@ -874,7 +874,6 @@ describe('SPRT_testSearch', () => {
           KDXEWM: '{"type":"KDX","uuid":"KDX2"}',
           status: '发货',
         },
-
         {
           taskName: 'DD1',
           KDDId: 2,
@@ -960,29 +959,8 @@ describe('SPRT_testSearch', () => {
 
     it('GTBA模糊搜索GT的KDX列表', async () => {
       const curPage = 0;
-      const keyword = '装箱';
+      const keyword = 'KDX104';
       const trueList = [
-        {
-          taskName: 'DD1',
-          KDDId: null,
-          KDDCode: null,
-          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
-          status: '装箱',
-        },
-        {
-          taskName: '2018-10-11 00:00:00',
-          KDDId: null,
-          KDDCode: null,
-          KDXEWM: '{"type":"KDX","uuid":"KDX4"}',
-          status: '装箱',
-        },
-        {
-          taskName: 'DD1',
-          KDDId: null,
-          KDDCode: null,
-          KDXEWM: '{"type":"KDX","uuid":"KDX101"}',
-          status: '装箱',
-        },
         {
           taskName: '2018-10-11 00:00:00',
           KDDId: null,
@@ -1553,18 +1531,10 @@ describe('SPRT_testSearch', () => {
         },
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-01',
-          WLName: 'WL1_3_1',
-          WLCode: '1_3_1',
-          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_4"}',
-          status: '反馈',
-        },
-        {
-          GTName: 'GT1',
           YJAZDate: '2018-01-02',
           WLName: 'WL1_3_1',
           WLCode: '1_3_1',
-          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_5"}',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_4"}',
           status: '反馈',
         },
       ];
@@ -1589,7 +1559,7 @@ describe('SPRT_testSearch', () => {
           YJAZDate: '2018-01-02',
           WLName: 'WL1_3_1',
           WLCode: '1_3_1',
-          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_5"}',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_4"}',
           status: '反馈',
         },
       ];
@@ -1688,18 +1658,10 @@ describe('SPRT_testSearch', () => {
         },
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-01',
+          YJAZDate: '2018-01-02',
           DWName: 'DW5',
           DPName: 'DP1',
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_10","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
-          status: '反馈',
-        },
-        {
-          GTName: 'GT1',
-          YJAZDate: '2018-01-02',
-          DWName: 'DW6',
-          DPName: 'DP1',
-          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_11","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}',
           status: '反馈',
         },
       ];
@@ -1722,9 +1684,9 @@ describe('SPRT_testSearch', () => {
         {
           GTName: 'GT1',
           YJAZDate: '2018-01-02',
-          DWName: 'DW6',
+          DWName: 'DW5',
           DPName: 'DP1',
-          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_11","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_10","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
           status: '反馈',
         },
       ];
