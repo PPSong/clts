@@ -8,7 +8,7 @@ export default class GetGT0BHWLAnZhuangTasks extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { keyword, curPage, GTId } = req.body;
+    const { keyword, curPage } = req.body;
 
     const perPage = 50;
 
@@ -19,7 +19,7 @@ export default class GetGT0BHWLAnZhuangTasks extends BusinessQueryApiBase {
       OR
         c.name LIKE '%${keyword}%'
       OR
-        a.YJAZDate LIKE '%${keyword}%'
+        CAST(a.YJAZDate AS CHAR) LIKE '%${keyword}%'
       )
     `
       : '1';
@@ -27,9 +27,9 @@ export default class GetGT0BHWLAnZhuangTasks extends BusinessQueryApiBase {
     let tmpWhere;
     if (user.JS === DBTables.JS.GTBA) {
       const tmpGTId = await user.getGTId(transaction);
-      tmpWhere = `a.AZGUserId IS NULL and a.GTId = ${tmpGTId}`;
+      tmpWhere = `a.AZGUserId IS NULL AND d.GTId = ${tmpGTId}`;
     } else {
-      tmpWhere = `a.AZGUserId IS NULL = ${user.id}`;
+      tmpWhere = `a.AZGUserId = ${user.id}`;
     }
 
     // 查询记录
@@ -59,8 +59,6 @@ export default class GetGT0BHWLAnZhuangTasks extends BusinessQueryApiBase {
     ON
       d.GTId = e.id
     WHERE
-      1
-    AND
       a.status IN ('${DBTables.DPBHStatus.ZXWC}', '${DBTables.DPBHStatus.SH}')
     AND
       ${tmpWhere}

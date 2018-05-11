@@ -17,17 +17,19 @@ export default class GetGT0DDWLAnZhuangTasks extends BusinessQueryApiBase {
       (
         d.name LIKE '%${keyword}%'
       OR
-        c.code LIKE '%${keyword}%'
+        c.name LIKE '%${keyword}%'
+      OR
+        b.EWM LIKE '%${keyword}%'
       )
     `
       : '1';
 
     let AZGWhere;
     if (user.JS === DBTables.JS.GTBA) {
-      await user.checkGTId(transaction);
+      await user.checkGTId(GTId, transaction);
       AZGWhere = 'a.AZGUserId IS NULL';
     } else {
-      AZGWhere = `a.AZGUserId IS NULL = ${user.id}`;
+      AZGWhere = `a.AZGUserId = ${user.id}`;
     }
 
     // 查询记录
@@ -52,13 +54,11 @@ export default class GetGT0DDWLAnZhuangTasks extends BusinessQueryApiBase {
     ON
       a.DWId = d.id
     WHERE
-      1
-    AND
       a.status IN ('${DBTables.DD_DW_DPStatus.ZXWC}', '${
   DBTables.DD_DW_DPStatus.SH
 }', '${DBTables.DD_DW_DPStatus.KPQJT}')
-    WHERE
-      a.GTId = ${GTId}
+    AND
+      d.GTId = ${GTId}
     AND
       ${AZGWhere}
     AND

@@ -24,10 +24,10 @@ export default class GetGT0DDWLAnZhuangTasks extends BusinessQueryApiBase {
 
     let AZGWhere;
     if (user.JS === DBTables.JS.GTBA) {
-      await user.checkGTId(transaction);
+      await user.checkGTId(GTId, transaction);
       AZGWhere = 'a.AZGUserId IS NULL';
     } else {
-      AZGWhere = `a.AZGUserId IS NULL = ${user.id}`;
+      AZGWhere = `a.AZGUserId = ${user.id}`;
     }
 
     // 查询记录
@@ -48,12 +48,10 @@ export default class GetGT0DDWLAnZhuangTasks extends BusinessQueryApiBase {
     ON
       a.WLId = c.id
     WHERE
-      1
-    AND
       a.status IN ('${DBTables.DD_GT_WLStatus.ZXWC}', '${
   DBTables.DD_GT_WLStatus.SH
 }', '${DBTables.DD_GT_WLStatus.KPQJT}')
-    WHERE
+    AND
       a.GTId = ${GTId}
     AND
       ${AZGWhere}

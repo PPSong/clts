@@ -1007,7 +1007,7 @@ describe('SPRT_testSearch', () => {
 
   // 获取AZG的DD任务列表 [AZG]
   describe('getAZGDDTasks', async () => {
-    it.only('AZG获取DD任务列表', async () => {
+    it('AZG获取DD任务列表', async () => {
       const curPage = 0;
       const trueList = [
         {
@@ -1508,7 +1508,7 @@ describe('SPRT_testSearch', () => {
 
     it('GTBA模糊搜索BHWL的WYWL', async () => {
       const curPage = 0;
-      const keyword = null;
+      const keyword = "1";
       const trueList = [
         {
           GTName: 'GT1',
@@ -1643,7 +1643,7 @@ describe('SPRT_testSearch', () => {
 
     it('GTBA模糊搜索BHDP的WYDP', async () => {
       const curPage = 0;
-      const keyword = null;
+      const keyword = '';
       const trueList = [
         {
           GTName: 'GT1',
@@ -1709,15 +1709,15 @@ describe('SPRT_testSearch', () => {
         {
           curPage,
         },
-        ZHYToken,
+        AZGToken,
       );
       assert.equal(response.data.code, 1);
       assert.sameDeepMembers(response.data.data, trueList);
     });
 
-    it('AZG模糊搜索BHDP的WYDP', async () => {
+    it.only('AZG模糊搜索BHDP的WYDP', async () => {
       const curPage = 0;
-      const keyword = '2018-01-02';
+      const keyword = '18';
       const trueList = [
         {
           GTName: 'GT1',
@@ -1735,7 +1735,7 @@ describe('SPRT_testSearch', () => {
           curPage,
           keyword,
         },
-        ZHYToken,
+        AZGToken,
       );
       assert.equal(response.data.code, 1);
       assert.sameDeepMembers(response.data.data, trueList);

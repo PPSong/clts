@@ -21,8 +21,6 @@ export default class GetGTBADDTasks extends BusinessQueryApiBase {
       bb.name LIKE '%${keyword}%'
     OR
       dd.name LIKE '%${keyword}%'
-    OR
-      aa.name LIKE '%${keyword}%'
     )
   ` : '1';
 

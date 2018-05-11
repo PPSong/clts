@@ -19,7 +19,7 @@ export default class GetGT0BHWLAnZhuangTasks extends BusinessQueryApiBase {
       OR
         c.code LIKE '%${keyword}%'
       OR
-        a.YJAZDate LIKE '%${keyword}%'
+        CAST(a.YJAZDate AS CHAR) LIKE '%${keyword}%'
       )
     `
       : '1';
@@ -29,7 +29,7 @@ export default class GetGT0BHWLAnZhuangTasks extends BusinessQueryApiBase {
       const tmpGTId = await user.getGTId(transaction);
       tmpWhere = `a.AZGUserId IS NULL and a.GTId = ${tmpGTId}`;
     } else {
-      tmpWhere = `a.AZGUserId IS NULL = ${user.id}`;
+      tmpWhere = `a.AZGUserId = ${user.id}`;
     }
 
     // 查询记录
