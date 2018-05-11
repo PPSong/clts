@@ -958,7 +958,7 @@ describe('SPRT_testSearch', () => {
       assert.sameDeepMembers(response.data.data, trueList);
     });
 
-    it('GTBA模糊搜索GT的KDX列表', async () => {
+    it.only('GTBA模糊搜索GT的KDX列表', async () => {
       const curPage = 0;
       const keyword = '装箱';
       const trueList = [
