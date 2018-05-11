@@ -17,22 +17,32 @@ export default class GetYJZXTimeGT0BHDPZhuangXiangList extends BusinessQueryApiB
     // 查询记录
     const sql = `
     SELECT
-      a.WLId,
-      b.name WLName,
-      b.code WLCode,
+      a.DPId,
+      b.name DPName,
+      c.name DWName,
+      c.CC,
+      c.CZ,
       1 number,
       a.ZXNumber,
-      a.status WLBHStatus
+      a.status DPBHStatus
     FROM
-      WLBH a
+      DPBH a
     JOIN
-      WL b
+      DP b
     ON
-      a.WLId = b.id
+      a.DPId = b.id
+    JOIN
+      DW c
+    ON
+      a.DWId = c.id
+    JOIN
+      GT d
+    ON
+      c.GTId = d.id
     WHERE
       a.YJZXTime = ${YJZXTime}
     AND
-      a.GTId = ${GTId}
+      c.GTId = ${GTId}
     AND
       a.GYSId = ${tmpGYSId}
     LIMIT ${perPage}

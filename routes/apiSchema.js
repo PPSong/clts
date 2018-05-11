@@ -2285,4 +2285,34 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
+  // 获取GYS的WYWL库存 [ZHY]
+  getGYSWYWLKuCun: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取GT的KDXs [ZHY]
+  getGTKDXs: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
 };

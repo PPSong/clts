@@ -2,17 +2,27 @@ import bCrypt from 'bcryptjs';
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class GetGYSXiangGuanKDXs extends BusinessQueryApiBase {
+export default class GetGTKDXs extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
-    return [DBTables.JS.ZHY];
+    return [DBTables.JS.GTBA];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { curPage } = req.body;
+    const { keyword, curPage } = req.body;
 
     const perPage = 50;
 
-    const tmpGYSId = await user.getGYSId(transaction);
+    const tmpGTId = await user.getGTId(transaction);
+
+    const keywordWhere = keyword ? `
+      (
+        d.name LIKE '%${keyword}%'
+      OR
+        a.YJZXTime LIKE '%${keyword}%'
+      OR
+        a.HWType LIKE '%${keyword}%'
+      )
+    ` : '1';
 
     // 查询记录
     const sql = `
@@ -20,8 +30,8 @@ export default class GetGYSXiangGuanKDXs extends BusinessQueryApiBase {
       c.name PPName,
       IFNULL(d.name, a.YJZXTime) taskName,
       b.name GTName,
-      a.EWM KDXEWM,
-      e.code KDDCode
+      IF(ISNULL(a.DDId), 'BH', 'SH') taskType,
+      a.HWType
     FROM
       KDX a
     JOIN
@@ -36,12 +46,10 @@ export default class GetGYSXiangGuanKDXs extends BusinessQueryApiBase {
       DD d
     ON
       a.DDId = d.id
-    LEFT JOIN
-      KDD e
-    ON
-      a.KDDId = e.id
     WHERE
-      GYSId = ${tmpGYSId}
+      a.GTId = ${tmpGTId}
+    AND
+      ${keywordWhere}
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;
