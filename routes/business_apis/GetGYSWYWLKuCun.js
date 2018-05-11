@@ -2,46 +2,55 @@ import bCrypt from 'bcryptjs';
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class GetGYSXiangGuanKDXs extends BusinessQueryApiBase {
+export default class GetGYSWYWLKuCun extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.ZHY];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { curPage } = req.body;
+    const { keyword, curPage } = req.body;
 
     const perPage = 50;
 
     const tmpGYSId = await user.getGYSId(transaction);
 
+    const keywordWhere = keyword ? `
+    (
+      bb.name LIKE '%${keyword}%'
+    OR
+      bb.code LIKE '%${keyword}%'
+    )
+  ` : '1';
+
     // 查询记录
     const sql = `
     SELECT
-      c.name PPName,
-      IFNULL(d.name, a.YJZXTime) taskName,
-      b.name GTName,
-      a.EWM KDXEWM,
-      e.code KDDCode
+      aa.WLId WLId,
+      bb.name WLName,
+      bb.code WLCode,
+      aa.number number
     FROM
-      KDX a
+      (
+      SELECT
+        a.WLId,
+        count(1) number
+      FROM
+        WYWL a
+      WHERE
+        a.status = '${DBTables.WYWLStatus.RK}'
+      AND
+        a.GYSId = ${tmpGYSId}
+      GROUP BY
+        a.WLId
+      ) aa
     JOIN
-      GT b
+      WL bb
     ON
-      a.GTId = b.id
-    JOIN
-      PP c
-    ON
-      b.PPId = c.id
-    LEFT JOIN
-      DD d
-    ON
-      a.DDId = d.id
-    LEFT JOIN
-      KDD e
-    ON
-      a.KDDId = e.id
+      aa.WLId = bb.id
     WHERE
-      GYSId = ${tmpGYSId}
+      1
+    AND
+      ${keywordWhere}
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;

@@ -279,6 +279,31 @@ User.prototype.getGYSId = async function (transaction) {
   return tmpGYSId;
 };
 
+User.prototype.getGTId = async function (transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let tmpGTId;
+
+  switch (this.JS) {
+    case JS.GTBA:
+      const tmpGT = await GT.findOne({
+        where: {
+          GTBAUserId: this.id,
+        },
+        transaction,
+      });
+      tmpGTId = tmpGT.id;
+
+      break;
+    default:
+      throw new Error('没有权限!');
+  }
+
+  return tmpGTId;
+};
+
 // 检查PP本身是否合法, 并且是否在用户权限范围
 User.prototype.checkPPId = async function (id, transaction) {
   if (!transaction) {
