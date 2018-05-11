@@ -897,7 +897,7 @@ describe('SPRT_testSearch', () => {
         },
         {
           taskName: '2018-10-13 00:00:00',
-          KDDCode: 4,
+          KDDId: 4,
           KDDCode: 'KDD4',
           KDXEWM: '{"type":"KDX","uuid":"KDX6"}',
           status: '收箱',
