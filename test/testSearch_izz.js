@@ -240,7 +240,7 @@ describe('SPRT_Search测试', () => {
 
   // 获取DDWL装箱任务 [ZHY]
   describe('getDDWLZhuangXiangList', async () => {
-    it('ZHY进入WL装箱任务列表', async () => {
+    it('ZHY进入DDWL装箱任务列表', async () => {
       const curPage = 0;
       const trueList = [{
         PPId: 1,
@@ -249,8 +249,8 @@ describe('SPRT_Search测试', () => {
         DDName: 'DD1',
         GTId: 1,
         GTName: 'GT1',
-        totalNumber: '10',
-        totalZXNumber: '0',
+        totalNumber: '21',
+        totalZXNumber: '10',
       }];
 
       const response = await post(
@@ -355,33 +355,126 @@ describe('SPRT_Search测试', () => {
       const curPage = 0;
       const DDId = 1;
       const GTId = 1;
+      const trueList = [
+        {
+          WLId: 2,
+          WLName: 'WL1_3_2',
+          WLCode: '1_3_2',
+          WYWLEWM: '{"type":"WL","typeId":2,"uuid":"2_1"}',
+          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
+        },
+        {
+          WLId: 3,
+          WLName: 'WL1_3_3',
+          WLCode: '1_3_3',
+          WYWLEWM: '{"type":"WL","typeId":3,"uuid":"3_1"}',
+          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
+        },
+      ];
 
-      //required: ['curPage', 'DDId', 'GTId'],
+      const response = await post(
+        'getDDGT0DDWLYiZhuangXiangWYWLList',
+        {
+          curPage,
+          DDId,
+          GTId,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.deepEqual(response.data.data, trueList);
     });
   });
 
   // 获取指定YJZXTimeGT的BHWL已装箱WYWL [ZHY]
   describe('getYJZXTimeGT0BHWLYiZhuangXiangWYWLList', async () => {
-    it('', async () => {
-      // required: ['curPage', 'YJZXTime', 'GTId'],
+    it('ZHY获取已装箱BHWL', async () => {
+      const curPage = 0;
+      const YJZXTime = '2018-10-11';
+      const GTId = 1;
+      const trueList = [
+        {
+          WLId: 1,
+          WLName: 'WL1_3_1',
+          WLCode: '1_3_1',
+          WYWLEWM: '{"type":"WL","typeId":1,"uuid":"1_1"}',
+          KDXEWM: '{"type":"KDX","uuid":"KDX4"}',
+        },
+      ];
+
+      const response = await post(
+        'getYJZXTimeGT0BHWLYiZhuangXiangWYWLList',
+        {
+          curPage,
+          YJZXTime: new Date(YJZXTime).getTime(),
+          GTId,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.deepEqual(response.data.data, trueList);
     });
   });
 
   // 获取DDDP装箱任务 [ZHY]
   describe('getDDDPZhuangXiangList', async () => {
-    it('', async () => {
-      // required: ['curPage'],
-      //keyword
+    it('ZHY进入DDDP装箱任务列表', async () => {
+      const curPage = 0;
+      const trueList = [{
+        PPId: 1,
+        PPName: 'PP1',
+        DDId: 1,
+        DDName: 'DD1',
+        GTId: 1,
+        GTName: 'GT1',
+        totalNumber: '7',
+        totalZXNumber: '6',
+      }];
 
+      const response = await post(
+        'getDDDPZhuangXiangList',
+        {
+          curPage,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.deepEqual(response.data.data, trueList);
+    });
+
+    it('ZHY模糊搜索DP装箱任务列表', async () => {
+      const curPage = 0;
+      const keyword = 'DD1';
+      const trueList = [{
+        PPId: 1,
+        PPName: 'PP1',
+        DDId: 1,
+        DDName: 'DD1',
+        GTId: 1,
+        GTName: 'GT1',
+        totalNumber: '7',
+        totalZXNumber: '6',
+      }];
+
+      const response = await post(
+        'getDDDPZhuangXiangList',
+        {
+          curPage,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.deepEqual(response.data.data, trueList);
     });
   });
 
   // 获取BHDP装箱任务 [ZHY]
   describe('getBHDPZhuangXiangList', async () => {
-    it('', async () => {
+    it('ZHY', async () => {
+
+
       // required: ['curPage'],
       //keyword
-
     });
   });
 
@@ -419,11 +512,62 @@ describe('SPRT_Search测试', () => {
     });
   });
 
-  // 获取指定YJZXTimeGT的BHWL已装箱WYWL [ZHY]
-  describe('getBHDPZhuangXiangList', async () => {
-    it('', async () => {
-      //  required: ['curPage', 'YJZXTime', 'GTId'],
+  // 获取指定YJZXTimeGT的BHWL装货任务 [ZHY]
+  describe('getBHWLZhuangXiangList', async () => {
+    it('ZHY获取BHWL的装箱任务', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJZXTime: '2018-10-10',
+          GTId: '1',
+          GTName: 'GT1',
+          totalNumber: '7',
+          totalZXNumber: '6',
+        },
+      ];
 
+      const response = await post(
+        'getBHWLZhuangXiangList',
+        {
+          curPage,
+          YJZXTime: new Date(YJZXTime).getTime(),
+          GTId,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.deepEqual(response.data.data, trueList);
+    });
+
+    it('ZHY模糊搜索BHWL的装箱任务', async () => {
+      const curPage = 0;
+      const keyword = 'PP1';
+
+      const trueList = [
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJZXTime: '2018-10-10',
+          GTId: '1',
+          GTName: 'GT1',
+          totalNumber: '7',
+          totalZXNumber: '6',
+        },
+      ];
+
+      const response = await post(
+        'getBHWLZhuangXiangList',
+        {
+          curPage,
+          YJZXTime: new Date(YJZXTime).getTime(),
+          GTId,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.deepEqual(response.data.data, trueList);
     });
   });
 });

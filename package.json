@@ -15,7 +15,7 @@
     "test_izz": "mocha --exit --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000",
     "test_izz_ne": "mocha --compilers js:babel-core/register test/test_izz.js --reporter mochawesome  --timeout 5000",
     "test_penn": "mocha --exit --compilers js:babel-core/register test/test_penn.js --reporter mochawesome  --timeout 5000",
-    "testSearch": "mocha --exit --compilers js:babel-core/register test/testSearch_izz.js --reporter mochawesome  --timeout 5000"
+    "testSearch_izz": "mocha --exit --compilers js:babel-core/register test/testSearch_izz.js --reporter mochawesome  --timeout 5000"
   },
   "dependencies": {
     "ajv": "^6.4.0",
