@@ -874,7 +874,6 @@ describe('SPRT_testSearch', () => {
           KDXEWM: '{"type":"KDX","uuid":"KDX2"}',
           status: '发货',
         },
-
         {
           taskName: 'DD1',
           KDDId: 2,
@@ -960,29 +959,8 @@ describe('SPRT_testSearch', () => {
 
     it('GTBA模糊搜索GT的KDX列表', async () => {
       const curPage = 0;
-      const keyword = '装箱';
+      const keyword = 'KDX104';
       const trueList = [
-        {
-          taskName: 'DD1',
-          KDDId: null,
-          KDDCode: null,
-          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
-          status: '装箱',
-        },
-        {
-          taskName: '2018-10-11 00:00:00',
-          KDDId: null,
-          KDDCode: null,
-          KDXEWM: '{"type":"KDX","uuid":"KDX4"}',
-          status: '装箱',
-        },
-        {
-          taskName: 'DD1',
-          KDDId: null,
-          KDDCode: null,
-          KDXEWM: '{"type":"KDX","uuid":"KDX101"}',
-          status: '装箱',
-        },
         {
           taskName: '2018-10-11 00:00:00',
           KDDId: null,
