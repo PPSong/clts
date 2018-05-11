@@ -17,17 +17,17 @@ export default class GetDDGT0DDWLYiZhuangXiangWYWLList extends BusinessQueryApiB
     // 查询记录
     const sql = `
     SELECT
-      c.id WLId,
+      a.WLId,
       c.name WLName,
       c.code WLCode,
-      b.EWM WYWLEWM,
+      a.EWM WYWLEWM,
       d.EWM KDXEWM
     FROM
-      DD_GT_WL a
+      WYWL a
     JOIN
-      WYWL b
+      DD_GT_WL b
     ON
-      b.DDGTWLId = a.id
+      a.DDGTWLId = b.id
     JOIN
       WL c
     ON
@@ -35,13 +35,15 @@ export default class GetDDGT0DDWLYiZhuangXiangWYWLList extends BusinessQueryApiB
     JOIN
       KDX d
     ON
-      b.KDXId = d.id
+      a.KDXId = d.id
     WHERE
-      a.DDId = ${DDId}
+      a.status = '装箱'
     AND
-      a.GTId = ${GTId}
+        b.DDId = ${DDId}
     AND
-      a.GYSId = ${tmpGYSId}
+      b.GTId = ${GTId}
+    AND
+      b.GYSId = ${tmpGYSId}
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;
