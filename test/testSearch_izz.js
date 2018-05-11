@@ -238,7 +238,7 @@ describe('SPRT_Search测试', () => {
   //   });
   // });
 
-  // 装货 [ZHY]
+  // 获取DDWL装箱任务 [ZHY]
   describe('getDDWLZhuangXiangList', async () => {
     it('ZHY进入WL装箱任务列表', async () => {
       const curPage = 0;
@@ -291,7 +291,8 @@ describe('SPRT_Search测试', () => {
     });
   });
 
-describe('getDDGT0DDWLZhuangXiangList', async () => {
+  // 获取指定DDGT的DDWL装箱任务 [ZHY]  
+  describe('getDDGT0DDWLZhuangXiangList', async () => {
     it('ZHY进入某个DD_GT任务', async () => {
       const curPage = 0;
       const DDId = 1;
@@ -318,10 +319,111 @@ describe('getDDGT0DDWLZhuangXiangList', async () => {
     });
   });
 
-  // 安装 [AZG]
-  describe('安装端查询', async () => {
-    it('ZHY物料', async () => {
-      
+  // 获取指定YJZXTimeGT的BHWL装箱任务 [ZHY]
+  describe('getYJZXTimeGT0BHWLZhuangXiangList', async () => {
+    it.only('ZHY进入BHWL装箱任务', async () => {
+      const curPage = 0;
+      const YJZXTime = '2018-10-10';
+      const GTId = 1;
+      const trueList = [{
+        WLId: 1,
+        WLName: 'WL1_3_1',
+        WLCode: '1_3_1',
+        number: 10,
+        ZXNumber: 0,
+        WLBHStatus: '已分配发货供应商',
+      }];
+
+      const response = await post(
+        'getDDGT0DDWLZhuangXiangList',
+        {
+          curPage,
+          YJZXTime: new Date(YJZXTime).getTime(),
+          GTId,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      console.log('izzlog', response.data);
+      assert.deepEqual(response.data.data, trueList);
+    });
+  });
+
+  // 获取指定DDGT的DDWL已装箱WYWL [ZHY]
+  describe('getDDGT0DDWLYiZhuangXiangWYWLList', async () => {
+    it('ZHY进入已装箱WYWL', async () => {
+      const curPage = 0;
+      const DDId = 1;
+      const GTId = 1;
+
+      //required: ['curPage', 'DDId', 'GTId'],
+    });
+  });
+
+  // 获取指定YJZXTimeGT的BHWL已装箱WYWL [ZHY]
+  describe('getYJZXTimeGT0BHWLYiZhuangXiangWYWLList', async () => {
+    it('', async () => {
+      // required: ['curPage', 'YJZXTime', 'GTId'],
+    });
+  });
+
+  // 获取DDDP装箱任务 [ZHY]
+  describe('getDDDPZhuangXiangList', async () => {
+    it('', async () => {
+      // required: ['curPage'],
+      //keyword
+
+    });
+  });
+
+  // 获取BHDP装箱任务 [ZHY]
+  describe('getBHDPZhuangXiangList', async () => {
+    it('', async () => {
+      // required: ['curPage'],
+      //keyword
+
+    });
+  });
+
+  // 获取指定DDGT的DDDP装箱任务 [ZHY]
+  describe('getDDGT0DDDPZhuangXiangList', async () => {
+    it('', async () => {
+      // required: ['curPage'],
+      //keyword
+
+    });
+  });
+
+  // 获取BHDP装箱任务 [ZHY]
+  describe('getBHDPZhuangXiangList', async () => {
+    it('', async () => {
+      // required: ['curPage', 'DDId', 'GTId'],
+
+
+    });
+  });
+
+  // 获取指定YJZXTimeGT的BHDP装箱任务 [ZHY]
+  describe('getYJZXTimeGT0BHDPZhuangXiangList', async () => {
+    it('', async () => {
+      //required: ['curPage', 'YJZXTime', 'GTId'],
+
+    });
+  });
+
+  // 获取指定DDGT的DDDP已装箱WYDP [ZHY]
+  describe('getDDGT0DDDPYiZhuangXiangWYDPList', async () => {
+    it('', async () => {
+      //required: ['curPage', 'DDId', 'GTId'],
+
+    });
+  });
+
+  // 获取指定YJZXTimeGT的BHWL已装箱WYWL [ZHY]
+  describe('getBHDPZhuangXiangList', async () => {
+    it('', async () => {
+      //  required: ['curPage', 'YJZXTime', 'GTId'],
+
     });
   });
 });

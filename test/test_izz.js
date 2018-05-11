@@ -3306,6 +3306,7 @@ describe('SPRT测试', () => {
           where: { EWM: JSON.stringify(KDXEWM) },
         });
         assert.notEqual(kdx, null);
+        assert.equal(kdx.dataValues.GYSId, 1);
 
         for (const item of WLEWMs) {
           const wywl = await WYWL.findOne({
@@ -3685,6 +3686,7 @@ describe('SPRT测试', () => {
           where: { EWM: JSON.stringify(KDXEWM) },
         });
         assert.notEqual(kdx, null);
+        assert.equal(kdx.dataValues.GYSId, 1);
 
         for (const item of DPEWMs) {
           const wydp = await WYDP.findOne({
@@ -3975,6 +3977,7 @@ describe('SPRT测试', () => {
           where: { EWM: JSON.stringify(KDXEWM) },
         });
         assert.notEqual(kdx, null);
+        assert.equal(kdx.dataValues.GYSId, 1);
 
         for (const item of WLEWMs) {
           const wywl = await WYWL.findOne({
@@ -4590,6 +4593,7 @@ describe('SPRT测试', () => {
               where: { EWM: JSON.stringify(item) },
             });
             assert.equal(kdx.dataValues.status, KDXStatus.FH);
+            assert.equal(kdx.dataValues.GYSId, 2);
 
             const wywl = await WYWL.findAll({
               where: { KDXId: kdx.dataValues.id },
@@ -4614,6 +4618,7 @@ describe('SPRT测试', () => {
               where: { EWM: JSON.stringify(item) },
             });
             assert.equal(kdx.dataValues.status, KDXStatus.FH);
+            assert.equal(kdx.dataValues.GYSId, 2);
 
             const wydp = await WYDP.findAll({
               where: { KDXId: kdx.dataValues.id },

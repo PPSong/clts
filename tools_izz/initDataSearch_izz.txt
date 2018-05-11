@@ -2,7 +2,9 @@
 [User]															
 Id	username	password	JS												
 1	ZHY1	password(123456)	装货员												
+2	AZG1	password(123456)	安装工												
 100	GTBA1	password(123456)	柜台BA												
+															
 															
 //品牌															
 [PP]															
@@ -23,10 +25,26 @@ id	Name	type
 UserId	GYSId														
 1	1														
 															
+//安装公司															
+[AZGS]															
+id	name														
+1	AZGS1														
+															
+[AZG_AZGS]															
+UserId	AZGSId														
+2	1														
+															
+															
 //物料															
 [WL]															
 id	name	code	level	PPId	GYSId	imageUrl									
 1	WL1_3_1	1_3_1	3	1	1	imageUrl1_3_1									
+2	WL1_3_2	1_3_2	3	1	1	imageUrl1_3_2									
+3	WL1_3_3	1_3_3	3	1	1	imageUrl1_3_3									
+4	WL1_3_4	1_3_4	3	1	1	imageUrl1_3_4									
+5	WL1_3_5	1_3_5	3	1	1	imageUrl1_3_5									
+6	WL1_3_6	1_3_6	3	1	1	imageUrl1_3_6									
+															
 															
 //订单信息															
 [DD]															
@@ -35,13 +53,77 @@ id	name	status	PPId
 															
 //订单柜台物料															
 [DD_GT_WL]															
-id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	YJRKDate	YJZXDate						
-1	1	1	1	10	1	已分配发货供应商	0	2018-2-2	2018-2-2						
+id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	AZGSId							
+1	1	1	1	10	1	已分配发货供应商	0	1							
+2	1	1	2	2	1	已分配发货供应商	1	1							
+3	1	1	3	3	1	装箱完成	3	1							
 															
-//快递箱															
+[DD_GT_WL]															
+id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	AZGSId	AZGUserId						
+4	1	1	4	2	1	收货	2	1	2						
+5	1	1	5	2	1	可拍全景图	2	1	2						
+6	1	1	6	2	1	完成	2	1	2						
+															
+//快递单															
+[KDD]															
+id	code	GTId													
+1	KDD1	1													
+2	KDD2	1													
+3	KDD3	1													
+4	KDD4	1													
+															
+// 快递箱															
 [KDX]															
-id	EWM	GTId	status	DDId	HWType										
-1	{"type":"KDX","uuid":"KDX1"}	1	装箱	1	WL										
+id	EWM	GTId	status	DDId	HWType	GYSId									
+1	{"type":"KDX","uuid":"KDX1"}	1	装箱	1	WL	1									
+															
+[KDX]															
+id	EWM	GTId	status	DDId	HWType	KDDId	GYSId								
+2	{"type":"KDX","uuid":"KDX2"}	1	发货	1	WL	1	1								
+3	{"type":"KDX","uuid":"KDX3"}	1	收箱	1	WL	2	1								
+															
+[KDX]															
+id	EWM	GTId	status	DDId	HWType	YJZXTime	GYSId								
+4	{"type":"KDX","uuid":"KDX4"}	1	装箱	1	WL	2018-10-11	1								
+															
+[KDX]															
+id	EWM	GTId	status	DDId	HWType	YJZXTime	KDDId	GYSId							
+5	{"type":"KDX","uuid":"KDX5"}	1	发货	1	WL	2018-10-12	3	1							
+6	{"type":"KDX","uuid":"KDX6"}	1	收箱	1	WL	2018-10-13	4	1							
+															
+//唯一物料															
+[WYWL]															
+id	EWM	status	WLId	GYSId	DDGTWLId	KDXId									
+1	{"type":"WL","typeId":2,"uuid":"2_1"}	装箱	2	1	2	1									
+2	{"type":"WL","typeId":3,"uuid":"3_1"}	装箱	3	1	3	1									
+3	{"type":"WL","typeId":3,"uuid":"3_2"}	发货	3	1	3	2									
+4	{"type":"WL","typeId":3,"uuid":"3_3"}	收箱	3	1	3	3									
+5	{“type”:"WL","typeId":4,"uuid":"4_1"}	收货	4	1	4	3									
+6	{“type”:"WL","typeId":4,"uuid":"4_2"}	收货	4	1	4	3									
+7	{“type”:"WL","typeId":5,"uuid":"5_1"}	反馈	5	1	5	3									
+8	{“type”:"WL","typeId":5,"uuid":"5_2"}	反馈	5	1	5	3									
+															
+															
+//物料补货															
+[WLBH]															
+id	GTId	WLId	status	GYSId	ZXNumber	imageUrl	YJZXTime	AZGSId							
+1	1	1	已分配发货供应商	1	0	imagUrl	2018-10-10	1							
+2	1	1	装箱完成	1	0	imagUrl	2018-10-11	1							
+3	1	1	装箱完成	1	0	imagUrl	2018-10-12	1							
+															
+[WLBH]															
+id	GTId	WLId	status	GYSId	ZXNumber	imageUrl	YJZXTime	AZGSId	AZGUserId						
+4	1	1	收货	1	0	imagUrl	2018-10-13	1	2						
+5	1	1	收货	1	0	imagUrl	2018-10-13	1	2						
+6	1	1	完成	1	0	imagUrl	2018-10-13	1	2						
+															
+[WYWL]															
+id	EWM	status	WLId	GYSId	WLBHId	KDXId									
+9	{"type":"WL","typeId":1,"uuid":"1_1"}	装箱	1	1	2	4									
+10	{"type":"WL","typeId":1,"uuid":"1_2"}	发货	1	1	3	5									
+11	{"type":"WL","typeId":1,"uuid":"1_3"}	收货	1	1	4	6									
+12	{"type":"WL","typeId":1,"uuid":"1_4"}	反馈	1	1	5	6									
+13	{"type":"WL","typeId":1,"uuid":"1_5"}	完成	1	1	6	6									
 															
 															
 [end]															
