@@ -860,20 +860,146 @@ describe('SPRT_testSearch', () => {
       const curPage = 0;
       const trueList = [
         {
-          PPName: 'PP1',
-          taskName: '',
-          GTName: 'GT1',
-          taskType: 'BH',
-          HWType: 'DP',
+          taskName: 'DD1',
+          KDDId: null,
+          KDDCode: null,
+          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
+          status: '装箱',
+        },
+        {
+          taskName: 'DD1',
+          KDDId: 1,
+          KDDCode: 'KDD1',
+          KDXEWM: '{"type":"KDX","uuid":"KDX2"}',
+          status: '发货',
+        },
+
+        {
+          taskName: 'DD1',
+          KDDId: 2,
+          KDDCode: 'KDD2',
+          KDXEWM: '{"type":"KDX","uuid":"KDX3"}',
+          status: '收箱',
+        },
+        {
+          taskName: '2018-10-11 00:00:00',
+          KDDId: null,
+          KDDCode: null,
+          KDXEWM: '{"type":"KDX","uuid":"KDX4"}',
+          status: '装箱',
+        },
+        {
+          taskName: '2018-10-12 00:00:00',
+          KDDId: 3,
+          KDDCode: 'KDD3',
+          KDXEWM: '{"type":"KDX","uuid":"KDX5"}',
+          status: '发货',
+        },
+        {
+          taskName: '2018-10-13 00:00:00',
+          KDDCode: 4,
+          KDDCode: 'KDD4',
+          KDXEWM: '{"type":"KDX","uuid":"KDX6"}',
+          status: '收箱',
+        },
+        {
+          taskName: 'DD1',
+          KDDId: null,
+          KDDCode: null,
+          KDXEWM: '{"type":"KDX","uuid":"KDX101"}',
+          status: '装箱',
+        },
+        {
+          taskName: 'DD1',
+          KDDId: 101,
+          KDDCode: 'KDD101',
+          KDXEWM: '{"type":"KDX","uuid":"KDX102"}',
+          status: '发货',
+        },
+        {
+          taskName: 'DD1',
+          KDDId: 102,
+          KDDCode: 'KDD102',
+          KDXEWM: '{"type":"KDX","uuid":"KDX103"}',
+          status: '收箱',
+        },
+        {
+          taskName: '2018-10-11 00:00:00',
+          KDDId: null,
+          KDDCode: null,
+          KDXEWM: '{"type":"KDX","uuid":"KDX104"}',
+          status: '装箱',
+        },
+        {
+          taskName: '2018-10-12 00:00:00',
+          KDDId: 103,
+          KDDCode: 'KDD103',
+          KDXEWM: '{"type":"KDX","uuid":"KDX105"}',
+          status: '发货',
+        },
+        {
+          taskName: '2018-10-13 00:00:00',
+          KDDId: 104,
+          KDDCode: 'KDD104',
+          KDXEWM: '{"type":"KDX","uuid":"KDX106"}',
+          status: '收箱',
         },
       ];
 
+      const response = await post(
+        'getGTKDXs',
+        {
+          curPage,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
 
     it('GTBA模糊搜索GT的KDX列表', async () => {
       const curPage = 0;
-      const keyword = 'PP1';
-      
+      const keyword = '装箱';
+      const trueList = [
+        {
+          taskName: 'DD1',
+          KDDId: null,
+          KDDCode: null,
+          KDXEWM: '{"type":"KDX","uuid":"KDX1"}',
+          status: '装箱',
+        },
+        {
+          taskName: '2018-10-11 00:00:00',
+          KDDId: null,
+          KDDCode: null,
+          KDXEWM: '{"type":"KDX","uuid":"KDX4"}',
+          status: '装箱',
+        },
+        {
+          taskName: 'DD1',
+          KDDId: null,
+          KDDCode: null,
+          KDXEWM: '{"type":"KDX","uuid":"KDX101"}',
+          status: '装箱',
+        },
+        {
+          taskName: '2018-10-11 00:00:00',
+          KDDId: null,
+          KDDCode: null,
+          KDXEWM: '{"type":"KDX","uuid":"KDX104"}',
+          status: '装箱',
+        },
+      ];
+
+      const response = await post(
+        'getGTKDXs',
+        {
+          curPage,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
     });
   });
 
@@ -1028,4 +1154,7 @@ describe('SPRT_testSearch', () => {
       assert.sameDeepMembers(response.data.data, trueList);
     });
   });
+
+   // 获取GTBA的DD任务列表 [GTBA]
+  //  describe('getGTBADDTasks', async () => {});
 });
