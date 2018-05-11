@@ -682,7 +682,7 @@ describe('SPRT_testSearch', () => {
         {
           DPId: 1,
           DPName: 'DP1',
-          WYDPEWM: '{"type":"DP","typeId":1,"uuid":"1_1","DWId":1,"name":"DW1","CZ":"100*100","CC":"铜板"}',
+          WYDPEWM: '{"type":"DP","typeId":1,"uuid":"1_1","DWId":1,"name":"DW1","CC":"100*100","CZ":"铜板"}',
           KDXEWM: '{"type":"KDX","uuid":"KDX101"}',
         },
       ];
@@ -711,7 +711,7 @@ describe('SPRT_testSearch', () => {
         {
           DPId: 1,
           DPName: 'DP1',
-          WYDPEWM: '{"type":"DP","typeId":1,"uuid":"1_7","DWId":2,"name":"DW2","CZ":"100*100","CC":"铜板"}',
+          WYDPEWM: '{"type":"DP","typeId":1,"uuid":"1_7","DWId":2,"name":"DW2","CC":"100*100","CZ":"铜板"}',
           KDXEWM: '{"type":"KDX","uuid":"KDX104"}',
         },
       ];
@@ -751,14 +751,14 @@ describe('SPRT_testSearch', () => {
         },
         {
           PPName: 'PP1',
-          taskName: '2018-10-11',
+          taskName: '2018-10-11 00:00:00',
           GTName: 'GT1',
           KDXEWM: '{"type":"KDX","uuid":"KDX4"}',
           KDDCode: null,
         },
         {
           PPName: 'PP1',
-          taskName: '2018-10-12',
+          taskName: '2018-10-12 00:00:00',
           GTName: 'GT1',
           KDXEWM: '{"type":"KDX","uuid":"KDX5"}',
           KDDCode: 'KDD3',
@@ -779,14 +779,14 @@ describe('SPRT_testSearch', () => {
         },
         {
           PPName: 'PP1',
-          taskName: '2018-10-11',
+          taskName: '2018-10-11 00:00:00',
           GTName: 'GT1',
           KDXEWM: '{"type":"KDX","uuid":"KDX104"}',
           KDDCode: null,
         },
         {
           PPName: 'PP1',
-          taskName: '2018-10-12',
+          taskName: '2018-10-12 00:00:00',
           GTName: 'GT1',
           KDXEWM: '{"type":"KDX","uuid":"KDX105"}',
           KDDCode: 'KDD103',
