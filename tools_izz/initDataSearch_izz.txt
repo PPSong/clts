@@ -62,7 +62,7 @@ id	DDId	GTId	WLId	number	GYSId	status	ZXNumber
 id	DDId	GTId	WLId	number	GYSId	status	ZXNumber	AZGSId	AZGUserId	YJAZDate					
 4	1	1	4	2	1	收货	2	1	2	2018-01-01					
 5	1	1	5	2	1	可拍全景图	2	1	2	2018-01-01					
-6	1	1	6	2	1	完成	2	1	2	2018-01-02					
+6	1	1	6	2	1	可拍全景图	2	1	2	2018-01-02					
 															
 //快递单															
 [KDD]															
@@ -127,8 +127,8 @@ id	GTId	WLId	status	GYSId	ZXNumber	imageUrl	YJZXTime
 [WLBH]															
 id	GTId	WLId	status	GYSId	ZXNumber	imageUrl	YJZXTime	AZGSId	AZGUserId	YJAZDate					
 4	1	1	收货	1	1	imagUrl	2018-10-13	1	2	2018-01-01					
-5	1	1	收货	1	1	imagUrl	2018-10-13	1	2	2018-01-01					
-6	1	1	完成	1	1	imagUrl	2018-10-13	1	2	2018-01-02					
+5	1	1	收货	1	1	imagUrl	2018-10-13	1	2	2018-01-02					
+6	1	1	完成	1	1	imagUrl	2018-10-13	1	2	2018-01-01					
 															
 [WYWL]															
 id	EWM	status	WLId	GYSId	WLBHId	KDXId									
@@ -165,8 +165,8 @@ id	DDId	DWId	DPId	GYSId	status	ZXNumber	CC	CZ
 [DD_DW_DP]															
 id	DDId	DWId	DPId	GYSId	status	ZXNumber	CC	CZ	AZGSId	AZGUserId	YJAZDate				
 5	1	5	1	1	收货	1	100*100	铜板	1	2	2018-01-01				
-6	1	6	1	1	可拍全景图	1	100*100	铜板	1	2	2018-01-01				
-7	1	7	1	1	完成	1	100*100	铜板	1	2	2018-01-02				
+6	1	6	1	1	可拍全景图	1	100*100	铜板	1	2	2018-01-02				
+7	1	7	1	1	完成	1	100*100	铜板	1	2	2018-01-01				
 															
 //唯一灯片															
 [WYDP]															
@@ -191,8 +191,8 @@ id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	CZ	CC	YJZXTime
 [DPBH]															
 id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	CZ	CC	YJZXTime	AZGSId	AZGUserId	YJAZDate			
 4	4	1	收货	1	1	imagUrl	铜板	100*100	2018-10-13	1	2	2018-01-01			
-5	5	1	收货	1	1	imagUrl	铜板	100*100	2018-10-13	1	2	2018-01-01			
-6	6	1	完成	1	1	imagUrl	铜板	100*100	2018-10-13	1	2	2018-01-02			
+5	5	1	收货	1	1	imagUrl	铜板	100*100	2018-10-13	1	2	2018-01-02			
+6	6	1	完成	1	1	imagUrl	铜板	100*100	2018-10-13	1	2	2018-01-01			
 															
 [WYDP]															
 id	EWM	status	DPId	GYSId	DPBHId	KDXId									

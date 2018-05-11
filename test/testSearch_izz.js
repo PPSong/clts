@@ -985,7 +985,7 @@ describe('SPRT_testSearch', () => {
 
   // 获取AZG的DD任务列表 [AZG]
   describe('getAZGDDTasks', async () => {
-    it.only('AZG获取DD任务列表', async () => {
+    it('AZG获取DD任务列表', async () => {
       const curPage = 0;
       const trueList = [
         {
@@ -1531,18 +1531,10 @@ describe('SPRT_testSearch', () => {
         },
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-01',
-          WLName: 'WL1_3_1',
-          WLCode: '1_3_1',
-          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_4"}',
-          status: '反馈',
-        },
-        {
-          GTName: 'GT1',
           YJAZDate: '2018-01-02',
           WLName: 'WL1_3_1',
           WLCode: '1_3_1',
-          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_5"}',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_4"}',
           status: '反馈',
         },
       ];
@@ -1567,7 +1559,7 @@ describe('SPRT_testSearch', () => {
           YJAZDate: '2018-01-02',
           WLName: 'WL1_3_1',
           WLCode: '1_3_1',
-          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_5"}',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_4"}',
           status: '反馈',
         },
       ];
@@ -1666,18 +1658,10 @@ describe('SPRT_testSearch', () => {
         },
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-01',
+          YJAZDate: '2018-01-02',
           DWName: 'DW5',
           DPName: 'DP1',
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_10","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
-          status: '反馈',
-        },
-        {
-          GTName: 'GT1',
-          YJAZDate: '2018-01-02',
-          DWName: 'DW6',
-          DPName: 'DP1',
-          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_11","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}',
           status: '反馈',
         },
       ];
@@ -1687,7 +1671,7 @@ describe('SPRT_testSearch', () => {
         {
           curPage,
         },
-        ZHYToken,
+        AZGToken,
       );
       assert.equal(response.data.code, 1);
       assert.sameDeepMembers(response.data.data, trueList);
@@ -1700,9 +1684,9 @@ describe('SPRT_testSearch', () => {
         {
           GTName: 'GT1',
           YJAZDate: '2018-01-02',
-          DWName: 'DW6',
+          DWName: 'DW5',
           DPName: 'DP1',
-          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_11","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_10","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
           status: '反馈',
         },
       ];
@@ -1713,7 +1697,7 @@ describe('SPRT_testSearch', () => {
           curPage,
           keyword,
         },
-        ZHYToken,
+        AZGToken,
       );
       assert.equal(response.data.code, 1);
       assert.sameDeepMembers(response.data.data, trueList);
