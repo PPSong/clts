@@ -267,7 +267,7 @@ describe('SPRT_testSearch', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      console.log(response.data.data,'izzlog');
+      console.log(response.data.data, 'izzlog');
       assert.sameDeepMembers(response.data.data, trueList);
     });
 
@@ -846,6 +846,7 @@ describe('SPRT_testSearch', () => {
         'getGYSWYWLKuCun',
         {
           curPage,
+          keyword,
         },
         ZHYToken,
       );
@@ -995,6 +996,7 @@ describe('SPRT_testSearch', () => {
         'getGTKDXs',
         {
           curPage,
+          keyword,
         },
         GTBAToken,
       );
@@ -1021,7 +1023,27 @@ describe('SPRT_testSearch', () => {
         {
           PPId: 1,
           PPName: 'PP1',
+          YJAZDate: '2018-01-02T00:00:00.000Z',
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'WL',
+        },
+        {
+          PPId: 1,
+          PPName: 'PP1',
           YJAZDate: '2018-01-01T00:00:00.000Z',
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'DP',
+        },
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: '2018-01-02T00:00:00.000Z',
           DDId: 1,
           taskName: 'DD1',
           GTId: 1,
@@ -1058,7 +1080,27 @@ describe('SPRT_testSearch', () => {
         {
           PPId: 1,
           PPName: 'PP1',
+          YJAZDate: '2018-01-02T00:00:00.000Z',
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'WL',
+        },
+        {
+          PPId: 1,
+          PPName: 'PP1',
           YJAZDate: '2018-01-01T00:00:00.000Z',
+          DDId: 1,
+          taskName: 'DD1',
+          GTId: 1,
+          GTName: 'GT1',
+          type: 'DP',
+        },
+        {
+          PPId: 1,
+          PPName: 'PP1',
+          YJAZDate: '2018-01-02T00:00:00.000Z',
           DDId: 1,
           taskName: 'DD1',
           GTId: 1,
@@ -1071,6 +1113,7 @@ describe('SPRT_testSearch', () => {
         'getAZGDDTasks',
         {
           curPage,
+          keyword,
         },
         AZGToken,
       );
@@ -1147,6 +1190,7 @@ describe('SPRT_testSearch', () => {
         'getGTBADDTasks',
         {
           curPage,
+          keyword,
         },
         GTBAToken,
       );
@@ -1155,6 +1199,530 @@ describe('SPRT_testSearch', () => {
     });
   });
 
-   // 获取GTBA的DD任务列表 [GTBA]
-  //  describe('getGTBADDTasks', async () => {});
+  // 获取GT的DDWL安装列表 [GTBA, AZG]
+  describe('getGT0DDWLAnZhuangTasks', async () => {
+    it('GTBA获取DDGT的WYWL', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          WLName: 'WL1_3_2',
+          WLCode: '1_3_2',
+          WLEWM: { "type": "WL", "typeId": 2, "uuid": "2_1" },
+          status: '装箱',
+        },
+        {
+          WLName: 'WL1_3_3',
+          WLCode: '1_3_3',
+          WLEWM: { "type": "WL", "typeId": 3, "uuid": "3_1" },
+          status: '装箱',
+        },
+        {
+          WLName: 'WL1_3_3',
+          WLCode: '1_3_3',
+          WLEWM: { "type": "WL", "typeId": 3, "uuid": "3_2" },
+          status: '发货',
+        },
+        {
+          WLName: 'WL1_3_3',
+          WLCode: '1_3_3',
+          WLEWM: { "type": "WL", "typeId": 3, "uuid": "3_3" },
+          status: '收箱',
+        },
+      ];
+
+      const response = await post(
+        'getGT0DDWLAnZhuangTasks',
+        {
+          curPage,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('GTBA模糊搜索DDGT的WYWL', async () => {
+      const curPage = 0;
+      const keyword = '1_3_2';
+      const trueList = [
+        {
+          WLName: 'WL1_3_2',
+          WLCode: '1_3_2',
+          WLEWM: { "type": "WL", "typeId": 2, "uuid": "2_1" },
+          status: '装箱',
+        },
+      ];
+
+      const response = await post(
+        'getGT0DDWLAnZhuangTasks',
+        {
+          curPage,
+          keyword,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('AZG获取DDGT的WYWL', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          WLName: 'WL1_3_4',
+          WLCode: '1_3_4',
+          WLEWM: { "type": "WL", "typeId": 4, "uuid": "4_1" },
+          status: '收货',
+        },
+        {
+          WLName: 'WL1_3_4',
+          WLCode: '1_3_4',
+          WLEWM: { "type": "WL", "typeId": 4, "uuid": "4_2" },
+          status: '收货',
+        },
+        {
+          WLName: 'WL1_3_5',
+          WLCode: '1_3_5',
+          WLEWM: { "type": "WL", "typeId": 5, "uuid": "5_1" },
+          status: '反馈',
+        },
+        {
+          WLName: 'WL1_3_5',
+          WLCode: '1_3_5',
+          WLEWM: { "type": "WL", "typeId": 5, "uuid": "5_2" },
+          status: '反馈',
+        },
+      ];
+
+      const response = await post(
+        'getGT0DDWLAnZhuangTasks',
+        {
+          curPage,
+        },
+        AZGToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('AZG模糊搜索DDGT的WYWL', async () => {
+      const curPage = 0;
+      const keyword = '1_3_4';
+      const trueList = [
+        {
+          WLName: 'WL1_3_4',
+          WLCode: '1_3_4',
+          WLEWM: { "type": "WL", "typeId": 4, "uuid": "4_1" },
+          status: '收货',
+        },
+        {
+          WLName: 'WL1_3_4',
+          WLCode: '1_3_4',
+          WLEWM: { "type": "WL", "typeId": 4, "uuid": "4_2" },
+          status: '收货',
+        },
+      ];
+
+      const response = await post(
+        'getGT0DDWLAnZhuangTasks',
+        {
+          curPage,
+          keyword,
+        },
+        AZGToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+  });
+
+  // 获取GT的DDDP安装列表 [GTBA, AZG]
+  describe('getGT0DDDPAnZhuangTasks', async () => {
+    it('GTBA获取DDGT的WYDP', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          DWName: 'DW2',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_1","DWId":2,"name":"DW2","CC":"100*100","CZ":"铜板"}',
+          status: '装箱',
+        },
+        {
+          DWName: 'DW3',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_2","DWId":3,"name":"DW3","CC":"100*100","CZ":"铜板"}',
+          status: '发货',
+        },
+
+        {
+          DWName: 'DW4',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_3","DWId":4,"name":"DW4","CC":"100*100","CZ":"铜板"}',
+          status: '收箱',
+        },
+      ];
+
+      const response = await post(
+        'getGT0DDDPAnZhuangTasks',
+        {
+          curPage,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('GTBA模糊搜索DDGT的WYDP', async () => {
+      const curPage = 0;
+      const keyword = 'DW2';
+      const trueList = [
+        {
+          DWName: 'DW2',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_1","DWId":2,"name":"DW2","CC":"100*100","CZ":"铜板"}',
+          status: '装箱',
+        },
+      ];
+
+      const response = await post(
+        'getGT0DDDPAnZhuangTasks',
+        {
+          curPage,
+          keyword,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('AZG获取DDGT的WYDP', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          DWName: 'DW5',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_4","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
+          status: '装箱',
+        },
+        {
+          DWName: 'DW6',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_5","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}',
+          status: '发货',
+        },
+        {
+          DWName: 'DW7',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_6","DWId":7,"name":"DW7","CC":"100*100","CZ":"铜板"}',
+          status: '收箱',
+        },
+      ];
+
+      const response = await post(
+        'getGT0DDDPAnZhuangTasks',
+        {
+          curPage,
+        },
+        AZGToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('AZG模糊搜索DDGT的WYDP', async () => {
+      const curPage = 0;
+      const keyword = 'DW5';
+      const trueList = [
+        {
+          DWName: 'DW5',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_4","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
+          status: '装箱',
+        },
+      ];
+
+      const response = await post(
+        'getGT0DDDPAnZhuangTasks',
+        {
+          curPage,
+          keyword,
+        },
+        AZGToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+  });
+
+  // 获取GT的BHWL安装列表 [GTBA, AZG]
+  describe('getGT0BHWLAnZhuangTasks', async () => {
+    it('GTBA获取BHWL的WYWL', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          GTName: 'GT1',
+          YJAZDate: null,
+          WLName: 'WL1_3_1',
+          WLCode: '1_3_1',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_1"}',
+          status: '装箱',
+        },
+        {
+          GTName: 'GT1',
+          YJAZDate: null,
+          WLName: 'WL1_3_1',
+          WLCode: '1_3_1',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_2"}',
+          status: '装箱',
+        },
+      ];
+
+      const response = await post(
+        'getGT0BHWLAnZhuangTasks',
+        {
+          curPage,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('GTBA模糊搜索BHWL的WYWL', async () => {
+      const curPage = 0;
+      const keyword = null;
+      const trueList = [
+        {
+          GTName: 'GT1',
+          YJAZDate: null,
+          WLName: 'WL1_3_1',
+          WLCode: '1_3_1',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_1"}',
+          status: '装箱',
+        },
+        {
+          GTName: 'GT1',
+          YJAZDate: null,
+          WLName: 'WL1_3_1',
+          WLCode: '1_3_1',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_2"}',
+          status: '装箱',
+        },
+      ];
+
+      const response = await post(
+        'getGT0BHWLAnZhuangTasks',
+        {
+          curPage,
+          keyword,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('AZG获取BHWL的WYWL', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          GTName: 'GT1',
+          YJAZDate: '2018-01-01',
+          WLName: 'WL1_3_1',
+          WLCode: '1_3_1',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_3"}',
+          status: '收货',
+        },
+        {
+          GTName: 'GT1',
+          YJAZDate: '2018-01-01',
+          WLName: 'WL1_3_1',
+          WLCode: '1_3_1',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_4"}',
+          status: '反馈',
+        },
+        {
+          GTName: 'GT1',
+          YJAZDate: '2018-01-02',
+          WLName: 'WL1_3_1',
+          WLCode: '1_3_1',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_5"}',
+          status: '反馈',
+        },
+      ];
+
+      const response = await post(
+        'getGT0BHWLAnZhuangTasks',
+        {
+          curPage,
+        },
+        AZGToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('AZG模糊搜索BHWL的WYWL', async () => {
+      const curPage = 0;
+      const keyword = '2018-01-02';
+      const trueList = [
+        {
+          GTName: 'GT1',
+          YJAZDate: '2018-01-02',
+          WLName: 'WL1_3_1',
+          WLCode: '1_3_1',
+          WLEWM: '{"type":"WL","typeId":1,"uuid":"1_5"}',
+          status: '反馈',
+        },
+      ];
+
+      const response = await post(
+        'getGT0BHWLAnZhuangTasks',
+        {
+          curPage,
+          keyword,
+        },
+        AZGToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+   });
+
+   // 获取GT的BHDP安装列表 [GTBA, AZG]
+  describe('getGT0BHDPAnZhuangTasks', async () => { 
+    it('GTBA获取BHDP的WYDP', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          GTName: 'GT1',
+          YJAZDate: null,
+          DWName: 'DW2',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_7","DWId":2,"name":"DW2","CC":"100*100","CZ":"铜板"}',
+          status: '装箱',
+        },
+        {
+          GTName: 'GT1',
+          YJAZDate: null,
+          DWName: 'DW3',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_8","DWId":3,"name":"DW3","CC":"100*100","CZ":"铜板"}',
+          status: '发货',
+        },
+      ];
+
+      const response = await post(
+        'getGT0BHDPAnZhuangTasks',
+        {
+          curPage,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('GTBA模糊搜索BHDP的WYDP', async () => {
+      const curPage = 0;
+      const YJAZDate = null;
+      const trueList = [
+        {
+          GTName: 'GT1',
+          YJAZDate: null,
+          DWName: 'DW2',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_7","DWId":2,"name":"DW2","CC":"100*100","CZ":"铜板"}',
+          status: '装箱',
+        },
+        {
+          GTName: 'GT1',
+          YJAZDate: null,
+          DWName: 'DW3',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_8","DWId":3,"name":"DW3","CC":"100*100","CZ":"铜板"}',
+          status: '发货',
+        },
+      ];
+
+      const response = await post(
+        'getGT0BHDPAnZhuangTasks',
+        {
+          curPage,
+          keyword,
+        },
+        GTBAToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('AZG获取BHDP的WYDP', async () => {
+      const curPage = 0;
+      const trueList = [
+        {
+          GTName: 'GT1',
+          YJAZDate: '2018-01-01',
+          DWName: 'DW4',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_9","DWId":4,"name":"DW4","CC":"100*100","CZ":"铜板"}',
+          status: '收货',
+        },
+        {
+          GTName: 'GT1',
+          YJAZDate: '2018-01-01',
+          DWName: 'DW5',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_10","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
+          status: '反馈',
+        },
+        {
+          GTName: 'GT1',
+          YJAZDate: '2018-01-02',
+          DWName: 'DW6',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_11","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}',
+          status: '反馈',
+        },
+      ];
+
+      const response = await post(
+        'getGT0BHDPAnZhuangTasks',
+        {
+          curPage,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+
+    it('AZG模糊搜索BHDP的WYDP', async () => {
+      const curPage = 0;
+      const YJAZDate = '2018-01-02';
+      const trueList = [
+        {
+          GTName: 'GT1',
+          YJAZDate: '2018-01-02',
+          DWName: 'DW6',
+          DPName: 'DP1',
+          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_11","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}',
+          status: '反馈',
+        },
+      ];
+
+      const response = await post(
+        'getGT0BHDPAnZhuangTasks',
+        {
+          curPage,
+          keyword,
+        },
+        ZHYToken,
+      );
+      assert.equal(response.data.code, 1);
+      assert.sameDeepMembers(response.data.data, trueList);
+    });
+  });
 });
