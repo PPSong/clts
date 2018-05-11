@@ -682,7 +682,7 @@ describe('SPRT_testSearch', () => {
         {
           DPId: 1,
           DPName: 'DP1',
-          WYDPEWM: '{"type":"DP","typeId":1,"uuid":"1_1","DWId":1,"name":"DW1","CC":"100*100","CZ":"铜板"}',
+          WYDPEWM: '{"type":"DP","typeId":1,"uuid":"1_1","DWId":2,"name":"DW2","CC":"100*100","CZ":"铜板"}',
           KDXEWM: '{"type":"KDX","uuid":"KDX101"}',
         },
       ];
@@ -1184,27 +1184,21 @@ describe('SPRT_testSearch', () => {
       const GTId = 1;
       const trueList = [
         {
-          WLName: 'WL1_3_2',
-          WLCode: '1_3_2',
-          WLEWM: { "type": "WL", "typeId": 2, "uuid": "2_1" },
+          WLName: 'WL1_3_3',
+          WLCode: '1_3_3',
+          WLEWM: '{"type":"WL","typeId":3,"uuid":"3_1"}',
           status: '装箱',
         },
         {
           WLName: 'WL1_3_3',
           WLCode: '1_3_3',
-          WLEWM: { "type": "WL", "typeId": 3, "uuid": "3_1" },
-          status: '装箱',
-        },
-        {
-          WLName: 'WL1_3_3',
-          WLCode: '1_3_3',
-          WLEWM: { "type": "WL", "typeId": 3, "uuid": "3_2" },
+          WLEWM: '{"type":"WL","typeId":3,"uuid":"3_2"}',
           status: '发货',
         },
         {
           WLName: 'WL1_3_3',
           WLCode: '1_3_3',
-          WLEWM: { "type": "WL", "typeId": 3, "uuid": "3_3" },
+          WLEWM: '{"type":"WL","typeId":3,"uuid":"3_3"}',
           status: '收箱',
         },
       ];
@@ -1224,13 +1218,13 @@ describe('SPRT_testSearch', () => {
     it('GTBA模糊搜索DDGT的WYWL', async () => {
       const curPage = 0;
       const GTId = 1;
-      const keyword = '1_3_2';
+      const keyword = '3_2';
       const trueList = [
         {
-          WLName: 'WL1_3_2',
-          WLCode: '1_3_2',
-          WLEWM: { "type": "WL", "typeId": 2, "uuid": "2_1" },
-          status: '装箱',
+          WLName: 'WL1_3_3',
+          WLCode: '1_3_3',
+          WLEWM: '{"type":"WL","typeId":3,"uuid":"3_2"}',
+          status: '发货',
         },
       ];
 
@@ -1254,25 +1248,25 @@ describe('SPRT_testSearch', () => {
         {
           WLName: 'WL1_3_4',
           WLCode: '1_3_4',
-          WLEWM: { "type": "WL", "typeId": 4, "uuid": "4_1" },
+          WLEWM: '{"type":"WL","typeId":4,"uuid":"4_1"}',
           status: '收货',
         },
         {
           WLName: 'WL1_3_4',
           WLCode: '1_3_4',
-          WLEWM: { "type": "WL", "typeId": 4, "uuid": "4_2" },
+          WLEWM: '{"type":"WL","typeId":4,"uuid":"4_2"}',
           status: '收货',
         },
         {
           WLName: 'WL1_3_5',
           WLCode: '1_3_5',
-          WLEWM: { "type": "WL", "typeId": 5, "uuid": "5_1" },
+          WLEWM: '{"type":"WL","typeId":5,"uuid":"5_1"}',
           status: '反馈',
         },
         {
           WLName: 'WL1_3_5',
           WLCode: '1_3_5',
-          WLEWM: { "type": "WL", "typeId": 5, "uuid": "5_2" },
+          WLEWM: '{"type":"WL","typeId":5,"uuid":"5_2"}',
           status: '反馈',
         },
       ];
@@ -1297,13 +1291,13 @@ describe('SPRT_testSearch', () => {
         {
           WLName: 'WL1_3_4',
           WLCode: '1_3_4',
-          WLEWM: { "type": "WL", "typeId": 4, "uuid": "4_1" },
+          WLEWM: '{"type":"WL","typeId":4,"uuid":"4_1"}',
           status: '收货',
         },
         {
           WLName: 'WL1_3_4',
           WLCode: '1_3_4',
-          WLEWM: { "type": "WL", "typeId": 4, "uuid": "4_2" },
+          WLEWM: '{"type":"WL","typeId":4,"uuid":"4_2"}',
           status: '收货',
         },
       ];
@@ -1340,7 +1334,6 @@ describe('SPRT_testSearch', () => {
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_2","DWId":3,"name":"DW3","CC":"100*100","CZ":"铜板"}',
           status: '发货',
         },
-
         {
           DWName: 'DW4',
           DPName: 'DP1',
@@ -1395,19 +1388,13 @@ describe('SPRT_testSearch', () => {
           DWName: 'DW5',
           DPName: 'DP1',
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_4","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
-          status: '装箱',
+          status: '收货',
         },
         {
           DWName: 'DW6',
           DPName: 'DP1',
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_5","DWId":6,"name":"DW6","CC":"100*100","CZ":"铜板"}',
-          status: '发货',
-        },
-        {
-          DWName: 'DW7',
-          DPName: 'DP1',
-          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_6","DWId":7,"name":"DW7","CC":"100*100","CZ":"铜板"}',
-          status: '收箱',
+          status: '反馈',
         },
       ];
 
@@ -1432,7 +1419,7 @@ describe('SPRT_testSearch', () => {
           DWName: 'DW5',
           DPName: 'DP1',
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_4","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
-          status: '装箱',
+          status: '收货',
         },
       ];
 
@@ -1486,7 +1473,7 @@ describe('SPRT_testSearch', () => {
 
     it('GTBA模糊搜索BHWL的WYWL', async () => {
       const curPage = 0;
-      const keyword = "1";
+      const keyword = '1_3_1';
       const trueList = [
         {
           GTName: 'GT1',
@@ -1502,7 +1489,7 @@ describe('SPRT_testSearch', () => {
           WLName: 'WL1_3_1',
           WLCode: '1_3_1',
           WLEWM: '{"type":"WL","typeId":1,"uuid":"1_2"}',
-          status: '装箱',
+          status: '发货',
         },
       ];
 
@@ -1523,7 +1510,7 @@ describe('SPRT_testSearch', () => {
       const trueList = [
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-01',
+          YJAZDate: '2018-01-01T00:00:00.000Z',
           WLName: 'WL1_3_1',
           WLCode: '1_3_1',
           WLEWM: '{"type":"WL","typeId":1,"uuid":"1_3"}',
@@ -1531,7 +1518,7 @@ describe('SPRT_testSearch', () => {
         },
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-02',
+          YJAZDate: '2018-01-02T00:00:00.000Z',
           WLName: 'WL1_3_1',
           WLCode: '1_3_1',
           WLEWM: '{"type":"WL","typeId":1,"uuid":"1_4"}',
@@ -1556,7 +1543,7 @@ describe('SPRT_testSearch', () => {
       const trueList = [
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-02',
+          YJAZDate: '2018-01-02T00:00:00.000Z',
           WLName: 'WL1_3_1',
           WLCode: '1_3_1',
           WLEWM: '{"type":"WL","typeId":1,"uuid":"1_4"}',
@@ -1575,10 +1562,10 @@ describe('SPRT_testSearch', () => {
       assert.equal(response.data.code, 1);
       assert.sameDeepMembers(response.data.data, trueList);
     });
-   });
+  });
 
-   // 获取GT的BHDP安装列表 [GTBA, AZG]
-  describe('getGT0BHDPAnZhuangTasks', async () => { 
+  // 获取GT的BHDP安装列表 [GTBA, AZG]
+  describe('getGT0BHDPAnZhuangTasks', async () => {
     it('GTBA获取BHDP的WYDP', async () => {
       const curPage = 0;
       const trueList = [
@@ -1613,7 +1600,7 @@ describe('SPRT_testSearch', () => {
 
     it('GTBA模糊搜索BHDP的WYDP', async () => {
       const curPage = 0;
-      const keyword = '';
+      const keyword = '1_7';
       const trueList = [
         {
           GTName: 'GT1',
@@ -1622,14 +1609,6 @@ describe('SPRT_testSearch', () => {
           DPName: 'DP1',
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_7","DWId":2,"name":"DW2","CC":"100*100","CZ":"铜板"}',
           status: '装箱',
-        },
-        {
-          GTName: 'GT1',
-          YJAZDate: null,
-          DWName: 'DW3',
-          DPName: 'DP1',
-          DPEWM: '{"type":"DP","typeId":1,"uuid":"1_8","DWId":3,"name":"DW3","CC":"100*100","CZ":"铜板"}',
-          status: '发货',
         },
       ];
 
@@ -1650,7 +1629,7 @@ describe('SPRT_testSearch', () => {
       const trueList = [
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-01',
+          YJAZDate: '2018-01-01T00:00:00.000Z',
           DWName: 'DW4',
           DPName: 'DP1',
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_9","DWId":4,"name":"DW4","CC":"100*100","CZ":"铜板"}',
@@ -1658,7 +1637,7 @@ describe('SPRT_testSearch', () => {
         },
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-02',
+          YJAZDate: '2018-01-02T00:00:00.000Z',
           DWName: 'DW5',
           DPName: 'DP1',
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_10","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',
@@ -1679,11 +1658,11 @@ describe('SPRT_testSearch', () => {
 
     it.only('AZG模糊搜索BHDP的WYDP', async () => {
       const curPage = 0;
-      const keyword = '18';
+      const keyword = '2018-01-02';
       const trueList = [
         {
           GTName: 'GT1',
-          YJAZDate: '2018-01-02',
+          YJAZDate: '2018-01-02T00:00:00.000Z',
           DWName: 'DW5',
           DPName: 'DP1',
           DPEWM: '{"type":"DP","typeId":1,"uuid":"1_10","DWId":5,"name":"DW5","CC":"100*100","CZ":"铜板"}',

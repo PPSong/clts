@@ -37,7 +37,7 @@ export default class GetGT0DDWLAnZhuangTasks extends BusinessQueryApiBase {
     SELECT
       d.name DWName,
       c.name DPName,
-      b.EWM WLEWM,
+      b.EWM DPEWM,
       b.status
     FROM
       DD_DW_DP a
