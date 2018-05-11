@@ -200,7 +200,7 @@ const createViewAndProcedure = async () => {
   // end 创建创建Procedure
 };
 
-describe('SPRT_Search测试', () => {
+describe('SPRT_testSearch', () => {
   before(async () => {
     const con = mysql.createConnection({
       host: 'localhost',
@@ -254,8 +254,8 @@ describe('SPRT_Search测试', () => {
           DDName: 'DD1',
           GTId: 1,
           GTName: 'GT1',
-          totalNumber: '21',
-          totalZXNumber: '10',
+          totalNumber: '12',
+          totalZXNumber: '1',
         },
       ];
 
@@ -282,8 +282,8 @@ describe('SPRT_Search测试', () => {
           DDName: 'DD1',
           GTId: 1,
           GTName: 'GT1',
-          totalNumber: '21',
-          totalZXNumber: '10',
+          totalNumber: '12',
+          totalZXNumber: '1',
         },
       ];
 
@@ -314,33 +314,6 @@ describe('SPRT_Search测试', () => {
           totalNumber: '1',
           totalZXNumber: '0',
         },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-11T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '1',
-          totalZXNumber: '1',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-12T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '1',
-          totalZXNumber: '1',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-13T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '3',
-          totalZXNumber: '3',
-        },
       ];
 
       const response = await post(
@@ -366,33 +339,6 @@ describe('SPRT_Search测试', () => {
           GTName: 'GT1',
           totalNumber: '1',
           totalZXNumber: '0',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-11T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '1',
-          totalZXNumber: '1',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-12T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '1',
-          totalZXNumber: '1',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-13T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '3',
-          totalZXNumber: '3',
         },
       ];
 
@@ -431,38 +377,6 @@ describe('SPRT_Search测试', () => {
           number: 2,
           ZXNumber: 1,
           DD_GT_WLStatus: '已分配发货供应商',
-        },
-        {
-          WLId: 3,
-          WLName: 'WL1_3_3',
-          WLCode: '1_3_3',
-          number: 3,
-          ZXNumber: 3,
-          DD_GT_WLStatus: '装箱完成',
-        },
-        {
-          WLId: 4,
-          WLName: 'WL1_3_4',
-          WLCode: '1_3_4',
-          number: 2,
-          ZXNumber: 2,
-          DD_GT_WLStatus: '收货',
-        },
-        {
-          WLId: 5,
-          WLName: 'WL1_3_5',
-          WLCode: '1_3_5',
-          number: 2,
-          ZXNumber: 2,
-          DD_GT_WLStatus: '可拍全景图',
-        },
-        {
-          WLId: 6,
-          WLName: 'WL1_3_6',
-          WLCode: '1_3_6',
-          number: 2,
-          ZXNumber: 2,
-          DD_GT_WLStatus: '完成',
         },
       ];
 
@@ -591,8 +505,8 @@ describe('SPRT_Search测试', () => {
           DDName: 'DD1',
           GTId: 1,
           GTName: 'GT1',
-          totalNumber: '7',
-          totalZXNumber: '6',
+          totalNumber: '1',
+          totalZXNumber: '0',
         },
       ];
 
@@ -618,8 +532,8 @@ describe('SPRT_Search测试', () => {
           DDName: 'DD1',
           GTId: 1,
           GTName: 'GT1',
-          totalNumber: '7',
-          totalZXNumber: '6',
+          totalNumber: '1',
+          totalZXNumber: '0',
         },
       ];
 
@@ -649,33 +563,6 @@ describe('SPRT_Search测试', () => {
           totalNumber: '1',
           totalZXNumber: '0',
         },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-11T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '1',
-          totalZXNumber: '1',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-12T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '1',
-          totalZXNumber: '1',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-13T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '3',
-          totalZXNumber: '3',
-        },
       ];
 
       const response = await post(
@@ -701,33 +588,6 @@ describe('SPRT_Search测试', () => {
           GTName: 'GT1',
           totalNumber: '1',
           totalZXNumber: '0',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-11T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '1',
-          totalZXNumber: '1',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-12T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '1',
-          totalZXNumber: '1',
-        },
-        {
-          PPId: 1,
-          PPName: 'PP1',
-          YJZXTime: '2018-10-13T00:00:00.000Z',
-          GTId: 1,
-          GTName: 'GT1',
-          totalNumber: '3',
-          totalZXNumber: '3',
         },
       ];
 
@@ -761,72 +621,6 @@ describe('SPRT_Search测试', () => {
           number: 1,
           ZXNumber: 0,
           DD_DW_DPStatus: '已分配发货供应商',
-        },
-        {
-          DPId: 1,
-          DPName: 'DP1',
-          DWId: 2,
-          DWName: 'DW2',
-          CC: '100*100',
-          CZ: '铜板',
-          number: 1,
-          ZXNumber: 1,
-          DD_DW_DPStatus: '装箱完成',
-        },
-        {
-          DPId: 1,
-          DPName: 'DP1',
-          DWId: 3,
-          DWName: 'DW3',
-          CC: '100*100',
-          CZ: '铜板',
-          number: 1,
-          ZXNumber: 1,
-          DD_DW_DPStatus: '装箱完成',
-        },
-        {
-          DPId: 1,
-          DPName: 'DP1',
-          DWId: 4,
-          DWName: 'DW4',
-          CC: '100*100',
-          CZ: '铜板',
-          number: 1,
-          ZXNumber: 1,
-          DD_DW_DPStatus: '装箱完成',
-        },
-        {
-          DPId: 1,
-          DPName: 'DP1',
-          DWId: 5,
-          DWName: 'DW5',
-          CC: '100*100',
-          CZ: '铜板',
-          number: 1,
-          ZXNumber: 1,
-          DD_DW_DPStatus: '收货',
-        },
-        {
-          DPId: 1,
-          DPName: 'DP1',
-          DWId: 6,
-          DWName: 'DW6',
-          CC: '100*100',
-          CZ: '铜板',
-          number: 1,
-          ZXNumber: 1,
-          DD_DW_DPStatus: '可拍全景图',
-        },
-        {
-          DPId: 1,
-          DPName: 'DP1',
-          DWId: 7,
-          DWName: 'DW7',
-          CC: '100*100',
-          CZ: '铜板',
-          number: 1,
-          ZXNumber: 1,
-          DD_DW_DPStatus: '完成',
         },
       ];
 
