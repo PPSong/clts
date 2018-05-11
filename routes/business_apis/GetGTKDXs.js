@@ -27,25 +27,21 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
     // 查询记录
     const sql = `
     SELECT
-      c.name PPName,
-      IFNULL(d.name, a.YJZXTime) taskName,
-      b.name GTName,
-      IF(ISNULL(a.DDId), 'BH', 'SH') taskType,
-      a.HWType
+      IFNULL(b.name, a.YJZXTime) taskName,
+      d.id KDDId,
+      d.code KDDCode,
+      a.EWM KDXEWM,
+      a.status
     FROM
       KDX a
-    JOIN
-      GT b
-    ON
-      a.GTId = b.id
-    JOIN
-      PP c
-    ON
-      b.PPId = c.id
     LEFT JOIN
-      DD d
+      DD b
     ON
-      a.DDId = d.id
+      a.DDId = b.id
+    LEFT JOIN
+      KDD d
+    ON
+      a.KDDId = d.id
     WHERE
       a.GTId = ${tmpGTId}
     AND
