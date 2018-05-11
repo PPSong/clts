@@ -2345,7 +2345,7 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
-  // 获取GT的DDWL安装列表 [GTBA]
+  // 获取GT的DDWL安装列表 [GTBA, AZG]
   getGT0DDWLAnZhuangTasks: {
     type: 'object',
     properties: {
@@ -2363,5 +2363,54 @@ export const apiSchema = {
       },
     },
     required: ['curPage', 'GTId'],
+  },
+  // 获取GT的DDDP安装列表 [GTBA, AZG]
+  getGT0DDDPAnZhuangTasks: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      // GTId
+      GTId: {
+        type: 'number',
+      },
+    },
+    required: ['curPage', 'GTId'],
+  },
+  // 获取GT的BHWL安装列表 [GTBA, AZG]
+  getGT0BHWLAnZhuangTasks: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取GT的BHDP安装列表 [GTBA, AZG]
+  getGT0BHDPAnZhuangTasks: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
   },
 };
