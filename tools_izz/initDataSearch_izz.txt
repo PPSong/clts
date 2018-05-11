@@ -90,16 +90,16 @@ id	EWM	GTId	status	DDId	HWType	KDDId	GYSId
 103	{"type":"KDX","uuid":"KDX103"}	1	收箱	1	DP	102	1								
 															
 [KDX]															
-id	EWM	GTId	status	DDId	HWType	YJZXTime	GYSId								
-4	{"type":"KDX","uuid":"KDX4"}	1	装箱	1	WL	2018-10-11	1								
-104	{"type":"KDX","uuid":"KDX104"}	1	装箱	1	DP	2018-10-11	1								
+id	EWM	GTId	status	HWType	YJZXTime	GYSId									
+4	{"type":"KDX","uuid":"KDX4"}	1	装箱	WL	2018-10-11	1									
+104	{"type":"KDX","uuid":"KDX104"}	1	装箱	DP	2018-10-11	1									
 															
 [KDX]															
-id	EWM	GTId	status	DDId	HWType	YJZXTime	KDDId	GYSId							
-5	{"type":"KDX","uuid":"KDX5"}	1	发货	1	WL	2018-10-12	3	1							
-6	{"type":"KDX","uuid":"KDX6"}	1	收箱	1	WL	2018-10-13	4	1							
-105	{"type":"KDX","uuid":"KDX105"}	1	发货	1	DP	2018-10-12	103	1							
-106	{"type":"KDX","uuid":"KDX106"}	1	收箱	1	DP	2018-10-13	104	1							
+id	EWM	GTId	status	HWType	YJZXTime	KDDId	GYSId								
+5	{"type":"KDX","uuid":"KDX5"}	1	发货	WL	2018-10-12	3	1								
+6	{"type":"KDX","uuid":"KDX6"}	1	收箱	WL	2018-10-13	4	1								
+105	{"type":"KDX","uuid":"KDX105"}	1	发货	DP	2018-10-12	103	1								
+106	{"type":"KDX","uuid":"KDX106"}	1	收箱	DP	2018-10-13	104	1								
 															
 //唯一物料															
 [WYWL]															
