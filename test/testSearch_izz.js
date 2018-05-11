@@ -514,7 +514,7 @@ describe('SPRT_Search测试', () => {
 
   // 获取指定DDGT的DDWL已装箱WYWL [ZHY]
   describe('getDDGT0DDWLYiZhuangXiangWYWLList', async () => {
-    it('ZHY进入已装箱WYWL', async () => {
+    it.only('ZHY进入已装箱WYWL', async () => {
       const curPage = 0;
       const DDId = 1;
       const GTId = 1;
