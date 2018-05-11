@@ -13,7 +13,6 @@ export default class BusinessQueryApiBase {
       const { user } = req;
       try {
         transaction = await sequelize.transaction();
-
         this.checkApiAccess(user);
         const data = await this.mainProcess(req, res, next, user, transaction);
 
@@ -42,7 +41,6 @@ export default class BusinessQueryApiBase {
 
   static checkApiAccess(user) {
     const tmpJSs = this.getAllowAccessJSs();
-
     if (!tmpJSs.includes(user.JS)) {
       throw new Error('没有权限!');
     }
