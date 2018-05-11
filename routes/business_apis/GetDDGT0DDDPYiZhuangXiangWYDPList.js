@@ -19,14 +19,14 @@ export default class GetDDGT0DDDPYiZhuangXiangWYDPList extends BusinessQueryApiB
     SELECT
       c.id DPId,
       c.name DPName,
-      b.EWM WYDPEWM,
+      a.EWM WYDPEWM,
       d.EWM KDXEWM
     FROM
-      DD_DW_DP a
+      WYDP a
     JOIN
-      WYDP b
+      DD_DW_DP b
     ON
-      b.DDDWDPId = a.id
+      a.DDDWDPId = b.id
     JOIN
       DP c
     ON
@@ -34,17 +34,19 @@ export default class GetDDGT0DDDPYiZhuangXiangWYDPList extends BusinessQueryApiB
     JOIN
       KDX d
     ON
-      b.KDXId = d.id
+      a.KDXId = d.id
     JOIN
       DW e
     ON
-      a.DWId = e.id
+      b.DWId = e.id
     WHERE
-      a.DDId = ${DDId}
+      a.status = '${DBTables.WYDPStatus.ZX}'
+    AND
+      b.DDId = ${DDId}
     AND
       e.GTId = ${GTId}
     AND
-      a.GYSId = ${tmpGYSId}
+      b.GYSId = ${tmpGYSId}
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;

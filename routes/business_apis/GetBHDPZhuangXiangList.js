@@ -19,8 +19,6 @@ export default class GetBHDPZhuangXiangList extends BusinessQueryApiBase {
         cc.name LIKE '%${keyword}%'
       OR
         bb.name LIKE '%${keyword}%'
-      OR
-        dd.name LIKE '%${keyword}%'
       )
     ` : '1';
 
@@ -38,11 +36,15 @@ export default class GetBHDPZhuangXiangList extends BusinessQueryApiBase {
       (
       SELECT
         a.YJZXTime,
-        a.GTId,
+        b.GTId,
         SUM(1) totalNumber,
         SUM(a.ZXNumber) totalZXNumber
       FROM
         DPBH a
+      JOIN
+        DW b
+      ON
+        a.DWId = b.id
       WHERE
         a.status = '${DBTables.DPBHStatus.YFPFHGYS}'
       AND
@@ -51,7 +53,7 @@ export default class GetBHDPZhuangXiangList extends BusinessQueryApiBase {
         a.YJZXTime IS NOT NULL
       GROUP BY
         a.YJZXTime,
-        a.GTId
+        b.GTId
       ) aa
       JOIN
       GT bb
