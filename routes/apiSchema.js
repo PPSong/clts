@@ -2315,4 +2315,34 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
+  // 获取AZG的DD任务列表 [ZHY]
+  getAZGDDTasks: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取GTBA的DD任务列表 [ZHY]
+  getGTBADDTasks: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
 };
