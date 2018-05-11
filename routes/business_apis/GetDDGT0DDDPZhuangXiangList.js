@@ -19,6 +19,7 @@ export default class GetDDGT0DDDPZhuangXiangList extends BusinessQueryApiBase {
     SELECT
       a.DPId,
       b.name DPName,
+      c.id DWId,
       c.name DWName,
       c.CC,
       c.CZ,

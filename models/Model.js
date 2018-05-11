@@ -3043,6 +3043,9 @@ export const WLBH = sequelize.define(
     YJZXTime: {
       type: Sequelize.DATE,
     },
+    YJAZDate: {
+      type: Sequelize.DATE,
+    },
   },
   {
     version: true,
@@ -3237,6 +3240,9 @@ export const DPBH = sequelize.define(
       type: Sequelize.INTEGER,
     },
     YJZXTime: {
+      type: Sequelize.DATE,
+    },
+    YJAZDate: {
       type: Sequelize.DATE,
     },
   },
