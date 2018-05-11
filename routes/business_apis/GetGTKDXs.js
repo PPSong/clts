@@ -16,11 +16,13 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
 
     const keywordWhere = keyword ? `
       (
-        d.name LIKE '%${keyword}%'
+        b.name LIKE '%${keyword}%'
       OR
-        a.YJZXTime LIKE '%${keyword}%'
+        CAST(a.YJZXTime as CHAR) LIKE '%${keyword}%'
       OR
-        a.HWType LIKE '%${keyword}%'
+        d.code LIKE '%${keyword}%'
+      OR
+        a.EWM LIKE '%${keyword}%'
       )
     ` : '1';
 

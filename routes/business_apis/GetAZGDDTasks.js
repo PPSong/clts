@@ -78,6 +78,7 @@ export default class GetAZGDDTasks extends BusinessQueryApiBase {
       OR
         a.Status = '${DBTables.DD_DW_DPStatus.KPQJT}'
       )
+      AND  
         a.AZGUserId = ${user.id}
       GROUP BY
         a.DDId,
