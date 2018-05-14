@@ -86,7 +86,7 @@ const getToken = async (username, password) => {
     username,
     password,
   });
-  return r.data.token;
+  return r.data.data.token;
 };
 
 const post = async (path, body, token) => {
@@ -140,7 +140,7 @@ process.env.NODE_ENV = 'test';
 const server = require('../app');
 
 const ppLog = debug('ppLog');
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://localhost:3300';
 const api = `${baseUrl}/api`;
 let adminToken;
 let PPJLToken;
@@ -269,6 +269,7 @@ describe('SPRT测试', () => {
           },
           adminToken,
         );
+        console.log('izzlog', response.data)
         assert.equal(response.data.code, 1);
 
         const pp = await PP.findOne({ where: { name } });
@@ -312,6 +313,7 @@ describe('SPRT测试', () => {
           },
           adminToken,
         );
+        console.log('izzlog', response)
         assert.equal(response.data.code, 1);
         const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
@@ -4288,7 +4290,7 @@ describe('SPRT测试', () => {
         }
       });
 
-      it.only('ZHY出箱WL--原DDGTWL装箱完成', async () => {
+      it('ZHY出箱WL--原DDGTWL装箱完成', async () => {
         let ZHY3Token = await getToken('ZHY3', '123456');
         const EWMs = [
           {
@@ -4326,7 +4328,7 @@ describe('SPRT测试', () => {
         }
       });
 
-      it.only('ZHY出箱WL--原BHWL装箱完成', async () => {
+      it('ZHY出箱WL--原BHWL装箱完成', async () => {
         const EWMs = [
           {
             type: 'WL',
@@ -8373,6 +8375,17 @@ describe('SPRT测试', () => {
         const dpqjfkt = await DPQJFKT.findOne({ where: { imageUrl: item } });
         assert.equal(dpqjfkt.dataValues.UserId, 38);
       }
+    });
+  });
+
+  describe.only('标准restful', async () => {
+    it('User', async () => {
+      let response = await get(
+        'User',
+        {},
+        PPJLToken
+      );
+      console.log('izzlog', response.data);
     });
   });
 });
