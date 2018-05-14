@@ -131,7 +131,7 @@ describe('测试案例', () => {
 
     // 创建Procedure
     const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
-    const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.DSP);
+    const procedureSql1 = replaceAll(procedureSql, '_DDStatus\\.DSP_', DDStatus.CS);
     const procedureSql2 = replaceAll(procedureSql1, '__DDStatus\\.YSP_', DDStatus.YSP);
     await sequelize.query(procedureSql2, {
       type: sequelize.QueryTypes.SELECT,

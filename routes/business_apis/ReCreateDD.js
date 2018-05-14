@@ -11,7 +11,10 @@ export default class ReCreateDD extends BusinessApiBase {
     const { DDId } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+
+    // 检查DDId
     const tmpDD = await user.checkDDId(DDId, transaction);
+    // end 检查DDId
 
     // 检查PP_DDOperationLock
     if (PP_DDOperationLock[tmpDD.PPId]) {

@@ -2,9 +2,9 @@ import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 import * as ppUtils from './ppUtils';
 
-export default class ShenQingShangShiWLBuHuo extends BusinessApiBase {
+export default class ShenQingShangShiWLBH extends BusinessApiBase {
   static getAllowAccessJSs() {
-    return [DBTables.JS.KFJL];
+    return [DBTables.JS.GTBA, DBTables.JS.AZG];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
@@ -31,7 +31,7 @@ export default class ShenQingShangShiWLBuHuo extends BusinessApiBase {
     // end 检查DD_GT_WL记录是否存在
 
     if (user.JS !== DBTables.JS.AZG) {
-      const tmpGT = await user.checkGTId(GTId, transaction, DDId);
+      const tmpGT = await user.checkDD_GT_WLId(tmpDDGTWL.id, transaction);
     } else if (tmpDDGTWL.AZGUserId !== user.id) {
       // 检查AZG权限
       throw new Error('没有权限!');

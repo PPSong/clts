@@ -23,5 +23,10 @@ module.exports = {
     'prefer-destructuring': 'off',
     'func-names': 'off',
     'no-empty-function': 'off',
+    'max-len': 'off',
+    'no-restricted-syntax': 'off',
+    'no-lonely-if': 'off',
+    'guard-for-in': 'off',
+    'no-loop-func': 'off',
   },
 };

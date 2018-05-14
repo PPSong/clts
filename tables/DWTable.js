@@ -9,6 +9,14 @@ export default class DWTable extends BaseTable {
     return DW;
   }
 
+  checkCreateParams() {
+    // throw new Error('checkCreateParams should be overrided.');
+  }
+
+  checkEditParams() {
+    // throw new Error('checkEditParams should be overrided.');
+  }
+
   checkCreateRight() {
     if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');

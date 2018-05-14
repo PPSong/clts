@@ -10,6 +10,14 @@ export default class UserTable extends BaseTable {
     return User;
   }
 
+  checkCreateParams() {
+    // throw new Error('checkCreateParams should be overrided.');
+  }
+
+  checkEditParams() {
+    // throw new Error('checkEditParams should be overrided.');
+  }
+
   checkCreateRight() {
     // 除了admin, 其他人创建用户都应该用专用api, 这样才能控制创建的人在其负责范围内
     if (![JS.ADMIN].includes(this.user.JS)) {

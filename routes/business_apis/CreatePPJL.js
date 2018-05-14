@@ -11,6 +11,7 @@ export default class CreatePPJL extends BusinessApiBase {
     const { username, password, PPId } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+    const tmpPP = await user.checkPPId(PPId, transaction);
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 新建用户
@@ -22,15 +23,10 @@ export default class CreatePPJL extends BusinessApiBase {
       },
       { transaction },
     );
-
-    const tmpPP = await DBTables.PP.findOne({
-      where: {
-        id: PPId,
-      },
-      transaction,
-    });
-
-    await tmpPP.setPPJLs([tmpUser], { transaction });
     // end 新建用户
+
+    // 重置PP的PPJL
+    await tmpPP.setPPJLs([tmpUser], { transaction });
+    // end 重置PP的PPJL
   }
 }

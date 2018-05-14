@@ -1,3 +1,5 @@
+USE cltp;
+
 DROP PROCEDURE IF EXISTS throwError; 
 CREATE PROCEDURE throwError(IN msg VARCHAR(256) CHARACTER SET utf8)
 BEGIN
@@ -6,7 +8,7 @@ SIGNAL SQLSTATE
 SET
     MESSAGE_TEXT = msg,
     MYSQL_ERRNO = '1234';
-END; 
+END;
 
 DROP PROCEDURE IF EXISTS clearSnapShotAndDDRelatedData; 
 CREATE PROCEDURE clearSnapShotAndDDRelatedData(IN v_DDId INT)
@@ -52,11 +54,13 @@ BEGIN
 	INSERT
     INTO
 		DD_DW_DPSnapshot
-        (DDId, DWId, DPId, createdAt, updatedAt)
+        (DDId, DWId, DPId, CZ, CC, createdAt, updatedAt)
     SELECT
 		v_DDId,
         a.DWId, 
-        a.DPId, 
+        a.DPId,
+		b.CZ,
+		b.CC,
         v_now, 
         v_now
 	FROM 
@@ -122,12 +126,16 @@ BEGIN
     INSERT
     INTO
 		DD_DW_DP
-        (DDId, DWId, DPId, GYSId, createdAt, updatedAt)
+        (DDId, DWId, DPId, CZ, CC, GYSId, status, ZXNumber, createdAt, updatedAt)
 	SELECT
 		aaa.DDId,
 		aaa.DWId,
 		aaa.DPId,
+		ccc.CZ,
+		ccc.CC,
         bbb.GYSId,
+		'_DD_DW_DPStatus.CS_',
+		0,
         v_now, 
         v_now
 	FROM
@@ -174,10 +182,10 @@ BEGIN
 					a.DDId = v_lastDDId
 				) AS aa
 			LEFT JOIN
-				DD_GTFX bb
+				PP_GTFX bb
 			ON
-				-- 当前订单Id
-				bb.DDId = v_DDId
+				-- 当前订单PPId
+				bb.PPId = v_PPId
 			AND
 				aa.GTId = bb.GTId
 			WHERE
@@ -193,19 +201,25 @@ BEGIN
 	LEFT JOIN
 		DP bbb
 	ON
-		aaa.DPId = bbb.id;
+		aaa.DPId = bbb.id
+	LEFT JOIN
+		DW ccc
+	ON
+		aaa.DWId = ccc.id;
     
     -- 创建和订单相关的WL
     INSERT
     INTO
 		DD_GT_WL
-        (DDId, GTId, WLId, number, GYSId, createdAt, updatedAt)
+        (DDId, GTId, WLId, number, GYSId, status, ZXNumber, createdAt, updatedAt)
 	SELECT
 		aaa.DDId,
 		aaa.GTId,
 		aaa.WLId,
 		aaa.number,
 		bbb.GYSId,
+		'_DD_GT_WLStatus.CS_',
+		0,
 		v_now, 
         v_now
 	FROM
@@ -240,12 +254,12 @@ BEGIN
 			FROM
 				DD_GT_WLSnapshot a
 			LEFT JOIN
-				DD_GTFX b
+				PP_GTFX b
 			ON
 				a.GTId = b.GTId
 			AND 
-				-- 当次订单Id
-				b.DDId = v_DDId
+				-- 当次订单PPId
+				b.PPId = v_PPId
 			WHERE 
 				-- 上次订单Id
 				a.DDId = v_lastDDId
@@ -270,9 +284,9 @@ CREATE PROCEDURE genDD(IN v_PPId INT, IN v_name CHAR(255) CHARACTER SET utf8)
 BEGIN
 	DECLARE code CHAR(5) DEFAULT '00000';
     DECLARE msg TEXT CHARACTER SET utf8;
-    -- _DDStatus.DSP_由调用的js代码做变量替换
-    DECLARE v_init_status CHAR(255) CHARACTER SET utf8 DEFAULT '_DDStatus.DSP_';
-    -- _DDStatus.DSP_由调用的js代码做变量替换
+    -- _DDStatus.CS_由调用的js代码做变量替换
+    DECLARE v_init_status CHAR(255) CHARACTER SET utf8 DEFAULT '_DDStatus.CS_';
+    -- _DDStatus.CS_由调用的js代码做变量替换
     DECLARE v_end_status CHAR(255) CHARACTER SET utf8 DEFAULT '_DDStatus.YSP_';
 	DECLARE v_unApprovedDDCount INT DEFAULT 0;
     DECLARE v_DDId INT DEFAULT 0;

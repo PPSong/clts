@@ -6,10 +6,10 @@
 
 import debug from 'debug';
 import http from 'http';
-
-import app from '../app';
+import App from '../weroll/App';
 
 const ppLog = debug('cltp:server');
+const mainApp = new App();
 
 /**
  * Normalize a port into a number, string, or false.
@@ -31,59 +31,61 @@ function normalizePort(val) {
   return false;
 }
 
-/**
- * Get port from environment and store in Express.
- */
+mainApp.addTask(async () => {
+  const Model = require("../models/Model");
+  await Model.init();
+});
 
-const port = normalizePort(process.env.PORT || '3001');
-app.set('port', port);
+mainApp.addTask(async () => {
 
-/**
- * Create HTTP server.
- */
+  const Setting = global.SETTING;
 
-const server = http.createServer(app);
+  const app = require("../app");
+  /**
+   * Get port from environment and store in Express.
+   */
 
-/**
- * Event listener for HTTP server "error" event.
- */
+  const port = normalizePort(Setting.port || '3001');
+  app.set('host', Setting.host || '127.0.0.01');
+  app.set('port', port);
 
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
+  /**
+   * Create HTTP server.
+   */
 
-  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
+  const server = http.createServer(app);
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(`${bind} requires elevated privileges`);
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(`${bind} is already in use`);
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
+  /**
+   * Listen on provided port, on all network interfaces.
+   */
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+  server.listen(port);
+  server.on('error', (err) => {
+    if (err.syscall !== 'listen') {
+      throw err;
+    }
 
-async function onListening() {
-  const addr = server.address();
-  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
-  ppLog(`Listening on ${bind}`);
-}
+    const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+    // handle specific listen errors with friendly messages
+    switch (error.code) {
+      case 'EACCES':
+        console.error(`${bind} requires elevated privileges`);
+        process.exit(1);
+        break;
+      case 'EADDRINUSE':
+        console.error(`${bind} is already in use`);
+        process.exit(1);
+        break;
+      default:
+        throw err;
+    }
+  });
+  server.on('listening', () => {
+    const addr = server.address();
+    const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+    console.log(`Listening on ${bind}`);
+  });
+});
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+mainApp.run();

@@ -9,6 +9,14 @@ export default class PPTable extends BaseTable {
     return PP;
   }
 
+  checkCreateParams() {
+    // throw new Error('checkCreateParams should be overrided.');
+  }
+
+  checkEditParams() {
+    // throw new Error('checkEditParams should be overrided.');
+  }
+
   checkCreateRight() {
     if (![JS.ADMIN].includes(this.user.JS)) {
       throw new Error('无此权限!');

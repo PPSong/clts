@@ -1,5 +1,9 @@
 import debug from 'debug';
 import _ from 'lodash';
+import squel from 'squel';
+import { normalApiSchema } from '../routes/apiSchema';
+import { ajv } from '../routes/api';
+import { errorResponse } from '../routes/business_apis/ppUtils';
 import BaseTable from './BaseTable';
 import { DP, JS, PP, GYS } from '../models/Model';
 
@@ -8,6 +12,18 @@ const ppLog = debug('ppLog');
 export default class DPTable extends BaseTable {
   getTable() {
     return DP;
+  }
+
+  checkCreateParams(fields) {
+    if (!ajv.validate(normalApiSchema.DPCreate, fields)) {
+      throw new Error(errorResponse(ajv.errors));
+    }
+  }
+
+  checkEditParams(fields) {
+    if (!ajv.validate(normalApiSchema.DPEdit, fields)) {
+      throw new Error(errorResponse(ajv.errors));
+    }
   }
 
   checkCreateRight() {
@@ -63,41 +79,47 @@ export default class DPTable extends BaseTable {
     }
   }
 
-  getLikeSearchFields() {
-    return ['id', 'name'];
+  getDisplayFields() {
+    return [
+      'a.name',
+      'a.id',
+      'a.PPId',
+      'b.name PPName',
+      'a.GYSId',
+      'c.name GYSName',
+      'a.imageUrl',
+    ];
+  }
+
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'PPName' }, { name: 'GYSName' }, { name: 'name' }])) {
+    return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
-    const option = {
-      where: {},
-      transaction,
-      include: [
-        {
-          model: PP,
-          as: 'PP',
-          where: {},
-        },
-        {
-          model: GYS,
-          as: 'GYS',
-          where: {},
-        },
-      ],
-    };
+    const tmpSquel = squel
+      .select()
+      .from('DP', 'a')
+      .left_join('PP', 'b', 'a.PPId = b.id')
+      .left_join('GYS', 'c', 'a.GYSId = c.id');
+
+    const likeFields = ['a.name', 'b.name', 'c.name'];
+
     let PPIds;
     // 根据用户操作记录范围加入where
     switch (this.user.JS) {
       case JS.PPJL:
-        PPIds = await this.user.getPPJLPPs({ transaction }).map(item => item.id);
-        option.include[0].where.PPId = {
-          $in: PPIds,
-        };
+        PPIds = await this.user
+          .getPPJLPPs({ transaction })
+          .map(item => item.id);
+        tmpSquel.where(`PPId in (${PPIds.join(',')})`);
+
         break;
       case JS.KFJL:
-        PPIds = await this.user.getKFJLPPs({ transaction }).map(item => item.id);
-        option.include[0].where.PPId = {
-          $in: PPIds,
-        };
+        PPIds = await this.user
+          .getKFJLPPs({ transaction })
+          .map(item => item.id);
+        tmpSquel.where(`PPId in (${PPIds.join(',')})`);
+
         break;
       default:
         throw new Error('无此权限!');
@@ -106,16 +128,15 @@ export default class DPTable extends BaseTable {
 
     // 把模糊搜索条件加入where
     if (keyword) {
-      const fields = this.getLikeSearchFields();
-      const likeArr = fields.map(item => ({ [item]: { $like: `%${keyword}%` } }));
-      option.where = {
-        ...option.where,
-        $or: likeArr,
-      };
+      const likeWhere = likeFields.reduce(
+        (result, item) => result.or(`${item} like '%${keyword}%'`),
+        squel.expr(),
+      );
+      tmpSquel.where(likeWhere.toString());
     }
     // end 把模糊搜索条件加入where
 
-    return option;
+    return tmpSquel;
   }
 
   filterEditFields(fields) {

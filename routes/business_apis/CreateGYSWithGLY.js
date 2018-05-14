@@ -36,6 +36,8 @@ export default class CreateGYSWithGLY extends BusinessApiBase {
     );
     // end 新建GYS
 
+    // 重置GYS的GLY
     await tmpGYS.setGLYs([tmpGYSGLYUser], { transaction });
+    // end 重置GYS的GLY
   }
 }

@@ -11,7 +11,7 @@ router.post('/signup', (req, res, next) => {
     if (err) {
       next(err);
     } else if (user) {
-      return res.json(user);
+      return res.json({ code:1, data:user });
     } else {
       return res.json(info);
     }
@@ -24,7 +24,7 @@ router.post('/signin', (req, res, next) => {
     if (err) {
       next(err);
     } else if (user) {
-      return res.json(user);
+      return res.json({ code:1, data:user });
     } else {
       return res.json(info);
     }
