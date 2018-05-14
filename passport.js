@@ -13,10 +13,14 @@ const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
 
 const getPayload = (user) => {
-  const { id, username } = user.toJSON();
+  const { id, username, name, phone, email, JS } = user.toJSON();
   const payload = {
     id,
     username,
+    name,
+    phone,
+    email,
+    JS
   };
   const r = {
     ...payload,

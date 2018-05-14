@@ -35,6 +35,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/auth', auth);
+app.use('/auth/check', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+  const { user } = req;
+  if (user) {
+    res.json({ code:1 });
+  } else {
+    res.json({ code:-1 });
+  }
+});
 app.use('/api', passport.authenticate('jwt', { session: false }), api);
 // app.use('/api', api);
 

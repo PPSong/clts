@@ -66,7 +66,7 @@ App.prototype.addTask = function(func) {
 App.prototype.run = function(callBack) {
     Promise.all(this.startupTasks).then(() => {
         if (callBack) return callBack();
-        console.log("(づ￣ 3￣)づ Server startup successfully. [env: " + global.VARS.env + "]");
+        console.log("(●′ω`●) Server startup successfully. [env: " + global.VARS.env + "]");
     }).catch(err => {
         if (callBack) return callBack(err);
         console.error(":( Server startup fail :( ==> ", err);
