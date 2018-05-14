@@ -800,7 +800,6 @@ describe('SPRT_testSearch', () => {
         },
         ZHYToken,
       );
-      console.log('izzlog', response.data.data)
       assert.equal(response.data.code, 1);
       assert.sameDeepMembers(response.data.data, trueList);
     });
@@ -1656,7 +1655,7 @@ describe('SPRT_testSearch', () => {
       assert.sameDeepMembers(response.data.data, trueList);
     });
 
-    it.only('AZG模糊搜索BHDP的WYDP', async () => {
+    it('AZG模糊搜索BHDP的WYDP', async () => {
       const curPage = 0;
       const keyword = '2018-01-02';
       const trueList = [
