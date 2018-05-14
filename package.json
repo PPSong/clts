@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "dev": "node_modules/.bin/babel-node ./bin/www -- -env=localdev -debug",
+    "tool": "node_modules/.bin/babel-node ./bin/exec -- ",
     "babel-node": "DEBUG=ppLog babel-node",
     "start": "nodemon --exec yarn run babel-node -- ./bin/www",
     "build": "babel src -d dist",
@@ -26,6 +28,7 @@
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "debug": "^3.1.0",
+    "deepmerge": "^2.1.0",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.2.0",
     "lodash": "^4.17.5",

@@ -48,16 +48,16 @@ app.use((req, res, next) => {
 // error handler
 app.use((err, req, res, next) => {
   // set locals, only providing error in development
-  console.log(err.message);
+  if (err) console.error(err.message);
   res.json({
     code: -1,
-    msg: err.message,
+    msg: err ? err.message : "unknown",
   });
 });
 
-const port = 3001;
-app.listen(port);
-console.log(`Listening on port ${port}`);
+//const port = 3001;
+//app.listen(port);
+//console.log(`Listening on port ${port}`);
 
 
 module.exports = app; // for testing

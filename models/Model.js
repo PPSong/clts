@@ -7,51 +7,57 @@ import debug from 'debug';
 const ppLog = debug('ppLog');
 
 export const { Op, literal } = Sequelize;
-const operatorsAliases = {
-  $eq: Op.eq,
-  $ne: Op.ne,
-  $gte: Op.gte,
-  $gt: Op.gt,
-  $lte: Op.lte,
-  $lt: Op.lt,
-  $not: Op.not,
-  $in: Op.in,
-  $notIn: Op.notIn,
-  $is: Op.is,
-  $like: Op.like,
-  $notLike: Op.notLike,
-  $iLike: Op.iLike,
-  $notILike: Op.notILike,
-  $regexp: Op.regexp,
-  $notRegexp: Op.notRegexp,
-  $iRegexp: Op.iRegexp,
-  $notIRegexp: Op.notIRegexp,
-  $between: Op.between,
-  $notBetween: Op.notBetween,
-  $overlap: Op.overlap,
-  $contains: Op.contains,
-  $contained: Op.contained,
-  $adjacent: Op.adjacent,
-  $strictLeft: Op.strictLeft,
-  $strictRight: Op.strictRight,
-  $noExtendRight: Op.noExtendRight,
-  $noExtendLeft: Op.noExtendLeft,
-  $and: Op.and,
-  $or: Op.or,
-  $any: Op.any,
-  $all: Op.all,
-  $values: Op.values,
-  $col: Op.col,
+
+const options =  {
+  ...(global.SETTING && global.SETTING.model ? global.SETTING.model.rdb : {
+    user: "root",
+    password: "tcltcl",
+    database: "cltp",
+    dialect: 'mysql',
+    dialectOptions: {
+      multipleStatements: true,
+    },
+    logging: false
+  }),
+  operatorsAliases: {
+    $eq: Op.eq,
+    $ne: Op.ne,
+    $gte: Op.gte,
+    $gt: Op.gt,
+    $lte: Op.lte,
+    $lt: Op.lt,
+    $not: Op.not,
+    $in: Op.in,
+    $notIn: Op.notIn,
+    $is: Op.is,
+    $like: Op.like,
+    $notLike: Op.notLike,
+    $iLike: Op.iLike,
+    $notILike: Op.notILike,
+    $regexp: Op.regexp,
+    $notRegexp: Op.notRegexp,
+    $iRegexp: Op.iRegexp,
+    $notIRegexp: Op.notIRegexp,
+    $between: Op.between,
+    $notBetween: Op.notBetween,
+    $overlap: Op.overlap,
+    $contains: Op.contains,
+    $contained: Op.contained,
+    $adjacent: Op.adjacent,
+    $strictLeft: Op.strictLeft,
+    $strictRight: Op.strictRight,
+    $noExtendRight: Op.noExtendRight,
+    $noExtendLeft: Op.noExtendLeft,
+    $and: Op.and,
+    $or: Op.or,
+    $any: Op.any,
+    $all: Op.all,
+    $values: Op.values,
+    $col: Op.col,
+  },
 };
 
-export const sequelize = new Sequelize('cltp', 'root', 'tcltcl', {
-  dialect: 'mysql',
-  dialectOptions: {
-    multipleStatements: true,
-  },
-  logging: false,
-  operatorsAliases,
-});
+export const sequelize = new Sequelize(options.database, options.user, options.password, options);
 
 export const JS = {
   ADMIN: '系统管理员',
@@ -3804,121 +3810,12 @@ export const DPQJFKT = sequelize.define(
 
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 
-const initData = (str, num = 200) =>
-  Array(num)
-    .fill(0)
-    .map((_, i) => ({ name: `${str}${i + 1}` }));
-
-const createUser = async (js, num) => {
-  const ppLength = await PP.count();
-  for (let i = 1; i <= num; i++) {
-    const PPId = i % ppLength;
-    const u = await User.create({
-      username: `u${i}`,
-      mail: `${js}_${i}@1.com`,
-      password: bCrypt.hashSync('1', 8),
-      JS: JS.PPJL,
-      PPId: PPId !== 0 ? PPId : ppLength,
-    });
-  }
-};
-
 export const init = async () => {
   try {
     // Drop all tables
-    await sequelize.drop();
-    await sequelize.sync({ force: true });
-
-    // // 新建品牌
-    // await PP.bulkCreate(initData('PP', 2));
-
-    // // 新建供应商
-    // await GYS.create({
-    //   name: 'GYS1',
-    //   isSC: true,
-    //   isKC: true,
-    // });
-    // await GYS.create({
-    //   name: 'GYS2',
-    //   isSC: true,
-    //   isKC: false,
-    // });
-    // await GYS.create({
-    //   name: 'GYS3',
-    //   isSC: false,
-    //   isKC: true,
-    // });
-
-    // // 新建安装公司
-    // await AZGS.bulkCreate(initData('AZGS', 2));
-
-    // // 新建Admin
-    // await User.create({
-    //   username: 'admin',
-    //   password: bCrypt.hashSync('1', 8),
-    //   JS: JS.ADMIN,
-    // });
-
-    // // 新建品牌经理
-    // let tmpPPJL = await User.create({
-    //   username: 'PPJL1',
-    //   password: bCrypt.hashSync('1', 8),
-    //   JS: JS.PPJL,
-    // });
-
-    // let tmpPP = await PP.findOne({
-    //   where: {
-    //     name: 'PP1',
-    //   },
-    // });
-
-    // tmpPP.setPPJLs([tmpPPJL]);
-
-    // tmpPPJL = await User.create({
-    //   username: 'PPJL2',
-    //   password: bCrypt.hashSync('1', 8),
-    //   JS: JS.PPJL,
-    // });
-
-    // tmpPP = await PP.findOne({
-    //   where: {
-    //     name: 'PP2',
-    //   },
-    // });
-
-    // tmpPP.setPPJLs([tmpPPJL]);
-
-    // // 新建客服经理
-    // let tmpKFJL = await User.create({
-    //   username: 'KFJL1',
-    //   password: bCrypt.hashSync('1', 8),
-    //   JS: JS.KFJL,
-    // });
-
-    // tmpPP = await PP.findOne({
-    //   where: {
-    //     name: 'PP1',
-    //   },
-    // });
-
-    // tmpPP.setKFJLs([tmpKFJL]);
-
-    // tmpKFJL = await User.create({
-    //   username: 'KFJL2',
-    //   password: bCrypt.hashSync('1', 8),
-    //   JS: JS.KFJL,
-    // });
-
-    // tmpPP = await PP.findOne({
-    //   where: {
-    //     name: 'PP2',
-    //   },
-    // });
-
-    // tmpPP.setKFJLs([tmpPPJL]);
-
-    // await createUser(1, 20);
+    // await sequelize.drop();
+    await sequelize.sync({ force: false });
   } catch (err) {
-    ppLog('init err:', err);
+    throw err;
   }
 };
