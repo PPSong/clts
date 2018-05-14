@@ -188,8 +188,10 @@ export default class BaseTable {
 
     return {
       code: 1,
-      data: r,
-      total: total[0].total,
+      data: {
+          list: r,
+          total: total[0].total
+      }
     };
   }
 
