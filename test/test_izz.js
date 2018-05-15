@@ -8483,6 +8483,7 @@ describe('SPRT测试', () => {
           KFJLToken
         );
         assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
       });
 
       it('KFJL获取单个AZGS', async () => {
@@ -8512,6 +8513,237 @@ describe('SPRT测试', () => {
           KFJLToken
         );
         assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('DPTable', async () => {
+      it('KFJL获取DP列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DP',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个DP', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DP/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索DP', async () => {
+        const curPage = 0;
+        const keyword = 'DP';
+
+        let response = await get(
+          'DP',
+          {
+            curPage,
+            keyword,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('DWTable', async () => {
+      it('KFJL获取DW列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DW',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个DW', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DW/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索DW', async () => {
+        const curPage = 0;
+        const keyword = 'DW';
+
+        let response = await get(
+          'DW',
+          {
+            curPage,
+            keyword,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('PPTable', async () => {
+      it('KFJL获取PP列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'PP',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个PP', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'PP/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索PP', async () => {
+        const curPage = 0;
+        const keyword = 'PP';
+
+        let response = await get(
+          'PP',
+          {
+            curPage,
+            keyword,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('WLTable', async () => {
+      it('KFJL获取WL列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'WL',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个WL', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'WL/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索WL', async () => {
+        const curPage = 0;
+        const keyword = 'WL';
+
+        let response = await get(
+          'WL',
+          {
+            curPage,
+            keyword,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('FGTesterTable', async () => {
+      it('KFJL获取FGTester列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'FGTester',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个FGTester', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'FGTester/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索FGTester', async () => {
+        const curPage = 0;
+        const keyword = 'FGTester';
+
+        let response = await get(
+          'FGTester',
+          {
+            curPage,
+            keyword,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
       });
     });
   });
