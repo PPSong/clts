@@ -11,7 +11,7 @@ export const { Op, literal } = Sequelize;
 const options =  {
   ...(global.SETTING && global.SETTING.model ? global.SETTING.model.rdb : {
     user: "root",
-    password: "tcltcl",
+    password: "123456",
     database: "cltp",
     dialect: 'mysql',
     dialectOptions: {
