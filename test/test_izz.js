@@ -211,7 +211,7 @@ describe('SPRT测试', () => {
     const con = mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: 'tcltcl',
+      password: '123456',
     });
 
     await con.connect();
@@ -239,7 +239,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it.skip('small test', async () => {
+    it('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -8379,13 +8379,140 @@ describe('SPRT测试', () => {
   });
 
   describe.only('标准restful', async () => {
-    it('User', async () => {
-      let response = await get(
-        'User',
-        {},
-        PPJLToken
-      );
-      console.log('izzlog', response.data);
+    describe('UserTable', async () => {
+      it('admin获取User列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'User',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('admin获取单个User', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'User/1',
+          {
+            curPage
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('admin模糊搜索User', async () => {
+        const curPage = 0;
+        const keyword = 'admin';
+
+        let response = await get(
+          'User',
+          {
+            curPage,
+            keyword,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('GYSTable', async () => {
+      it('KFJL获取GYS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GYS',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个GYS', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GYS/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索GYS', async () => {
+        const curPage = 0;
+        const keyword = 'GYS';
+
+        let response = await get(
+          'User',
+          {
+            curPage,
+            keyword,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('AZGSTable', async () => {
+      it('KFJL获取AZGS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'AZGS',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+      });
+
+      it('KFJL获取单个AZGS', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'AZGS/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索AZGS', async () => {
+        const curPage = 0;
+        const keyword = 'AZGS';
+
+        let response = await get(
+          'AZGS',
+          {
+            curPage,
+            keyword,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+      });
     });
   });
 });
