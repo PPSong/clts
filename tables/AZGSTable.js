@@ -1,4 +1,5 @@
 import debug from 'debug';
+import squel from 'squel';
 import BaseTable from './BaseTable';
 import { AZGS, JS } from '../models/Model';
 
@@ -65,28 +66,29 @@ export default class AZGSTable extends BaseTable {
     }
   }
 
-  getLikeSearchFields() {
-    return ['id', 'name'];
+  getDisplayFields() {
+    return ['a.id', 'a.name'];
+  }
+
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'name' }])) {
+    return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
-    const option = {
-      transaction,
-    };
-    // 根据用户操作记录范围加入where
-    // end 根据用户操作记录范围加入where
+    const tmpSquel = squel.select().from('AZGS', 'a');
+
+    const likeFields = ['a.id', 'a.name'];
 
     // 把模糊搜索条件加入where
     if (keyword) {
-      const fields = this.getLikeSearchFields();
-      const likeArr = fields.map(item => ({ [item]: { $like: `%${keyword}%` } }));
-      option.where = {
-        ...option.where,
-        $or: likeArr,
-      };
+      const likeWhere = likeFields.reduce(
+        (result, item) => result.or(`${item} like '%${keyword}%'`),
+        squel.expr(),
+      );
+      tmpSquel.where(likeWhere.toString());
     }
     // end 把模糊搜索条件加入where
 
-    return option;
+    return tmpSquel;
   }
 }

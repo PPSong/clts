@@ -1,4 +1,5 @@
 import debug from 'debug';
+import squel from 'squel';
 import BaseTable from './BaseTable';
 import { FGTester, JS, GT } from '../models/Model';
 
@@ -70,29 +71,47 @@ export default class FGTesterTable extends BaseTable {
     }
   }
 
-  getLikeSearchFields() {
-    return ['id', 'name', 'code1', 'code2', 'code3', 'code4', 'code5'];
+  getDisplayFields() {
+    return ['a.id', 'a.name'];
+  }
+
+  getOrderByFields(orderByFields = JSON.stringify([
+    { name: 'a.name' },
+  ])) {
+    return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
-    const option = {
-      where: {},
-      transaction,
-    };
-    let PPIds;
+    const tmpSquel = squel
+      .select()
+      .from('FGTester', 'a');
+
+    const likeFields = ['a.id', 'a.name'];
+
     // 根据用户操作记录范围加入where
+    let PPIds;
+    let PPId;
+
     switch (this.user.JS) {
       case JS.PPJL:
-        PPIds = await this.user.getPPJLPPs({ transaction }).map(item => item.id);
-        option.include[0].where.PPId = {
-          $in: PPIds,
-        };
+        PPIds = await this.user
+          .getPPJLPPs({ transaction })
+          .map(item => item.id);
+        PPId = PPIds[0];
+        tmpSquel.where(`
+          a.PPId = ${PPId}
+        `);
+
         break;
       case JS.KFJL:
-        PPIds = await this.user.getKFJLPPs({ transaction }).map(item => item.id);
-        option.include[0].where.PPId = {
-          $in: PPIds,
-        };
+        PPIds = await this.user
+          .getKFJLPPs({ transaction })
+          .map(item => item.id);
+        PPId = PPIds[0];
+        tmpSquel.where(`
+          a.PPId = ${PPId}
+        `);
+
         break;
       default:
         throw new Error('无此权限!');
@@ -101,15 +120,14 @@ export default class FGTesterTable extends BaseTable {
 
     // 把模糊搜索条件加入where
     if (keyword) {
-      const fields = this.getLikeSearchFields();
-      const likeArr = fields.map(item => ({ [item]: { $like: `%${keyword}%` } }));
-      option.where = {
-        ...option.where,
-        $or: likeArr,
-      };
+      const likeWhere = likeFields.reduce(
+        (result, item) => result.or(`${item} like '%${keyword}%'`),
+        squel.expr(),
+      );
+      tmpSquel.where(likeWhere.toString());
     }
     // end 把模糊搜索条件加入where
 
-    return option;
+    return tmpSquel;
   }
 }
