@@ -14,12 +14,18 @@ import api from './routes/api';
 
 import './passport';
 
+const Setting = global.SETTING;
+
 const ppLog = debug('ppLog');
 
 const app = express();
 app.use(passport.initialize());
 
-app.use(cors());
+if (Setting && Setting.cors && !Setting.cors.enable) {
+  //do nothing
+} else {
+  app.use(cors());
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
