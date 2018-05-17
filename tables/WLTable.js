@@ -1,5 +1,6 @@
 import debug from 'debug';
 import _ from 'lodash';
+import squel from 'squel';
 import BaseTable from './BaseTable';
 import { WL, JS, PP, GYS } from '../models/Model';
 
@@ -37,7 +38,7 @@ export default class WLTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -71,41 +72,55 @@ export default class WLTable extends BaseTable {
     }
   }
 
-  getLikeSearchFields() {
-    return ['id', 'name'];
+  getDisplayFields() {
+    return [
+      'a.id',
+      'a.level',
+      'a.code',
+      'a.name',
+      'b.name GYSName',
+      'a.disabledAt',
+      'c.name PPName',
+    ];
+  }
+
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
+    return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
-    const option = {
-      where: {},
-      transaction,
-      include: [
-        {
-          model: PP,
-          as: 'PP',
-          where: {},
-        },
-        {
-          model: GYS,
-          as: 'GYS',
-          where: {},
-        },
-      ],
-    };
-    let PPIds;
+    const tmpSquel = squel
+      .select()
+      .from('WL', 'a')
+      .join('GYS', 'b', 'a.GYSId = b.id')
+      .join('PP', 'c', 'a.PPId = c.id');
+
+    const likeFields = ['a.level', 'a.code', 'a.name', 'b.name', 'c.name'];
+
     // 根据用户操作记录范围加入where
+    let PPIds;
+    let PPId;
+
     switch (this.user.JS) {
       case JS.PPJL:
-        PPIds = await this.user.getPPJLPPs({ transaction }).map(item => item.id);
-        option.include[0].where.PPId = {
-          $in: PPIds,
-        };
+        PPIds = await this.user
+          .getPPJLPPs({ transaction })
+          .map(item => item.id);
+        PPId = PPIds[0];
+        tmpSquel.where(`
+          a.PPId = ${PPId}
+        `);
+
         break;
       case JS.KFJL:
-        PPIds = await this.user.getKFJLPPs({ transaction }).map(item => item.id);
-        option.include[0].where.PPId = {
-          $in: PPIds,
-        };
+        PPIds = await this.user
+          .getKFJLPPs({ transaction })
+          .map(item => item.id);
+        PPId = PPIds[0];
+        tmpSquel.where(`
+          a.PPId = ${PPId}
+        `);
+
         break;
       default:
         throw new Error('无此权限!');
@@ -114,28 +129,14 @@ export default class WLTable extends BaseTable {
 
     // 把模糊搜索条件加入where
     if (keyword) {
-      const fields = this.getLikeSearchFields();
-      const likeArr = fields.map(item => ({ [item]: { $like: `%${keyword}%` } }));
-      option.where = {
-        ...option.where,
-        $or: likeArr,
-      };
+      const likeWhere = likeFields.reduce(
+        (result, item) => result.or(`${item} like '%${keyword}%'`),
+        squel.expr(),
+      );
+      tmpSquel.where(likeWhere.toString());
     }
     // end 把模糊搜索条件加入where
 
-    return option;
-  }
-
-  filterEditFields(fields) {
-    const filteredFields = {
-      ...fields,
-    };
-    const allowKeys = ['imageUrl', 'note'];
-    const curKeys = Object.keys(filteredFields);
-    const needToDeleteKeys = _.difference(curKeys, allowKeys);
-    needToDeleteKeys.forEach((key) => {
-      delete filteredFields[key];
-    });
-    return filteredFields;
+    return tmpSquel;
   }
 }

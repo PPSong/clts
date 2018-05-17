@@ -1,77 +1,69 @@
 import debug from 'debug';
-import _ from 'lodash';
 import squel from 'squel';
-import { normalApiSchema } from '../routes/apiSchema';
-import { ajv } from '../routes/api';
-import { errorResponse } from '../routes/business_apis/ppUtils';
 import BaseTable from './BaseTable';
-import { DP, JS, PP, GYS } from '../models/Model';
+import * as DBTables from '../models/Model';
 
 const ppLog = debug('ppLog');
 
-export default class DPTable extends BaseTable {
+export default class FGTesterTable extends BaseTable {
   getTable() {
-    return DP;
+    return DBTables.DD;
   }
 
-  checkCreateParams(fields) {
-    if (!ajv.validate(normalApiSchema.DPCreate, fields)) {
-      throw new Error(errorResponse(ajv.errors));
-    }
+  checkCreateParams() {
+    // throw new Error('checkCreateParams should be overrided.');
   }
 
-  checkEditParams(fields) {
-    if (!ajv.validate(normalApiSchema.DPEdit, fields)) {
-      throw new Error(errorResponse(ajv.errors));
-    }
+  checkEditParams() {
+    // throw new Error('checkEditParams should be overrided.');
   }
 
   checkCreateRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkDeleteRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkEditRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkListRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkDisableRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkEnableRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkFindOneRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(record, transaction) {
     switch (this.user.JS) {
-      case JS.PPJL:
-      case JS.KFJL:
+      case DBTables.JS.PPJL:
+      case DBTables.JS.KFJL:
         await this.user.checkPPId(record.PPId, transaction);
         break;
       default:
@@ -83,41 +75,50 @@ export default class DPTable extends BaseTable {
     return [
       'a.id',
       'a.name',
-      'a.imageUrl',
-      'c.name GYSName',
-      'a.disabledAt',
+      'a.status',
       'b.name PPName',
     ];
   }
 
-  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
+  getOrderByFields(orderByFields = DBTables.JSON.stringify([{ name: 'a.id' }])) {
     return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
     const tmpSquel = squel
       .select()
-      .from('DP', 'a')
-      .left_join('PP', 'b', 'a.PPId = b.id')
-      .left_join('GYS', 'c', 'a.GYSId = c.id');
+      .from('DD', 'a')
+      .join('PP', 'b', 'a.PPId = b.id');
 
-    const likeFields = ['a.name', 'c.name', 'b.name'];
+    const likeFields = [
+      'a.name',
+      'a.status',
+      'b.name',
+    ];
 
-    let PPIds;
     // 根据用户操作记录范围加入where
+    let PPIds;
+    let PPId;
+
     switch (this.user.JS) {
-      case JS.PPJL:
+      case DBTables.JS.PPJL:
         PPIds = await this.user
           .getPPJLPPs({ transaction })
           .map(item => item.id);
-        tmpSquel.where(`PPId in (${PPIds.join(',')})`);
+        PPId = PPIds[0];
+        tmpSquel.where(`
+          a.PPId = ${PPId}
+        `);
 
         break;
-      case JS.KFJL:
+      case DBTables.JS.KFJL:
         PPIds = await this.user
           .getKFJLPPs({ transaction })
           .map(item => item.id);
-        tmpSquel.where(`PPId in (${PPIds.join(',')})`);
+        PPId = PPIds[0];
+        tmpSquel.where(`
+          a.PPId = ${PPId}
+        `);
 
         break;
       default:
@@ -136,18 +137,5 @@ export default class DPTable extends BaseTable {
     // end 把模糊搜索条件加入where
 
     return tmpSquel;
-  }
-
-  filterEditFields(fields) {
-    const filteredFields = {
-      ...fields,
-    };
-    const allowKeys = ['name', 'imageUrl'];
-    const curKeys = Object.keys(filteredFields);
-    const needToDeleteKeys = _.difference(curKeys, allowKeys);
-    needToDeleteKeys.forEach((key) => {
-      delete filteredFields[key];
-    });
-    return filteredFields;
   }
 }

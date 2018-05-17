@@ -189,9 +189,9 @@ export default class BaseTable {
     return {
       code: 1,
       data: {
-          list: r,
-          total: total[0].total
-      }
+        list: r,
+        total: total[0].total,
+      },
     };
   }
 
