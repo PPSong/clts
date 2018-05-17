@@ -66,11 +66,11 @@ export default class PPTable extends BaseTable {
     }
   }
   getDisplayFields() {
-    return ['a.id', 'a.name'];
+    return ['a.id', 'a.name', 'a.disabledAt'];
   }
 
   getOrderByFields(orderByFields = JSON.stringify([
-    { name: 'a.name' },
+    { name: 'a.id' },
   ])) {
     return orderByFields;
   }
@@ -80,7 +80,7 @@ export default class PPTable extends BaseTable {
       .select()
       .from('PP', 'a');
 
-    const likeFields = ['a.id', 'a.name'];
+    const likeFields = ['a.name'];
 
     // 把模糊搜索条件加入where
     if (keyword) {

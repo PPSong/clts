@@ -37,7 +37,7 @@ export default class GYSTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -67,17 +67,17 @@ export default class GYSTable extends BaseTable {
   }
 
   getDisplayFields() {
-    return ['a.id', 'a.name'];
+    return ['a.id', 'a.name', 'a.type', 'a.disabledAt'];
   }
 
-  getOrderByFields(orderByFields = JSON.stringify([{ name: 'name' }])) {
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
     return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
     const tmpSquel = squel.select().from('GYS', 'a');
 
-    const likeFields = ['a.id', 'a.name'];
+    const likeFields = ['a.name', 'a.type'];
 
     // 把模糊搜索条件加入where
     if (keyword) {

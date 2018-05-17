@@ -37,7 +37,7 @@ export default class DWTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -72,7 +72,16 @@ export default class DWTable extends BaseTable {
   }
 
   getDisplayFields() {
-    return ['a.id', 'a.name', 'a.CC', 'a.CZ'];
+    return [
+      'a.id',
+      'b.code GTCode',
+      'b.name GTName',
+      'a.name',
+      'a.CC',
+      'a.CZ',
+      'a.disabledAt',
+      'c.name PPName',
+    ];
   }
 
   getOrderByFields(orderByFields = JSON.stringify([
@@ -90,7 +99,7 @@ export default class DWTable extends BaseTable {
       .join('GT', 'b', 'a.GTId = b.id')
       .join('PP', 'c', 'b.PPId = c.id');
 
-    const likeFields = ['a.id', 'a.name', 'b.name', 'c.name'];
+    const likeFields = ['b.code', 'b.name', 'a.name', 'a.CC', 'A.CZ', 'c.name'];
 
     // 根据用户操作记录范围加入where
     let PPIds;

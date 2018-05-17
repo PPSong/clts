@@ -156,17 +156,17 @@ export default class UserTable extends BaseTable {
   }
 
   getDisplayFields() {
-    return ['a.id', 'a.username', 'a.JS'];
+    return ['a.id', 'a.JS', 'a.username', 'a.disabledAt'];
   }
 
-  getOrderByFields(orderByFields = JSON.stringify([{ name: 'username' }])) {
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
     return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
     const tmpSquel = squel.select().from('User', 'a');
 
-    const likeFields = ['a.id', 'a.name'];
+    const likeFields = ['a.JS', 'a.username'];
 
     let PPIds;
     let PPId;

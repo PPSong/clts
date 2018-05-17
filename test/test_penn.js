@@ -8536,7 +8536,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.data.id, 1);
       });
 
-      it('admin模糊搜索User', async () => {
+      it.only('admin模糊搜索User', async () => {
         const curPage = 0;
         const keyword = 'admin';
 
@@ -8548,6 +8548,7 @@ describe('SPRT测试', () => {
           },
           adminToken,
         );
+
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
@@ -8829,7 +8830,7 @@ describe('SPRT测试', () => {
       });
     });
 
-    describe.only('FGTesterTable', async () => {
+    describe('FGTesterTable', async () => {
       it('KFJL获取FGTester列表', async () => {
         const curPage = 0;
 

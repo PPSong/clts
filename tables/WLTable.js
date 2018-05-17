@@ -38,7 +38,7 @@ export default class WLTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -73,21 +73,29 @@ export default class WLTable extends BaseTable {
   }
 
   getDisplayFields() {
-    return ['a.id', 'a.name'];
+    return [
+      'a.id',
+      'a.level',
+      'a.code',
+      'a.name',
+      'b.name GYSName',
+      'a.disabledAt',
+      'c.name PPName',
+    ];
   }
 
-  getOrderByFields(orderByFields = JSON.stringify([
-    { name: 'a.name' },
-  ])) {
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
     return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
     const tmpSquel = squel
       .select()
-      .from('WL', 'a');
+      .from('WL', 'a')
+      .join('GYS', 'b', 'a.GYSId = b.id')
+      .join('PP', 'c', 'a.PPId = c.id');
 
-    const likeFields = ['a.id', 'a.name', 'b.name', 'c.name'];
+    const likeFields = ['a.level', 'a.code', 'a.name', 'b.name', 'c.name'];
 
     // 根据用户操作记录范围加入where
     let PPIds;

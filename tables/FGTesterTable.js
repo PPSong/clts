@@ -37,7 +37,7 @@ export default class FGTesterTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -72,21 +72,38 @@ export default class FGTesterTable extends BaseTable {
   }
 
   getDisplayFields() {
-    return ['a.id', 'a.name'];
+    return [
+      'a.id',
+      'a.name',
+      'a.Code1',
+      'a.Code2',
+      'a.Code3',
+      'a.Code4',
+      'a.Code5',
+      'a.disabledAt',
+      'b.name PPName',
+    ];
   }
 
-  getOrderByFields(orderByFields = JSON.stringify([
-    { name: 'a.name' },
-  ])) {
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
     return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
     const tmpSquel = squel
       .select()
-      .from('FGTester', 'a');
+      .from('FGTester', 'a')
+      .join('PP', 'b', 'a.PPId = b.id');
 
-    const likeFields = ['a.id', 'a.name'];
+    const likeFields = [
+      'a.name',
+      'a.Code1',
+      'a.Code2',
+      'a.Code3',
+      'a.Code4',
+      'a.Code5',
+      'b.name',
+    ];
 
     // 根据用户操作记录范围加入where
     let PPIds;
