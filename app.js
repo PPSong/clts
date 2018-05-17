@@ -52,6 +52,11 @@ app.use('/auth/check', passport.authenticate('jwt', { session: false }), (req, r
 app.use('/api', passport.authenticate('jwt', { session: false }), api);
 // app.use('/api', api);
 
+if (global.VARS && global.VARS.debug) {
+  //provide api test page
+  require("./routes/__test").register(app);
+}
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found');
