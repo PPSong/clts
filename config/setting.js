@@ -28,6 +28,7 @@ module.exports = {
                 multipleStatements: true,
             },
             logging: false,
+            insecureAuth: true,
             pool: {
                 max: 5,
                 idle: 30000,

@@ -1,10 +1,10 @@
 <html style="height: 100%"><head>
     <meta charset="utf-8">
-    <title>weroll api tool</title>
+    <title>SPRT API Tool</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
     <script>
-        var API_GATEWAY = window.location.origin + '/api';
+        var API_GATEWAY = window.location.origin;
         var TIMESTAMP = Date.now();
         var COOKIE_PATH = '';
 
@@ -95,40 +95,69 @@
 
     <script>
 
-        $callAPI = function(method, data, onSuccess, onError, showLoading) {
+        $callAPI = function(method, type, data, onSuccess, onError, showLoading) {
             trace('>> request send ==> ' + method);
             if (showLoading && window.$callAPILoading) {
                 window.$callAPILoading(true);
                 trace('show loading...');
             }
 
-            var auth = {};
-            var userid = $getCookie("userid");
-            if (userid) auth.userid = userid;
+            var token = $getCookie("jwt_token") || "";
 
-            var token = $getCookie("token");
-            if (token) auth.token = token;
+            var url = API_GATEWAY;
 
-            var tokentimestamp = $getCookie("tokentimestamp");
-            if (tokentimestamp) auth.tokentimestamp = tokentimestamp;
+            if (method.indexOf(":id") > 0) {
+                if (!data.id) {
+                    onError && onError(0, "restful接口缺少id参数");
+                    return;
+                }
+                method = method.replace(":id", data.id);
+                delete data["id"];
+            }
 
-            var params = {};
-            params.method = method;
-            params.data = data;
-            params.auth = auth;
+            if (method.indexOf("auth/") === 0) {
+                url += "/" + method;
+            } else {
+                url += "/api/" + method;
+            }
+            if (type && (type.toLowerCase() !== "post" || type.toLowerCase() !== "put")) {
+                var querystrings = "";
+                for (var key in data) {
+                    querystrings += "&" + key + "=" + data[key];
+                }
+                if (querystrings) {
+                    url += "?" + querystrings.substr(1);
+                }
+            }
+
+            $('#url').html('请求地址: ' + ('[' + type + '] ') + url);
 
             $.ajax({
-                type: "post",
-                url: API_GATEWAY,
+                type: type || "POST",
+                url: url,
                 headers: {
-                    "Content-Type": "application/json; charset=UTF-8"
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "Authorization": "bearer " + token
                 },
-                xhrFields : {
-                    responseType : window.API_COMPRESS ? 'arraybuffer' : 'text'
-                },
-                data: JSON.stringify(params),
+                data: type && type.toLowerCase() === "get" ? null : JSON.stringify(data || {}),
                 success: function (data, status, xhr) {
-                    if (data instanceof ArrayBuffer) data = msgpack.decode(new Uint8Array(data));
+
+                    if (typeof data === "string") {
+                        try {
+                            var json = JSON.parse(data);
+                            data = json;
+                        } catch (err) {
+                            //
+                        }
+                    }
+
+                    if (data === 'Unauthorized') {
+                        if (onError && typeof onError == 'function') {
+                            onError(0, data);
+                        }
+                        return;
+                    }
+
                     if (data.code == 1) {
                         if (onSuccess) {
                             onSuccess(data.data);
@@ -136,15 +165,8 @@
                     } else {
                         var err = 'API调用错误 ==> [' + data.code + '] - ' + data.msg;
                         trace(err);
-                        if (data.code < 1000) {
-                            if (window.__callAPIFatalError) {
-                                window.__callAPIFatalError(data.msg, data.code);
-                            }
-                        }
                         if (onError && typeof onError == 'function') {
                             onError(data.code, data.msg);
-                        } else if (window.__callAPIError) {
-                            window.__callAPIError(err);
                         }
                     }
 
@@ -153,7 +175,15 @@
                     }
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
+
                     trace('API调用错误 ==> status: ' + textStatus + '      error: ' + errorThrown);
+
+                    if (errorThrown === 'Unauthorized') {
+                        if (onError && typeof onError == 'function') {
+                            onError(0, errorThrown);
+                        }
+                        return;
+                    }
 
                     if (onError && typeof onError == 'function') {
                         var flag = onError(-1, 'network connection error');
@@ -198,7 +228,7 @@
                         ele += '</optgroup>';
                         selector.append(ele);
                     });
-                    if ($getCookie('userid') && $getCookie("token")) {
+                    if ($getCookie('jwt_token')) {
                         $user.isLogined = true;
                         $user.userid = $user.id = $getCookie('userid');
                         $user.token = $getCookie('token');
@@ -211,6 +241,8 @@
                         info += 'tokentimestamp: ' + $user.tokentimestamp + '<br>';
                         $('#userInfo').html('<br>' + info);
                     }
+
+                    $('#url').html('请求地址: ' + API_GATEWAY);
                 },
                 error: function(){
                     alert('get apidoc fail');
@@ -230,11 +262,14 @@
             var info = $("#info");
             info.html('');
             info.append('<p>接口名称: <b>' + api.name + '</b></p>');
+            info.append('<p>接口类型: <b>' + api.type + '</b></p>');
             info.append('<p>接口描述: <b>' + api.desc + '</b></p>');
             info.append('<p>需要登录: <b>' + (api.security.needLogin ? '是' : '否') + '</b></p>');
             info.append('<p>特殊权限: <b>' + (api.security.allow ? JSON.stringify(api.security.allow) : '无') + '</b></p>');
             var params = "";
+            var args = {};
             for (var key in api.security.checkParams) {
+                args[key] = api.security.checkParams[key];
                 params += '<p style="padding-left: 10px;"><b>- ' + key + '&nbsp;&nbsp;[' + api.security.checkParams[key] + ']</b>';
                 if (String(api.paramsDesc[key]).hasValue()) {
                     params += '<br><span style="font-weight: normal; font-size: 14px;">&nbsp;&nbsp;@' + api.paramsDesc[key] + '<span>';
@@ -246,6 +281,7 @@
 
             params = "";
             for (var key in api.security.optionalParams) {
+                args[key] = api.security.optionalParams[key];
                 params += '<p style="padding-left: 10px;"><b>- ' + key + '&nbsp;&nbsp;[' + api.security.optionalParams[key] + ']</b>';
                 if (String(api.paramsDesc[key]).hasValue()) {
                     params += '<br><span style="font-weight: normal; font-size: 14px;">&nbsp;&nbsp;@' + api.paramsDesc[key] + '<span>';
@@ -255,6 +291,28 @@
             info.append('<p>可选参数:</p>');
             info.append(params);
             info.append('<p>权限控制: <b>' + (api.security.allowUserType ? api.security.allowUserType.toString() : '无') + '</b></p>');
+
+            var url = API_GATEWAY;
+
+            var method = api.name;
+            if (method.indexOf("auth/") === 0) {
+                url += "/" + method;
+            } else {
+                url += "/api/" + method;
+            }
+            if (method.indexOf(":id") > 0) {
+                delete args["id"];
+            }
+            if (api.type && (api.type.toLowerCase() !== "post" && api.type.toLowerCase() !== "put")) {
+                var querystrings = "";
+                for (var key in args) {
+                    querystrings += "&" + key + "=" + args[key];
+                }
+                if (querystrings) {
+                    url += "?" + querystrings.substr(1);
+                }
+            }
+            $('#url').html('请求地址: ' + ('[' + api.type + '] ') + url);
         }
 
         function fire() {
@@ -282,24 +340,19 @@
             var resText = $('#response');
             resText.val('正在等待服务端响应...');
             var startTime = Date.now();
-            $callAPI(selectedAPI.name, params, function(data) {
+            $callAPI(selectedAPI.name, selectedAPI.type, params, function(data) {
                 showCostTime(Date.now() - startTime);
                 resText.val(JSON.format ? JSON.format(data) : JSON.stringify(data));
 
-                if (selectedAPI.name.indexOf(".login") > 0) {
-                    var sess = data.sess || data;
-                    if (sess.token) {
-                        $setCookie("userid", sess.userid);
-                        $setCookie("token", sess.token);
-                        $setCookie("tokentimestamp", sess.tokentimestamp);
+                if (selectedAPI.name.indexOf("auth/signin") >= 0) {
+                    if (data.token) {
+                        $setCookie("jwt_token", data.token);
                         console.log("发现登录会话token, 已切换到此账户");
                     } else {
                         console.warn("无法识别登录会话token");
                     }
-                } else if (selectedAPI.name.indexOf(".logout") > 0) {
-                    $delCookie("userid");
-                    $delCookie("token");
-                    $delCookie("tokentimestamp");
+                } else if (selectedAPI.name.indexOf("auth/signout") >= 0) {
+                    $delCookie("jwt_token");
                     console.warn("登录会话已注销");
                 }
 
@@ -364,6 +417,7 @@
     <div class="col-7 right_content" style="float:left;">
         <div style="padding: 20px 20px 20px 40px;">
             <h3>填写发送数据</h3>
+            <p><span id="url" style="margin-bottom: 6px; color:blue;"></span></p>
             <textarea id="send" placeholder="请填写需要发送的JSON数据"></textarea>
             <p><a style="font-size: 14px; cursor: pointer" href="javascript:resetSend()">重置参数</a></p>
             <p style="width:100%; text-align: center;">

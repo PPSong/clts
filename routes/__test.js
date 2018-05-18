@@ -2,7 +2,9 @@
 const PATH = require("path");
 const FS = require("fs");
 
-const apiSchema = require("../routes/apiSchema").apiSchema;
+const apiSchema = {
+    ...require("../routes/apiSchema").apiSchema
+};
 
 var SERVICE_LIST = null;
 
@@ -53,6 +55,29 @@ function renderRoot(req, res, complete) {
         }
         */
 
+        SERVICE_LIST.push({
+            index:0,
+            group:"登录相关",
+            methods:[
+                {
+                    desc:"账户登录",
+                    index:0,
+                    name:"auth/signin",
+                    type:'POST',
+                    paramsDesc: {
+                        username:"账户名", password:"密码"
+                    },
+                    security: {
+                        checkParams:{
+                            username:"string", password:"string"
+                        },
+                        optionalParams: {},
+                        needLogin: false
+                    }
+                }
+            ]
+        });
+
         let apiSchemaFile = FS.readFileSync(PATH.join(__dirname, "../routes/apiSchema.js"), {encoding:"utf8"});
 
         let group = { index:0, group:"POST类型API", methods:[] };
@@ -60,7 +85,7 @@ function renderRoot(req, res, complete) {
         _.map(apiSchema, (api, apiName) => {
             let method = {
                 desc:"",
-                index:0,
+                index:1,
                 name:"api name",
                 type:'POST',
                 paramsDesc: {
@@ -110,6 +135,44 @@ function renderRoot(req, res, complete) {
 
         SERVICE_LIST.push(group);
 
+        group = { index:2, group:"restful类型API", methods:[] };
+
+        let restfulFiles = FS.readdirSync(PATH.join(__dirname, "../tables")) || [];
+
+        let restfulDefs = [
+            { name:"delete", desc:"删除一条{name}记录", type:"delete", args:{ id:"string" } },
+            { name:"edit", desc:"更新一条{name}记录", type:"post", args:{ id:"string" } },
+            { name:"getList", desc:"查询一组{name}", type:"get", args:{ curPage:"number", perPage:"number" } },
+            { name:"get", desc:"获取一条{name}记录", type:"get", args:{ id:"string" } },
+            { name:"create", desc:"创建{name}", type:"put", args:{  } }
+        ];
+        for (let i = 0; i < restfulFiles.length; i++) {
+            let file = restfulFiles[i];
+            if (file.indexOf("BaseTable") >= 0) continue;
+
+            let name = file.replace("Table.js", "");
+            restfulDefs.forEach((def) => {
+                let method = {
+                    desc:(def.desc || "").replace("{name}", name),
+                    index:1,
+                    name:name + (def.args && def.args.id ? "/:id" : ""),
+                    type:def.type,
+                    paramsDesc: {
+                        id: "数据唯一id", curPage:"当前页码,0表示第一页", perPage:"每个个数,默认50"
+                    },
+                    security: {
+                        checkParams:{
+                            ...def.args
+                        },
+                        optionalParams: {},
+                        needLogin: true
+                    }
+                };
+                group.methods.push(method);
+            });
+        }
+
+        SERVICE_LIST.push(group);
     }
     var html = "";
     try {
