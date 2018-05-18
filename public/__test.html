@@ -95,12 +95,8 @@
 
     <script>
 
-        $callAPI = function(method, type, data, onSuccess, onError, showLoading) {
+        $callAPI = function(method, type, data, onComplete) {
             trace('>> request send ==> ' + method);
-            if (showLoading && window.$callAPILoading) {
-                window.$callAPILoading(true);
-                trace('show loading...');
-            }
 
             var token = $getCookie("jwt_token") || "";
 
@@ -108,7 +104,7 @@
 
             if (method.indexOf(":id") > 0) {
                 if (!data.id) {
-                    onError && onError(0, "restful接口缺少id参数");
+                    onComplete && onComplete("restful接口缺少id参数");
                     return;
                 }
                 method = method.replace(":id", data.id);
@@ -141,60 +137,10 @@
                 },
                 data: type && type.toLowerCase() === "get" ? null : JSON.stringify(data || {}),
                 success: function (data, status, xhr) {
-
-                    if (typeof data === "string") {
-                        try {
-                            var json = JSON.parse(data);
-                            data = json;
-                        } catch (err) {
-                            //
-                        }
-                    }
-
-                    if (data === 'Unauthorized') {
-                        if (onError && typeof onError == 'function') {
-                            onError(0, data);
-                        }
-                        return;
-                    }
-
-                    if (data.code == 1) {
-                        if (onSuccess) {
-                            onSuccess(data.data);
-                        }
-                    } else {
-                        var err = 'API调用错误 ==> [' + data.code + '] - ' + data.msg;
-                        trace(err);
-                        if (onError && typeof onError == 'function') {
-                            onError(data.code, data.msg);
-                        }
-                    }
-
-                    if (showLoading && window.$callAPILoading) {
-                        window.$callAPILoading(false);
-                    }
+                    onComplete && onComplete(data);
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
-
-                    trace('API调用错误 ==> status: ' + textStatus + '      error: ' + errorThrown);
-
-                    if (errorThrown === 'Unauthorized') {
-                        if (onError && typeof onError == 'function') {
-                            onError(0, errorThrown);
-                        }
-                        return;
-                    }
-
-                    if (onError && typeof onError == 'function') {
-                        var flag = onError(-1, 'network connection error');
-                        if (flag != true && window.__callAPIFatalError) {
-                            window.__callAPIFatalError('API调用错误 ==> status: ' + textStatus + '      error: ' + errorThrown);
-                        }
-                    }
-
-                    if (showLoading && window.$callAPILoading) {
-                        window.$callAPILoading(false);
-                    }
+                    onComplete && onComplete("状态码: " + status + " " + errorThrown);
                 }
             });
         }
@@ -230,16 +176,23 @@
                     });
                     if ($getCookie('jwt_token')) {
                         $user.isLogined = true;
-                        $user.userid = $user.id = $getCookie('userid');
-                        $user.token = $getCookie('token');
-                        $user.tokentimestamp = Number($getCookie('tokentimestamp'));
-                    }
 
-                    if ($user && $user.isLogined) {
-                        var info = 'id: ' + $user.id + '<br>';
-                        info += 'token: ' + $user.token + '<br>';
-                        info += 'tokentimestamp: ' + $user.tokentimestamp + '<br>';
-                        $('#userInfo').html('<br>' + info);
+                        var user = localStorage.getItem("sprt_user");
+                        try {
+                            user = JSON.parse(user);
+                        } catch (err) {
+                            user = null;
+                        }
+                        $callAPI("auth/check", "get", {}, function(res) {
+                            if (res && res.code === 1 && user) {
+                                var info = 'id: ' + user.id + '<br>';
+                                info += 'username: ' + user.username + '<br>';
+                                info += 'JS: ' + user.JS + '<br>';
+                                $('#userInfo').html('<br>' + info);
+                            } else {
+                                user = null;
+                            }
+                        });
                     }
 
                     $('#url').html('请求地址: ' + API_GATEWAY);
@@ -345,20 +298,19 @@
                 resText.val(JSON.format ? JSON.format(data) : JSON.stringify(data));
 
                 if (selectedAPI.name.indexOf("auth/signin") >= 0) {
-                    if (data.token) {
-                        $setCookie("jwt_token", data.token);
+                    if (data.data.token) {
+                        localStorage.setItem("sprt_user", JSON.stringify(data.data));
+                        $setCookie("jwt_token", data.data.token);
                         console.log("发现登录会话token, 已切换到此账户");
                     } else {
                         console.warn("无法识别登录会话token");
                     }
                 } else if (selectedAPI.name.indexOf("auth/signout") >= 0) {
+                    localStorage.removeItem("sprt_user");
                     $delCookie("jwt_token");
                     console.warn("登录会话已注销");
                 }
 
-            }, function(code, msg) {
-                showCostTime(Date.now() - startTime);
-                resText.val('错误代码: ' + code + '\r\n\r\n错误描述: ' + msg + '');
             });
         }
 

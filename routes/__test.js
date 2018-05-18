@@ -74,6 +74,18 @@ function renderRoot(req, res, complete) {
                         optionalParams: {},
                         needLogin: false
                     }
+                },
+                {
+                    desc:"登录权限校验",
+                    index:0,
+                    name:"auth/check",
+                    type:'GET',
+                    paramsDesc: { },
+                    security: {
+                        checkParams:{ },
+                        optionalParams: {},
+                        needLogin: false
+                    }
                 }
             ]
         });
