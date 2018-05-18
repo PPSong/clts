@@ -20,7 +20,12 @@ var Setting = global.SETTING;
 
 app.addTask(async () => {
     const Model = require("../models/Model");
-    await Model.init();
+    if (global.VARS && global.VARS.model === false) {
+        //no need to init model
+        console.log("no need to init model...");
+    } else {
+        await Model.init();
+    }
 });
 app.run((err) => {
     if (err) {
