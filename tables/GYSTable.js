@@ -37,7 +37,7 @@ export default class GYSTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.ZHY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -81,9 +81,14 @@ export default class GYSTable extends BaseTable {
 
     let query = '';
 
-    if (this.user.JS === JS.GYSGLY) {
+    if (this.user.JS === JS.GYSGLY || this.user.JS === JS.ZHY) {
       //只能获取和自己绑定的GYS
-      let gysList = await this.user.getGLYGYSs();
+      let gysList = [];
+      if (this.user.JS === JS.GYSGLY) {
+        gysList = await this.user.getGLYGYSs();
+      } else {
+        gysList = await this.user.getZHYGYSs();
+      }
       gysList = gysList || [];
 
       if (gysList.length < 1) {
@@ -111,6 +116,7 @@ export default class GYSTable extends BaseTable {
       }
     }
     // end 把模糊搜索条件加入where
+    console.log(query);
     if (query) {
       tmpSquel.where(query);
     }

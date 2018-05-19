@@ -8377,9 +8377,9 @@ describe('SPRT测试', () => {
     });
   });
 
-  describe('标准restful', async () => {
+  describe.only('标准restful', async () => {
     describe('UserTable', async () => {
-      it('admin获取User列表', async () => {
+      it.only('admin获取User列表', async () => {
         const curPage = 0;
 
         let response = await get(
@@ -9316,16 +9316,17 @@ describe('SPRT测试', () => {
     });
 
     describe('GTTable', async () => {
-      it('KFJL修改GT信息', async () => {
+      it.only('KFJL修改GT信息', async () => {
         const tempQY = QY.EAST;
 
-        let response = await post(
+        let response = await put(
           'GT/1',
           {
             QY: tempQY,
           },
           KFJLToken
         );
+        console.log('izzlog', response.data)
         assert.equal(response.data.code, 1);
 
         let gt = await GT.findOne({ where: { id: 1}});
@@ -9390,7 +9391,7 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
-      it('KFJL获取单个GT', async () => {
+      it.only('KFJL获取单个GT', async () => {
         const curPage = 0;
 
         let response = await get(
@@ -9400,6 +9401,7 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
+        console.log('izzlog', response.data)
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
       });

@@ -37,7 +37,7 @@ export default class AZGSTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.AZGSGLY, JS.AZG].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -79,15 +79,46 @@ export default class AZGSTable extends BaseTable {
 
     const likeFields = ['a.id', 'a.name'];
 
+    let query = '';
+
+    if (this.user.JS === JS.AZGSGLY || this.user.JS === JS.AZG) {
+      //只能获取和自己绑定的AZGS
+      let azgsList = [];
+      if (this.user.JS === JS.AZGSGLY) {
+        azgsList = await this.user.getGLYAZGSs();
+      } else {
+        azgsList = await this.user.getAZGAZGSs();
+      }
+      azgsList = azgsList || [];
+
+      if (azgsList.length < 1) {
+        throw new Error('无此权限!');
+      }
+
+      let azgsIDs = [];
+      azgsList.forEach(azgs => {
+        azgsIDs.push(`'${azgs.id}'`);
+      });
+
+      query = `a.id in (${azgsIDs})`;
+    }
+
     // 把模糊搜索条件加入where
     if (keyword) {
       const likeWhere = likeFields.reduce(
         (result, item) => result.or(`${item} like '%${keyword}%'`),
         squel.expr(),
       );
-      tmpSquel.where(likeWhere.toString());
+      if (query) {
+        query = `(${query}) AND (${likeWhere.toString()})`;
+      } else {
+        query = likeWhere.toString();
+      }
     }
     // end 把模糊搜索条件加入where
+    if (query) {
+      tmpSquel.where(query);
+    }
 
     return tmpSquel;
   }
