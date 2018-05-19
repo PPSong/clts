@@ -8389,7 +8389,7 @@ describe('SPRT测试', () => {
           },
           adminToken
         );
-        console.log('izzlog', response.data);
+        console.log(response.data.data)
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
@@ -8460,7 +8460,6 @@ describe('SPRT测试', () => {
           },
           adminToken
         );
-        console.log('izzlog', response.data)
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
       });
@@ -8941,6 +8940,34 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
+      it('GTBA获取PP列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'PP',
+          {
+            curPage,
+          },
+          GTBAToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('GZ获取PP列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'PP',
+          {
+            curPage,
+          },
+          GZToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
       it('admin获取单个PP', async () => {
         const curPage = 0;
 
@@ -9316,7 +9343,7 @@ describe('SPRT测试', () => {
     });
 
     describe('GTTable', async () => {
-      it.only('KFJL修改GT信息', async () => {
+      it('KFJL修改GT信息', async () => {
         const tempQY = QY.EAST;
 
         let response = await put(
@@ -9326,7 +9353,6 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
-        console.log('izzlog', response.data)
         assert.equal(response.data.code, 1);
 
         let gt = await GT.findOne({ where: { id: 1}});
@@ -9336,7 +9362,7 @@ describe('SPRT测试', () => {
       it('admin修改GT信息', async () => {
         const tempQY = QY.EAST;
 
-        let response = await post(
+        let response = await pust(
           'GT/1',
           {
             QY: tempQY,
@@ -9377,6 +9403,34 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
+      it('GTBA获取GT列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GT',
+          {
+            curPage,
+          },
+          GTBAToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('GZ获取GT列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GT',
+          {
+            curPage,
+          },
+          GZToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
       it('PPJL获取GT列表', async () => {
         const curPage = 0;
 
@@ -9391,7 +9445,7 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
-      it.only('KFJL获取单个GT', async () => {
+      it('KFJL获取单个GT', async () => {
         const curPage = 0;
 
         let response = await get(
