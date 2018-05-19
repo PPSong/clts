@@ -8460,6 +8460,7 @@ describe('SPRT测试', () => {
           },
           adminToken
         );
+        console.log('izzlog', response.data)
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
       });
