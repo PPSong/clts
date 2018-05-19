@@ -8539,6 +8539,20 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
+      it('ZHY获取GYS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GYS',
+          {
+            curPage,
+          },
+          ZHYToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
       it('KFJL获取单个GYS', async () => {
         const curPage = 0;
 
@@ -8558,14 +8572,13 @@ describe('SPRT测试', () => {
         const keyword = 'GYS';
 
         let response = await get(
-          'User',
+          'GYS',
           {
             curPage,
             keyword,
           },
           KFJLToken
         );
-        console.log(response.data)
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
@@ -8623,6 +8636,20 @@ describe('SPRT测试', () => {
             curPage,
           },
           AZGSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('AZG获取AZGS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'AZGS',
+          {
+            curPage,
+          },
+          AZGToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
