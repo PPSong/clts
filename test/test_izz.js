@@ -8708,7 +8708,7 @@ describe('SPRT测试', () => {
       it('KFJL修改DP', async () => {
         const imageUrl = 'imageUrl_T';
 
-        let response = await post(
+        let response = await put(
           'DP/1',
           {
             imageUrl,
@@ -8724,7 +8724,7 @@ describe('SPRT测试', () => {
       it('admin修改DP', async () => {
         const imageUrl = 'imageUrl_T';
 
-        let response = await post(
+        let response = await put(
           'DP/1',
           {
             imageUrl,
@@ -8814,7 +8814,7 @@ describe('SPRT测试', () => {
       it('KFJL修改DW', async () => {
         const CC = '10000';
 
-        let response = await post(
+        let response = await put(
           'DW/1',
           {
             CC,
@@ -8830,7 +8830,7 @@ describe('SPRT测试', () => {
       it('admin修改DW', async () => {
         const CC = '10000';
 
-        let response = await post(
+        let response = await put(
           'DW/1',
           {
             imageUrl,
@@ -9022,7 +9022,7 @@ describe('SPRT测试', () => {
       it('KFJL修改WL', async () => {
         const imageUrl = 'imageUrl10000';
 
-        let response = await post(
+        let response = await put(
           'DW/1',
           {
             imageUrl,
@@ -9038,7 +9038,7 @@ describe('SPRT测试', () => {
       it('admin修改WL', async () => {
         const imageUrl = 'imageUrl10000';
 
-        let response = await post(
+        let response = await put(
           'DW/1',
           {
             imageUrl,
@@ -9362,7 +9362,7 @@ describe('SPRT测试', () => {
     });
 
     describe('GTTable', async () => {
-      it('KFJL修改GT信息', async () => {
+      it.only('KFJL修改GT信息', async () => {
         const tempQY = QY.EAST;
 
         let response = await put(
@@ -9372,22 +9372,38 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
+        console.log(response.data)
         assert.equal(response.data.code, 1);
 
         let gt = await GT.findOne({ where: { id: 1}});
         assert.equal(gt.dataValues.QY, tempQY);
       });
 
+      it.skip('KFJL修改其他PP的GT信息', async () => {
+        const tempQY = QY.EAST;
+
+        let response = await put(
+          'GT/7',
+          {
+            QY: tempQY,
+          },
+          KFJLToken
+        );
+        console.log(response.data)
+        assert.equal(response.data.code, -1);
+      });//todo
+
       it('admin修改GT信息', async () => {
         const tempQY = QY.EAST;
 
-        let response = await pust(
+        let response = await put(
           'GT/1',
           {
             QY: tempQY,
           },
           adminToken
         );
+        console.log(response.data)
         assert.equal(response.data.code, 1);
 
         let gt = await GT.findOne({ where: { id: 1}});
