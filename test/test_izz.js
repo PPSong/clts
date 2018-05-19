@@ -8394,6 +8394,62 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
+      it('PPJL获取User列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'User',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取User列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'User',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('GYSGLY获取User列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'User',
+          {
+            curPage,
+          },
+          GYSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('AZGSGLY获取User列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'User',
+          {
+            curPage,
+          },
+          AZGSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
       it('admin获取单个User', async () => {
         const curPage = 0;
 
@@ -8404,6 +8460,7 @@ describe('SPRT测试', () => {
           },
           adminToken
         );
+        console.log('izzlog', response.data)
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
       });
@@ -8435,6 +8492,48 @@ describe('SPRT测试', () => {
             curPage,
           },
           KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('admin获取GYS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GYS',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取GYS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GYS',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('GYSGLY获取GYS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GYS',
+          {
+            curPage,
+          },
+          GYSGLYToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
@@ -8486,6 +8585,48 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
+      it('admin获取AZGS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'AZGS',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取AZGS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'AZGS',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('AZGSGLY获取AZGS列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'AZGS',
+          {
+            curPage,
+          },
+          AZGSGLYToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
       it('KFJL获取单个AZGS', async () => {
         const curPage = 0;
 
@@ -8532,6 +8673,34 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
+      it('admin获取DP列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DP',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取DP列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DP',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
       it('KFJL获取单个DP', async () => {
         const curPage = 0;
 
@@ -8556,7 +8725,7 @@ describe('SPRT测试', () => {
             curPage,
             keyword,
           },
-          adminToken
+          KFJLToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
@@ -8573,6 +8742,34 @@ describe('SPRT测试', () => {
             curPage,
           },
           KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('admin获取DW列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DW',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取DW列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DW',
+          {
+            curPage,
+          },
+          PPJLToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
@@ -8602,7 +8799,7 @@ describe('SPRT测试', () => {
             curPage,
             keyword,
           },
-          adminToken
+          KFJLToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
@@ -8610,7 +8807,7 @@ describe('SPRT测试', () => {
     });
 
     describe('PPTable', async () => {
-      it('KFJL获取PP列表', async () => {
+      it('admin获取PP列表', async () => {
         const curPage = 0;
 
         let response = await get(
@@ -8618,13 +8815,13 @@ describe('SPRT测试', () => {
           {
             curPage,
           },
-          KFJLToken
+          adminToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
 
-      it('KFJL获取单个PP', async () => {
+      it('admin获取单个PP', async () => {
         const curPage = 0;
 
         let response = await get(
@@ -8632,13 +8829,13 @@ describe('SPRT测试', () => {
           {
             curPage,
           },
-          KFJLToken
+          adminToken
         );
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
       });
 
-      it('KFJL模糊搜索PP', async () => {
+      it('admin模糊搜索PP', async () => {
         const curPage = 0;
         const keyword = 'PP';
 
@@ -8670,6 +8867,48 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
+      it('admin获取WL列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'WL',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取WL列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'WL',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取WL列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'WL',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
       it('KFJL获取单个WL', async () => {
         const curPage = 0;
 
@@ -8694,7 +8933,7 @@ describe('SPRT测试', () => {
             curPage,
             keyword,
           },
-          adminToken
+          KFJLToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
@@ -8711,6 +8950,34 @@ describe('SPRT测试', () => {
             curPage,
           },
           KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('admin获取FGTester列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'FGTester',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取FGTester列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'FGTester',
+          {
+            curPage,
+          },
+          PPJLToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
@@ -8740,7 +9007,305 @@ describe('SPRT测试', () => {
             curPage,
             keyword,
           },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('DDTable', async () => {
+      it('KFJL获取DD列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DD',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('admin获取DD列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DD',
+          {
+            curPage,
+          },
           adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取DD列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DD',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个DD', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'DD/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索DD', async () => {
+        const curPage = 0;
+        const keyword = 'DD';
+
+        let response = await get(
+          'DD',
+          {
+            curPage,
+            keyword,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('EJZHTable', async () => {
+      it('KFJL获取EJZH列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'EJZH',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        console.log('izzlog', response.data);
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('admin获取EJZH列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'EJZH',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取EJZH列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'EJZH',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个EJZH', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'EJZH/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索EJZH', async () => {
+        const curPage = 0;
+        const keyword = 'EJZH';
+
+        let response = await get(
+          'EJZH',
+          {
+            curPage,
+            keyword,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('GTTable', async () => {
+      it('KFJL获取FGT列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GT',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('admin获取FGT列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GT',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取FGT列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GT',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个FGTester', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'GT/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索GT', async () => {
+        const curPage = 0;
+        const keyword = 'GT';
+
+        let response = await get(
+          'GT',
+          {
+            curPage,
+            keyword,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+    });
+
+    describe('YJZHTable', async () => {
+      it('KFJL获取YJZH列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'YJZH',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        console.log(response.data);
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('admin获取YJZH列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'YJZH',
+          {
+            curPage,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('PPJL获取YJZH列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'YJZH',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取单个YJZH', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'YJZH/1',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.equal(response.data.data.id, 1);
+      });
+
+      it('KFJL模糊搜索YJZH', async () => {
+        const curPage = 0;
+        const keyword = 'YJZH';
+
+        let response = await get(
+          'YJZH',
+          {
+            curPage,
+            keyword,
+          },
+          KFJLToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);

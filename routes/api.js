@@ -36,11 +36,12 @@ function upperCaseHead(str) {
 }
 
 for (const key in apiSchema) {
-  console.log('ppt', key);
+  let name = upperCaseHead(key);
+  //console.log('ppt', key, name);
   router.post(
     `/${key}`,
     validateParams(apiSchema[key]),
-    businessApis[upperCaseHead(key)].getApi(),
+    businessApis[name].getApi()
   );
 }
 
