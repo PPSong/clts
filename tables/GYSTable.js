@@ -37,7 +37,7 @@ export default class GYSTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -79,15 +79,41 @@ export default class GYSTable extends BaseTable {
 
     const likeFields = ['a.name', 'a.type'];
 
+    let query = '';
+
+    if (this.user.JS === JS.GYSGLY) {
+      //只能获取和自己绑定的GYS
+      let gysList = await this.user.getGLYGYSs();
+      gysList = gysList || [];
+
+      if (gysList.length < 1) {
+        throw new Error('无此权限!');
+      }
+
+      let gysIDs = [];
+      gysList.forEach(gys => {
+        gysIDs.push(`'${gys.id}'`);
+      });
+
+      query = `a.id in (${gysIDs})`;
+    }
+
     // 把模糊搜索条件加入where
     if (keyword) {
       const likeWhere = likeFields.reduce(
         (result, item) => result.or(`${item} like '%${keyword}%'`),
         squel.expr(),
       );
-      tmpSquel.where(likeWhere.toString());
+      if (query) {
+        query = `(${query}) AND (${likeWhere.toString()})`;
+      } else {
+        query = likeWhere.toString();
+      }
     }
     // end 把模糊搜索条件加入where
+    if (query) {
+      tmpSquel.where(query);
+    }
 
     return tmpSquel;
   }
