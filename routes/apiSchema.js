@@ -294,6 +294,24 @@ export const normalApiSchema = {
 
 export const apiSchema = {
   // business_apis
+
+  //added by Jay
+  userChangePassword: {
+    type: 'object',
+    properties: {
+      // 新密码
+      newPassword: {
+        type: 'string',
+      },
+      // 旧密码
+      oldPassword: {
+        type: 'string',
+      }
+    },
+    required: ['newPassword', 'oldPassword'],
+  },
+  //////////////
+
   //----------------
   // 新建PPJL [ADMIN]
   createPPJL: {

@@ -1,6 +1,5 @@
 import debug from 'debug';
 import bCrypt from 'bcryptjs';
-import squel from 'squel';
 import BaseTable from './BaseTable';
 import { PP, JS, User } from '../models/Model';
 
@@ -27,49 +26,37 @@ export default class UserTable extends BaseTable {
   }
 
   checkDeleteRight() {
-    if (
-      ![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)
-    ) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkEditRight() {
-    if (
-      ![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)
-    ) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkListRight() {
-    if (
-      ![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)
-    ) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkDisableRight() {
-    if (
-      ![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)
-    ) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkEnableRight() {
-    if (
-      ![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)
-    ) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkFindOneRight() {
-    if (
-      ![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)
-    ) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.AZGSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -80,7 +67,10 @@ export default class UserTable extends BaseTable {
     let tmpAZGSId;
     switch (record.JS) {
       case JS.ADMIN:
-        break;
+        if (this.user.JS !== JS.ADMIN)
+          throw new Error('无此权限!');
+        else
+          break;
       case JS.PPJL:
         if (![JS.ADMIN].includes(this.user.JS)) {
           throw new Error('无此权限!');
@@ -155,170 +145,74 @@ export default class UserTable extends BaseTable {
     }
   }
 
-  getDisplayFields() {
-    return ['a.id', 'a.JS', 'a.username', 'a.disabledAt'];
-  }
-
-  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
-    return orderByFields;
+  getLikeSearchFields() {
+    // todo: get from schema
+    return ['id', 'name'];
   }
 
   async getQueryOption(keyword, transaction) {
-    const tmpSquel = squel.select().from('User', 'a');
-
-    const likeFields = ['a.JS', 'a.username'];
-
+    const option = {
+      transaction,
+    };
     let PPIds;
-    let PPId;
-    let tmpJSs;
-
     // 根据用户操作记录范围加入where
     switch (this.user.JS) {
       case JS.ADMIN:
         break;
       case JS.PPJL:
-        PPIds = await this.user
-          .getPPJLPPs({ transaction })
-          .map(item => item.id);
-        PPId = PPIds[0];
-        tmpJSs = [JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.AZGSGLY];
-        tmpSquel
-          .left_join('PPJL_PP', 'b', 'a.id = b.UserId')
-          .left_join('KFJL_PP', 'c', 'a.id = c.UserId')
-          .left_join('GZ_PP', 'd', 'a.id = d.UserId')
-          .left_join('GT', 'e', 'a.id = e.GTBAUserId')
-          .where(`a.JS in (${tmpJSs.join(',')})`)
-          .where(`
-            (
-              a.JS = '${JS.PPJL}'
-            AND
-              c.PPId = ${PPId}
-            )
-          OR
-            (
-              a.JS = '${JS.KFJL}'
-            AND
-              c.PPId = ${PPId}
-            )
-          OR
-            (
-              a.JS = '${JS.GZ}'
-            AND
-              d.PPId = ${PPId}
-            )
-          OR
-            (
-              a.JS = '${JS.GTBA}'
-            AND
-              e.PPId = ${PPId}
-            )
-          OR
-            (
-              a.JS = '${JS.AZGSGLY}'
-            )
-          OR
-            (
-              a.JS = '${JS.GYSGLY}'
-            )
-          `);
-
+        PPIds = await this.user.getPPJLPPs({ transaction }).map(item => item.id);
+        option.where = {
+          id: {
+            $in: PPIds,
+          },
+        };
         break;
       case JS.KFJL:
-        PPIds = await this.user
-          .getKFJLPPs({ transaction })
-          .map(item => item.id);
-        PPId = PPIds[0];
-        tmpJSs = [JS.KFJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.AZGSGLY].map(item => `'${item}'`);
-        tmpSquel
-          .left_join('KFJL_PP', 'c', 'a.id = c.UserId')
-          .left_join('GZ_PP', 'd', 'a.id = d.UserId')
-          .left_join('GT', 'e', 'a.id = e.GTBAUserId')
-          .where(`a.JS in (${tmpJSs.join(',')})`)
-          .where(`
-            (
-              a.JS = '${JS.KFJL}'
-            AND
-              c.PPId = ${PPId}
-            )
-          OR
-            (
-              a.JS = '${JS.GZ}'
-            AND
-              d.PPId = ${PPId}
-            )
-          OR
-            (
-              a.JS = '${JS.GTBA}'
-            AND
-              e.PPId = ${PPId}
-            )
-          OR
-            (
-              a.JS = '${JS.AZGSGLY}'
-            )
-          OR
-            (
-              a.JS = '${JS.GYSGLY}'
-            )
-          `);
-
+        PPIds = await this.user.getKFJLPPs({ transaction }).map(item => item.id);
+        option.where = {
+          id: {
+            $in: PPIds,
+          },
+        };
         break;
-      case JS.GYSGLY:
-        const GYSIds = await this.user
-          .getGLYGYSs({ transaction })
-          .map(item => item.id);
-        const tmpGYSId = GYSIds[0];
-        tmpJSs = [JS.ZHY].map(item => `'${item}'`);
-        tmpSquel
-          .left_join('ZHY_GYS', 'b', 'a.id = b.UserId')
-          .where(`a.JS in (${tmpJSs.join(',')})`).where(`
-        (
-          a.JS = '${JS.ZHY}'
-        AND
-          b.GYSId = ${tmpGYSId}
-        )
-      `);
-
+      case JS.GZ:
+        PPIds = await this.user.getGZPPs({ transaction }).map(item => item.id);
+        option.where = {
+          id: {
+            $in: PPIds,
+          },
+        };
         break;
-      case JS.AZGSGLY:
-        const AZGSIds = await this.user
-          .getGLYAZGSs({ transaction })
-          .map(item => item.id);
-        const tmpAZGSId = AZGSIds[0];
-        tmpJSs = [JS.AZG].map(item => `'${item}'`);
-        tmpSquel
-          .left_join('AZG_AZGS', 'b', 'a.id = b.UserId')
-          .where(`a.JS in (${tmpJSs.join(',')})`).where(`
-        (
-          a.JS = '${JS.AZG}'
-        AND
-          b.AZGSId = ${tmpAZGSId}
-        )
-      `);
-
+      case JS.GTBA:
+        PPIds = await this.user.getGTBAPPs({ transaction }).map(item => item.id);
+        option.where = {
+          id: {
+            $in: PPIds,
+          },
+        };
         break;
       default:
         throw new Error('无此权限!');
     }
-
     // 把模糊搜索条件加入where
     if (keyword) {
-      const likeWhere = likeFields.reduce(
-        (result, item) => result.or(`${item} like '%${keyword}%'`),
-        squel.expr(),
-      );
-      tmpSquel.where(likeWhere.toString());
+      const fields = this.getLikeSearchFields();
+      const likeArr = fields.map(item => ({ [item]: { $like: `%${keyword}%` } }));
+      option.where = {
+        ...option.where,
+        $or: likeArr,
+      };
     }
-    // end 把模糊搜索条件加入where
-
-    return tmpSquel;
+    return option;
   }
 
   // override 为了对password进行处理
-  filterEditFields(fields) {
+  filterFields(fields) {
     const filteredFields = {
       ...fields,
     };
+    // 防止指定id
+    delete filteredFields.id;
     filteredFields.password = bCrypt.hashSync(filteredFields.password, 8);
     return filteredFields;
   }
