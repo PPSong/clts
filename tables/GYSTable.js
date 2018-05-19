@@ -67,7 +67,7 @@ export default class GYSTable extends BaseTable {
   }
 
   getDisplayFields() {
-    return ['a.id', 'a.name', 'a.type', 'a.disabledAt'];
+    return ['a.id', 'a.name', 'a.type', 'a.disabledAt', 'a.createdAt', 'a.updatedAt'];
   }
 
   getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
@@ -116,7 +116,6 @@ export default class GYSTable extends BaseTable {
       }
     }
     // end 把模糊搜索条件加入where
-    console.log(query);
     if (query) {
       tmpSquel.where(query);
     }

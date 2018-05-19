@@ -75,7 +75,7 @@ export default class PPTable extends BaseTable {
       'a.code',
       'a.name',
       'a.disabledAt',
-      'b.name PPName',
+      'b.name PPName', 'a.createdAt', 'a.updatedAt'
     ];
   }
 
