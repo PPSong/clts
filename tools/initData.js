@@ -77,7 +77,9 @@ lineReader.on('line', (sourceline) => {
     console.log('数据');
     const dataArr = line.split('\t').map((item) => {
       const value = item.trim();
+      console.log('izzlog-value', value);
       const tmpR = value.match(/^password\((.+)\)$/);
+      console.log('izzlog-tepR', tmpR);
       if (tmpR) {
         return `'${bCrypt.hashSync(tmpR[1], 8)}'`;
       }

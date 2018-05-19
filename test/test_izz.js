@@ -259,7 +259,7 @@ describe('SPRT测试', () => {
   // 新建PP [ADMIN]
   describe('PP', async () => {
     describe('成功', async () => {
-      it('admin新建PP', async () => {
+      it.only('admin新建PP', async () => {
         const name = 'PP_T';
 
         const response = await post(
@@ -8483,7 +8483,23 @@ describe('SPRT测试', () => {
     });
 
     describe('GYSTable', async () => {
-      it('KFJL获取GYS列表', async () => {
+      it('KFJL创建GYS', async () => {
+        const name = 'GYS1';
+        const type = GYSType.SC;
+
+        let response = await post(
+          'GYS',
+          {
+            name,
+            type,
+          },
+          KFJLToken
+        );
+        console.log('izzlog-GYS', response.data)
+        assert.equal(response.data.code, 1);
+      });
+
+      it.only('KFJL获取GYS列表', async () => {
         const curPage = 0;
 
         let response = await get(
