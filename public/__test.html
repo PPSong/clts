@@ -116,7 +116,7 @@
             } else {
                 url += "/api/" + method;
             }
-            if (type && (type.toLowerCase() !== "post" || type.toLowerCase() !== "put")) {
+            if (type && (type.toLowerCase() !== "post" && type.toLowerCase() !== "put")) {
                 var querystrings = "";
                 for (var key in data) {
                     querystrings += "&" + key + "=" + data[key];
