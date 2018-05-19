@@ -515,6 +515,44 @@ export const apiSchema = {
     },
     required: ['name', 'username', 'password'],
   },
+  // 新建AZG [AZGSGLY]
+  createAZG: {
+    type: 'object',
+    properties: {
+      // 姓名
+      name: {
+        type: 'string',
+      },
+      // 用户名
+      username: {
+        type: 'string',
+      },
+      // 密码
+      password: {
+        type: 'string',
+      },
+    },
+    required: ['username', 'password'],
+  },
+  // 新建ZHY [GYSGLY]
+  createZHY: {
+    type: 'object',
+    properties: {
+      // 姓名
+      name: {
+        type: 'string',
+      },
+      // 用户名
+      username: {
+        type: 'string',
+      },
+      // 密码
+      password: {
+        type: 'string',
+      },
+    },
+    required: ['username', 'password'],
+  },
   // 配置DP到DWs [KFJL]
   setDPDWs: {
     type: 'object',

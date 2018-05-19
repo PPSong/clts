@@ -10,7 +10,7 @@ export default class UserChangePassword extends BusinessApiBase {
   static async mainProcess(req, res, next, user, transaction) {
     const { newPassword, oldPassword } = req.body;
 
-    const existedUser = await DBTables.User.findOne({ where:user.id, transaction });
+    const existedUser = await DBTables.User.findOne({ where:{ id:user.id }, transaction });
     if (existedUser) {
       const hashedOldPassword = bCrypt.hashSync(oldPassword, 8);
       console.log(existedUser.password, hashedOldPassword, oldPassword)

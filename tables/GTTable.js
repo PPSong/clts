@@ -79,7 +79,7 @@ export default class PPTable extends BaseTable {
     ];
   }
 
-  getOrderByFields(orderByFields = DBTables.JSON.stringify([{ name: 'a.id' }])) {
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
     return orderByFields;
   }
 
