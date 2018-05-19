@@ -105,7 +105,7 @@ export default class PPTable extends BaseTable {
       if (this.user.JS === DBTables.JS.PPJL) {
         pps = await this.user.getPPJLPPs();
       } else {
-        pps = await this.user.KFJLPPs();
+        pps = await this.user.getKFJLPPs();
       }
 
       if (pps.length < 1) {
