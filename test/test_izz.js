@@ -259,7 +259,7 @@ describe('SPRT测试', () => {
   // 新建PP [ADMIN]
   describe('PP', async () => {
     describe('成功', async () => {
-      it.only('admin新建PP', async () => {
+      it('admin新建PP', async () => {
         const name = 'PP_T';
 
         const response = await post(
@@ -269,7 +269,6 @@ describe('SPRT测试', () => {
           },
           adminToken,
         );
-        console.log('izzlog', response.data)
         assert.equal(response.data.code, 1);
 
         const pp = await PP.findOne({ where: { name } });
@@ -8378,7 +8377,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  describe.only('标准restful', async () => {
+  describe('标准restful', async () => {
     describe('UserTable', async () => {
       it('admin获取User列表', async () => {
         const curPage = 0;
@@ -8390,6 +8389,7 @@ describe('SPRT测试', () => {
           },
           adminToken
         );
+        console.log('izzlog', response.data);
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
@@ -8483,23 +8483,7 @@ describe('SPRT测试', () => {
     });
 
     describe('GYSTable', async () => {
-      it('KFJL创建GYS', async () => {
-        const name = 'GYS1';
-        const type = GYSType.SC;
-
-        let response = await post(
-          'GYS',
-          {
-            name,
-            type,
-          },
-          KFJLToken
-        );
-        console.log('izzlog-GYS', response.data)
-        assert.equal(response.data.code, 1);
-      });
-
-      it.only('KFJL获取GYS列表', async () => {
+      it('KFJL获取GYS列表', async () => {
         const curPage = 0;
 
         let response = await get(
@@ -8581,6 +8565,7 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
+        console.log(response.data)
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
@@ -8675,6 +8660,38 @@ describe('SPRT测试', () => {
     });
 
     describe('DPTable', async () => {
+      it('KFJL修改DP', async () => {
+        const imageUrl = 'imageUrl_T';
+
+        let response = await post(
+          'DP/1',
+          {
+            imageUrl,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+
+        let dp = await DP.findOne({ where: { id: 1 } });
+        assert.equal(dp.dataValues.imageUrl, imageUrl);
+      });
+
+      it('admin修改DP', async () => {
+        const imageUrl = 'imageUrl_T';
+
+        let response = await post(
+          'DP/1',
+          {
+            imageUrl,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+
+        let dp = await DP.findOne({ where: { id: 1 } });
+        assert.equal(dp.dataValues.imageUrl, imageUrl);
+      });
+
       it('KFJL获取DP列表', async () => {
         const curPage = 0;
 
@@ -8749,6 +8766,38 @@ describe('SPRT测试', () => {
     });
 
     describe('DWTable', async () => {
+      it('KFJL修改DW', async () => {
+        const CC = '10000';
+
+        let response = await post(
+          'DW/1',
+          {
+            CC,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+
+        let dw = await DW.findOne({ where: { id: 1 } });
+        assert.equal(dp.dataValues.CC, CC);
+      });
+
+      it('admin修改DW', async () => {
+        const CC = '10000';
+
+        let response = await post(
+          'DW/1',
+          {
+            imageUrl,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+
+        let dw = await DW.findOne({ where: { id: 1 } });
+        assert.equal(dw.dataValues.CC, CC);
+      });
+
       it('KFJL获取DW列表', async () => {
         const curPage = 0;
 
@@ -8837,6 +8886,34 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
+      it('PPJL获取PP列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'PP',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
+      it('KFJL获取PP列表', async () => {
+        const curPage = 0;
+
+        let response = await get(
+          'PP',
+          {
+            curPage,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+      });
+
       it('admin获取单个PP', async () => {
         const curPage = 0;
 
@@ -8869,6 +8946,38 @@ describe('SPRT测试', () => {
     });
 
     describe('WLTable', async () => {
+      it('KFJL修改WL', async () => {
+        const imageUrl = 'imageUrl10000';
+
+        let response = await post(
+          'DW/1',
+          {
+            imageUrl,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+
+        let wl = await WL.findOne({ where: { id: 1 } });
+        assert.equal(wl.dataValues.imageUrl, imageUrl);
+      });
+
+      it('admin修改WL', async () => {
+        const imageUrl = 'imageUrl10000';
+
+        let response = await post(
+          'DW/1',
+          {
+            imageUrl,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+
+        let wl = await WL.findOne({ where: { id: 1 } });
+        assert.equal(wl.dataValues.imageUrl, imageUrl);
+      });
+      
       it('KFJL获取WL列表', async () => {
         const curPage = 0;
 
@@ -9180,7 +9289,39 @@ describe('SPRT测试', () => {
     });
 
     describe('GTTable', async () => {
-      it('KFJL获取FGT列表', async () => {
+      it('KFJL修改GT信息', async () => {
+        const tempQY = QY.EAST;
+
+        let response = await post(
+          'GT/1',
+          {
+            QY: tempQY,
+          },
+          KFJLToken
+        );
+        assert.equal(response.data.code, 1);
+
+        let gt = await GT.findOne({ where: { id: 1}});
+        assert.equal(gt.dataValues.QY, tempQY);
+      });
+
+      it('admin修改GT信息', async () => {
+        const tempQY = QY.EAST;
+
+        let response = await post(
+          'GT/1',
+          {
+            QY: tempQY,
+          },
+          adminToken
+        );
+        assert.equal(response.data.code, 1);
+
+        let gt = await GT.findOne({ where: { id: 1}});
+        assert.equal(gt.dataValues.QY, tempQY);
+      });
+
+      it('KFJL获取GT列表', async () => {
         const curPage = 0;
 
         let response = await get(
@@ -9194,7 +9335,7 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
-      it('admin获取FGT列表', async () => {
+      it('admin获取GT列表', async () => {
         const curPage = 0;
 
         let response = await get(
@@ -9208,7 +9349,7 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
-      it('PPJL获取FGT列表', async () => {
+      it('PPJL获取GT列表', async () => {
         const curPage = 0;
 
         let response = await get(
@@ -9222,7 +9363,7 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
-      it('KFJL获取单个FGTester', async () => {
+      it('KFJL获取单个GT', async () => {
         const curPage = 0;
 
         let response = await get(
