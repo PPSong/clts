@@ -8379,8 +8379,9 @@ describe('SPRT测试', () => {
 
   describe.only('标准restful', async () => {
     describe('UserTable', async () => {
-      it.only('admin获取User列表', async () => {
+      it('admin获取User列表', async () => {
         const curPage = 0;
+        const JSList = [JS.ADMIN, JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.AZGSGLY];
 
         let response = await get(
           'User',
@@ -8389,13 +8390,16 @@ describe('SPRT测试', () => {
           },
           adminToken
         );
-        console.log(response.data.data)
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
+        let getJSList = [];
+        getJSList = response.data.data.list.map(item => (item.JS));
+        assert.includeMembers(getJSList, JSList);
       });
 
       it('PPJL获取User列表', async () => {
         const curPage = 0;
+        const JSList = [JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.AZGSGLY];
 
         let response = await get(
           'User',
@@ -8406,10 +8410,14 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
+        let getJSList = [];
+        getJSList = response.data.data.list.map(item => (item.JS));
+        assert.includeMembers(getJSList, JSList);
       });
 
       it('KFJL获取User列表', async () => {
         const curPage = 0;
+        const JSList = [JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.AZGSGLY];
 
         let response = await get(
           'User',
@@ -8420,10 +8428,14 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
+        let getJSList = [];
+        getJSList = response.data.data.list.map(item => (item.JS));
+        assert.includeMembers(getJSList, JSList);
       });
 
       it('GYSGLY获取User列表', async () => {
         const curPage = 0;
+        const JSList = [JS.GYSGLY, JS.ZHY];
 
         let response = await get(
           'User',
@@ -8434,10 +8446,14 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
+        let getJSList = [];
+        getJSList = response.data.data.list.map(item => (item.JS));
+        assert.includeMembers(getJSList, JSList);
       });
 
       it('AZGSGLY获取User列表', async () => {
         const curPage = 0;
+        const JSList = [JS.AZG, JS.AZGSGLY];
 
         let response = await get(
           'User',
@@ -8448,6 +8464,9 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
+        let getJSList = [];
+        getJSList = response.data.data.list.map(item => (item.JS));
+        assert.includeMembers(getJSList, JSList);
       });
 
       it('admin获取单个User', async () => {
