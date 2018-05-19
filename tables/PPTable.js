@@ -66,7 +66,7 @@ export default class PPTable extends BaseTable {
     }
   }
   getDisplayFields() {
-    return ['a.id', 'a.name', 'a.disabledAt'];
+    return ['a.id', 'a.name', 'a.disabledAt', 'a.createdAt', 'a.updatedAt'];
   }
 
   getOrderByFields(orderByFields = JSON.stringify([

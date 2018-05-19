@@ -1,7 +1,8 @@
 import debug from 'debug';
+import squel from 'squel';
 import bCrypt from 'bcryptjs';
 import BaseTable from './BaseTable';
-import { PP, JS, User } from '../models/Model';
+import { PP, JS, User, sequelize } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
@@ -150,60 +151,124 @@ export default class UserTable extends BaseTable {
     return ['id', 'name'];
   }
 
+  getDisplayFields() {
+    return ['a.id', 'a.name', 'a.username', 'a.phone', 'a.mail', 'a.JS', 'a.createdAt', 'a.updatedAt'];
+  }
+
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'name' }])) {
+    return orderByFields;
+  }
+
   async getQueryOption(keyword, transaction) {
-    const option = {
-      transaction,
-    };
-    let PPIds;
-    // 根据用户操作记录范围加入where
+    const tmpSquel = squel.select().from('User', 'a');
+
+    const likeFields = ['a.id', 'a.name', 'a.username'];
+
+    let query = '';
+
+    let allIDs = [], relateds, ids;
+
     switch (this.user.JS) {
       case JS.ADMIN:
         break;
       case JS.PPJL:
-        PPIds = await this.user.getPPJLPPs({ transaction }).map(item => item.id);
-        option.where = {
-          id: {
-            $in: PPIds,
-          },
-        };
+        relateds = await this.user.getPPJLPPs();
+        ids = _.map(relateds, (obj) => { return `'${obj.id}'` });
+        relateds = await sequelize.query(
+          `select * from KFJL_PP where PPId in (${ids})`,
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
+        allIDs = allIDs.concat(ids);
+
+        ids = _.map(relateds, (obj) => { return `'${obj.PPId}'` });
+        relateds = await sequelize.query(
+          `select * from PPJL_PP where PPId in (${ids})`,
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
+        allIDs = allIDs.concat(ids);
+
+        query = `a.id in (${allIDs}) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}')`;
         break;
       case JS.KFJL:
-        PPIds = await this.user.getKFJLPPs({ transaction }).map(item => item.id);
-        option.where = {
-          id: {
-            $in: PPIds,
-          },
-        };
+        relateds = await this.user.getKFJLPPs();
+        ids = _.map(relateds, (obj) => { return `'${obj.id}'` });
+        relateds = await sequelize.query(
+          `select * from PPJL_PP where PPId in (${ids})`,
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
+        allIDs = allIDs.concat(ids);
+
+        ids = _.map(relateds, (obj) => { return `'${obj.PPId}'` });
+        relateds = await sequelize.query(
+          `select * from KFJL_PP where PPId in (${ids})`,
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
+        allIDs = allIDs.concat(ids);
+
+        query = `a.id in (${allIDs}) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}')`;
         break;
-      case JS.GZ:
-        PPIds = await this.user.getGZPPs({ transaction }).map(item => item.id);
-        option.where = {
-          id: {
-            $in: PPIds,
-          },
-        };
+      case JS.GYSGLY:
+        relateds = await this.user.getGLYGYSs();
+        let gysIDs = _.map(relateds, (obj) => { return `'${obj.id}'` });
+        relateds = await sequelize.query(
+          `select * from GLY_GYS where GYSId in (${gysIDs})`,
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
+        allIDs = allIDs.concat(ids);
+
+        relateds = await sequelize.query(
+          `select * from ZHY_GYS where GYSId in (${gysIDs})`,
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
+        allIDs = allIDs.concat(ids);
+
+        query = `a.id in (${allIDs})`;
         break;
-      case JS.GTBA:
-        PPIds = await this.user.getGTBAPPs({ transaction }).map(item => item.id);
-        option.where = {
-          id: {
-            $in: PPIds,
-          },
-        };
+      case JS.AZGSGLY:
+        relateds = await this.user.getGLYAZGSs();
+        let azgsIDs = _.map(relateds, (obj) => { return `'${obj.id}'` });
+        relateds = await sequelize.query(
+          `select * from GLY_AZGS where AZGSId in (${azgsIDs})`,
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
+        allIDs = allIDs.concat(ids);
+
+        relateds = await sequelize.query(
+          `select * from AZG_AZGS where AZGSId in (${azgsIDs})`,
+          { type: sequelize.QueryTypes.SELECT }
+        );
+        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
+        allIDs = allIDs.concat(ids);
+
+        query = `a.id in (${allIDs})`;
         break;
-      default:
-        throw new Error('无此权限!');
     }
+
     // 把模糊搜索条件加入where
     if (keyword) {
-      const fields = this.getLikeSearchFields();
-      const likeArr = fields.map(item => ({ [item]: { $like: `%${keyword}%` } }));
-      option.where = {
-        ...option.where,
-        $or: likeArr,
-      };
+      const likeWhere = likeFields.reduce(
+        (result, item) => result.or(`${item} like '%${keyword}%'`),
+        squel.expr(),
+      );
+      if (query) {
+        query = `(${query}) AND (${likeWhere.toString()})`;
+      } else {
+        query = likeWhere.toString();
+      }
     }
-    return option;
+    // end 把模糊搜索条件加入where
+    if (query) {
+      tmpSquel.where(query);
+    }
+
+    return tmpSquel;
   }
 
   // override 为了对password进行处理
