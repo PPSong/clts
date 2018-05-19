@@ -1,4 +1,5 @@
 import debug from 'debug';
+import squel from 'squel';
 import BaseTable from './BaseTable';
 import { GYS, JS } from '../models/Model';
 
@@ -36,7 +37,7 @@ export default class GYSTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -65,28 +66,29 @@ export default class GYSTable extends BaseTable {
     }
   }
 
-  getLikeSearchFields() {
-    return ['id', 'name'];
+  getDisplayFields() {
+    return ['a.id', 'a.name', 'a.type', 'a.disabledAt'];
+  }
+
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
+    return orderByFields;
   }
 
   async getQueryOption(keyword, transaction) {
-    const option = {
-      transaction,
-    };
-    // 根据用户操作记录范围加入where
-    // end 根据用户操作记录范围加入where
+    const tmpSquel = squel.select().from('GYS', 'a');
+
+    const likeFields = ['a.name', 'a.type'];
 
     // 把模糊搜索条件加入where
     if (keyword) {
-      const fields = this.getLikeSearchFields();
-      const likeArr = fields.map(item => ({ [item]: { $like: `%${keyword}%` } }));
-      option.where = {
-        ...option.where,
-        $or: likeArr,
-      };
+      const likeWhere = likeFields.reduce(
+        (result, item) => result.or(`${item} like '%${keyword}%'`),
+        squel.expr(),
+      );
+      tmpSquel.where(likeWhere.toString());
     }
     // end 把模糊搜索条件加入where
 
-    return option;
+    return tmpSquel;
   }
 }
