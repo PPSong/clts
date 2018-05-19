@@ -49,6 +49,7 @@ export default class BusinessApiBase {
   static checkApiAccess(user) {
     const tmpJSs = this.getAllowAccessJSs();
 
+    if (tmpJSs === "*") return;
     if (!tmpJSs.includes(user.JS)) {
       throw new Error('没有权限!');
     }

@@ -67,7 +67,10 @@ export default class UserTable extends BaseTable {
     let tmpAZGSId;
     switch (record.JS) {
       case JS.ADMIN:
-        throw new Error('无此权限!');
+        if (this.user.JS !== JS.ADMIN)
+          throw new Error('无此权限!');
+        else
+          break;
       case JS.PPJL:
         if (![JS.ADMIN].includes(this.user.JS)) {
           throw new Error('无此权限!');
