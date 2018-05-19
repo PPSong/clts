@@ -37,7 +37,7 @@ export default class PPTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.ADMIN, JS.KFJL, JS.PPJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.KFJL, JS.PPJL, JS.GZ, JS.GTBA].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -55,13 +55,13 @@ export default class PPTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![JS.ADMIN].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.KFJL, JS.PPJL, JS.GZ, JS.GTBA].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(redord, transaction) {
-    if (![JS.ADMIN].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.KFJL, JS.PPJL, JS.GZ, JS.GTBA].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -86,22 +86,30 @@ export default class PPTable extends BaseTable {
 
     if (this.user.JS !== JS.ADMIN) {
       //只能获取和自己绑定的GYS
-      let ppList = [];
-      if (this.user.JS === JS.KFJL) {
-        ppList = await this.user.getKFJLPPs();
-      } else if (this.user.JS === JS.PPJL) {
-        ppList = await this.user.getPPJLPPs();
-      }
-      ppList = ppList || [];
+      let ppIDs = [];
+      if (this.user.JS === JS.GTBA) {
+        let gt = await this.user.getGTBA();
+        ppIDs = [ gt.PPId ];
+      } else {
+        let ppList = [];
+        if (this.user.JS === JS.KFJL) {
+          ppList = await this.user.getKFJLPPs();
+        } else if (this.user.JS === JS.PPJL) {
+          ppList = await this.user.getPPJLPPs();
+        } else if (this.user.JS === JS.GZ) {
+          ppList = await this.user.getGZPPs();
+        }
 
-      if (ppList.length < 1) {
+        ppList = ppList || [];
+
+        ppList.forEach(pp => {
+          ppIDs.push(`'${pp.id}'`);
+        });
+      }
+
+      if (ppIDs.length < 1) {
         throw new Error('无此权限!');
       }
-
-      let ppIDs = [];
-      ppList.forEach(pp => {
-        ppIDs.push(`'${pp.id}'`);
-      });
 
       query = `a.id in (${ppIDs})`;
     }
