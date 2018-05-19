@@ -31,7 +31,7 @@ export default class PPTable extends BaseTable {
   }
 
   checkEditRight() {
-    if (![DBTables.JS.ADMIN, DBTables.JS.GZ].includes(this.user.JS)) {
+    if (![DBTables.JS.ADMIN, DBTables.JS.GZ, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
