@@ -181,10 +181,14 @@ export default class BaseTable {
       resultSquel,
     );
 
-    const r = await sequelize.query(
+    let r = await sequelize.query(
       resultSquel.fields(this.getDisplayFields()).toString(),
       { type: sequelize.QueryTypes.SELECT },
     );
+
+    if (this.wrapperGetListResult) {
+      r = await this.wrapperGetListResult(r, queryObj);
+    }
 
     return {
       code: 1,
