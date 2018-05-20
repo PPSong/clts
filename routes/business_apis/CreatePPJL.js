@@ -8,7 +8,7 @@ export default class CreatePPJL extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { username, password, PPId } = req.body;
+    const { username, password, PPId, name, mail, phone } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     const tmpPP = await user.checkPPId(PPId, transaction);
@@ -20,6 +20,9 @@ export default class CreatePPJL extends BusinessApiBase {
         username,
         password: bCrypt.hashSync(password, 8),
         JS: DBTables.JS.PPJL,
+        name: name || '',
+        mail: mail || '',
+        phone: phone || ''
       },
       { transaction },
     );

@@ -329,6 +329,28 @@ export const apiSchema = {
     },
     required: [ 'name' ],
   },
+  // 检查供应商名称是否已经存在
+  checkGYSExists: {
+    type: 'object',
+    properties: {
+      // 供应商名称
+      name: {
+        type: 'string'
+      }
+    },
+    required: [ 'name' ],
+  },
+  // 检查安装公司名称是否已经存在
+  checkAZGSExists: {
+    type: 'object',
+    properties: {
+      // 品牌名称
+      name: {
+        type: 'string'
+      }
+    },
+    required: [ 'name' ],
+  },
   // 检查用户名是否已经存在
   checkUsernameExists: {
     type: 'object',
@@ -358,6 +380,18 @@ export const apiSchema = {
       // 品牌Id
       PPId: {
         type: 'number',
+      },
+      // 姓名
+      name: {
+        type: 'string',
+      },
+      // 邮箱
+      mail: {
+        type: 'string',
+      },
+      // 手机号
+      phone: {
+        type: 'string',
       },
     },
     required: ['username', 'password', 'PPId'],
