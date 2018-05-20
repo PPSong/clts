@@ -166,7 +166,7 @@ export default class UserTable extends BaseTable {
 
     let query = '';
 
-    let allIDs = [], relateds, ids;
+    let allIDs = [], relateds, ids, ppIDs;
 
     switch (this.user.JS) {
       case JS.ADMIN:
@@ -182,6 +182,7 @@ export default class UserTable extends BaseTable {
         allIDs = allIDs.concat(ids);
 
         ids = _.map(relateds, (obj) => { return `'${obj.PPId}'` });
+        ppIDs = _.map(relateds, (obj) => { return obj.PPId });
         relateds = await sequelize.query(
           `select * from PPJL_PP where PPId in (${ids})`,
           { type: sequelize.QueryTypes.SELECT }
@@ -189,7 +190,7 @@ export default class UserTable extends BaseTable {
         ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
         allIDs = allIDs.concat(ids);
 
-        query = `a.id in (${allIDs}) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}')`;
+        query = `a.id in (${allIDs}) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}') OR a.id in (SELECT GZUserId as id from GT WHERE PPId in ('${ppIDs}')) OR a.id in (SELECT GTBAUserId as id from GT WHERE PPId in ('${ppIDs}'))`;
         break;
       case JS.KFJL:
         relateds = await this.user.getKFJLPPs();
@@ -202,6 +203,7 @@ export default class UserTable extends BaseTable {
         allIDs = allIDs.concat(ids);
 
         ids = _.map(relateds, (obj) => { return `'${obj.PPId}'` });
+        ppIDs = _.map(relateds, (obj) => { return obj.PPId });
         relateds = await sequelize.query(
           `select * from KFJL_PP where PPId in (${ids})`,
           { type: sequelize.QueryTypes.SELECT }
@@ -209,7 +211,7 @@ export default class UserTable extends BaseTable {
         ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
         allIDs = allIDs.concat(ids);
 
-        query = `a.id in (${allIDs}) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}')`;
+        query = `a.id in (${allIDs}) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}') OR a.id in (SELECT GZUserId as id from GT WHERE PPId in ('${ppIDs}')) OR a.id in (SELECT GTBAUserId as id from GT WHERE PPId in ('${ppIDs}'))`;
         break;
       case JS.GYSGLY:
         relateds = await this.user.getGLYGYSs();

@@ -19,7 +19,7 @@ export default class PPTable extends BaseTable {
   }
 
   checkCreateRight() {
-    if (![DBTables.JS.ADMIN].includes(this.user.JS)) {
+    if (![DBTables.JS.ADMIN, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -31,14 +31,14 @@ export default class PPTable extends BaseTable {
   }
 
   checkEditRight() {
-    if (![DBTables.JS.ADMIN].includes(this.user.JS)) {
+    if (![DBTables.JS.ADMIN, DBTables.JS.GZ, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   checkListRight() {
     if (
-      ![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)
+      ![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.GZ, DBTables.JS.GTBA].includes(this.user.JS)
     ) {
       throw new Error('无此权限!');
     }
@@ -57,13 +57,13 @@ export default class PPTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![DBTables.JS.ADMIN].includes(this.user.JS)) {
+    if (![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.GZ, DBTables.JS.GTBA].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(redord, transaction) {
-    if (![DBTables.JS.ADMIN].includes(this.user.JS)) {
+    if (![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.GZ, DBTables.JS.GTBA].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -91,15 +91,48 @@ export default class PPTable extends BaseTable {
 
     const likeFields = ['a.QY', 'a.CS', 'a.code', 'a.name', 'b.name'];
 
+    let query = '';
+
+    if (this.user.JS === DBTables.JS.GZ || this.user.JS === DBTables.JS.GTBA) {
+      //只能获取和自己绑定的GYS
+      if (this.user.JS === DBTables.JS.GZ) {
+        query = `a.GZUserId = '${this.user.id}'`;
+      } else {
+        query = `a.GTBAUserId = '${this.user.id}'`;
+      }
+    } else if (this.user.JS === DBTables.JS.PPJL || this.user.JS === DBTables.JS.KFJL) {
+      let pps = [];
+      if (this.user.JS === DBTables.JS.PPJL) {
+        pps = await this.user.getPPJLPPs();
+      } else {
+        pps = await this.user.getKFJLPPs();
+      }
+
+      if (pps.length < 1) {
+        throw new Error('无此权限!');
+      }
+
+      let ppIDs = _.map(pps, (pp) => { return `'${pp.id}'` });
+
+      query = `a.PPId in (${ppIDs})`;
+    }
+
     // 把模糊搜索条件加入where
     if (keyword) {
       const likeWhere = likeFields.reduce(
         (result, item) => result.or(`${item} like '%${keyword}%'`),
         squel.expr(),
       );
-      tmpSquel.where(likeWhere.toString());
+      if (query) {
+        query = `(${query}) AND (${likeWhere.toString()})`;
+      } else {
+        query = likeWhere.toString();
+      }
     }
     // end 把模糊搜索条件加入where
+    if (query) {
+      tmpSquel.where(query);
+    }
 
     return tmpSquel;
   }
