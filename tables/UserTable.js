@@ -201,7 +201,7 @@ export default class UserTable extends BaseTable {
 
         query = `a.id in (SELECT UserId as id from GLY_AZGS WHERE AZGSId in (${azgsIDs})) OR a.id in (SELECT UserId as id from AZG_AZGS WHERE AZGSId in (${azgsIDs}))`;
         break;
-      default: 
+      default:
         break;
     }
 
