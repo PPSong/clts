@@ -329,6 +329,54 @@ export const apiSchema = {
     },
     required: [ 'name' ],
   },
+  // 检查供应商名称是否已经存在
+  checkGYSExists: {
+    type: 'object',
+    properties: {
+      // 供应商名称
+      name: {
+        type: 'string'
+      }
+    },
+    required: [ 'name' ],
+  },
+  // 检查安装公司名称是否已经存在
+  checkAZGSExists: {
+    type: 'object',
+    properties: {
+      // 品牌名称
+      name: {
+        type: 'string'
+      }
+    },
+    required: [ 'name' ],
+  },
+  // 检查柜台名称是否已经存在,在一个品牌内名称唯一
+  checkGTExists: {
+    type: 'object',
+    properties: {
+      // 柜台名称
+      name: {
+        type: 'string'
+      },
+      // 品牌ID,客服经理角色可不传
+      PPId: {
+        type: 'string'
+      }
+    },
+    required: [ 'name' ],
+  },
+  // 检查柜台编号是否已经存在,在全表内编号唯一
+  checkGTCodeExists: {
+    type: 'object',
+    properties: {
+      // 柜台编号
+      code: {
+        type: 'string'
+      }
+    },
+    required: [ 'code' ],
+  },
   // 检查用户名是否已经存在
   checkUsernameExists: {
     type: 'object',
@@ -358,6 +406,18 @@ export const apiSchema = {
       // 品牌Id
       PPId: {
         type: 'number',
+      },
+      // 姓名
+      name: {
+        type: 'string',
+      },
+      // 邮箱
+      mail: {
+        type: 'string',
+      },
+      // 手机号
+      phone: {
+        type: 'string',
       },
     },
     required: ['username', 'password', 'PPId'],
@@ -447,7 +507,7 @@ export const apiSchema = {
         type: 'string',
       },
     },
-    required: ['PPId', 'name', 'code', 'QY', 'CS'],
+    required: ['name', 'code', 'QY', 'CS'],
   },
   // 编辑GT图 [KFJL]
   setGTImage: {
@@ -480,8 +540,20 @@ export const apiSchema = {
       PPId: {
         type: 'number',
       },
+      // 姓名
+      name: {
+        type: 'string',
+      },
+      // 联系电话
+      phone: {
+        type: 'string',
+      },
+      // 邮箱
+      mail: {
+        type: 'string',
+      }
     },
-    required: ['username', 'password', 'PPId'],
+    required: ['username', 'password'],
   },
   // 配置GZ负责GT [KFJL]
   setGZGTs: {

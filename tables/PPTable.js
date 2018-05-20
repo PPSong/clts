@@ -1,7 +1,7 @@
 import debug from 'debug';
 import squel from 'squel';
 import BaseTable from './BaseTable';
-import { PP, JS } from '../models/Model';
+import { PP, JS, sequelize } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
@@ -132,5 +132,28 @@ export default class PPTable extends BaseTable {
     }
 
     return tmpSquel;
+  }
+
+  async wrapperGetListResult(records, queryObj) {
+    records = records || [];
+    if (this.user.JS === JS.ADMIN && Number(queryObj.needPPJL) === 1) {
+      for(let i = 0; i < records.length; i++) {
+        let pp = records[i];
+        let sql = `SELECT id, name, username, phone, mail FROM User WHERE id in (SELECT UserId as id FROM PPJL_PP WHERE PPId = '${pp.id}')`;
+        let ppjls = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
+        pp.PPJL = ppjls[0];
+        if (pp.PPJL) {
+          pp.PPJL = {
+            id: pp.PPJL.id,
+            name: pp.PPJL.name,
+            username: pp.PPJL.username,
+            phone: pp.PPJL.phone,
+            mail: pp.PPJL.mail
+          };
+        }
+        records[i] = pp;
+      }
+    }
+    return records;
   }
 }
