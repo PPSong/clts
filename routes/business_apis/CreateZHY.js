@@ -8,7 +8,7 @@ export default class CreateZHY extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { name, username, password } = req.body;
+    const { name, username, password, mail, phone } = req.body;
 
     let gys = await user.getGLYGYSs();
     gys = (gys || [])[0];
@@ -23,6 +23,8 @@ export default class CreateZHY extends BusinessApiBase {
         username,
         password: bCrypt.hashSync(password, 8),
         JS: DBTables.JS.ZHY,
+        mail: mail || '',
+        phone: phone || '',
       },
       { transaction }
     );
