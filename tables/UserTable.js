@@ -63,6 +63,12 @@ export default class UserTable extends BaseTable {
   }
 
   async checkUserAccess(record, transaction) {
+
+    if (record && record.id === this.user.id) {
+      // allow to do that
+      return;
+    }
+
     let tmpPP;
     let tmpGYSId;
     let tmpAZGSId;
@@ -78,7 +84,7 @@ export default class UserTable extends BaseTable {
         }
         break;
       case JS.KFJL:
-        if (![JS.PPJL].includes(this.user.JS)) {
+        if (![JS.PPJL, JS.ADMIN].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
 
@@ -88,7 +94,7 @@ export default class UserTable extends BaseTable {
         }
         break;
       case JS.GZ:
-        if (![JS.KFJL].includes(this.user.JS)) {
+        if (![JS.KFJL, JS.ADMIN].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
 
@@ -98,7 +104,7 @@ export default class UserTable extends BaseTable {
         }
         break;
       case JS.GTBA:
-        if (![JS.KFJL].includes(this.user.JS)) {
+        if (![JS.KFJL, JS.ADMIN].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
 
@@ -106,17 +112,17 @@ export default class UserTable extends BaseTable {
         await this.user.checkGTId(tmpGT.id);
         break;
       case JS.GYSGLY:
-        if (![JS.KFJL].includes(this.user.JS)) {
+        if (![JS.KFJL, JS.ADMIN].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
         break;
       case JS.AZGSGLY:
-        if (![JS.KFJL].includes(this.user.JS)) {
+        if (![JS.KFJL, JS.ADMIN].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
         break;
       case JS.ZHY:
-        if (![JS.GYSGLY].includes(this.user.JS)) {
+        if (![JS.GYSGLY, JS.ADMIN].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
 
@@ -129,7 +135,7 @@ export default class UserTable extends BaseTable {
 
         break;
       case JS.AZG:
-        if (![JS.AZGSGLY].includes(this.user.JS)) {
+        if (![JS.AZGSGLY, JS.ADMIN].includes(this.user.JS)) {
           throw new Error('无此权限!');
         }
 
@@ -166,90 +172,36 @@ export default class UserTable extends BaseTable {
 
     let query = '';
 
-    let allIDs = [], relateds, ids, ppIDs;
+    let relateds, ppIDs;
 
     switch (this.user.JS) {
       case JS.ADMIN:
         break;
       case JS.PPJL:
         relateds = await this.user.getPPJLPPs();
-        ids = _.map(relateds, (obj) => { return `'${obj.id}'` });
-        relateds = await sequelize.query(
-          `select * from KFJL_PP where PPId in (${ids})`,
-          { type: sequelize.QueryTypes.SELECT }
-        );
-        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
-        allIDs = allIDs.concat(ids);
+        ppIDs = _.map(relateds, (obj) => { return `'${obj.id}'` });
 
-        ids = _.map(relateds, (obj) => { return `'${obj.PPId}'` });
-        ppIDs = _.map(relateds, (obj) => { return obj.PPId });
-        relateds = await sequelize.query(
-          `select * from PPJL_PP where PPId in (${ids})`,
-          { type: sequelize.QueryTypes.SELECT }
-        );
-        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
-        allIDs = allIDs.concat(ids);
-
-        query = `a.id in (${allIDs}) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}') OR a.id in (SELECT GZUserId as id from GT WHERE PPId in ('${ppIDs}')) OR a.id in (SELECT GTBAUserId as id from GT WHERE PPId in ('${ppIDs}'))`;
+        query = `a.id in (SELECT UserId as id from PPJL_PP WHERE PPId in (${ppIDs})) OR a.id in (SELECT UserId as id from KFJL_PP WHERE PPId in (${ppIDs})) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}') OR a.id in (SELECT UserId as id from GZ_PP WHERE PPId in (${ppIDs})) OR a.id in (SELECT GTBAUserId as id from GT WHERE PPId in (${ppIDs}))`;
         break;
       case JS.KFJL:
         relateds = await this.user.getKFJLPPs();
-        ids = _.map(relateds, (obj) => { return `'${obj.id}'` });
-        relateds = await sequelize.query(
-          `select * from PPJL_PP where PPId in (${ids})`,
-          { type: sequelize.QueryTypes.SELECT }
-        );
-        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
-        allIDs = allIDs.concat(ids);
+        ppIDs = _.map(relateds, (obj) => { return `'${obj.id}'` });
 
-        ids = _.map(relateds, (obj) => { return `'${obj.PPId}'` });
-        ppIDs = _.map(relateds, (obj) => { return obj.PPId });
-        relateds = await sequelize.query(
-          `select * from KFJL_PP where PPId in (${ids})`,
-          { type: sequelize.QueryTypes.SELECT }
-        );
-        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
-        allIDs = allIDs.concat(ids);
-
-        query = `a.id in (${allIDs}) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}') OR a.id in (SELECT GZUserId as id from GT WHERE PPId in ('${ppIDs}')) OR a.id in (SELECT GTBAUserId as id from GT WHERE PPId in ('${ppIDs}'))`;
+        query = `a.id in (SELECT UserId as id from PPJL_PP WHERE PPId in (${ppIDs})) OR a.id in (SELECT UserId as id from KFJL_PP WHERE PPId in (${ppIDs})) OR a.JS in ('${JS.AZGSGLY}', '${JS.GYSGLY}') OR a.id in (SELECT UserId as id from GZ_PP WHERE PPId in (${ppIDs})) OR a.id in (SELECT GTBAUserId as id from GT WHERE PPId in (${ppIDs}))`;
         break;
       case JS.GYSGLY:
         relateds = await this.user.getGLYGYSs();
         let gysIDs = _.map(relateds, (obj) => { return `'${obj.id}'` });
-        relateds = await sequelize.query(
-          `select * from GLY_GYS where GYSId in (${gysIDs})`,
-          { type: sequelize.QueryTypes.SELECT }
-        );
-        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
-        allIDs = allIDs.concat(ids);
 
-        relateds = await sequelize.query(
-          `select * from ZHY_GYS where GYSId in (${gysIDs})`,
-          { type: sequelize.QueryTypes.SELECT }
-        );
-        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
-        allIDs = allIDs.concat(ids);
-
-        query = `a.id in (${allIDs})`;
+        query = `a.id in (SELECT UserId as id from GLY_GYS WHERE GYSId in (${gysIDs})) OR a.id in (SELECT UserId as id from ZHY_GYS WHERE GYSId in (${gysIDs}))`;
         break;
       case JS.AZGSGLY:
         relateds = await this.user.getGLYAZGSs();
         let azgsIDs = _.map(relateds, (obj) => { return `'${obj.id}'` });
-        relateds = await sequelize.query(
-          `select * from GLY_AZGS where AZGSId in (${azgsIDs})`,
-          { type: sequelize.QueryTypes.SELECT }
-        );
-        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
-        allIDs = allIDs.concat(ids);
 
-        relateds = await sequelize.query(
-          `select * from AZG_AZGS where AZGSId in (${azgsIDs})`,
-          { type: sequelize.QueryTypes.SELECT }
-        );
-        ids = _.map(relateds, (obj) => { return `'${obj.UserId}'` });
-        allIDs = allIDs.concat(ids);
-
-        query = `a.id in (${allIDs})`;
+        query = `a.id in (SELECT UserId as id from GLY_AZGS WHERE AZGSId in (${azgsIDs})) OR a.id in (SELECT UserId as id from AZG_AZGS WHERE AZGSId in (${azgsIDs}))`;
+        break;
+      default: 
         break;
     }
 
