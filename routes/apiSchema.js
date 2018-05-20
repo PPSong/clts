@@ -295,7 +295,7 @@ export const normalApiSchema = {
 export const apiSchema = {
   // business_apis
 
-  //added by Jay
+  // 修改当前已登录用户的密码
   userChangePassword: {
     type: 'object',
     properties: {
@@ -309,6 +309,14 @@ export const apiSchema = {
       }
     },
     required: ['newPassword', 'oldPassword'],
+  },
+  // 获取当前登录用户的详细信息
+  myUserInfo: {
+    type: 'object',
+    properties: {
+
+    },
+    required: [],
   },
   //////////////
 

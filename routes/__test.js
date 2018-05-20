@@ -86,6 +86,30 @@ function renderRoot(req, res, complete) {
                         optionalParams: {},
                         needLogin: false
                     }
+                },
+                {
+                    desc:"获取角色对应的后台页面菜单列表",
+                    index:0,
+                    name:"auth/menus",
+                    type:'GET',
+                    paramsDesc: { },
+                    security: {
+                        checkParams:{ },
+                        optionalParams: {},
+                        needLogin: false
+                    }
+                },
+                {
+                    desc:"注销登录",
+                    index:0,
+                    name:"auth/signout",
+                    type:'POST',
+                    paramsDesc: { },
+                    security: {
+                        checkParams:{ },
+                        optionalParams: {},
+                        needLogin: true
+                    }
                 }
             ]
         });
