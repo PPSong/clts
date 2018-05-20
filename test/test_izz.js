@@ -8378,6 +8378,38 @@ describe('SPRT测试', () => {
   });
 
   describe.only('标准restful', async () => {
+    // 新建AZG [AZGSGLY]
+    describe('createAZG', async () => {
+      describe('成功', async () => {
+        it('AZGSGLY创建AZG', async () => {
+          const username = 'AZG_T';
+          const password = '123456';
+
+          let response = await post(
+            'createAZG',
+            {
+              username,
+              password,
+            },
+            AZGSGLYToken
+          );
+          assert.equal(response.data.code, 1);
+
+          let user = await User.findOne({ where: { username } });
+          assert.notEqual(user, null);
+          let azg_azgs = await AZG_AZGS.findOne({ where: { UserId: user.dataValues.id } });
+          assert.notEqual(azg_azgs, null);
+        });
+      });
+      describe('失败', async () => {
+        describe('数据不合法', async () => { });
+        describe('没有权限', async () => { });
+        describe('操作状态不正确', async () => { });
+        describe('唯一性校验', async () => { });
+      });
+    });
+    //新增非标准restful
+
     describe('UserTable', async () => {
       it('admin获取User列表', async () => {
         const curPage = 0;
@@ -9620,7 +9652,7 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
-      it('KFJL获取单个GT', async () => {
+      it.only('KFJL获取单个GT', async () => {
         const curPage = 0;
 
         let response = await get(
@@ -9630,6 +9662,7 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
+        console.log(response.data)
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
       });
