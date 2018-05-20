@@ -31,4 +31,10 @@ router.post('/signin', (req, res, next) => {
   })(req, res);
 });
 
+router.post('/signout', (req, res, next) => {
+  console.log('logout...');
+  req.logout();
+  res.json({ code:1 });
+});
+
 export default router;

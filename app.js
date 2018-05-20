@@ -11,6 +11,7 @@ import debug from 'debug';
 import index from './routes/index';
 import auth from './routes/auth';
 import api from './routes/api';
+import menus from './config/menus';
 
 import './passport';
 
@@ -43,8 +44,16 @@ app.use('/', index);
 app.use('/auth', auth);
 app.use('/auth/check', passport.authenticate('jwt', { session: false }), (req, res, next) => {
   const { user } = req;
-  if (user) {
+  if (user && user.id) {
     res.json({ code:1 });
+  } else {
+    res.json({ code:-1 });
+  }
+});
+app.use('/auth/menus', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+  const { user } = req;
+  if (user && user.JS) {
+    res.json({ code:1, data:menus[user.JS] || [] });
   } else {
     res.json({ code:-1 });
   }
