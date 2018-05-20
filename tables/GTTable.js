@@ -74,6 +74,9 @@ export default class PPTable extends BaseTable {
       'a.CS',
       'a.code',
       'a.name',
+      'a.GZUserId',
+      'a.GTBAUserId',
+      'a.PPId',
       'a.disabledAt',
       'b.name PPName', 'a.createdAt', 'a.updatedAt'
     ];
@@ -135,5 +138,29 @@ export default class PPTable extends BaseTable {
     }
 
     return tmpSquel;
+  }
+
+  async wrapperGetListResult(records, queryObj) {
+    records = records || [];
+    if (Number(queryObj.needGZ) === 1) {
+      for(let i = 0; i < records.length; i++) {
+        let gt = records[i];
+        if (gt.GZUserId) {
+          gt.GZ = await DBTables.User.findOne({ where:{ id:gt.GZUserId } });
+        }
+        if (gt.GZ) {
+          gt.GZ = gt.GZ.toJSON();
+          gt.GZ = {
+            id: gt.GZ.id,
+            name: gt.GZ.name,
+            username: gt.GZ.username,
+            phone: gt.GZ.phone,
+            mail: gt.GZ.mail
+          };
+        }
+        records[i] = gt;
+      }
+    }
+    return records;
   }
 }

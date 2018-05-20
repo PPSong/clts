@@ -351,6 +351,32 @@ export const apiSchema = {
     },
     required: [ 'name' ],
   },
+  // 检查柜台名称是否已经存在,在一个品牌内名称唯一
+  checkGTExists: {
+    type: 'object',
+    properties: {
+      // 柜台名称
+      name: {
+        type: 'string'
+      },
+      // 品牌ID,客服经理角色可不传
+      PPId: {
+        type: 'string'
+      }
+    },
+    required: [ 'name' ],
+  },
+  // 检查柜台编号是否已经存在,在全表内编号唯一
+  checkGTCodeExists: {
+    type: 'object',
+    properties: {
+      // 柜台编号
+      code: {
+        type: 'string'
+      }
+    },
+    required: [ 'code' ],
+  },
   // 检查用户名是否已经存在
   checkUsernameExists: {
     type: 'object',
@@ -481,7 +507,7 @@ export const apiSchema = {
         type: 'string',
       },
     },
-    required: ['PPId', 'name', 'code', 'QY', 'CS'],
+    required: ['name', 'code', 'QY', 'CS'],
   },
   // 编辑GT图 [KFJL]
   setGTImage: {
