@@ -318,6 +318,28 @@ export const apiSchema = {
     },
     required: [],
   },
+  // 检查品牌名称是否已经存在
+  checkPPExists: {
+    type: 'object',
+    properties: {
+      // 品牌名称
+      name: {
+        type: 'string'
+      }
+    },
+    required: [ 'name' ],
+  },
+  // 检查用户名是否已经存在
+  checkUsernameExists: {
+    type: 'object',
+    properties: {
+      // 用户名
+      username: {
+        type: 'string'
+      }
+    },
+    required: [ 'username' ],
+  },
   //////////////
 
   //----------------
@@ -539,6 +561,14 @@ export const apiSchema = {
       password: {
         type: 'string',
       },
+      // 联系电话
+      phone: {
+        type: 'string',
+      },
+      // 邮箱
+      mail: {
+        type: 'string',
+      },
     },
     required: ['username', 'password'],
   },
@@ -556,6 +586,14 @@ export const apiSchema = {
       },
       // 密码
       password: {
+        type: 'string',
+      },
+      // 联系电话
+      phone: {
+        type: 'string',
+      },
+      // 邮箱
+      mail: {
         type: 'string',
       },
     },
