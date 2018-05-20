@@ -540,8 +540,20 @@ export const apiSchema = {
       PPId: {
         type: 'number',
       },
+      // 姓名
+      name: {
+        type: 'string',
+      },
+      // 联系电话
+      phone: {
+        type: 'string',
+      },
+      // 邮箱
+      mail: {
+        type: 'string',
+      }
     },
-    required: ['username', 'password', 'PPId'],
+    required: ['username', 'password'],
   },
   // 配置GZ负责GT [KFJL]
   setGZGTs: {

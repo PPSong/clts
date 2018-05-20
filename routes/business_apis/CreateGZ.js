@@ -4,11 +4,21 @@ import * as DBTables from '../../models/Model';
 
 export default class CreateGZ extends BusinessApiBase {
   static getAllowAccessJSs() {
-    return [DBTables.JS.KFJL];
+    return [DBTables.JS.ADMIN, DBTables.JS.KFJL];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { PPId, username, password } = req.body;
+    let { PPId, username, password } = req.body;
+
+    if (user.JS === DBTables.JS.ADMIN) {
+      //
+    } else {
+      let pps = await user.getKFJLPPs();
+      if (pps.length > 0) {
+        PPId = pps[0].id;
+      }
+    }
+    if (!PPId) throw new Error('参数错误. 品牌不存在.');
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     await user.checkPPId(PPId, transaction);
