@@ -8384,6 +8384,7 @@ describe('SPRT测试', () => {
         const JSList = [JS.ADMIN, JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.AZGSGLY];
         const trueUserList =
           [
+            'admin',
             'PPJL1',
             'PPJL2',
             'PPJL3',
@@ -8399,6 +8400,7 @@ describe('SPRT测试', () => {
             'GZ1',
             'GZ2',
             'GZ3',
+            'GZ_T',
             'GTBA1',
             'GTBA2',
             'GTBA3',
@@ -8410,44 +8412,6 @@ describe('SPRT测试', () => {
             'GTBA9',
             'GTBA10',
             'GTBA11',
-            'GYSGLY1',
-            'GYSGLY2',
-            'GYSGLY3',
-            'AZGSGLY1',
-            'AZGSGLY2'
-          ];
-
-        let response = await get(
-          'User',
-          {
-            curPage,
-          },
-          adminToken
-        );
-        assert.equal(response.data.code, 1);
-        assert.notEqual(response.data.data.length, 0);
-        let getJSList = [];
-        getJSList = response.data.data.list.map(item => (item.JS));
-        assert.includeMembers(getJSList, JSList);
-        getUserList = response.data.data.list.map(item => (item.username));
-        assert.sameDeepMembers(getUserList, trueUserList);
-      });
-
-      it('PPJL获取User列表', async () => {
-        const curPage = 0;
-        const JSList = [JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.AZGSGLY];
-        const trueUserList =
-          [
-            'PPJL1',
-            'KFJL1',
-            'GZ1',
-            'GZ2',
-            'GZ3',
-            'GTBA1',
-            'GTBA2',
-            'GTBA3',
-            'GTBA4',
-            'GTBA5',
             'GYSGLY1',
             'GYSGLY2',
             'GYSGLY3',
@@ -8467,18 +8431,19 @@ describe('SPRT测试', () => {
           {
             curPage,
           },
-          PPJLToken
+          adminToken
         );
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
         let getJSList = [];
+        let getUserList = [];
         getJSList = response.data.data.list.map(item => (item.JS));
         assert.includeMembers(getJSList, JSList);
         getUserList = response.data.data.list.map(item => (item.username));
         assert.sameDeepMembers(getUserList, trueUserList);
       });
 
-      it.only('KFJL获取User列表', async () => {
+      it('PPJL获取User列表', async () => {
         const curPage = 0;
         const JSList = [JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.AZGSGLY];
         const trueUserList =
@@ -8487,7 +8452,46 @@ describe('SPRT测试', () => {
             'KFJL1',
             'GZ1',
             'GZ2',
-            'GZ3',
+            'GZ_T',
+            'GTBA1',
+            'GTBA2',
+            'GTBA3',
+            'GTBA4',
+            'GTBA5',
+            'GYSGLY1',
+            'GYSGLY2',
+            'GYSGLY3',
+            'AZGSGLY1',
+            'AZGSGLY2',
+          ];
+
+        let response = await get(
+          'User',
+          {
+            curPage,
+          },
+          PPJLToken
+        );
+        assert.equal(response.data.code, 1);
+        assert.notEqual(response.data.data.length, 0);
+        let getJSList = [];
+        let getUserList = [];
+        getJSList = response.data.data.list.map(item => (item.JS));
+        assert.includeMembers(getJSList, JSList);
+        getUserList = response.data.data.list.map(item => (item.username));
+        assert.sameDeepMembers(getUserList, trueUserList);
+      });
+
+      it('KFJL获取User列表', async () => {
+        const curPage = 0;
+        const JSList = [JS.PPJL, JS.KFJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.AZGSGLY];
+        const trueUserList =
+          [
+            'PPJL1',
+            'KFJL1',
+            'GZ1',
+            'GZ2',
+            'GZ_T',
             'GTBA1',
             'GTBA2',
             'GTBA3',
@@ -8507,7 +8511,6 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
-        console.log(response.data.data.list)
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
         let getJSList = [];
@@ -8538,6 +8541,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
         let getJSList = [];
+        let getUserList = [];
         getJSList = response.data.data.list.map(item => (item.JS));
         assert.includeMembers(getJSList, JSList);
         getUserList = response.data.data.list.map(item => (item.username));
@@ -8564,6 +8568,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
         let getJSList = [];
+        let getUserList = [];
         getJSList = response.data.data.list.map(item => (item.JS));
         assert.includeMembers(getJSList, JSList);
         getUserList = response.data.data.list.map(item => (item.username));
@@ -9163,6 +9168,7 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
+        console.log(response.data)
         assert.equal(response.data.code, 1);
 
         let wl = await WL.findOne({ where: { id: 1 } });
@@ -9538,7 +9544,6 @@ describe('SPRT测试', () => {
           },
           adminToken
         );
-        console.log(response.data)
         assert.equal(response.data.code, 1);
 
         let gt = await GT.findOne({ where: { id: 1 } });
