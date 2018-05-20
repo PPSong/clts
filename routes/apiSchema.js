@@ -575,6 +575,14 @@ export const apiSchema = {
     },
     required: ['GZUserId', 'GTIds'],
   },
+  // 获取自己品牌下的所有柜长列表 [KFJL]
+  getGZList: {
+    type: 'object',
+    properties: {
+
+    },
+    required: [ ],
+  },
   // 新建GYS, GLY[KFJL]
   createGYSWithGLY: {
     type: 'object',
