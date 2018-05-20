@@ -140,7 +140,7 @@ export default class PPTable extends BaseTable {
       for(let i = 0; i < records.length; i++) {
         let pp = records[i];
         let sql = `SELECT id, name, username, phone, mail FROM User WHERE id in (SELECT UserId as id FROM PPJL_PP WHERE PPId = '${pp.id}')`;
-        let ppjls = await await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
+        let ppjls = await sequelize.query(sql, { type: sequelize.QueryTypes.SELECT });
         pp.PPJL = ppjls[0];
         if (pp.PPJL) {
           pp.PPJL = {
