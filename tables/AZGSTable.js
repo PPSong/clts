@@ -67,7 +67,7 @@ export default class AZGSTable extends BaseTable {
   }
 
   getDisplayFields() {
-    return ['a.id', 'a.name', 'a.disabledAt', 'a.createdAt', 'a.updatedAt'];
+    return ['a.id', 'a.name', 'a.disabledAt', 'a.createdAt', 'a.updatedAt', 'user_phone', 'user_name', 'user_username', 'user_id'];
   }
 
   getOrderByFields(orderByFields = JSON.stringify([{ name: 'name' }])) {
@@ -119,6 +119,15 @@ export default class AZGSTable extends BaseTable {
     if (query) {
       tmpSquel.where(query);
     }
+
+    return tmpSquel;
+  }
+
+  async getQueryResultOption(keyword, transaction) {
+    let tmpSquel = await this.getQueryOption(keyword, transaction);
+
+    tmpSquel.left_join(squel.select().field('max(UserId)', 'UserId').field('AZGSId').from('GLY_AZGS').group('AZGSId'), 'b', 'a.id = b.AZGSId');
+    tmpSquel.left_join(squel.select().field('phone', 'user_phone').field('username', 'user_username').field('id', 'user_id').field('name', 'user_name').from('User'), 'c', 'b.UserId = c.user_id');
 
     return tmpSquel;
   }
