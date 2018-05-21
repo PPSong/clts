@@ -127,3 +127,26 @@ passport.use(new JWTStrategy(
     }
   },
 ));
+
+const getTokenFromCookies = (req) => {
+  const token = req.cookies.jwt_token;
+  return token;
+}
+
+passport.use('cookies', new JWTStrategy(
+  {
+    jwtFromRequest: getTokenFromCookies,
+    secretOrKey: jwtSecret,
+  },
+  async (jwtPayload, done) => {
+    try {
+      const user = await User.findOne({ where: { id: jwtPayload.id } });
+      if (user) {
+        return done(null, user);
+      }
+      return done(null, false, { message: '此用户已不存在!' });
+    } catch (err) {
+      return done(err);
+    }
+  },
+));

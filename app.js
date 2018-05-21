@@ -15,6 +15,8 @@ import menus from './config/menus';
 
 import './passport';
 
+import * as Uploader from './utils/Uploader';
+
 const Setting = global.SETTING;
 
 const ppLog = debug('ppLog');
@@ -60,6 +62,17 @@ app.use('/auth/menus', passport.authenticate('jwt', { session: false }), (req, r
 });
 app.use('/api', passport.authenticate('jwt', { session: false }), api);
 // app.use('/api', api);
+
+app.get('/oss/private/:file', passport.authenticate('cookies', { session: false }), async (req, res, next) => {
+  const { user } = req;
+  if (user && user.JS) {
+    let url = await Uploader.generateDownloadUrl({ file:req.params.file });
+    res.redirect(303, url);
+  } else {
+    res.writeHead(404);
+    res.end();
+  }
+});
 
 if (global.VARS && global.VARS.debug) {
   //provide api test page
