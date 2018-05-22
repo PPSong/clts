@@ -128,14 +128,14 @@ passport.use(new JWTStrategy(
   },
 ));
 
-const getTokenFromCookies = (req) => {
-  const token = req.cookies.jwt_token;
+const getTokenFromCookiesOrQuerystring = (req) => {
+  const token = req.cookies.jwt_token || req.query.jwt_token;
   return token;
 }
 
-passport.use('cookies', new JWTStrategy(
+passport.use('cookiesOrQuerystring', new JWTStrategy(
   {
-    jwtFromRequest: getTokenFromCookies,
+    jwtFromRequest: getTokenFromCookiesOrQuerystring,
     secretOrKey: jwtSecret,
   },
   async (jwtPayload, done) => {

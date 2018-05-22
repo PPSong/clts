@@ -63,7 +63,7 @@ app.use('/auth/menus', passport.authenticate('jwt', { session: false }), (req, r
 app.use('/api', passport.authenticate('jwt', { session: false }), api);
 // app.use('/api', api);
 
-app.get('/oss/private/:file', passport.authenticate('cookies', { session: false }), async (req, res, next) => {
+app.get('/oss/private/:file', passport.authenticate('cookiesOrQuerystring', { session: false }), async (req, res, next) => {
   const { user } = req;
   if (user && user.JS) {
     let url = await Uploader.generateDownloadUrl({ file:req.params.file });
