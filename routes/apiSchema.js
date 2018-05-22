@@ -294,6 +294,25 @@ export const normalApiSchema = {
 
 export const apiSchema = {
   // business_apis
+  // 获取上传文件的token
+  getUploadToken: {
+    type: 'object',
+    properties: {
+      // 空间类型,公开public,私有private,默认私有
+      type: {
+        type: 'string',
+      },
+      // 文件类型,如png,txt,jpg
+      ext: {
+        type: 'string',
+      },
+      // 保存的文件名字,不设置则随机生成名字
+      filename: {
+        type: 'string',
+      }
+    },
+    required: [ ],
+  },
 
   // 修改当前已登录用户的密码
   userChangePassword: {

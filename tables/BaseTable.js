@@ -65,6 +65,11 @@ export default class BaseTable {
     throw new Error('getQueryOption should be overrided.');
   }
 
+  async getQueryResultOption(keyword, transaction) {
+    let result = await this.getQueryOption(keyword, transaction);
+    return result;
+  }
+
   filterEditFields(fields) {
     // 默认不过滤, 如需过滤可以override这个方法
     const filteredFields = {
@@ -170,7 +175,7 @@ export default class BaseTable {
       { type: sequelize.QueryTypes.SELECT },
     );
 
-    const resultSquel = await this.getQueryOption(keyword, transaction);
+    const resultSquel = await this.getQueryResultOption(keyword, transaction);
     resultSquel.limit(perPage);
     resultSquel.offset(perPage * curPage);
 

@@ -40,6 +40,19 @@ module.exports = {
     //site domain
     site:"http://${host}:${port}/",
     siteName:"SPRT",
+
+    upload: {
+        url:"http://up.qiniu.com",
+        ak:"K0SgbYc-TMQ3pyEUvulnspTbDG_0vVJ4NRclfRbW",
+        sk:"6XNYCpLVxC57L-uFYmXYB7-EcC6x5kIrLJqbA8Mi",
+        private_bucket:"sprt",
+        public_bucket:"",
+        download_bucket:"",
+        private_download_live_time: 3600,   //sec
+        public_domain: "",
+        private_domain: "http://p92ba6upj.bkt.clouddn.com",
+        download_domain: ""
+    },
     
     cdn:{
         res:"http://${host}:${port}"
