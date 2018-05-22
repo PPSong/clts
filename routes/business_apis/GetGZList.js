@@ -22,7 +22,7 @@ export default class GetGZList extends BusinessQueryApiBase {
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     await user.checkPPId(PPId, transaction);
 
-    const list = await sequelize.query(`SELECT user.id, user.name, user.username FROM User WHERE id in (SELECT UserId as id FROM GZ_PP WHERE PPId = '${PPId}') `, { type: sequelize.QueryTypes.SELECT });
+    const list = await sequelize.query(`SELECT id, name, username FROM User WHERE id in (SELECT UserId as id FROM GZ_PP WHERE PPId = '${PPId}') `, { type: sequelize.QueryTypes.SELECT });
     return list;
   }
 }

@@ -211,12 +211,14 @@ describe('SPRT测试', () => {
     const con = mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: '123456',
+      password: '123456'
     });
 
-    await con.connect();
-    await con.query('DROP DATABASE IF EXISTS cltp');
-    await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
+    //await con.connect();
+    //await con.query('DROP DATABASE IF EXISTS cltp');
+    //await con.query('CREATE DATABASE cltp CHARACTER SET utf8 COLLATE utf8_general_ci');
+
+    //await sequelize.authenticate();
 
     const data = await readFile(`${__dirname}/../tools_izz/initDataScript_izz.sql`);
     scriptArr = data.split(';');
@@ -238,8 +240,13 @@ describe('SPRT测试', () => {
     await initData();
   });
 
+<<<<<<< HEAD
   describe('test', async () => {
     it.only('small test', async () => {
+=======
+  describe.only('test', async () => {
+    it('small test', async () => {
+>>>>>>> master
       assert.equal(1, 1);
     });
   });
@@ -8378,6 +8385,7 @@ describe('SPRT测试', () => {
   });
 
   describe('标准restful', async () => {
+<<<<<<< HEAD
     // 新建AZG [AZGSGLY]
     describe('createAZG', async () => {
       describe('成功', async () => {
@@ -8410,6 +8418,8 @@ describe('SPRT测试', () => {
     });
     //新增非标准restful
 
+=======
+>>>>>>> master
     describe('UserTable', async () => {
       it('admin获取User列表', async () => {
         const curPage = 0;

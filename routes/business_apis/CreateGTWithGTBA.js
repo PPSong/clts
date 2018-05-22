@@ -9,7 +9,7 @@ export default class createGTWithGTBA extends BusinessQueryApiBase {
 
   static async mainProcess(req, res, next, user, transaction) {
     let {
-      PPId, name, code, QY, CS,
+      PPId, name, code, QY, CS, imageUrl
     } = req.body;
 
     if (user.JS === DBTables.JS.ADMIN) {
@@ -49,6 +49,7 @@ export default class createGTWithGTBA extends BusinessQueryApiBase {
         QY,
         GTBAUserId: tmpGTBAUser.id,
         CS,
+        imageUrl: imageUrl,
       },
       { transaction },
     );
