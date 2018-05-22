@@ -239,7 +239,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it('small test', async () => {
+    it.only('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -8377,7 +8377,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  describe.only('标准restful', async () => {
+  describe('标准restful', async () => {
     // 新建AZG [AZGSGLY]
     describe('createAZG', async () => {
       describe('成功', async () => {
@@ -9652,7 +9652,7 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
 
-      it.only('KFJL获取单个GT', async () => {
+      it('KFJL获取单个GT', async () => {
         const curPage = 0;
 
         let response = await get(
