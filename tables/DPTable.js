@@ -106,6 +106,8 @@ export default class DPTable extends BaseTable {
     let PPIds;
     // 根据用户操作记录范围加入where
     switch (this.user.JS) {
+      case JS.ADMIN:
+        break;
       case JS.PPJL:
         PPIds = await this.user
           .getPPJLPPs({ transaction })

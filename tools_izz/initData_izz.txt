@@ -41,6 +41,7 @@ Id	username	password	JS
 37	AZG2	password(123456)	安装工												
 38	AZG3	password(123456)	安装工												
 39	GTBA11	password(123456)	柜台BA												
+40	GZ_T	password(123456)	柜长												
 															
 //品牌															
 [PP]															
@@ -76,6 +77,7 @@ UserId	PPId
 14	1														
 15	1														
 16	2														
+40	1														
 															
 //柜台															
 [GT]															

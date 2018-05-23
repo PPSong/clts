@@ -309,9 +309,9 @@ export const apiSchema = {
       // 保存的文件名字,不设置则随机生成名字
       filename: {
         type: 'string',
-      }
+      },
     },
-    required: [ ],
+    required: [],
   },
 
   // 修改当前已登录用户的密码
@@ -325,16 +325,14 @@ export const apiSchema = {
       // 旧密码
       oldPassword: {
         type: 'string',
-      }
+      },
     },
     required: ['newPassword', 'oldPassword'],
   },
   // 获取当前登录用户的详细信息
   myUserInfo: {
     type: 'object',
-    properties: {
-
-    },
+    properties: {},
     required: [],
   },
   // 检查品牌名称是否已经存在
@@ -343,10 +341,10 @@ export const apiSchema = {
     properties: {
       // 品牌名称
       name: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     },
-    required: [ 'name' ],
+    required: ['name'],
   },
   // 检查灯片名称是否已经存在
   checkDPExists: {
@@ -354,10 +352,10 @@ export const apiSchema = {
     properties: {
       // 灯片名称
       name: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     },
-    required: [ 'name' ],
+    required: ['name'],
   },
   // 检查灯位编号是否已经存在(在一个柜台中唯一)
   checkDWExists: {
@@ -365,14 +363,14 @@ export const apiSchema = {
     properties: {
       // 灯位编号
       name: {
-        type: 'string'
+        type: 'string',
       },
       // 柜台ID
       GTId: {
-        type: 'number'
-      }
+        type: 'number',
+      },
     },
-    required: [ 'name', 'GTId' ],
+    required: ['name', 'GTId'],
   },
   // 检查供应商名称是否已经存在
   checkGYSExists: {
@@ -380,10 +378,10 @@ export const apiSchema = {
     properties: {
       // 供应商名称
       name: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     },
-    required: [ 'name' ],
+    required: ['name'],
   },
   // 检查安装公司名称是否已经存在
   checkAZGSExists: {
@@ -391,10 +389,10 @@ export const apiSchema = {
     properties: {
       // 品牌名称
       name: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     },
-    required: [ 'name' ],
+    required: ['name'],
   },
   // 检查柜台名称是否已经存在,在一个品牌内名称唯一
   checkGTExists: {
@@ -402,14 +400,14 @@ export const apiSchema = {
     properties: {
       // 柜台名称
       name: {
-        type: 'string'
+        type: 'string',
       },
       // 品牌ID,客服经理角色可不传
       PPId: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     },
-    required: [ 'name' ],
+    required: ['name'],
   },
   // 检查柜台编号是否已经存在,在全表内编号唯一
   checkGTCodeExists: {
@@ -417,10 +415,10 @@ export const apiSchema = {
     properties: {
       // 柜台编号
       code: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     },
-    required: [ 'code' ],
+    required: ['code'],
   },
   // 检查用户名是否已经存在
   checkUsernameExists: {
@@ -428,12 +426,12 @@ export const apiSchema = {
     properties: {
       // 用户名
       username: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     },
-    required: [ 'username' ],
+    required: ['username'],
   },
-  //////////////
+  // ////////////
 
   //----------------
   // 新建PPJL [ADMIN]
@@ -596,7 +594,7 @@ export const apiSchema = {
       // 邮箱
       mail: {
         type: 'string',
-      }
+      },
     },
     required: ['username', 'password'],
   },
@@ -623,10 +621,8 @@ export const apiSchema = {
   // 获取自己品牌下的所有柜长列表 [KFJL]
   getGZList: {
     type: 'object',
-    properties: {
-
-    },
-    required: [ ],
+    properties: {},
+    required: [],
   },
   // 新建GYS, GLY[KFJL]
   createGYSWithGLY: {
@@ -2639,5 +2635,11 @@ export const apiSchema = {
       },
     },
     required: ['curPage'],
+  },
+  // 获取当前用户信息 [PPJL, KFJL]
+  getCurUserInfo: {
+    type: 'object',
+    properties: {
+    },
   },
 };
