@@ -5,6 +5,8 @@ import axios from 'axios';
 import debug from 'debug';
 import fs from 'fs';
 import _ from 'lodash';
+const WerollApp = require('../weroll/App');
+const werollApp = new WerollApp();
 
 import {
   sequelize,
@@ -240,13 +242,8 @@ describe('SPRT测试', () => {
     await initData();
   });
 
-<<<<<<< HEAD
   describe('test', async () => {
-    it.only('small test', async () => {
-=======
-  describe.only('test', async () => {
     it('small test', async () => {
->>>>>>> master
       assert.equal(1, 1);
     });
   });
@@ -8384,8 +8381,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  describe('标准restful', async () => {
-<<<<<<< HEAD
+  describe.only('标准restful', async () => {
     // 新建AZG [AZGSGLY]
     describe('createAZG', async () => {
       describe('成功', async () => {
@@ -8418,8 +8414,6 @@ describe('SPRT测试', () => {
     });
     //新增非标准restful
 
-=======
->>>>>>> master
     describe('UserTable', async () => {
       it('admin获取User列表', async () => {
         const curPage = 0;
@@ -8992,22 +8986,6 @@ describe('SPRT测试', () => {
         assert.equal(dw.dataValues.CC, CC);
       });
 
-      it('admin修改DW', async () => {
-        const CC = '10000';
-
-        let response = await put(
-          'DW/1',
-          {
-            CC,
-          },
-          adminToken
-        );
-        assert.equal(response.data.code, 1);
-
-        let dw = await DW.findOne({ where: { id: 1 } });
-        assert.equal(dw.dataValues.CC, CC);
-      });
-
       it('KFJL获取DW列表', async () => {
         const curPage = 0;
 
@@ -9032,6 +9010,7 @@ describe('SPRT测试', () => {
           },
           adminToken
         );
+        console.log(response.data)
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
