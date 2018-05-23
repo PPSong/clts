@@ -8864,22 +8864,6 @@ describe('SPRT测试', () => {
         assert.equal(dp.dataValues.imageUrl, imageUrl);
       });
 
-      it('admin修改DP', async () => {
-        const imageUrl = 'imageUrl_T';
-
-        let response = await put(
-          'DP/1',
-          {
-            imageUrl,
-          },
-          adminToken
-        );
-        assert.equal(response.data.code, 1);
-
-        let dp = await DP.findOne({ where: { id: 1 } });
-        assert.equal(dp.dataValues.imageUrl, imageUrl);
-      });
-
       it('KFJL获取DP列表', async () => {
         const curPage = 0;
 
@@ -9190,22 +9174,6 @@ describe('SPRT测试', () => {
           KFJLToken
         );
         console.log(response.data)
-        assert.equal(response.data.code, 1);
-
-        let wl = await WL.findOne({ where: { id: 1 } });
-        assert.equal(wl.dataValues.imageUrl, imageUrl);
-      });
-
-      it('admin修改WL', async () => {
-        const imageUrl = 'imageUrl10000';
-
-        let response = await put(
-          'DW/1',
-          {
-            imageUrl,
-          },
-          adminToken
-        );
         assert.equal(response.data.code, 1);
 
         let wl = await WL.findOne({ where: { id: 1 } });
@@ -9748,7 +9716,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.data.id, 1);
       });
 
-      it('KFJL模糊搜索YJZH', async () => {
+      it.only('KFJL模糊搜索YJZH', async () => {
         const curPage = 0;
         const keyword = 'YJZH';
 
@@ -9760,6 +9728,7 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
+        console.log(response.data)
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
