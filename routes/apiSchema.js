@@ -348,6 +348,32 @@ export const apiSchema = {
     },
     required: [ 'name' ],
   },
+  // 检查灯片名称是否已经存在
+  checkDPExists: {
+    type: 'object',
+    properties: {
+      // 灯片名称
+      name: {
+        type: 'string'
+      }
+    },
+    required: [ 'name' ],
+  },
+  // 检查灯位编号是否已经存在(在一个柜台中唯一)
+  checkDWExists: {
+    type: 'object',
+    properties: {
+      // 灯位编号
+      name: {
+        type: 'string'
+      },
+      // 柜台ID
+      GTId: {
+        type: 'number'
+      }
+    },
+    required: [ 'name', 'GTId' ],
+  },
   // 检查供应商名称是否已经存在
   checkGYSExists: {
     type: 'object',
