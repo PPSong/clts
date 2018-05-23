@@ -127,7 +127,7 @@ export default class DWTable extends BaseTable {
 
         break;
       default:
-        throw new Error('无此权限!');
+        break;
     }
     // end 根据用户操作记录范围加入where
 
