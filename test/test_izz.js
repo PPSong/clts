@@ -9401,6 +9401,7 @@ describe('SPRT测试', () => {
       });
 
       it('KFJL获取单个DD', async () => {
+       let KFJL2Token = await getToken('KFJL2', '123456');
         const curPage = 0;
 
         let response = await get(
@@ -9408,7 +9409,7 @@ describe('SPRT测试', () => {
           {
             curPage,
           },
-          KFJLToken
+          KFJL2Token
         );
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
