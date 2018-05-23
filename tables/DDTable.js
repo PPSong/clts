@@ -80,7 +80,7 @@ export default class FGTesterTable extends BaseTable {
     ];
   }
 
-  getOrderByFields(orderByFields = DBTables.JSON.stringify([{ name: 'a.id' }])) {
+  getOrderByFields(orderByFields = JSON.stringify([{ name: 'a.id' }])) {
     return orderByFields;
   }
 
@@ -101,6 +101,8 @@ export default class FGTesterTable extends BaseTable {
     let PPId;
 
     switch (this.user.JS) {
+      case DBTables.JS.ADMIN:
+        break;
       case DBTables.JS.PPJL:
         PPIds = await this.user
           .getPPJLPPs({ transaction })

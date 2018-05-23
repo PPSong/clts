@@ -63,7 +63,10 @@ async function chuXiangWYWL(WYWL, user, GYSId, transaction) {
 
     // 减少DD_GT_WL ZXNumber
     await DBTables.DD_GT_WL.update(
-      { ZXNumber: DBTables.literal('ZXNumber - 1') },
+      {
+        ZXNumber: DBTables.literal('ZXNumber - 1'),
+        status: DBTables.DD_GT_WLStatus.YFPFHGYS,
+      },
       {
         where: {
           id: WYWL.DDGTWLId,
@@ -100,7 +103,10 @@ async function chuXiangWYWL(WYWL, user, GYSId, transaction) {
 
     // 减少WLBH的ZXNumber
     await DBTables.WLBH.update(
-      { ZXNumber: DBTables.literal('ZXNumber - 1') },
+      {
+        ZXNumber: DBTables.literal('ZXNumber - 1'),
+        status: DBTables.WLBHStatus.YFPFHGYS,
+      },
       {
         where: {
           id: WYWL.WLBHId,

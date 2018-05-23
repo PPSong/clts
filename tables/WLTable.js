@@ -102,6 +102,8 @@ export default class WLTable extends BaseTable {
     let PPId;
 
     switch (this.user.JS) {
+      case JS.ADMIN:
+        break;
       case JS.PPJL:
         PPIds = await this.user
           .getPPJLPPs({ transaction })
