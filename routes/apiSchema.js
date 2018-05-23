@@ -372,6 +372,32 @@ export const apiSchema = {
     },
     required: ['name', 'GTId'],
   },
+  // 检查物料名称是否已经存在(在一个品牌中唯一)
+  checkWLNameExists: {
+    type: 'object',
+    properties: {
+      // 物料名称
+      name: {
+        type: 'string',
+      },
+      // 品牌ID
+      PPId: {
+        type: 'number',
+      },
+    },
+    required: ['name', 'PPId'],
+  },
+  // 检查物料编号是否已经存在
+  checkWLCodeExists: {
+    type: 'object',
+    properties: {
+      // 灯位编号
+      name: {
+        type: 'string',
+      }
+    },
+    required: ['name'],
+  },
   // 检查供应商名称是否已经存在
   checkGYSExists: {
     type: 'object',
