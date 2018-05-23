@@ -106,6 +106,8 @@ export default class DWTable extends BaseTable {
     let PPId;
 
     switch (this.user.JS) {
+      case JS.ADMIN:
+        break;
       case JS.PPJL:
         PPIds = await this.user
           .getPPJLPPs({ transaction })
@@ -127,7 +129,7 @@ export default class DWTable extends BaseTable {
 
         break;
       default:
-        throw new Error('无此权限!');
+        break;
     }
     // end 根据用户操作记录范围加入where
 

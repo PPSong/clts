@@ -12,8 +12,9 @@ export default {
       name: '货品管理',
       key: '#items',
       links:[
-        { name: '灯位库', key: '/dw' },
-        { name: '灯片库', key: '/' }
+        { name: '灯位', key: '/dw' },
+        { name: '灯片库', key: '/dp' },
+        { name: '物料', key: '/wl' }
       ]
     },
   ],
@@ -28,8 +29,9 @@ export default {
       name: '货品管理',
       key: '#items',
       links:[
-        { name: '灯位库', key: '/dw' },
-        { name: '灯片库', key: '/' }
+        { name: '灯位', key: '/dw' },
+        { name: '灯片库', key: '/dp' },
+        { name: '物料', key: '/wl' }
       ]
     },
   ],
@@ -45,7 +47,8 @@ export default {
       key: '#items',
       links:[
         { name: '灯位', key: '/dw' },
-        { name: '灯片库', key: '/dp' }
+        { name: '灯片库', key: '/dp' },
+        { name: '物料', key: '/wl' }
       ]
     },
   ],
