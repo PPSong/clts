@@ -32,7 +32,6 @@ router.post('/signin', (req, res, next) => {
 });
 
 router.post('/signout', (req, res, next) => {
-  console.log('logout...');
   req.logout();
   res.json({ code:1 });
 });
