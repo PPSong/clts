@@ -369,7 +369,7 @@ export const apiSchema = {
       },
       // 柜台ID
       GTId: {
-        type: 'string'
+        type: 'number'
       }
     },
     required: [ 'name', 'GTId' ],
