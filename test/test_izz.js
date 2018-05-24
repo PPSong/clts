@@ -9717,7 +9717,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.data.id, 1);
       });
 
-      it.only('KFJL模糊搜索YJZH', async () => {
+      it('KFJL模糊搜索YJZH', async () => {
         const curPage = 0;
         const keyword = 'YJZH';
 
