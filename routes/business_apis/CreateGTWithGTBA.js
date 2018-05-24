@@ -9,18 +9,11 @@ export default class createGTWithGTBA extends BusinessQueryApiBase {
 
   static async mainProcess(req, res, next, user, transaction) {
     let {
-      PPId, name, code, QY, CS, imageUrl
+      PPId, name, code, QY, CS, imageUrl,
     } = req.body;
 
-    if (user.JS === DBTables.JS.ADMIN) {
-      //
-    } else {
-      let pps = await user.getKFJLPPs();
-      if (pps.length > 0) {
-        PPId = pps[0].id;
-      }
-    }
-    if (!PPId) throw new Error('参数错误. 品牌不存在.');
+    code = code.trim();
+    name = name.trim();
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     await user.checkPPId(PPId, transaction);
@@ -32,7 +25,7 @@ export default class createGTWithGTBA extends BusinessQueryApiBase {
     // 新建GTBAUser
     const tmpGTBAUser = await DBTables.User.create(
       {
-        username: username,
+        username,
         password: bCrypt.hashSync(password, 8),
         JS: DBTables.JS.GTBA,
       },
@@ -49,7 +42,7 @@ export default class createGTWithGTBA extends BusinessQueryApiBase {
         QY,
         GTBAUserId: tmpGTBAUser.id,
         CS,
-        imageUrl: imageUrl,
+        imageUrl,
       },
       { transaction },
     );
@@ -57,7 +50,7 @@ export default class createGTWithGTBA extends BusinessQueryApiBase {
 
     return {
       username,
-      password
+      password,
     };
   }
 }

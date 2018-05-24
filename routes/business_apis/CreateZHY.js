@@ -8,7 +8,11 @@ export default class CreateZHY extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { name, username, password, mail, phone } = req.body;
+    let { name, username, password, mail, phone } = req.body;
+    if (name) name = name.trim();
+    if (mail) mail = mail.trim();
+    if (phone) phone = phone.trim();
+    username = username.trim();
 
     let gys = await user.getGLYGYSs();
     gys = (gys || [])[0];

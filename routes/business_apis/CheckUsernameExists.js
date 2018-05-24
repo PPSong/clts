@@ -9,7 +9,7 @@ export default class CheckUsernameExists extends BusinessQueryApiBase {
   static async mainProcess(req, res, next, user, transaction) {
     const { username } = req.body;
 
-    const existed = await DBTables.User.findOne({ where:{ username:username }, transaction });
+    const existed = await DBTables.User.findOne({ where:{ username:username.trim() }, transaction });
     return existed ? { exists:1 } : { exists:0 };
   }
 }

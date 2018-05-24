@@ -8,7 +8,11 @@ export default class CreatePPJL extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { username, password, PPId, name, mail, phone } = req.body;
+    let { username, password, PPId, name, mail, phone } = req.body;
+    if (name) name = name.trim();
+    if (mail) mail = mail.trim();
+    if (phone) phone = phone.trim();
+    username = username.trim();
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     const tmpPP = await user.checkPPId(PPId, transaction);
