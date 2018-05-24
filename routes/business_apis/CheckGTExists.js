@@ -19,7 +19,7 @@ export default class CheckGTExists extends BusinessQueryApiBase {
     }
     if (!PPId) throw new Error('参数错误. 品牌不存在.');
 
-    const existed = await DBTables.GT.findOne({ where:{ name:name, PPId:PPId }, transaction });
+    const existed = await DBTables.GT.findOne({ where:{ name:name.trim(), PPId:PPId }, transaction });
     return existed ? { exists:1 } : { exists:0 };
   }
 }

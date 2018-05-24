@@ -9,7 +9,8 @@ export default class CreateDD extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { PPId, name } = req.body;
+    let { PPId, name } = req.body;
+    name = name.trim();
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 

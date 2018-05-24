@@ -9,7 +9,7 @@ export default class CheckDPExists extends BusinessQueryApiBase {
   static async mainProcess(req, res, next, user, transaction) {
     let { name } = req.body;
 
-    const existed = await DBTables.DP.findOne({ where:{ name:name }, transaction });
+    const existed = await DBTables.DP.findOne({ where:{ name:name.trim() }, transaction });
     return existed ? { exists:1 } : { exists:0 };
   }
 }

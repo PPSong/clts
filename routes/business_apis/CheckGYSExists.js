@@ -9,7 +9,7 @@ export default class CheckGYSExists extends BusinessQueryApiBase {
   static async mainProcess(req, res, next, user, transaction) {
     const { name } = req.body;
 
-    const existed = await DBTables.GYS.findOne({ where:{ name:name }, transaction });
+    const existed = await DBTables.GYS.findOne({ where:{ name:name.trim() }, transaction });
     return existed ? { exists:1 } : { exists:0 };
   }
 }

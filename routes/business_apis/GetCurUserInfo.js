@@ -1,7 +1,7 @@
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class GetGZList extends BusinessQueryApiBase {
+export default class GetCurUserInfo extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.PPJL, DBTables.JS.KFJL];
   }

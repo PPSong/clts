@@ -8,9 +8,12 @@ export default class CreateGYSWithGLY extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const {
+    let {
       name, username, password, type,
     } = req.body;
+
+    if (name) name = name.trim();
+    username = username.trim();
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态

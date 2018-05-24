@@ -392,11 +392,11 @@ export const apiSchema = {
     type: 'object',
     properties: {
       // 灯位编号
-      name: {
+      code: {
         type: 'string',
       }
     },
-    required: ['name'],
+    required: ['code'],
   },
   // 检查供应商名称是否已经存在
   checkGYSExists: {
@@ -2662,10 +2662,12 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
-  // 获取当前用户信息 [PPJL, KFJL]
+  // 获取当前用户详细信息,如所属品牌等 [PPJL, KFJL]
   getCurUserInfo: {
     type: 'object',
     properties: {
+
     },
+    required: [ ],
   },
 };
