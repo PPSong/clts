@@ -647,8 +647,25 @@ export const apiSchema = {
   // 获取自己品牌下的所有柜长列表 [KFJL]
   getGZList: {
     type: 'object',
-    properties: {},
-    required: [],
+    properties: {
+
+    },
+    required: [ ],
+  },
+  // 获取某一柜长的所有柜台列表 [ADMIN,PPJL,KFJL,GZ]
+  getGZGTList: {
+    type: 'object',
+    properties: {
+      // 柜长id,如果是柜长本人则不需要
+      GZUserId: {
+        type: 'string',
+      },
+      // 柜台属性,如"id,name,code",默认返回所有属性
+      fields: {
+        type: 'string',
+      }
+    },
+    required: [ ],
   },
   // 新建GYS, GLY[KFJL]
   createGYSWithGLY: {
