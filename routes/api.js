@@ -27,7 +27,7 @@ function validateParams(schema) {
       throw new Error(errorResponse(ajv.errors));
     }
 
-    next();
+    next(); 
   };
 }
 

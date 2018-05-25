@@ -346,6 +346,21 @@ export const apiSchema = {
     },
     required: ['name'],
   },
+  // 检查Tester名称是否已经存在,在一个品牌内唯一
+  CheckFGTesterNameExists: {
+    type: 'object',
+    properties: {
+      // Tester名称
+      name: {
+        type: 'string',
+      },
+      // 品牌id,客服经理可不传
+      PPId: {
+        type: 'string',
+      },
+    },
+    required: ['name'],
+  },
   // 检查灯片名称是否已经存在
   checkDPExists: {
     type: 'object',
