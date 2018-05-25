@@ -7,14 +7,15 @@ export default {
     { name: '品牌管理', key: '/pp' },
     { name: '柜台管理', key: '/gt' },
     { name: '供应商管理', key: '/gys' },
-    { name: '安装公司', key: '/azgs' },
+    { name: '安装公司管理', key: '/azgs' },
     {
       name: '货品管理',
       key: '#items',
       links:[
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
-        { name: '物料', key: '/wl' }
+        { name: '物料', key: '/wl' },
+        { name: '二级组合', key: '/ejzh' }
       ]
     },
   ],
@@ -24,14 +25,15 @@ export default {
     { name: '账户管理', key: '/user' },
     { name: '柜台管理', key: '/gt' },
     { name: '供应商管理', key: '/gys' },
-    { name: '安装公司', key: '/azgs' },
+    { name: '安装公司管理', key: '/azgs' },
     {
       name: '货品管理',
       key: '#items',
       links:[
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
-        { name: '物料', key: '/wl' }
+        { name: '物料', key: '/wl' },
+        { name: '二级组合', key: '/ejzh' }
       ]
     },
   ],
@@ -41,7 +43,7 @@ export default {
     { name: '账户管理', icon:'Family', key: '/user' },
     { name: '柜台管理', icon:'Archive', key: '/gt' },
     { name: '供应商管理', icon:'SplitObject', key: '/gys' },
-    { name: '安装公司', icon:'Repair', key: '/azgs' },
+    { name: '安装公司管理', icon:'Repair', key: '/azgs' },
     {
       name: '货品管理',
       icon:'Product', 
@@ -49,7 +51,8 @@ export default {
       links:[
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
-        { name: '物料', key: '/wl' }
+        { name: '物料', key: '/wl' },
+        { name: '二级组合', key: '/ejzh' }
       ]
     },
   ],

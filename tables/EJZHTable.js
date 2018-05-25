@@ -62,6 +62,8 @@ export default class FGTesterTable extends BaseTable {
 
   async checkUserAccess(record, transaction) {
     switch (this.user.JS) {
+      case DBTables.JS.ADMIN:
+        break;
       case DBTables.JS.PPJL:
       case DBTables.JS.KFJL:
         await this.user.checkPPId(record.PPId, transaction);

@@ -461,6 +461,21 @@ export const apiSchema = {
     },
     required: ['code'],
   },
+  // 检查二级组合名称是否已经存在,在一个品牌内名称唯一
+  checkEJZHExists: {
+    type: 'object',
+    properties: {
+      // 二级组合名称
+      name: {
+        type: 'string',
+      },
+      // 品牌ID,客服经理角色可不传
+      PPId: {
+        type: 'string',
+      },
+    },
+    required: ['name'],
+  },
   // 检查用户名是否已经存在
   checkUsernameExists: {
     type: 'object',
