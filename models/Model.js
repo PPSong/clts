@@ -8,16 +8,16 @@ const ppLog = debug('ppLog');
 
 export const { Op, literal } = Sequelize;
 
-const options =  {
+const options = {
   ...(global.SETTING && global.SETTING.model ? global.SETTING.model.rdb : {
-    user: "root",
-    password: "123456",
-    database: "cltp",
+    user: 'root',
+    password: '123456',
+    database: 'cltp',
     dialect: 'mysql',
     dialectOptions: {
       multipleStatements: true,
     },
-    logging: false
+    logging: false,
   }),
   operatorsAliases: {
     $eq: Op.eq,
@@ -1907,6 +1907,7 @@ export const FGTester = sequelize.define(
     },
     Code1: {
       type: Sequelize.STRING,
+      unique: 'Code1',
     },
     Code2: {
       type: Sequelize.STRING,
