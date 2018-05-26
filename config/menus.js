@@ -3,11 +3,17 @@ export default {
   "系统管理员":[
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
-    { name: '账户管理', key: '/user' },
-    { name: '品牌管理', key: '/pp' },
-    { name: '柜台管理', key: '/gt' },
-    { name: '供应商管理', key: '/gys' },
-    { name: '安装公司', key: '/azgs' },
+    { name: '账户管理', icon:'Family', key: '/user' },
+    { 
+      name: '柜台管理', 
+      icon:'Archive', 
+      key: '/gt',
+      links:[
+        { name: '编辑柜台', key: '/gt_edit' }
+      ] 
+    },
+    { name: '供应商管理', icon:'SplitObject', key: '/gys' },
+    { name: '安装公司管理', icon:'Repair', key: '/azgs' },
     {
       name: '货品管理',
       key: '#items',
@@ -22,10 +28,17 @@ export default {
   "品牌经理":[
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
-    { name: '账户管理', key: '/user' },
-    { name: '柜台管理', key: '/gt' },
-    { name: '供应商管理', key: '/gys' },
-    { name: '安装公司', key: '/azgs' },
+    { name: '账户管理', icon:'Family', key: '/user' },
+    { 
+      name: '柜台管理', 
+      icon:'Archive', 
+      key: '/gt',
+      links:[
+        { name: '编辑柜台', key: '/gt_edit' }
+      ] 
+    },
+    { name: '供应商管理', icon:'SplitObject', key: '/gys' },
+    { name: '安装公司管理', icon:'Repair', key: '/azgs' },
     {
       name: '货品管理',
       key: '#items',
@@ -41,9 +54,16 @@ export default {
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
     { name: '账户管理', icon:'Family', key: '/user' },
-    { name: '柜台管理', icon:'Archive', key: '/gt' },
+    { 
+      name: '柜台管理', 
+      icon:'Archive', 
+      key: '/gt',
+      links:[
+        { name: '编辑柜台', key: '/gt_edit' }
+      ] 
+    },
     { name: '供应商管理', icon:'SplitObject', key: '/gys' },
-    { name: '安装公司', icon:'Repair', key: '/azgs' },
+    { name: '安装公司管理', icon:'Repair', key: '/azgs' },
     {
       name: '货品管理',
       icon:'Product', 
@@ -54,7 +74,8 @@ export default {
         { name: '物料', key: '/wl' },
         { name: '二级组合', key: '/ejzh',
           links:[
-            { name: '新建二级组合', key: '/ejzh_create' }
+            { name: '新建二级组合', key: '/ejzh_create' },
+            { name: '编辑二级组合', key: '/ejzh_edit' }
           ]
         }
       ]
@@ -63,11 +84,11 @@ export default {
   "供应商管理员":[
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
-    { name: '账户管理', key: '/user' }
+    { name: '账户管理', icon:'Family', key: '/user' }
   ],
   "安装公司管理员":[
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
-    { name: '账户管理', key: '/user' }
+    { name: '账户管理', icon:'Family', key: '/user' }
   ]
 };

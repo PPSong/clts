@@ -221,20 +221,23 @@ export default class BaseTable {
     await this.checkUserAccess(record, transaction);
     // end 查看disable前是否在用户权限范围
 
+    const now = moment().format('YYYY-MM-DD HH:mm:ss.SSS');
     const r = await record.update(
       {
-        disabledAt: moment().format('YYYY-MM-DD HH:mm:ss.SSS'),
+        disabledAt: now,
       },
       { transaction },
     );
 
-    if (!r[0]) {
+    if (!r) {
       throw new Error('更新记录失败!');
     }
 
     return {
       code: 1,
-      data: 'ok',
+      data: {
+        disabledAt: now
+      },
     };
   }
 
@@ -262,7 +265,7 @@ export default class BaseTable {
       { transaction },
     );
 
-    if (!r[0]) {
+    if (!r) {
       throw new Error('更新记录失败!');
     }
 

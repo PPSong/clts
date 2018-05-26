@@ -178,9 +178,11 @@ function renderRoot(req, res, complete) {
         let restfulDefs = [
             { name:"delete", desc:"删除一条{name}记录", type:"delete", args:{ id:"string" } },
             { name:"edit", desc:"更新一条{name}记录", type:"put", args:{ id:"string" } },
-            { name:"getList", desc:"查询一组{name}", type:"get", args:{ curPage:"number", perPage:"number" } },
+            { name:"getList", desc:"查询一组{name}", type:"get", args:{ curPage:"number", perPage:"number", keyword:'string' } },
             { name:"get", desc:"获取一条{name}记录", type:"get", args:{ id:"string" } },
-            { name:"create", desc:"创建{name}", type:"post", args:{  } }
+            { name:"create", desc:"创建{name}", type:"post", args:{  } },
+            { name:"enable", desc:"启用{name}", type:"post", args:{ id:"string" } },
+            { name:"disable", desc:"禁用{name}", type:"post", args:{ id:"string" } }
         ];
         for (let i = 0; i < restfulFiles.length; i++) {
             let file = restfulFiles[i];

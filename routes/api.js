@@ -118,6 +118,46 @@ router.put('/:table/:id', async (req, res, next) => {
   }
 });
 
+router.post('/disable/:table/:id', async (req, res, next) => {
+  let transaction;
+
+  try {
+    transaction = await sequelize.transaction();
+    const Table = tables[`${req.params.table}Table`];
+    const r = await new Table(req.user).disable(
+      req.params.id,
+      transaction,
+    );
+    await transaction.commit();
+    res.json(r);
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
+router.post('/enable/:table/:id', async (req, res, next) => {
+  let transaction;
+
+  try {
+    transaction = await sequelize.transaction();
+    const Table = tables[`${req.params.table}Table`];
+    const r = await new Table(req.user).enable(
+      req.params.id,
+      transaction,
+    );
+    await transaction.commit();
+    res.json(r);
+  } catch (err) {
+    // Rollback
+    await (transaction && transaction.rollback());
+    ppLog(err);
+    next(err);
+  }
+});
+
 router.delete('/:table/:id', async (req, res, next) => {
   let transaction;
 
