@@ -356,7 +356,7 @@ export const apiSchema = {
       },
       // 品牌id,客服经理可不传
       PPId: {
-        type: 'string',
+        type: 'number',
       },
     },
     required: ['name'],
@@ -445,7 +445,7 @@ export const apiSchema = {
       },
       // 品牌ID,客服经理角色可不传
       PPId: {
-        type: 'string',
+        type: 'number',
       },
     },
     required: ['name'],
@@ -471,7 +471,7 @@ export const apiSchema = {
       },
       // 品牌ID,客服经理角色可不传
       PPId: {
-        type: 'string',
+        type: 'number',
       },
     },
     required: ['name'],
@@ -574,7 +574,7 @@ export const apiSchema = {
       password: {
         type: 'string',
       },
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -585,7 +585,7 @@ export const apiSchema = {
   createGTWithGTBA: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -635,7 +635,7 @@ export const apiSchema = {
       password: {
         type: 'string',
       },
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -815,7 +815,7 @@ export const apiSchema = {
   createEJZH: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -947,11 +947,22 @@ export const apiSchema = {
     },
     required: ['id', 'WLId', 'imageUrl', 'XGTs', 'FGTesters', 'SJWLs'],
   },
+  // 获取一个EJZH数据 [*]
+  getEJZHInfo: {
+    type: 'object',
+    properties: {
+      // EJZHid
+      EJZHId: {
+        type: 'number',
+      }
+    },
+    required: ['EJZHId'],
+  },
   // 创建YJZH [KFJL]
   createYJZH: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -1080,7 +1091,7 @@ export const apiSchema = {
   createDD: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -1106,7 +1117,7 @@ export const apiSchema = {
   setPPGTFXs: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       id: {
         type: 'number',
       },

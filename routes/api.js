@@ -28,7 +28,7 @@ function validateParams(schema) {
     }
 
     next(); 
-  };
+  }; 
 }
 
 function upperCaseHead(str) {

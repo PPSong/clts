@@ -77,6 +77,7 @@ export default class FGTesterTable extends BaseTable {
     return [
       'a.id',
       'a.name',
+      'a.imageUrl',
       'c.code WLCode',
       'c.name WLName',
       'a.disabledAt',

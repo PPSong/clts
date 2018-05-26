@@ -89,7 +89,7 @@ export default class WLTable extends BaseTable {
   }
 
   async getQueryOption(queryObj, transaction) {
-    const { keyword } = queryObj;
+    const { keyword, onlyEnabled } = queryObj;
     const tmpSquel = squel
       .select()
       .from('WL', 'a')
@@ -129,6 +129,7 @@ export default class WLTable extends BaseTable {
         break;
     }
     if (queryObj.level) tmpSquel.where(`a.level = ${queryObj.level}`);
+    if (Number(onlyEnabled) === 1) tmpSquel.where(`a.disabledAt IS NULL or a.disabledAt = 0`);
     // end 根据用户操作记录范围加入where
 
     // 把模糊搜索条件加入where
