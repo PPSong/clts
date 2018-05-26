@@ -14,7 +14,8 @@ export default {
       links:[
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
-        { name: '物料', key: '/wl' }
+        { name: '物料', key: '/wl' },
+        { name: '二级组合', key: '/ejzh' }
       ]
     },
   ],
@@ -31,7 +32,8 @@ export default {
       links:[
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
-        { name: '物料', key: '/wl' }
+        { name: '物料', key: '/wl' },
+        { name: '二级组合', key: '/ejzh' }
       ]
     },
   ],
@@ -49,7 +51,12 @@ export default {
       links:[
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
-        { name: '物料', key: '/wl' }
+        { name: '物料', key: '/wl' },
+        { name: '二级组合', key: '/ejzh',
+          links:[
+            { name: '新建二级组合', key: '/ejzh_create' }
+          ]
+        }
       ]
     },
   ],

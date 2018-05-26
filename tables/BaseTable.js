@@ -61,12 +61,12 @@ export default class BaseTable {
     throw new Error('getOrderByFields should be overrided.');
   }
 
-  async getQueryOption(keyword, transaction) {
+  async getQueryOption(queryObj, transaction) {
     throw new Error('getQueryOption should be overrided.');
   }
 
-  async getQueryResultOption(keyword, transaction) {
-    let result = await this.getQueryOption(keyword, transaction);
+  async getQueryResultOption(queryObj, transaction) {
+    let result = await this.getQueryOption(queryObj, transaction);
     return result;
   }
 
@@ -168,14 +168,14 @@ export default class BaseTable {
     const perPage = parseInt(queryObj.perPage) || 50;
     const { keyword, orderBy } = queryObj;
 
-    const totalSquel = await this.getQueryOption(keyword, transaction);
+    const totalSquel = await this.getQueryOption(queryObj, transaction);
 
     const total = await sequelize.query(
       totalSquel.field('count(1) total').toString(),
       { type: sequelize.QueryTypes.SELECT },
     );
 
-    const resultSquel = await this.getQueryResultOption(keyword, transaction);
+    const resultSquel = await this.getQueryResultOption(queryObj, transaction);
     resultSquel.limit(perPage);
     resultSquel.offset(perPage * curPage);
 
