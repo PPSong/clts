@@ -409,7 +409,7 @@ export const apiSchema = {
       // 灯位编号
       code: {
         type: 'string',
-      }
+      },
     },
     required: ['code'],
   },
@@ -677,10 +677,8 @@ export const apiSchema = {
   // 获取自己品牌下的所有柜长列表 [KFJL]
   getGZList: {
     type: 'object',
-    properties: {
-
-    },
-    required: [ ],
+    properties: {},
+    required: [],
   },
   // 获取某一柜长的所有柜台列表 [ADMIN,PPJL,KFJL,GZ]
   getGZGTList: {
@@ -693,9 +691,9 @@ export const apiSchema = {
       // 柜台属性,如"id,name,code",默认返回所有属性
       fields: {
         type: 'string',
-      }
+      },
     },
-    required: [ ],
+    required: [],
   },
   // 新建GYS, GLY[KFJL]
   createGYSWithGLY: {
@@ -2712,9 +2710,18 @@ export const apiSchema = {
   // 获取当前用户详细信息,如所属品牌等 [PPJL, KFJL]
   getCurUserInfo: {
     type: 'object',
+    properties: {},
+    required: [],
+  },
+  // 灯片关联的灯位, 柜台信息 [ADMIN, PPJL, KFJL]
+  getDPDWsInfo: {
+    type: 'object',
     properties: {
-
+      // DPId
+      DPId: {
+        type: 'number',
+      },
     },
-    required: [ ],
+    required: ['DPId'],
   },
 };
