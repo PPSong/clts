@@ -165,7 +165,8 @@ export default class UserTable extends BaseTable {
     return orderByFields;
   }
 
-  async getQueryOption(keyword, transaction) {
+  async getQueryOption(queryObj, transaction) {
+    const { keyword } = queryObj;
     const tmpSquel = squel.select().from('User', 'a');
 
     const likeFields = ['a.id', 'a.name', 'a.username'];

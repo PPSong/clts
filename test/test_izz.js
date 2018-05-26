@@ -91,13 +91,19 @@ const getToken = async (username, password) => {
   return r.data.data.token;
 };
 
+
+const API_DESC = {};
+
 const post = async (path, body, token) => {
   try {
+    API_DESC[path] = {};
     const r = await axios.post(`${api}/${path}`, body, {
       headers: {
         Authorization: `bearer ${token}`,
       },
     });
+
+    API_DESC[path] = r;
 
     return r;
   } catch (err) {
