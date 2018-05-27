@@ -27,6 +27,7 @@ export default {
     {
       name: '打印标签',
       key: '#print',
+      icon: 'Print',
       links:[
         { name: '道具打印', key: '/print_wl' }
       ]
@@ -59,6 +60,7 @@ export default {
     {
       name: '打印标签',
       key: '#print',
+      icon: 'Print',
       links:[
         { name: '道具打印', key: '/print_wl' }
       ]
@@ -88,15 +90,26 @@ export default {
         { name: '物料', key: '/wl' },
         { name: '二级组合', key: '/ejzh',
           links:[
-            { name: '新建二级组合', key: '/ejzh_create' },
-            { name: '编辑二级组合', key: '/ejzh_edit' }
-          ]
+            { name: '新建二级组合', key: '/ejzh_create' }
+          ],
+          contains:{
+            '/ejzh_edit': { name: '编辑二级组合', key: '/ejzh_edit' }
+          }
+        },
+        { name: '一级组合', key: '/yjzh',
+          links:[
+            { name: '新建一级组合', key: '/yjzh_create' }
+          ],
+          contains:{
+            '/yjzh_edit': { name: '编辑一级组合', key: '/yjzh_edit' }
+          }
         }
       ]
     },
     {
       name: '打印标签',
       key: '#print',
+      icon: 'Print',
       links:[
         { name: '道具打印', key: '/print_wl' }
       ]
@@ -109,6 +122,7 @@ export default {
     {
       name: '打印标签',
       key: '#print',
+      icon: 'Print',
       links:[
         { name: '道具打印', key: '/print_wl' }
       ]
