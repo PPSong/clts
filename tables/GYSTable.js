@@ -74,7 +74,8 @@ export default class GYSTable extends BaseTable {
     return orderByFields;
   }
 
-  async getQueryOption(keyword, transaction) {
+  async getQueryOption(queryObj, transaction) {
+    const { keyword, onlyEnabled } = queryObj;
     const tmpSquel = squel.select().from('GYS', 'a');
 
     const likeFields = ['a.name', 'a.type'];
@@ -102,6 +103,7 @@ export default class GYSTable extends BaseTable {
 
       query = `a.id in (${gysIDs})`;
     }
+    if (Number(onlyEnabled) === 1) query += ' AND a.disabledAt IS NULL or a.disabledAt = 0';
 
     // 把模糊搜索条件加入where
     if (keyword) {

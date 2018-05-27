@@ -8,9 +8,9 @@ export default {
       name: '柜台管理', 
       icon:'Archive', 
       key: '/gt',
-      links:[
-        { name: '编辑柜台', key: '/gt_edit' }
-      ] 
+      contains:{
+        '/gt_edit': { name: '编辑柜台', key: '/gt_edit' }
+      } 
     },
     { name: '供应商管理', icon:'SplitObject', key: '/gys' },
     { name: '安装公司管理', icon:'Repair', key: '/azgs' },
@@ -22,6 +22,13 @@ export default {
         { name: '灯片库', key: '/dp' },
         { name: '物料', key: '/wl' },
         { name: '二级组合', key: '/ejzh' }
+      ]
+    },
+    {
+      name: '打印标签',
+      key: '#print',
+      links:[
+        { name: '道具打印', key: '/print_wl' }
       ]
     },
   ],
@@ -33,9 +40,9 @@ export default {
       name: '柜台管理', 
       icon:'Archive', 
       key: '/gt',
-      links:[
-        { name: '编辑柜台', key: '/gt_edit' }
-      ] 
+      contains:{
+        '/gt_edit': { name: '编辑柜台', key: '/gt_edit' }
+      } 
     },
     { name: '供应商管理', icon:'SplitObject', key: '/gys' },
     { name: '安装公司管理', icon:'Repair', key: '/azgs' },
@@ -49,6 +56,13 @@ export default {
         { name: '二级组合', key: '/ejzh' }
       ]
     },
+    {
+      name: '打印标签',
+      key: '#print',
+      links:[
+        { name: '道具打印', key: '/print_wl' }
+      ]
+    },
   ],
   "客服经理":[
     { name: '首页', icon:'Home', key: '/dashboard' },
@@ -58,9 +72,9 @@ export default {
       name: '柜台管理', 
       icon:'Archive', 
       key: '/gt',
-      links:[
-        { name: '编辑柜台', key: '/gt_edit' }
-      ] 
+      contains:{
+        '/gt_edit': { name: '编辑柜台', key: '/gt_edit' }
+      } 
     },
     { name: '供应商管理', icon:'SplitObject', key: '/gys' },
     { name: '安装公司管理', icon:'Repair', key: '/azgs' },
@@ -80,11 +94,25 @@ export default {
         }
       ]
     },
+    {
+      name: '打印标签',
+      key: '#print',
+      links:[
+        { name: '道具打印', key: '/print_wl' }
+      ]
+    },
   ],
   "供应商管理员":[
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
-    { name: '账户管理', icon:'Family', key: '/user' }
+    { name: '账户管理', icon:'Family', key: '/user' },
+    {
+      name: '打印标签',
+      key: '#print',
+      links:[
+        { name: '道具打印', key: '/print_wl' }
+      ]
+    },
   ],
   "安装公司管理员":[
     { name: '首页', icon:'Home', key: '/dashboard' },

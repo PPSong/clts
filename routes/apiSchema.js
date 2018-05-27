@@ -2761,4 +2761,19 @@ export const apiSchema = {
     },
     required: ['DPId'],
   },
+  // 批量生成唯一物料uuid [ADMIN, PPJL, KFJL, GYSGLY]
+  GenerateUniqueWL: {
+    type: 'object',
+    properties: {
+      // WLId
+      WLId: {
+        type: 'number',
+      },
+      // 数量
+      number: {
+        type: 'number',
+      },
+    },
+    required: ['WLId', 'number'],
+  },
 };
