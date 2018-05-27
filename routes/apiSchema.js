@@ -476,6 +476,21 @@ export const apiSchema = {
     },
     required: ['name'],
   },
+  // 检查一级组合名称是否已经存在,在一个品牌内名称唯一
+  checkYJZHExists: {
+    type: 'object',
+    properties: {
+      // 一级组合名称
+      name: {
+        type: 'string',
+      },
+      // 品牌ID,客服经理角色可不传
+      PPId: {
+        type: 'number',
+      },
+    },
+    required: ['name'],
+  },
   // 检查用户名是否已经存在
   checkUsernameExists: {
     type: 'object',
