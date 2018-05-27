@@ -966,12 +966,23 @@ export const apiSchema = {
   getEJZHInfo: {
     type: 'object',
     properties: {
-      // EJZHid
+      // 二级组合id
       EJZHId: {
         type: 'number',
       }
     },
     required: ['EJZHId'],
+  },
+  // 获取一个YJZH数据 [*]
+  getYJZHInfo: {
+    type: 'object',
+    properties: {
+      // 一级组合id
+      YJZHId: {
+        type: 'number',
+      }
+    },
+    required: ['YJZHId'],
   },
   // 创建YJZH [KFJL]
   createYJZH: {
