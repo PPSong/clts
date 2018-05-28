@@ -7,6 +7,7 @@ import fs from 'fs';
 import _ from 'lodash';
 const WerollApp = require('../weroll/App');
 const werollApp = new WerollApp();
+//izztest;
 
 import {
   sequelize,
