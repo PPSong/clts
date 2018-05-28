@@ -275,7 +275,7 @@ export default class BaseTable {
     };
   }
 
-  async findOne(id, transaction) {
+  async findOne(id, transaction, queryObj) {
     this.checkFindOneRight();
 
     let findOneOption = {

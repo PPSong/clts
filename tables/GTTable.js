@@ -145,7 +145,7 @@ export default class GTTable extends BaseTable {
       .select()
       .from('GT', 'a')
       .join('PP', 'b', 'a.PPId = b.id')
-      .join('User', 'c', 'a.GZUserId = c.id');
+      .left_join('User', 'c', 'a.GZUserId = c.id');
 
     const likeFields = ['a.QY', 'a.CS', 'a.code', 'a.name', 'b.name'];
 
