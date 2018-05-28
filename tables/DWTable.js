@@ -84,6 +84,7 @@ export default class DWTable extends BaseTable {
       'a.CZ',
       'a.disabledAt',
       'c.name PPName',
+      'a.createdAt',
     ];
   }
 

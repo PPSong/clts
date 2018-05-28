@@ -89,6 +89,7 @@ export default class DPTable extends BaseTable {
       'c.name GYSName',
       'a.disabledAt',
       'b.name PPName',
+      'a.createdAt'
     ];
   }
 
