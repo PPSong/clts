@@ -84,7 +84,7 @@ const readFile = (path, opts = 'utf8') =>
   });
 
 const saveData = async (res) => {
-  fs.writeFile(`${__dirname}/../tools_izz/APIResponse.json`, `${JSON.stringify(res, null, 2)}`, (err) => {
+  fs.writeFile(`${__dirname}/../tools_izz/PCAPI.json`, `${JSON.stringify(res, null, 2)}`, (err) => {
     if (err) {
       return console.log(err);
     }
@@ -299,7 +299,7 @@ describe('SPRT测试', () => {
   });
 
   describe('test', async () => {
-    it('small test', async () => {
+    it.skip('small test', async () => {
       assert.equal(1, 1);
     });
   });
