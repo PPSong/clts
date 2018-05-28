@@ -62,6 +62,8 @@ export default class FGTesterTable extends BaseTable {
 
   async checkUserAccess(record, transaction) {
     switch (this.user.JS) {
+      case DBTables.JS.ADMIN:
+        break;
       case DBTables.JS.PPJL:
       case DBTables.JS.KFJL:
         await this.user.checkPPId(record.PPId, transaction);
@@ -75,6 +77,7 @@ export default class FGTesterTable extends BaseTable {
     return [
       'a.id',
       'a.name',
+      'a.imageUrl',
       'c.code WLCode',
       'c.name WLName',
       'a.disabledAt',
@@ -86,7 +89,8 @@ export default class FGTesterTable extends BaseTable {
     return orderByFields;
   }
 
-  async getQueryOption(keyword, transaction) {
+  async getQueryOption(queryObj, transaction) {
+    const { keyword } = queryObj;
     const tmpSquel = squel
       .select()
       .from('EJZH', 'a')

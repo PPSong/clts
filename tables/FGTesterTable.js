@@ -89,7 +89,8 @@ export default class FGTesterTable extends BaseTable {
     return orderByFields;
   }
 
-  async getQueryOption(keyword, transaction) {
+  async getQueryOption(queryObj, transaction) {
+    const { keyword, onlyEnabled } = queryObj;
     const tmpSquel = squel
       .select()
       .from('FGTester', 'a')
@@ -135,6 +136,7 @@ export default class FGTesterTable extends BaseTable {
       default:
         throw new Error('无此权限!');
     }
+    if (Number(onlyEnabled) === 1) tmpSquel.where(`a.disabledAt IS NULL or a.disabledAt = 0`);
     // end 根据用户操作记录范围加入where
 
     // 把模糊搜索条件加入where

@@ -86,7 +86,8 @@ export default class FGTesterTable extends BaseTable {
     return orderByFields;
   }
 
-  async getQueryOption(keyword, transaction) {
+  async getQueryOption(queryObj, transaction) {
+    const { keyword } = queryObj;
     const tmpSquel = squel
       .select()
       .from('YJZH', 'a')

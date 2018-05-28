@@ -22,6 +22,7 @@ export default class CreateYJZH extends BusinessApiBase {
       PPId, name, WLId, imageUrl, XGTs, EJZHs,
     } = req.body;
     if (name) name = name.trim();
+    EJZHs = EJZHs || [];
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 

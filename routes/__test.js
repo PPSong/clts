@@ -176,11 +176,13 @@ function renderRoot(req, res, complete) {
         let restfulFiles = FS.readdirSync(PATH.join(__dirname, "../tables")) || [];
 
         let restfulDefs = [
-            { name:"delete", desc:"删除一条{name}记录", type:"delete", args:{ id:"string" } },
-            { name:"edit", desc:"更新一条{name}记录", type:"put", args:{ id:"string" } },
-            { name:"getList", desc:"查询一组{name}", type:"get", args:{ curPage:"number", perPage:"number" } },
-            { name:"get", desc:"获取一条{name}记录", type:"get", args:{ id:"string" } },
-            { name:"create", desc:"创建{name}", type:"post", args:{  } }
+            { name:"delete", desc:"删除一条{name}记录", type:"delete", args:{ id:"number" } },
+            { name:"edit", desc:"更新一条{name}记录", type:"put", args:{ id:"number" } },
+            { name:"getList", desc:"查询一组{name}", type:"get", args:{ curPage:"number", perPage:"number", keyword:'string' } },
+            { name:"get", desc:"获取一条{name}记录", type:"get", args:{ id:"number" } },
+            { name:"create", desc:"创建{name}", type:"post", args:{  } },
+            { name:"enable", desc:"启用{name}", type:"post", args:{ id:"number" }, prefix:'enable/' },
+            { name:"disable", desc:"禁用{name}", type:"post", args:{ id:"number" }, prefix:'disable/' }
         ];
         for (let i = 0; i < restfulFiles.length; i++) {
             let file = restfulFiles[i];
@@ -191,7 +193,7 @@ function renderRoot(req, res, complete) {
                 let method = {
                     desc:(def.desc || "").replace("{name}", name),
                     index:1,
-                    name:name + (def.args && def.args.id ? "/:id" : ""),
+                    name:(def.prefix || '') + name + (def.args && def.args.id ? "/:id" : ""),
                     type:def.type,
                     paramsDesc: {
                         id: "数据唯一id", curPage:"当前页码,0表示第一页", perPage:"每个个数,默认50"

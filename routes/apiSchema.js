@@ -346,6 +346,21 @@ export const apiSchema = {
     },
     required: ['name'],
   },
+  // 检查Tester名称是否已经存在,在一个品牌内唯一
+  CheckFGTesterNameExists: {
+    type: 'object',
+    properties: {
+      // Tester名称
+      name: {
+        type: 'string',
+      },
+      // 品牌id,客服经理可不传
+      PPId: {
+        type: 'number',
+      },
+    },
+    required: ['name'],
+  },
   // 检查灯片名称是否已经存在
   checkDPExists: {
     type: 'object',
@@ -394,7 +409,7 @@ export const apiSchema = {
       // 灯位编号
       code: {
         type: 'string',
-      }
+      },
     },
     required: ['code'],
   },
@@ -430,7 +445,7 @@ export const apiSchema = {
       },
       // 品牌ID,客服经理角色可不传
       PPId: {
-        type: 'string',
+        type: 'number',
       },
     },
     required: ['name'],
@@ -445,6 +460,36 @@ export const apiSchema = {
       },
     },
     required: ['code'],
+  },
+  // 检查二级组合名称是否已经存在,在一个品牌内名称唯一
+  checkEJZHExists: {
+    type: 'object',
+    properties: {
+      // 二级组合名称
+      name: {
+        type: 'string',
+      },
+      // 品牌ID,客服经理角色可不传
+      PPId: {
+        type: 'number',
+      },
+    },
+    required: ['name'],
+  },
+  // 检查一级组合名称是否已经存在,在一个品牌内名称唯一
+  checkYJZHExists: {
+    type: 'object',
+    properties: {
+      // 一级组合名称
+      name: {
+        type: 'string',
+      },
+      // 品牌ID,客服经理角色可不传
+      PPId: {
+        type: 'number',
+      },
+    },
+    required: ['name'],
   },
   // 检查用户名是否已经存在
   checkUsernameExists: {
@@ -544,7 +589,7 @@ export const apiSchema = {
       password: {
         type: 'string',
       },
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -555,7 +600,7 @@ export const apiSchema = {
   createGTWithGTBA: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -605,7 +650,7 @@ export const apiSchema = {
       password: {
         type: 'string',
       },
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -648,6 +693,21 @@ export const apiSchema = {
   getGZList: {
     type: 'object',
     properties: {},
+    required: [],
+  },
+  // 获取某一柜长的所有柜台列表 [ADMIN,PPJL,KFJL,GZ]
+  getGZGTList: {
+    type: 'object',
+    properties: {
+      // 柜长id,如果是柜长本人则不需要
+      GZUserId: {
+        type: 'string',
+      },
+      // 柜台属性,如"id,name,code",默认返回所有属性
+      fields: {
+        type: 'string',
+      },
+    },
     required: [],
   },
   // 新建GYS, GLY[KFJL]
@@ -770,7 +830,7 @@ export const apiSchema = {
   createEJZH: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -902,11 +962,33 @@ export const apiSchema = {
     },
     required: ['id', 'WLId', 'imageUrl', 'XGTs', 'FGTesters', 'SJWLs'],
   },
+  // 获取一个EJZH数据 [*]
+  getEJZHInfo: {
+    type: 'object',
+    properties: {
+      // 二级组合id
+      EJZHId: {
+        type: 'number',
+      }
+    },
+    required: ['EJZHId'],
+  },
+  // 获取一个YJZH数据 [*]
+  getYJZHInfo: {
+    type: 'object',
+    properties: {
+      // 一级组合id
+      YJZHId: {
+        type: 'number',
+      }
+    },
+    required: ['YJZHId'],
+  },
   // 创建YJZH [KFJL]
   createYJZH: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -1035,7 +1117,7 @@ export const apiSchema = {
   createDD: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       PPId: {
         type: 'number',
       },
@@ -1061,7 +1143,7 @@ export const apiSchema = {
   setPPGTFXs: {
     type: 'object',
     properties: {
-      // PPId
+      // 品牌id
       id: {
         type: 'number',
       },
@@ -2665,9 +2747,33 @@ export const apiSchema = {
   // 获取当前用户详细信息,如所属品牌等 [PPJL, KFJL]
   getCurUserInfo: {
     type: 'object',
+    properties: {},
+    required: [],
+  },
+  // 灯片关联的灯位, 柜台信息 [ADMIN, PPJL, KFJL]
+  getDPDWsInfo: {
+    type: 'object',
     properties: {
-
+      // DPId
+      DPId: {
+        type: 'number',
+      },
     },
-    required: [ ],
+    required: ['DPId'],
+  },
+  // 批量生成唯一物料uuid [ADMIN, PPJL, KFJL, GYSGLY]
+  GenerateUniqueWL: {
+    type: 'object',
+    properties: {
+      // WLId
+      WLId: {
+        type: 'number',
+      },
+      // 数量
+      number: {
+        type: 'number',
+      },
+    },
+    required: ['WLId', 'number'],
   },
 };

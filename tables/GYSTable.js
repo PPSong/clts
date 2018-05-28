@@ -74,7 +74,8 @@ export default class GYSTable extends BaseTable {
     return orderByFields;
   }
 
-  async getQueryOption(keyword, transaction) {
+  async getQueryOption(queryObj, transaction) {
+    const { keyword, onlyEnabled } = queryObj;
     const tmpSquel = squel.select().from('GYS', 'a');
 
     const likeFields = ['a.name', 'a.type'];
@@ -102,6 +103,7 @@ export default class GYSTable extends BaseTable {
 
       query = `a.id in (${gysIDs})`;
     }
+    if (Number(onlyEnabled) === 1) query += ' AND a.disabledAt IS NULL or a.disabledAt = 0';
 
     // 把模糊搜索条件加入where
     if (keyword) {
@@ -123,8 +125,8 @@ export default class GYSTable extends BaseTable {
     return tmpSquel;
   }
 
-  async getQueryResultOption(keyword, transaction) {
-    let tmpSquel = await this.getQueryOption(keyword, transaction);
+  async getQueryResultOption(queryObj, transaction) {
+    let tmpSquel = await this.getQueryOption(queryObj, transaction);
 
     tmpSquel.left_join(squel.select().field('max(UserId)', 'UserId').field('GYSId').from('GLY_GYS').group('GYSId'), 'b', 'a.id = b.GYSId');
     tmpSquel.left_join(squel.select().field('phone', 'user_phone').field('username', 'user_username').field('id', 'user_id').field('name', 'user_name').from('User'), 'c', 'b.UserId = c.user_id');
