@@ -1,0 +1,386 @@
+{
+  "getDDWLZhuangXiangList": {
+    "code": 1,
+    "data": [
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "DDId": 1,
+        "DDName": "DD1",
+        "GTId": 1,
+        "GTName": "GT1",
+        "totalNumber": "12",
+        "totalZXNumber": "1"
+      }
+    ]
+  },
+  "getBHWLZhuangXiangList": {
+    "code": 1,
+    "data": [
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "YJZXTime": "2018-10-10T00:00:00.000Z",
+        "GTId": 1,
+        "GTName": "GT1",
+        "totalNumber": "1",
+        "totalZXNumber": "0"
+      }
+    ]
+  },
+  "getDDGT0DDWLZhuangXiangList": {
+    "code": 1,
+    "data": [
+      {
+        "WLId": 1,
+        "WLName": "WL1_3_1",
+        "WLCode": "1_3_1",
+        "number": 10,
+        "ZXNumber": 0,
+        "DD_GT_WLStatus": "已分配发货供应商"
+      },
+      {
+        "WLId": 2,
+        "WLName": "WL1_3_2",
+        "WLCode": "1_3_2",
+        "number": 2,
+        "ZXNumber": 1,
+        "DD_GT_WLStatus": "已分配发货供应商"
+      }
+    ]
+  },
+  "getYJZXTimeGT0BHWLZhuangXiangList": {
+    "code": 1,
+    "data": [
+      {
+        "WLId": 1,
+        "WLName": "WL1_3_1",
+        "WLCode": "1_3_1",
+        "number": 1,
+        "ZXNumber": 0,
+        "WLBHStatus": "已分配发货供应商"
+      }
+    ]
+  },
+  "getDDGT0DDWLYiZhuangXiangWYWLList": {
+    "code": 1,
+    "data": [
+      {
+        "WLId": 2,
+        "WLName": "WL1_3_2",
+        "WLCode": "1_3_2",
+        "WYWLEWM": "{\"type\":\"WL\",\"typeId\":2,\"uuid\":\"2_1\"}",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX1\"}"
+      },
+      {
+        "WLId": 3,
+        "WLName": "WL1_3_3",
+        "WLCode": "1_3_3",
+        "WYWLEWM": "{\"type\":\"WL\",\"typeId\":3,\"uuid\":\"3_1\"}",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX1\"}"
+      }
+    ]
+  },
+  "getYJZXTimeGT0BHWLYiZhuangXiangWYWLList": {
+    "code": 1,
+    "data": [
+      {
+        "WLId": 1,
+        "WLName": "WL1_3_1",
+        "WLCode": "1_3_1",
+        "WYWLEWM": "{\"type\":\"WL\",\"typeId\":1,\"uuid\":\"1_1\"}",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX4\"}"
+      }
+    ]
+  },
+  "getDDDPZhuangXiangList": {
+    "code": 1,
+    "data": [
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "DDId": 1,
+        "DDName": "DD1",
+        "GTId": 1,
+        "GTName": "GT1",
+        "totalNumber": "1",
+        "totalZXNumber": "0"
+      }
+    ]
+  },
+  "getBHDPZhuangXiangList": {
+    "code": 1,
+    "data": [
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "YJZXTime": "2018-10-10T00:00:00.000Z",
+        "GTId": 1,
+        "GTName": "GT1",
+        "totalNumber": "1",
+        "totalZXNumber": "0"
+      }
+    ]
+  },
+  "getDDGT0DDDPZhuangXiangList": {
+    "code": 1,
+    "data": [
+      {
+        "DPId": 1,
+        "DPName": "DP1",
+        "DWId": 1,
+        "DWName": "DW1",
+        "CC": "100*100",
+        "CZ": "铜板",
+        "number": 1,
+        "ZXNumber": 0,
+        "DD_DW_DPStatus": "已分配发货供应商"
+      }
+    ]
+  },
+  "getYJZXTimeGT0BHDPZhuangXiangList": {
+    "code": 1,
+    "data": [
+      {
+        "DPId": 1,
+        "DPName": "DP1",
+        "DWId": 1,
+        "DWName": "DW1",
+        "CC": "100*100",
+        "CZ": "铜板",
+        "number": 1,
+        "ZXNumber": 0,
+        "DPBHStatus": "已分配发货供应商"
+      }
+    ]
+  },
+  "getDDGT0DDDPYiZhuangXiangWYDPList": {
+    "code": 1,
+    "data": [
+      {
+        "DPId": 1,
+        "DPName": "DP1",
+        "WYDPEWM": "{\"type\":\"DP\",\"typeId\":1,\"uuid\":\"1_1\",\"DWId\":2,\"name\":\"DW2\",\"CC\":\"100*100\",\"CZ\":\"铜板\"}",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX101\"}"
+      }
+    ]
+  },
+  "getYJZXTimeGT0BHDPYiZhuangXiangWYDPList": {
+    "code": 1,
+    "data": [
+      {
+        "DPId": 1,
+        "DPName": "DP1",
+        "WYDPEWM": "{\"type\":\"DP\",\"typeId\":1,\"uuid\":\"1_7\",\"DWId\":2,\"name\":\"DW2\",\"CC\":\"100*100\",\"CZ\":\"铜板\"}",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX104\"}"
+      }
+    ]
+  },
+  "getGYSXiangGuanKDXs": {
+    "code": 1,
+    "data": [
+      {
+        "PPName": "PP1",
+        "taskName": "DD1",
+        "GTName": "GT1",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX1\"}",
+        "KDDCode": null
+      },
+      {
+        "PPName": "PP1",
+        "taskName": "DD1",
+        "GTName": "GT1",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX2\"}",
+        "KDDCode": "KDD1"
+      },
+      {
+        "PPName": "PP1",
+        "taskName": "2018-10-11 00:00:00",
+        "GTName": "GT1",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX4\"}",
+        "KDDCode": null
+      },
+      {
+        "PPName": "PP1",
+        "taskName": "2018-10-12 00:00:00",
+        "GTName": "GT1",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX5\"}",
+        "KDDCode": "KDD3"
+      },
+      {
+        "PPName": "PP1",
+        "taskName": "DD1",
+        "GTName": "GT1",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX101\"}",
+        "KDDCode": null
+      },
+      {
+        "PPName": "PP1",
+        "taskName": "DD1",
+        "GTName": "GT1",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX102\"}",
+        "KDDCode": "KDD101"
+      },
+      {
+        "PPName": "PP1",
+        "taskName": "2018-10-11 00:00:00",
+        "GTName": "GT1",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX104\"}",
+        "KDDCode": null
+      },
+      {
+        "PPName": "PP1",
+        "taskName": "2018-10-12 00:00:00",
+        "GTName": "GT1",
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX105\"}",
+        "KDDCode": "KDD103"
+      }
+    ]
+  },
+  "getGYSWYWLKuCun": {
+    "code": 1,
+    "data": [
+      {
+        "WLId": 1,
+        "WLName": "WL1_3_1",
+        "WLCode": "1_3_1",
+        "number": 1
+      }
+    ]
+  },
+  "getGTKDXs": {
+    "code": 1,
+    "data": [
+      {
+        "taskName": "2018-10-11 00:00:00",
+        "KDDId": null,
+        "KDDCode": null,
+        "KDXEWM": "{\"type\":\"KDX\",\"uuid\":\"KDX104\"}",
+        "status": "装箱"
+      }
+    ]
+  },
+  "getAZGDDTasks": {
+    "code": 1,
+    "data": [
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "YJAZDate": "2018-01-01T00:00:00.000Z",
+        "DDId": 1,
+        "taskName": "DD1",
+        "GTId": 1,
+        "GTName": "GT1",
+        "type": "WL"
+      },
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "YJAZDate": "2018-01-02T00:00:00.000Z",
+        "DDId": 1,
+        "taskName": "DD1",
+        "GTId": 1,
+        "GTName": "GT1",
+        "type": "WL"
+      },
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "YJAZDate": "2018-01-01T00:00:00.000Z",
+        "DDId": 1,
+        "taskName": "DD1",
+        "GTId": 1,
+        "GTName": "GT1",
+        "type": "DP"
+      },
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "YJAZDate": "2018-01-02T00:00:00.000Z",
+        "DDId": 1,
+        "taskName": "DD1",
+        "GTId": 1,
+        "GTName": "GT1",
+        "type": "DP"
+      }
+    ]
+  },
+  "getGTBADDTasks": {
+    "code": 1,
+    "data": [
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "YJAZDate": null,
+        "DDId": 1,
+        "taskName": "DD1",
+        "GTId": 1,
+        "GTName": "GT1",
+        "type": "WL"
+      },
+      {
+        "PPId": 1,
+        "PPName": "PP1",
+        "YJAZDate": null,
+        "DDId": 1,
+        "taskName": "DD1",
+        "GTId": 1,
+        "GTName": "GT1",
+        "type": "DP"
+      }
+    ]
+  },
+  "getGT0DDWLAnZhuangTasks": {
+    "code": 1,
+    "data": [
+      {
+        "WLName": "WL1_3_4",
+        "WLCode": "1_3_4",
+        "WLEWM": "{\"type\":\"WL\",\"typeId\":4,\"uuid\":\"4_1\"}",
+        "status": "收货"
+      },
+      {
+        "WLName": "WL1_3_4",
+        "WLCode": "1_3_4",
+        "WLEWM": "{\"type\":\"WL\",\"typeId\":4,\"uuid\":\"4_2\"}",
+        "status": "收货"
+      }
+    ]
+  },
+  "getGT0DDDPAnZhuangTasks": {
+    "code": 1,
+    "data": [
+      {
+        "DWName": "DW5",
+        "DPName": "DP1",
+        "DPEWM": "{\"type\":\"DP\",\"typeId\":1,\"uuid\":\"1_4\",\"DWId\":5,\"name\":\"DW5\",\"CC\":\"100*100\",\"CZ\":\"铜板\"}",
+        "status": "收货"
+      }
+    ]
+  },
+  "getGT0BHWLAnZhuangTasks": {
+    "code": 1,
+    "data": [
+      {
+        "GTName": "GT1",
+        "YJAZDate": "2018-01-02T00:00:00.000Z",
+        "WLName": "WL1_3_1",
+        "WLCode": "1_3_1",
+        "WLEWM": "{\"type\":\"WL\",\"typeId\":1,\"uuid\":\"1_4\"}",
+        "status": "反馈"
+      }
+    ]
+  },
+  "getGT0BHDPAnZhuangTasks": {
+    "code": 1,
+    "data": [
+      {
+        "GTName": "GT1",
+        "YJAZDate": "2018-01-02T00:00:00.000Z",
+        "DPName": "DP1",
+        "DPEWM": "{\"type\":\"DP\",\"typeId\":1,\"uuid\":\"1_10\",\"DWId\":5,\"name\":\"DW5\",\"CC\":\"100*100\",\"CZ\":\"铜板\"}",
+        "status": "反馈"
+      }
+    ]
+  }
+}
