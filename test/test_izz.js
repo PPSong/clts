@@ -100,9 +100,6 @@ const getToken = async (username, password) => {
   return r.data.data.token;
 };
 
-
-const API_DESC = {};
-
 const post = async (path, body, token) => {
   try {
     API_DESC[path] = {};
@@ -8439,7 +8436,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  describe.only('标准restful', async () => {
+  describe('标准restful', async () => {
     // 新建AZG [AZGSGLY]
     describe('createAZG', async () => {
       describe('成功', async () => {

@@ -98,6 +98,19 @@ const post = async (path, body, token) => {
       },
     });
 
+    let deepCopyr = JSON.parse(JSON.stringify(r.data));
+
+    if (deepCopyr.data === undefined) {
+      API_DESC[path] = deepCopyr
+    } else {
+      if (deepCopyr.data.list === undefined) {
+        API_DESC[path] = deepCopyr
+      } else {
+        deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+        API_DESC[path] = deepCopyr
+      }
+    }
+
     return r;
   } catch (err) {
     return err;
@@ -111,6 +124,19 @@ const put = async (path, body, token) => {
     },
   });
 
+  let deepCopyr = JSON.parse(JSON.stringify(r.data));
+
+    if (deepCopyr.data === undefined) {
+      API_DESC[path] = deepCopyr
+    } else {
+      if (deepCopyr.data.list === undefined) {
+        API_DESC[path] = deepCopyr
+      } else {
+        deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+        API_DESC[path] = deepCopyr
+      }
+    }
+
   return r;
 };
 
@@ -122,6 +148,19 @@ const get = async (path, params, token) => {
     },
   });
 
+  let deepCopyr = JSON.parse(JSON.stringify(r.data));
+
+    if (deepCopyr.data === undefined) {
+      API_DESC[path] = deepCopyr
+    } else {
+      if (deepCopyr.data.list === undefined) {
+        API_DESC[path] = deepCopyr
+      } else {
+        deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+        API_DESC[path] = deepCopyr
+      }
+    }
+    
   return r;
 };
 
