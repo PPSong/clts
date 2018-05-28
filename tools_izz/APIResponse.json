@@ -1,0 +1,376 @@
+{
+  "createAZG": {
+    "code": 1,
+    "data": "ok"
+  },
+  "User": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "name": null,
+          "username": "admin",
+          "phone": null,
+          "mail": null,
+          "JS": "系统管理员",
+          "createdAt": "2018-05-22T22:39:40.000Z",
+          "updatedAt": "2018-05-22T22:39:40.000Z"
+        }
+      ],
+      "total": 1
+    }
+  },
+  "User/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "JS": "系统管理员",
+      "username": "admin",
+      "password": "$2a$08$S5c2qLiWGcdWiLJCHekiveWDdvCz4L.xkR8EnBv9085AfUMZV5p3C",
+      "name": null,
+      "phone": null,
+      "mail": null,
+      "note": null,
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  },
+  "GYS": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "name": "GYS1",
+          "type": "生产",
+          "disabledAt": null,
+          "createdAt": "2018-05-22T22:39:40.000Z",
+          "updatedAt": "2018-05-22T22:39:40.000Z",
+          "user_phone": null,
+          "user_name": null,
+          "user_username": "GYSGLY1",
+          "user_id": 27
+        }
+      ],
+      "total": 3
+    }
+  },
+  "GYS/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "GYS1",
+      "type": "生产",
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  },
+  "AZGS": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "name": "AZGS1",
+          "disabledAt": null,
+          "createdAt": "2018-05-22T22:39:40.000Z",
+          "updatedAt": "2018-05-22T22:39:40.000Z",
+          "user_phone": null,
+          "user_name": null,
+          "user_username": "AZGSGLY1",
+          "user_id": 34
+        }
+      ],
+      "total": 2
+    }
+  },
+  "AZGS/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "AZGS1",
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  },
+  "DP/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "DP1",
+      "PPId": 1,
+      "GYSId": 1,
+      "imageUrl": null,
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  },
+  "DP": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "name": "DP1",
+          "imageUrl": null,
+          "GYSName": "GYS1",
+          "disabledAt": null,
+          "PPName": "PP1"
+        }
+      ],
+      "total": 4
+    }
+  },
+  "DP/5": {
+    "code": -1,
+    "msg": "没有权限!"
+  },
+  "DW/1": {
+    "code": 1,
+    "data": "ok"
+  },
+  "DW": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "GTCode": "1",
+          "GTName": "GT1",
+          "name": "DW1",
+          "CC": "铜板",
+          "CZ": "100*100",
+          "disabledAt": null,
+          "PPName": "PP1"
+        }
+      ],
+      "total": 7
+    }
+  },
+  "DW/4": {
+    "code": 1,
+    "data": "ok"
+  },
+  "PP": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "name": "PP1",
+          "disabledAt": null,
+          "createdAt": "2018-05-22T22:39:40.000Z",
+          "updatedAt": "2018-05-22T22:39:40.000Z"
+        }
+      ],
+      "total": 7
+    }
+  },
+  "PP/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "PP1",
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  },
+  "WL": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "level": 3,
+          "code": "1_3_1",
+          "name": "WL1_3_1",
+          "GYSName": "GYS1",
+          "disabledAt": null,
+          "PPName": "PP1"
+        }
+      ],
+      "total": 6
+    }
+  },
+  "WL/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "WL1_3_1",
+      "code": "1_3_1",
+      "level": 3,
+      "PPId": 1,
+      "GYSId": 1,
+      "imageUrl": "imageUrl1_3_1",
+      "note": null,
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0,
+      "GYId": null
+    }
+  },
+  "DW/7": {
+    "code": 1,
+    "data": "ok"
+  },
+  "FGTester": {
+    "code": 1,
+    "data": {
+      "list": [],
+      "total": 0
+    }
+  },
+  "FGTester/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "FG1",
+      "PPId": 1,
+      "Code1": "Tester1",
+      "Code2": null,
+      "Code3": null,
+      "Code4": null,
+      "Code5": null,
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  },
+  "DD": {
+    "code": 1,
+    "data": {
+      "list": [],
+      "total": 0
+    }
+  },
+  "DD/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "DD_GT6",
+      "status": "初始",
+      "PPId": 2,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  },
+  "EJZH": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "name": "EJZH1",
+          "WLCode": "1_2_1",
+          "WLName": "WL1_2_1",
+          "disabledAt": null,
+          "PPName": "PP1"
+        }
+      ],
+      "total": 4
+    }
+  },
+  "EJZH/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "EJZH1",
+      "WLId": 3,
+      "PPId": 1,
+      "imageUrl": "imageUrlEJZH1",
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  },
+  "GT/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "GT1",
+      "code": "1",
+      "PPId": 1,
+      "QY": "南区",
+      "GZUserId": 14,
+      "GTBAUserId": 17,
+      "CS": "上海",
+      "imageUrl": null,
+      "note": null,
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  },
+  "GT": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "QY": "南区",
+          "CS": "上海",
+          "code": "1",
+          "name": "GT1",
+          "GZUserId": 14,
+          "GTBAUserId": 17,
+          "PPId": 1,
+          "disabledAt": null,
+          "PPName": "PP1",
+          "createdAt": "2018-05-22T22:39:40.000Z",
+          "updatedAt": "2018-05-22T22:39:40.000Z"
+        }
+      ],
+      "total": 5
+    }
+  },
+  "GT/7": {
+    "code": 1,
+    "data": "ok"
+  },
+  "YJZH": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "name": "YJZH1",
+          "WLCode": "1_1_1",
+          "WLName": "WL1_1_1",
+          "disabledAt": null,
+          "PPName": "PP1"
+        }
+      ],
+      "total": 3
+    }
+  },
+  "YJZH/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "YJZH1",
+      "WLId": 5,
+      "PPId": 1,
+      "imageUrl": "imageUrlYJZH1",
+      "disabledAt": null,
+      "createdAt": "2018-05-22T22:39:40.000Z",
+      "updatedAt": "2018-05-22T22:39:40.000Z",
+      "version": 0
+    }
+  }
+}
