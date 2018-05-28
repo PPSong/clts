@@ -1,13 +1,13 @@
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class CheckFGTesterNameExists extends BusinessQueryApiBase {
+export default class CheckFGTesterCodeExists extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { name, PPId } = req.body;
+    let { Code1, PPId } = req.body;
 
     if (user.JS === DBTables.JS.ADMIN) {
       //
@@ -24,7 +24,7 @@ export default class CheckFGTesterNameExists extends BusinessQueryApiBase {
     }
     if (!PPId) throw new Error('参数错误. 品牌不存在.');
 
-    const existed = await DBTables.FGTester.findOne({ where:{ name:name.trim(), PPId }, transaction });
+    const existed = await DBTables.FGTester.findOne({ where:{ Code1:Code1.trim(), PPId }, transaction });
     return existed ? { exists:1 } : { exists:0 };
   }
 }

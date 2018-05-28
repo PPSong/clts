@@ -361,6 +361,21 @@ export const apiSchema = {
     },
     required: ['name'],
   },
+  // 检查Tester的Code1是否已经存在,在一个品牌内唯一
+  CheckFGTesterCodeExists: {
+    type: 'object',
+    properties: {
+      // Tester的Code1
+      Code1: {
+        type: 'string',
+      },
+      // 品牌id,客服经理可不传
+      PPId: {
+        type: 'number',
+      },
+    },
+    required: ['Code1'],
+  },
   // 检查灯片名称是否已经存在
   checkDPExists: {
     type: 'object',
@@ -692,7 +707,9 @@ export const apiSchema = {
   // 获取自己品牌下的所有柜长列表 [KFJL]
   getGZList: {
     type: 'object',
-    properties: {},
+    properties: {
+      
+    },
     required: [],
   },
   // 获取某一柜长的所有柜台列表 [ADMIN,PPJL,KFJL,GZ]
@@ -701,7 +718,7 @@ export const apiSchema = {
     properties: {
       // 柜长id,如果是柜长本人则不需要
       GZUserId: {
-        type: 'string',
+        type: 'number',
       },
       // 柜台属性,如"id,name,code",默认返回所有属性
       fields: {

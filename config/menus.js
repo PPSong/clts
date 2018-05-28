@@ -9,7 +9,7 @@ export default {
       icon:'Archive', 
       key: '/gt',
       contains:{
-        '/gt_edit': { name: '编辑柜台', key: '/gt_edit' }
+        '/gt_edit': { name: '柜台详细', key: '/gt_edit' }
       } 
     },
     { name: '供应商管理', icon:'SplitObject', key: '/gys' },
@@ -21,7 +21,17 @@ export default {
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
         { name: '物料', key: '/wl' },
-        { name: '二级组合', key: '/ejzh' }
+        { name: 'Tester', key: '/tester' },
+        { name: '二级组合', key: '/ejzh',
+          contains:{
+            '/ejzh_edit': { name: '二级组合详细', key: '/ejzh_edit' }
+          }
+        },
+        { name: '一级组合', key: '/yjzh',
+          contains:{
+            '/yjzh_edit': { name: '一级组合详细', key: '/yjzh_edit' }
+          }
+        }
       ]
     },
     {
@@ -54,7 +64,23 @@ export default {
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
         { name: '物料', key: '/wl' },
-        { name: '二级组合', key: '/ejzh' }
+        { name: 'Tester', key: '/tester' },
+        { name: '二级组合', key: '/ejzh',
+          links:[
+            { name: '新建二级组合', key: '/ejzh_create' }
+          ],
+          contains:{
+            '/ejzh_edit': { name: '编辑二级组合', key: '/ejzh_edit' }
+          }
+        },
+        { name: '一级组合', key: '/yjzh',
+          links:[
+            { name: '新建一级组合', key: '/yjzh_create' }
+          ],
+          contains:{
+            '/yjzh_edit': { name: '编辑一级组合', key: '/yjzh_edit' }
+          }
+        }
       ]
     },
     {
@@ -88,6 +114,7 @@ export default {
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
         { name: '物料', key: '/wl' },
+        { name: 'Tester', key: '/tester' },
         { name: '二级组合', key: '/ejzh',
           links:[
             { name: '新建二级组合', key: '/ejzh_create' }

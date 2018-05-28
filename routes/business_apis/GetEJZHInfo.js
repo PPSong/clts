@@ -24,26 +24,26 @@ export default class getEJZHInfo extends BusinessQueryApiBase {
         a.WLId,
         a.PPId
       from
-        ejzh as a
+        EJZH as a
       where a.id=${EJZHId}) as a
-      left join pp as b on a.PPId = b.id
-      left join wl as c on a.WLId = c.id
+      left join PP as b on a.PPId = b.id
+      left join WL as c on a.WLId = c.id
     `, { type: DBTables.sequelize.QueryTypes.SELECT });
     if (r && r[0]) {
       r = r[0];
 
       r.SJWLs = await DBTables.sequelize.query(`
         select b.id, b.name, a.number, b.code, b.level, b.PPId, b.GYSId, b.note, b.disabledAt 
-        from (select * from ejzh_sjwl where EJZHId=${EJZHId}) as a
-        left join wl as b on a.WLId = b.id`, 
+        from (select * from EJZH_SJWL where EJZHId=${EJZHId}) as a
+        left join WL as b on a.WLId = b.id`, 
         { type: DBTables.sequelize.QueryTypes.SELECT });
 
       r.FGTesters = await DBTables.sequelize.query(`
       select b.id, b.name, a.number, b.Code1, b.Code2, b.Code3, b.Code4, b.Code5, b.PPId, b.disabledAt 
-      from (select * from ejzh_fgtester where EJZHId=${EJZHId}) as a
-      left join fgtester as b on a.FGTesterId = b.id`, { type: DBTables.sequelize.QueryTypes.SELECT });
+      from (select * from EJZH_FGTester where EJZHId=${EJZHId}) as a
+      left join FGTester as b on a.FGTesterId = b.id`, { type: DBTables.sequelize.QueryTypes.SELECT });
 
-      r.XGTs = await DBTables.sequelize.query(`select * from ejzhxgt where EJZHId=${EJZHId}`, { type: DBTables.sequelize.QueryTypes.SELECT });
+      r.XGTs = await DBTables.sequelize.query(`select * from EJZHXGT where EJZHId=${EJZHId}`, { type: DBTables.sequelize.QueryTypes.SELECT });
       r.XGTs = r.XGTs.map(xgt => {
         return xgt.imageUrl;
       });

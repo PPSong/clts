@@ -278,10 +278,14 @@ export default class BaseTable {
   async findOne(id, transaction) {
     this.checkFindOneRight();
 
-    const record = await this.getTable().findOne({
+    let findOneOption = {
       where: { id },
       transaction,
-    });
+    };
+    if (this.getFindOneOption) {
+      findOneOption = await this.getFindOneOption(id, transaction);
+    }
+    const record = await this.getTable().findOne(findOneOption);
 
     if (!record) {
       throw new Error('没有找到对应记录!');

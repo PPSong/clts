@@ -2,6 +2,7 @@ import debug from 'debug';
 import squel from 'squel';
 import BaseTable from './BaseTable';
 import { DW, JS, GT } from '../models/Model';
+import * as DBTables from '../models/Model';
 
 const ppLog = debug('ppLog');
 
@@ -55,13 +56,15 @@ export default class DWTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(record, transaction) {
     switch (this.user.JS) {
+      case JS.ADMIN:
+        break;
       case JS.PPJL:
       case JS.KFJL:
         await this.user.checkGTId(record.GTId, transaction);
@@ -145,5 +148,90 @@ export default class DWTable extends BaseTable {
     // end 把模糊搜索条件加入where
 
     return tmpSquel;
+  }
+
+  async findOne(id, transaction, queryObj) {
+    this.checkFindOneRight();
+
+    let findOneOption = {
+      where: { id },
+      transaction,
+    };
+    if (this.getFindOneOption) {
+      findOneOption = await this.getFindOneOption(id, transaction);
+    }
+    let record = await this.getTable().findOne(findOneOption);
+
+    if (!record) {
+      throw new Error('没有找到对应记录!');
+    }
+
+    // 查看否在用户权限范围
+    await this.checkUserAccess(record, transaction);
+
+    record = record.toJSON();
+
+    if (Number(queryObj.detail) === 1) {  
+      if (record.GTId) {
+        let GT = await DBTables.GT.findOne({ 
+          where:{
+            id: record.GTId
+          },
+          transaction
+        });
+        if (GT) {
+          record.GT_name = GT.name;
+          record.GT_code = GT.code || '';
+          record.GT_CS = GT.CS || '';
+          record.GT_QY = GT.QY || '';
+
+          if (GT.PPId) {
+            let PP = await DBTables.PP.findOne({ 
+              where:{
+                id: GT.PPId
+              },
+              transaction
+            });
+            if (PP) {
+              record.PPId = PP.id;
+              record.PPName = PP.name;
+            }
+          }
+        }
+      }
+  
+      if (record.DPId) {
+        let DP = await DBTables.DP.findOne({ 
+          where:{
+            id: record.DPId
+          },
+          transaction
+        });
+        if (DP) {
+          record.DP_name = DP.name;
+          record.DP_Code1 = DP.Code1 || '';
+          record.DP_Code2 = DP.Code2 || '';
+          record.DP_Code3 = DP.Code3 || '';
+          record.DP_Code4 = DP.Code4 || '';
+          record.DP_Code5 = DP.Code5 || '';
+          record.DP_GYSId = DP.GYSId;
+        }
+  
+        if (DP.GYSId) {
+          let GYS = await DBTables.GYS.findOne({ 
+            where:{
+              id: DP.GYSId
+            },
+            transaction
+          });
+          if (GYS) record.DP_GYSName = GYS.name;
+        }
+      }
+    }
+
+    return {
+      code: 1,
+      data: record,
+    };
   }
 }
