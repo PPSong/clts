@@ -1,354 +1,304 @@
 {
-  "PP": {
+  "post_PP": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_createPPJL": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_createKFJL": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_createGTWithGTBA": {
     "code": 1,
     "data": {
-      "list": [
-        {
-          "id": 1,
-          "name": "PP1",
-          "disabledAt": null,
-          "createdAt": "2018-05-28T12:24:38.000Z",
-          "updatedAt": "2018-05-28T12:24:38.000Z"
-        }
-      ],
-      "total": 7
+      "username": "GT_T_code",
+      "password": "123456"
     }
   },
-  "createPPJL": {
+  "post_setGTImage": {
     "code": 1,
     "data": "ok"
   },
-  "createKFJL": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "createGTWithGTBA": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "setGTImage": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "createGZ": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "setGZGTs": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "createGYSWithGLY": {
+  "post_createGZ": {
     "code": 1,
     "data": "ok"
   },
-  "createAZGSWithGLY": {
+  "post_setGZGTs": {
     "code": 1,
     "data": "ok"
   },
-  "DW": {
-    "code": 1,
-    "data": {
-      "list": [
-        {
-          "id": 1,
-          "GTCode": "1",
-          "GTName": "GT1",
-          "name": "DW1",
-          "CC": "100*100",
-          "CZ": "铜板",
-          "disabledAt": null,
-          "PPName": "PP1"
-        }
-      ],
-      "total": 7
-    }
-  },
-  "DP": {
-    "code": 1,
-    "data": {
-      "list": [
-        {
-          "id": 1,
-          "name": "DP1",
-          "imageUrl": null,
-          "GYSName": "GYS1",
-          "disabledAt": null,
-          "PPName": "PP1"
-        }
-      ],
-      "total": 4
-    }
-  },
-  "setDPDWs": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "FGTester": {
-    "code": 1,
-    "data": {
-      "list": [],
-      "total": 0
-    }
-  },
-  "WL": {
-    "code": 1,
-    "data": {
-      "list": [
-        {
-          "id": 1,
-          "level": 3,
-          "code": "1_3_1",
-          "name": "WL1_3_1",
-          "GYSName": "GYS1",
-          "disabledAt": null,
-          "PPName": "PP1"
-        }
-      ],
-      "total": 6
-    }
-  },
-  "createEJZH": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "editEJZH": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "createYJZH": {
-    "code": -1,
-    "msg": "[id: 1, name: WL1_3_1]不是一级物料!"
-  },
-  "editYJZH": {
+  "post_createGYSWithGLY": {
     "code": 1,
     "data": "ok"
   },
-  "setYJZHGTs": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "createDD": {
-    "code": -1,
-    "msg": "ERROR:该品牌还有未审批通过的DD, 不能新建DD"
-  },
-  "reCreateDD": {
-    "code": -1,
-    "msg": "ERROR:不能重新生成已审批的订单"
-  },
-  "setPPGTFXs": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "setDDGTWLs0AZGS": {
-    "code": -1,
-    "msg": "[id: 2, name: DD_GT7]状态为已审批, 不能指定安装公司!"
-  },
-  "setDDDWDPs0AZGS": {
-    "code": -1,
-    "msg": "[id: 2, name: DD_GT7]状态为已审批, 不能指定安装公司!"
-  },
-  "approveDD": {
-    "code": -1,
-    "msg": "[id: 2, name: DD_GT7]状态为:已审批, 不能被审批!"
-  },
-  "setDDGTWLs0GYS": {
-    "code": -1,
-    "msg": "[id: 20, DD_GT_WL: 5_10_26]不在初始状态, 不可指定发货供应商!"
-  },
-  "setDDDWDPs0GYS": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:DD_DW_DP]不在初始状态, 不可指定发货供应商!"
-  },
-  "setDDGTWLs0AZG": {
+  "post_createAZGSWithGLY": {
     "code": 1,
     "data": "ok"
   },
-  "setDDDWDPs0AZG": {
+  "post_DW": {
     "code": 1,
     "data": "ok"
   },
-  "piLiangRuKuWL": {
-    "code": -1,
-    "msg": "{\"type\":\"WL\",\"typeId\":21,\"uuid\":\"21_1\"}的状态不能入库!"
-  },
-  "piLiangChuKuWL": {
-    "code": -1,
-    "msg": "{\"type\":\"WL\",\"typeId\":12,\"uuid\":\"12_X4\"}的状态不能出库!"
-  },
-  "piLiangXiaoKuWL": {
-    "code": -1,
-    "msg": "{\"type\":\"WL\",\"typeId\":14,\"uuid\":\"14_1\"}的状态不能消库!"
-  },
-  "piLiangZhuangXiangDDWL": {
-    "code": -1,
-    "msg": "16不属于从你所属供应商发往目标订单_柜台任务或任务已超限额!"
-  },
-  "piLiangZhuangXiangDDDP": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:DD_DW_DP]任务超限!"
-  },
-  "piLiangZhuangXiangBuHuoWL": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:KDX]不属于柜台id:8!"
-  },
-  "piLiangZhuangXiangBuHuoDP": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:KDX]不属于柜台id:8!"
-  },
-  "chuXiangWL": {
-    "code": -1,
-    "msg": "{\"type\":\"WL\",\"typeId\":15,\"uuid\":\"15_2\"}不在装箱状态, 不能出箱!"
-  },
-  "chuXiangDP": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:WYDP]不在装箱状态, 不能出箱!"
-  },
-  "guanLianKuaiDi": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:KDX]不属于装箱, 不能关联快递!"
-  },
-  "anZhuangFanKuiDDWLZhuangTai": {
-    "code": -1,
-    "msg": "{\"type\":\"WL\",\"typeId\":16,\"uuid\":\"16_1\"}状态不是收货, 不能递交成功反馈"
-  },
-  "jieChuGuanLianKuaiDi": {
+  "post_DP": {
     "code": 1,
     "data": "ok"
   },
-  "shouXiang": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "shouHuoWL": {
-    "code": -1,
-    "msg": "{\"type\":\"WL\",\"typeId\":17,\"uuid\":\"17_1\"}不在状态: 收箱, 不能收货!"
-  },
-  "shouHuoDP": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:WYDP]不在状态: 收箱, 不能收货!"
-  },
-  "anZhuangFanKuiDDDPZhuangTai": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:WYDP]状态不是收货, 不能递交成功反馈"
-  },
-  "anZhuangFanKuiQuanJingWLTuPian": {
+  "post_setDPDWs": {
     "code": 1,
     "data": "ok"
   },
-  "anZhuangFanKuiQuanJingDPTuPian": {
+  "post_FGTester": {
     "code": 1,
     "data": "ok"
   },
-  "shenQingShangShiWLBH": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "shenQingShangShiDPBH": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "shenQingRiChangWLBH": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "shenQingRiChangDPBH": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "piLiangShenPiTongGuoWLBHa": {
-    "code": -1,
-    "msg": "物料补货记录:[object SequelizeInstance:WLBH]状态不属于初始!"
-  },
-  "piLiangShenPiTongGuoDPBHa": {
-    "code": -1,
-    "msg": "灯片补货记录:[object SequelizeInstance:DPBH]状态不属于初始!"
-  },
-  "danDuShenPiTongGuoWLBHa": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "danDuShenPiTongGuoDPBHa": {
+  "post_WL": {
     "code": 1,
     "data": "ok"
   },
-  "danDuShenPiBoHuiWLBHa": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "danDuShenPiBoHuiDPBHa": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "setWLBH0AZGS": {
-    "code": -1,
-    "msg": "物料补货记录:[object SequelizeInstance:WLBH]状态不属于客服经理审批通过!"
-  },
-  "setDPBH0AZGS": {
-    "code": -1,
-    "msg": "灯片补货记录:[object SequelizeInstance:DPBH]状态不属于客服经理审批通过!"
-  },
-  "piLiangShenPiTongGuoWLBHb": {
-    "code": -1,
-    "msg": "物料补货记录:[object SequelizeInstance:WLBH]状态不属于客服经理审批通过!"
-  },
-  "piLiangShenPiTongGuoDPBHb": {
-    "code": -1,
-    "msg": "灯片补货记录:[object SequelizeInstance:DPBH]状态不属于客服经理审批通过!"
-  },
-  "danDuShenPiTongGuoWLBHb": {
-    "code": -1,
-    "msg": "物料补货记录:[object SequelizeInstance:WLBH]状态不属于客服经理审批通过!"
-  },
-  "danDuShenPiTongGuoDPBHb": {
-    "code": -1,
-    "msg": "灯片补货记录:[object SequelizeInstance:DPBH]状态不属于客服经理审批通过!"
-  },
-  "danDuShenPiBoHuiWLBHb": {
+  "post_createEJZH": {
     "code": 1,
     "data": "ok"
   },
-  "danDuShenPiBoHuiDPBHb": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "setWLBHs0YJZXTime": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:WLBH],[object SequelizeInstance:WLBH]状态不正确, 不能指定预计装箱时间!"
-  },
-  "setDPBHs0YJZXTime": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:DPBH],[object SequelizeInstance:DPBH]状态不正确, 不能指定预计装箱时间!"
-  },
-  "fenPeiWLBHFaHuoGYS": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:WLBH]状态不属于通过, 不能分配发货供应商!"
-  },
-  "fenPeiDPBHFaHuoGYS": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:DPBH]状态不属于通过, 不能分配发货供应商!"
-  },
-  "setWLBHs0AZG": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:WLBH]不在通过状态之后并且收货状态之前, 不可指定安装工!"
-  },
-  "setDPBHs0AZG": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:DPBH]不在通过状态之后并且收货状态之前, 不可指定安装工!"
-  },
-  "anZhuangFanKuiBHWLZhuangTai": {
-    "code": -1,
-    "msg": "{\"type\":\"WL\",\"typeId\":14,\"uuid\":\"B14_2\"}状态不是收货, 不能递交成功反馈"
-  },
-  "anZhuangFanKuiBHDPZhuangTai": {
-    "code": -1,
-    "msg": "[object SequelizeInstance:WYDP]状态不是收货, 不能递交成功反馈"
-  },
-  "createAZG": {
+  "post_editEJZH": {
     "code": 1,
     "data": "ok"
   },
-  "User": {
+  "post_createYJZH": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_editYJZH": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setYJZHGTs": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_createDD": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_reCreateDD": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setPPGTFXs": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setDDGTWLs0AZGS": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setDDDWDPs0AZGS": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_approveDD": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setDDGTWLs0GYS": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setDDDWDPs0GYS": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setDDGTWLs0AZG": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setDDDWDPs0AZG": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangRuKuWL": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangChuKuWL": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangXiaoKuWL": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangZhuangXiangDDWL": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangZhuangXiangDDDP": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangZhuangXiangBuHuoWL": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangZhuangXiangBuHuoDP": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_chuXiangWL": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_chuXiangDP": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_guanLianKuaiDi": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_anZhuangFanKuiDDWLZhuangTai": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_jieChuGuanLianKuaiDi": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_shouXiang": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_shouHuoWL": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_shouHuoDP": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_anZhuangFanKuiDDDPZhuangTai": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_anZhuangFanKuiQuanJingWLTuPian": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_anZhuangFanKuiQuanJingDPTuPian": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_shenQingShangShiWLBH": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_shenQingShangShiDPBH": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_shenQingRiChangWLBH": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_shenQingRiChangDPBH": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangShenPiTongGuoWLBHa": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangShenPiTongGuoDPBHa": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_danDuShenPiTongGuoWLBHa": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_danDuShenPiTongGuoDPBHa": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_danDuShenPiBoHuiWLBHa": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_danDuShenPiBoHuiDPBHa": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setWLBH0AZGS": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setDPBH0AZGS": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangShenPiTongGuoWLBHb": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_piLiangShenPiTongGuoDPBHb": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_danDuShenPiTongGuoWLBHb": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_danDuShenPiTongGuoDPBHb": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_danDuShenPiBoHuiWLBHb": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_danDuShenPiBoHuiDPBHb": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setWLBHs0YJZXTime": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setDPBHs0YJZXTime": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_fenPeiWLBHFaHuoGYS": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_fenPeiDPBHFaHuoGYS": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setWLBHs0AZG": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_setDPBHs0AZG": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_anZhuangFanKuiBHWLZhuangTai": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_anZhuangFanKuiBHDPZhuangTai": {
+    "code": 1,
+    "data": "ok"
+  },
+  "post_createAZG": {
+    "code": 1,
+    "data": "ok"
+  },
+  "get_User": {
     "code": 1,
     "data": {
       "list": [
@@ -366,7 +316,7 @@
       "total": 1
     }
   },
-  "User/1": {
+  "get_User/1": {
     "code": 1,
     "data": {
       "id": 1,
@@ -383,7 +333,7 @@
       "version": 0
     }
   },
-  "GYS": {
+  "get_GYS": {
     "code": 1,
     "data": {
       "list": [
@@ -403,7 +353,7 @@
       "total": 3
     }
   },
-  "GYS/1": {
+  "get_GYS/1": {
     "code": 1,
     "data": {
       "id": 1,
@@ -415,7 +365,7 @@
       "version": 0
     }
   },
-  "AZGS": {
+  "get_AZGS": {
     "code": 1,
     "data": {
       "list": [
@@ -434,7 +384,7 @@
       "total": 2
     }
   },
-  "AZGS/1": {
+  "get_AZGS/1": {
     "code": 1,
     "data": {
       "id": 1,
@@ -445,7 +395,27 @@
       "version": 0
     }
   },
-  "DP/1": {
+  "put_DP/1": {
+    "code": 1,
+    "data": "ok"
+  },
+  "get_DP": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "name": "DP1",
+          "imageUrl": null,
+          "GYSName": "GYS1",
+          "disabledAt": null,
+          "PPName": "PP1"
+        }
+      ],
+      "total": 4
+    }
+  },
+  "get_DP/1": {
     "code": 1,
     "data": {
       "id": 1,
@@ -459,19 +429,63 @@
       "version": 0
     }
   },
-  "DP/5": {
-    "code": -1,
-    "msg": "没有权限!"
-  },
-  "DW/1": {
+  "put_DW/1": {
     "code": 1,
     "data": "ok"
   },
-  "DW/4": {
+  "get_DW": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "GTCode": "1",
+          "GTName": "GT1",
+          "name": "DW1",
+          "CC": "100*100",
+          "CZ": "铜板",
+          "disabledAt": null,
+          "PPName": "PP1"
+        }
+      ],
+      "total": 7
+    }
+  },
+  "get_DW/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "DW1",
+      "GTId": 1,
+      "DPId": 1,
+      "CZ": "铜板",
+      "CC": "100*100",
+      "disabledAt": null,
+      "createdAt": "2018-05-28T12:24:38.000Z",
+      "updatedAt": "2018-05-28T12:24:38.000Z",
+      "version": 0
+    }
+  },
+  "put_DW/4": {
     "code": 1,
     "data": "ok"
   },
-  "PP/1": {
+  "get_PP": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "name": "PP1",
+          "disabledAt": null,
+          "createdAt": "2018-05-28T12:24:38.000Z",
+          "updatedAt": "2018-05-28T12:24:38.000Z"
+        }
+      ],
+      "total": 7
+    }
+  },
+  "get_PP/1": {
     "code": 1,
     "data": {
       "id": 1,
@@ -482,7 +496,24 @@
       "version": 0
     }
   },
-  "WL/1": {
+  "get_WL": {
+    "code": 1,
+    "data": {
+      "list": [
+        {
+          "id": 1,
+          "level": 3,
+          "code": "1_3_1",
+          "name": "WL1_3_1",
+          "GYSName": "GYS1",
+          "disabledAt": null,
+          "PPName": "PP1"
+        }
+      ],
+      "total": 6
+    }
+  },
+  "get_WL/1": {
     "code": 1,
     "data": {
       "id": 1,
@@ -500,11 +531,18 @@
       "GYId": null
     }
   },
-  "DW/7": {
+  "put_DW/7": {
     "code": 1,
     "data": "ok"
   },
-  "FGTester/1": {
+  "get_FGTester": {
+    "code": 1,
+    "data": {
+      "list": [],
+      "total": 0
+    }
+  },
+  "get_FGTester/1": {
     "code": 1,
     "data": {
       "id": 1,
@@ -521,14 +559,14 @@
       "version": 0
     }
   },
-  "DD": {
+  "get_DD": {
     "code": 1,
     "data": {
       "list": [],
       "total": 0
     }
   },
-  "DD/1": {
+  "get_DD/1": {
     "code": 1,
     "data": {
       "id": 1,
@@ -540,13 +578,14 @@
       "version": 0
     }
   },
-  "EJZH": {
+  "get_EJZH": {
     "code": 1,
     "data": {
       "list": [
         {
           "id": 1,
           "name": "EJZH1",
+          "imageUrl": "imageUrlEJZH1",
           "WLCode": "1_2_1",
           "WLName": "WL1_2_1",
           "disabledAt": null,
@@ -556,7 +595,7 @@
       "total": 4
     }
   },
-  "EJZH/1": {
+  "get_EJZH/1": {
     "code": 1,
     "data": {
       "id": 1,
@@ -570,26 +609,11 @@
       "version": 0
     }
   },
-  "GT/1": {
+  "put_GT/1": {
     "code": 1,
-    "data": {
-      "id": 1,
-      "name": "GT1",
-      "code": "1",
-      "PPId": 1,
-      "QY": "南区",
-      "GZUserId": 14,
-      "GTBAUserId": 17,
-      "CS": "上海",
-      "imageUrl": null,
-      "note": null,
-      "disabledAt": null,
-      "createdAt": "2018-05-28T12:24:38.000Z",
-      "updatedAt": "2018-05-28T12:24:38.000Z",
-      "version": 0
-    }
+    "data": "ok"
   },
-  "GT": {
+  "get_GT": {
     "code": 1,
     "data": {
       "list": [
@@ -611,11 +635,30 @@
       "total": 5
     }
   },
-  "GT/7": {
+  "get_GT/1": {
+    "code": 1,
+    "data": {
+      "id": 1,
+      "name": "GT1",
+      "code": "1",
+      "PPId": 1,
+      "QY": "南区",
+      "GZUserId": 14,
+      "GTBAUserId": 17,
+      "CS": "上海",
+      "imageUrl": null,
+      "note": null,
+      "disabledAt": null,
+      "createdAt": "2018-05-28T12:24:38.000Z",
+      "updatedAt": "2018-05-28T12:24:38.000Z",
+      "version": 0
+    }
+  },
+  "put_GT/7": {
     "code": 1,
     "data": "ok"
   },
-  "YJZH": {
+  "get_YJZH": {
     "code": 1,
     "data": {
       "list": [
@@ -631,7 +674,7 @@
       "total": 3
     }
   },
-  "YJZH/1": {
+  "get_YJZH/1": {
     "code": 1,
     "data": {
       "id": 1,
