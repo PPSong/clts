@@ -708,7 +708,7 @@ export const apiSchema = {
   getGZList: {
     type: 'object',
     properties: {
-      
+
     },
     required: [],
   },
@@ -842,6 +842,26 @@ export const apiSchema = {
       },
     },
     required: ['id', 'DWIds'],
+  },
+  // 设置DWs的DP [PPJL, KFJL]
+  setDWs0DP: {
+    type: 'object',
+    properties: {
+      // DPId
+      DPId: {
+        type: 'number',
+      },
+      // DWIds
+      DWIds: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'number',
+        },
+      },
+    },
+    required: ['DPId', 'DWIds'],
   },
   // 创建EJZH [KFJL]
   createEJZH: {
@@ -986,7 +1006,7 @@ export const apiSchema = {
       // 二级组合id
       EJZHId: {
         type: 'number',
-      }
+      },
     },
     required: ['EJZHId'],
   },
@@ -997,7 +1017,7 @@ export const apiSchema = {
       // 一级组合id
       YJZHId: {
         type: 'number',
-      }
+      },
     },
     required: ['YJZHId'],
   },
@@ -2775,8 +2795,12 @@ export const apiSchema = {
       DPId: {
         type: 'number',
       },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
     },
-    required: ['DPId'],
+    required: ['DPId', 'curPage'],
   },
   // 批量生成唯一物料uuid [ADMIN, PPJL, KFJL, GYSGLY]
   GenerateUniqueWL: {
@@ -2793,4 +2817,5 @@ export const apiSchema = {
     },
     required: ['WLId', 'number'],
   },
+
 };
