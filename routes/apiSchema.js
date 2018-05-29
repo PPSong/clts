@@ -2787,6 +2787,32 @@ export const apiSchema = {
     properties: {},
     required: [],
   },
+  // 替换某一个灯位的灯片 [ADMIN, PPJL, KFJL]
+  replaceDWDP: {
+    type: 'object',
+    properties: {
+      // 灯位ID
+      DWId: {
+        type: 'number',
+      },
+      // 灯片ID
+      DPId: {
+        type: 'number',
+      }
+    },
+    required: ['DWId', 'DPId'],
+  },
+  // 删除某一个灯位的灯片 [ADMIN, PPJL, KFJL]
+  deleteDWDP: {
+    type: 'object',
+    properties: {
+      // 灯位ID
+      DWId: {
+        type: 'number',
+      }
+    },
+    required: ['DWId'],
+  },
   // 获取某个柜台所关联的灯位数组 [ADMIN, PPJL, KFJL]
   getGTDWList: {
     type: 'object',
