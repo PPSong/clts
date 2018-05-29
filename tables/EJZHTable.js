@@ -55,7 +55,7 @@ export default class FGTesterTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }

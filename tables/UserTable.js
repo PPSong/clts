@@ -166,7 +166,7 @@ export default class UserTable extends BaseTable {
   }
 
   async getQueryOption(queryObj, transaction) {
-    const { keyword } = queryObj;
+    const { keyword, onlyEnabled, onlyJS } = queryObj;
     const tmpSquel = squel.select().from('User', 'a');
 
     const likeFields = ['a.id', 'a.name', 'a.username'];
@@ -222,6 +222,8 @@ export default class UserTable extends BaseTable {
     if (query) {
       tmpSquel.where(query);
     }
+    if (Number(onlyEnabled) === 1) tmpSquel.where(`a.disabledAt IS NULL or a.disabledAt = 0`);
+    if (onlyJS) tmpSquel.where(`a.JS = '${onlyJS}'`);
 
     return tmpSquel;
   }

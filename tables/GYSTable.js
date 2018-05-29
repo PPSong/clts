@@ -55,13 +55,13 @@ export default class GYSTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(redord, transaction) {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -103,7 +103,6 @@ export default class GYSTable extends BaseTable {
 
       query = `a.id in (${gysIDs})`;
     }
-    if (Number(onlyEnabled) === 1) query += ' AND a.disabledAt IS NULL or a.disabledAt = 0';
 
     // 把模糊搜索条件加入where
     if (keyword) {
@@ -121,6 +120,7 @@ export default class GYSTable extends BaseTable {
     if (query) {
       tmpSquel.where(query);
     }
+    if (Number(onlyEnabled) === 1) tmpSquel.where('a.disabledAt IS NULL or a.disabledAt = 0');
 
     return tmpSquel;
   }

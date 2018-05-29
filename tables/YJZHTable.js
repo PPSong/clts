@@ -55,13 +55,15 @@ export default class FGTesterTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(record, transaction) {
     switch (this.user.JS) {
+      case JS.ADMIN:
+        break;
       case DBTables.JS.PPJL:
       case DBTables.JS.KFJL:
         await this.user.checkPPId(record.PPId, transaction);
@@ -75,6 +77,7 @@ export default class FGTesterTable extends BaseTable {
     return [
       'a.id',
       'a.name',
+      'a.imageUrl',
       'c.code WLCode',
       'c.name WLName',
       'a.disabledAt',

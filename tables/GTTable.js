@@ -5,7 +5,7 @@ import * as DBTables from '../models/Model';
 
 const ppLog = debug('ppLog');
 
-export default class PPTable extends BaseTable {
+export default class GTTable extends BaseTable {
   getTable() {
     return DBTables.GT;
   }
@@ -67,6 +67,55 @@ export default class PPTable extends BaseTable {
       throw new Error('无此权限!');
     }
   }
+
+  async findOne(id, transaction) {
+    this.checkFindOneRight();
+
+    let findOneOption = {
+      where: { id },
+      transaction,
+    };
+    if (this.getFindOneOption) {
+      findOneOption = await this.getFindOneOption(id, transaction);
+    }
+    let record = await this.getTable().findOne(findOneOption);
+
+    if (!record) {
+      throw new Error('没有找到对应记录!');
+    }
+
+    // 查看否在用户权限范围
+    await this.checkUserAccess(record, transaction);
+
+    record = record.toJSON();
+
+    let PP = await DBTables.PP.findOne({ 
+      where:{
+        id: record.PPId
+      },
+      transaction
+    });
+    record.PPName = PP.name;
+
+    if (record.GZUserId) {
+      let GZUser = await DBTables.User.findOne({ 
+        where:{
+          id: record.GZUserId
+        },
+        transaction
+      });
+      record.GZUser_username = GZUser.username;
+      record.GZUser_name = GZUser.name || '';
+      record.GZUser_phone = GZUser.phone || '';
+      record.GZUser_mail = GZUser.mail || '';
+    }
+
+    return {
+      code: 1,
+      data: record,
+    };
+  }
+
   getDisplayFields() {
     return [
       'a.id',
@@ -78,7 +127,11 @@ export default class PPTable extends BaseTable {
       'a.GTBAUserId',
       'a.PPId',
       'a.disabledAt',
-      'b.name PPName', 'a.createdAt', 'a.updatedAt'
+      'b.name PPName', 'a.createdAt', 'a.updatedAt',
+      'c.name GZUser_name',
+      'c.username GZUser_username',
+      'c.phone GZUser_phone',
+      'c.mail GZUser_mail'
     ];
   }
 
@@ -91,7 +144,8 @@ export default class PPTable extends BaseTable {
     const tmpSquel = squel
       .select()
       .from('GT', 'a')
-      .join('PP', 'b', 'a.PPId = b.id');
+      .join('PP', 'b', 'a.PPId = b.id')
+      .left_join('User', 'c', 'a.GZUserId = c.id');
 
     const likeFields = ['a.QY', 'a.CS', 'a.code', 'a.name', 'b.name'];
 
@@ -139,29 +193,5 @@ export default class PPTable extends BaseTable {
     }
 
     return tmpSquel;
-  }
-
-  async wrapperGetListResult(records, queryObj) {
-    records = records || [];
-    if (Number(queryObj.needGZ) === 1) {
-      for(let i = 0; i < records.length; i++) {
-        let gt = records[i];
-        if (gt.GZUserId) {
-          gt.GZ = await DBTables.User.findOne({ where:{ id:gt.GZUserId } });
-        }
-        if (gt.GZ) {
-          gt.GZ = gt.GZ.toJSON();
-          gt.GZ = {
-            id: gt.GZ.id,
-            name: gt.GZ.name,
-            username: gt.GZ.username,
-            phone: gt.GZ.phone,
-            mail: gt.GZ.mail
-          };
-        }
-        records[i] = gt;
-      }
-    }
-    return records;
   }
 }

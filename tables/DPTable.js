@@ -63,13 +63,15 @@ export default class DPTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(record, transaction) {
     switch (this.user.JS) {
+      case JS.ADMIN:
+        break;
       case JS.PPJL:
       case JS.KFJL:
         await this.user.checkPPId(record.PPId, transaction);
@@ -87,6 +89,7 @@ export default class DPTable extends BaseTable {
       'c.name GYSName',
       'a.disabledAt',
       'b.name PPName',
+      'a.createdAt'
     ];
   }
 
