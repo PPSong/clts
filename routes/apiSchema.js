@@ -2787,6 +2787,17 @@ export const apiSchema = {
     properties: {},
     required: [],
   },
+  // 获取某个柜台所关联的灯位数组 [ADMIN, PPJL, KFJL]
+  getGTDWList: {
+    type: 'object',
+    properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      }
+    },
+    required: ['GTId'],
+  },
   // 灯片关联的灯位, 柜台信息 [ADMIN, PPJL, KFJL]
   getDPDWsInfo: {
     type: 'object',
