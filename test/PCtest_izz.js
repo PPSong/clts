@@ -8,6 +8,7 @@ import _ from 'lodash';
 const WerollApp = require('../weroll/App');
 const werollApp = new WerollApp();
 
+
 import {
   sequelize,
   JS,
