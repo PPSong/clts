@@ -191,7 +191,7 @@ id	name	PPId	GYSId
 															
 //灯位															
 [DW]															
-id	name	GTId	DPId	CZ	CC										
+id	name	GTId	DPId	CC	CZ										
 1	DW1	1	1	100*100	铜板										
 2	DW2	1	1	100*100	铜板										
 3	DW3	1	4	200*100	铜板										
@@ -247,14 +247,14 @@ id	name	GTId	DPId	CZ	CC
 															
 															
 [DW]															
-id	name	GTId	CZ	CC											
+id	name	GTId	CC	CZ											
 7	DW1	4	100*100	铜板											
 															
 [FGTester]															
 id	name	PPId	Code1												
-1	FG1	1	Tester1												
-2	FG2	1	Tester1												
-3	FG3	1	Tester1												
+1	FG1	1	1												
+2	FG2	1	2												
+3	FG3	1	3												
 															
 //物料															
 [WL]															
@@ -883,7 +883,7 @@ id	WYWLId	status	UserId
 															
 //订单灯位灯片快照															
 [DD_DW_DPSnapshot]															
-id	DDId	DWId	DPId	CZ	CC										
+id	DDId	DWId	DPId	CC	CZ										
 1	1	8	5	100*100	铜板										
 2	1	9	6	100*100	铜板										
 3	1	10	7	200*100	铜板										
@@ -932,13 +932,13 @@ id	DDId	DWId	DPId	CZ	CC
 															
 //订单灯位灯片															
 [DD_DW_DP]															
-id	DDId	DWId	DPId	GYSId	status	ZXNumber	CZ	CC							
+id	DDId	DWId	DPId	GYSId	status	ZXNumber	CC	CZ							
 1	1	8	5	1	初始	0	100*100	铜板							
 2	1	9	6	1	初始	0	100*100	铜板							
 3	1	10	7	2	初始	0	200*100	铜板							
 															
 [DD_DW_DP]															
-id	DDId	DWId	DPId	GYSId	status	ZXNumber	AZGSId	CZ	CC						
+id	DDId	DWId	DPId	GYSId	status	ZXNumber	AZGSId	CC	CZ						
 4	2	11	8	1	初始	0	1	100*100	铜板						
 5	2	12	9	1	初始	0	1	100*100	铜板						
 6	2	13	10	2	初始	0	2	200*100	铜板						
@@ -946,7 +946,7 @@ id	DDId	DWId	DPId	GYSId	status	ZXNumber	AZGSId	CZ	CC
 45	5	52	48	1	初始	0	2	100*100	铜板						
 															
 [DD_DW_DP]															
-id	DDId	DWId	DPId	GYSId	status	ZXNumber	CZ	CC							
+id	DDId	DWId	DPId	GYSId	status	ZXNumber	CC	CZ							
 30	5	35	32	1	装箱完成	1	100*100	铜板							
 31	5	36	33	1	装箱完成	1	100*100	铜板							
 32	5	37	34	2	装箱完成	1	200*100	铜板							
@@ -961,7 +961,7 @@ id	DDId	DWId	DPId	GYSId	status	ZXNumber	CZ	CC
 44	4	48	44	2	可拍全景图	1	200*100	铜板							
 															
 [DD_DW_DP]															
-id	DDId	DWId	DPId	GYSId	status	ZXNumber	AZGSId	AZGUserId	YJRKDate	YJZXDate	YJAZDate	CZ	CC		
+id	DDId	DWId	DPId	GYSId	status	ZXNumber	AZGSId	AZGUserId	YJRKDate	YJZXDate	YJAZDate	CC	CZ		
 8	3	15	12	1	已分配发货供应商	0	1	36	2018-2-2	2018-2-2	2018-2-2	100*100	铜板		
 9	3	16	13	3	已分配发货供应商	0	1	37	2018-2-2	2018-2-2	2018-2-2	100*100	铜板		
 10	3	17	14	2	装箱完成	1	1	36	2018-2-2	2018-2-2	2018-2-2	200*100	铜板		
@@ -1327,7 +1327,7 @@ id	EWM	status	WLId	GYSId	WLBHId	KDXId	AZFKType	imageUrl
 															
 //灯片补货															
 [DPBH]															
-id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	CZ	CC							
+id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	CC	CZ							
 1	15	12	初始	1	0	imageUrl	100*100	铜板							
 2	15	12	客服经理审批通过	1	0	imageUrl	100*100	铜板							
 3	15	12	驳回	1	0	imageUrl	100*100	铜板							
@@ -1336,17 +1336,17 @@ id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	CZ	CC
 6	11	8	驳回	1	0	imageUrl	100*100	铜板							
 															
 [DPBH]															
-id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	AZGSId	CZ	CC						
+id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	AZGSId	CC	CZ						
 7	15	12	客服经理审批通过	1	0	imageUrl	1	100*100	铜板						
 8	11	8	通过	1	0	imageUrl	1	100*100	铜板						
 72	11	8	通过	1	0	imageUrl	1	100*100	铜板						
 															
 [DPBH]															
-id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	YJZXTime	CZ	CC						
+id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	YJZXTime	CC	CZ						
 21	11	8	收货	1	1	imagUrl	2018-01-06	100*100	铜板						
 															
 [DPBH]															
-id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	YJZXTime	CZ	CC				
+id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	YJZXTime	CC	CZ				
 9	15	12	已分配发货供应商	1	0	imagUrl	1	36	2018-10-10	100*100	铜板				
 10	15	12	装箱完成	1	1	imagUrl	2	38	2018-01-01	100*100	铜板				
 11	15	12	装箱完成	1	1	imagUrl	2	38	2018-01-03	100*100	铜板				
@@ -1364,7 +1364,7 @@ id	DWId	DPId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	YJZXTime	CZ	CC
 24	11	8	收货	1	1	imagUrl	2	38	2018-01-06	100*100	铜板				
 															
 [DPBH]															
-id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	CZ	CC						
+id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	CC	CZ						
 25	11	8	2	初始	1	0	imagUrl	100*100	铜板						
 26	11	8	2	客服经理审批通过	1	0	imagUrl	100*100	铜板						
 27	11	8	2	驳回	1	0	imagUrl	100*100	铜板						
@@ -1373,12 +1373,12 @@ id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	CZ	CC
 30	17	14	3	驳回	2	0	imagUrl	100*100	铜板						
 															
 [DPBH]															
-id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId	CZ	CC					
+id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId	CC	CZ					
 31	11	8	2	客服经理审批通过	1	0	imagUrl	1	100*100	铜板					
 32	17	14	3	通过	2	0	imagUrl	1	100*100	铜板					
 															
 [DPBH]															
-id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	note	KFJLNote	PPJLNote	YJZXTime	CZ	CC
+id	DWId	DPId	DDId	status	GYSId	ZXNumber	imageUrl	AZGSId	AZGUserId	note	KFJLNote	PPJLNote	YJZXTime	CC	CZ
 33	11	8	2	已分配发货供应商	1	0	imagUrl	1	36	货物损坏	同意	同意	2018-10-10	100*100	铜板
 34	11	8	2	已分配发货供应商	1	0	imagUrl	1	37	货物损坏	同意	同意	2018-10-10	100*100	铜板
 35	11	8	2	已分配发货供应商	3	0	imagUrl	2	38	货物损坏	同意	同意	2018-10-10	100*100	铜板

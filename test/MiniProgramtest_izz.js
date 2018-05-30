@@ -67,11 +67,23 @@ import {
 } from '../models/Model';
 import { it } from 'mocha';
 import { resolve } from 'path';
+const WerollApp = require('../weroll/App');
+const werollApp = new WerollApp();
+let API_DESC = {};
 
 const isArrayEqual = function (x, y) {
   return _(x)
     .differenceWith(y, _.isEqual)
     .isEmpty();
+};
+
+const saveData = async (res) => {
+  fs.writeFile(`${__dirname}/../tools_izz/MiniProgramAPI.json`, `${JSON.stringify(res, null, 2)}`, (err) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log('反馈参数格式生成!');
+  });
 };
 
 const readFile = (path, opts = 'utf8') =>
@@ -87,7 +99,7 @@ const getToken = async (username, password) => {
     username,
     password,
   });
-  return r.data.token;
+  return r.data.data.token;
 };
 
 const post = async (path, body, token) => {
@@ -97,6 +109,19 @@ const post = async (path, body, token) => {
         Authorization: `bearer ${token}`,
       },
     });
+
+    let deepCopyr = JSON.parse(JSON.stringify(r.data));
+
+    if (deepCopyr.code !== 1) {
+
+    } else {
+      if (deepCopyr.data.list === undefined) {
+        API_DESC[`post_${path}`] = deepCopyr
+      } else {
+        deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+        API_DESC[`post_${path}`] = deepCopyr
+      }
+    }
 
     return r;
   } catch (err) {
@@ -111,6 +136,19 @@ const put = async (path, body, token) => {
     },
   });
 
+  let deepCopyr = JSON.parse(JSON.stringify(r.data));
+
+  if (deepCopyr.code !== 1) {
+
+  } else {
+    if (deepCopyr.data.list === undefined) {
+      API_DESC[`put_${path}`] = deepCopyr
+    } else {
+      deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+      API_DESC[`put_${path}`] = deepCopyr
+    }
+  }
+
   return r;
 };
 
@@ -121,6 +159,19 @@ const get = async (path, params, token) => {
       Authorization: `bearer ${token}`,
     },
   });
+
+  let deepCopyr = JSON.parse(JSON.stringify(r.data));
+
+  if (deepCopyr.code !== 1) {
+
+  } else {
+    if (deepCopyr.data.list === undefined) {
+      API_DESC[`get_${path}`] = deepCopyr
+    } else {
+      deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+      API_DESC[`get_${path}`] = deepCopyr
+    }
+  }
 
   return r;
 };
@@ -141,7 +192,7 @@ process.env.NODE_ENV = 'test';
 const server = require('../app');
 
 const ppLog = debug('ppLog');
-const baseUrl = 'http://localhost:3001';
+const baseUrl = 'http://localhost:3300';
 const api = `${baseUrl}/api`;
 let ZHYToken;
 let AZGToken;
@@ -200,12 +251,16 @@ const createViewAndProcedure = async () => {
   // end 创建创建Procedure
 };
 
+after(async () => {
+  await saveData(API_DESC);
+});
+
 describe('SPRT_testSearch', () => {
   before(async () => {
     const con = mysql.createConnection({
       host: 'localhost',
       user: 'root',
-      password: 'tcltcl',
+      password: '123456',
     });
 
     await con.connect();
@@ -217,7 +272,6 @@ describe('SPRT_testSearch', () => {
 
     await initData();
     await createViewAndProcedure();
-
 
     ZHYToken = await getToken('ZHY1', '123456');
     AZGToken = await getToken('AZG1', '123456');
@@ -267,7 +321,6 @@ describe('SPRT_testSearch', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      console.log(response.data.data, 'izzlog');
       assert.sameDeepMembers(response.data.data, trueList);
     });
 
@@ -421,7 +474,6 @@ describe('SPRT_testSearch', () => {
         ZHYToken,
       );
       assert.equal(response.data.code, 1);
-      console.log('izzlog', response.data);
       assert.sameDeepMembers(response.data.data, trueList);
     });
   });
@@ -800,7 +852,6 @@ describe('SPRT_testSearch', () => {
         },
         ZHYToken,
       );
-      console.log('izzlog', response.data.data)
       assert.equal(response.data.code, 1);
       assert.sameDeepMembers(response.data.data, trueList);
     });
@@ -1656,7 +1707,7 @@ describe('SPRT_testSearch', () => {
       assert.sameDeepMembers(response.data.data, trueList);
     });
 
-    it.only('AZG模糊搜索BHDP的WYDP', async () => {
+    it('AZG模糊搜索BHDP的WYDP', async () => {
       const curPage = 0;
       const keyword = '2018-01-02';
       const trueList = [

@@ -8,6 +8,7 @@ import _ from 'lodash';
 const WerollApp = require('../weroll/App');
 const werollApp = new WerollApp();
 
+
 import {
   sequelize,
   JS,
@@ -83,6 +84,15 @@ const readFile = (path, opts = 'utf8') =>
     });
   });
 
+const saveData = async (res) => {
+  fs.writeFile(`${__dirname}/../tools_izz/PCAPI.json`, `${JSON.stringify(res, null, 2)}`, (err) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log('反馈参数格式生成!');
+  });
+};
+
 const getToken = async (username, password) => {
   const r = await axios.post(`${baseUrl}/auth/signin`, {
     username,
@@ -91,19 +101,27 @@ const getToken = async (username, password) => {
   return r.data.data.token;
 };
 
-
-const API_DESC = {};
-
 const post = async (path, body, token) => {
   try {
-    API_DESC[path] = {};
     const r = await axios.post(`${api}/${path}`, body, {
       headers: {
         Authorization: `bearer ${token}`,
       },
     });
 
-    API_DESC[path] = r;
+
+    let deepCopyr = JSON.parse(JSON.stringify(r.data));
+
+    if (deepCopyr.code !== 1) {
+      
+    } else {
+      if (deepCopyr.data.list === undefined) {
+        API_DESC[`post_${path}`] = deepCopyr
+      } else {
+        deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+        API_DESC[`post_${path}`] = deepCopyr
+      }
+    }
 
     return r;
   } catch (err) {
@@ -118,6 +136,19 @@ const put = async (path, body, token) => {
     },
   });
 
+  let deepCopyr = JSON.parse(JSON.stringify(r.data))
+
+  if (deepCopyr.code !== 1) {
+   
+  } else {
+    if (deepCopyr.data.list === undefined) {
+      API_DESC[`put_${path}`] = deepCopyr
+    } else {
+      deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+      API_DESC[`put_${path}`] = deepCopyr
+    }
+  }
+
   return r;
 };
 
@@ -128,6 +159,19 @@ const get = async (path, params, token) => {
       Authorization: `bearer ${token}`,
     },
   });
+
+  let deepCopyr = JSON.parse(JSON.stringify(r.data));
+
+  if (deepCopyr.code !== 1) {
+    
+  } else {
+    if (deepCopyr.data.list === undefined) {
+      API_DESC[`get_${path}`] = deepCopyr
+    } else {
+      deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+      API_DESC[`get_${path}`] = deepCopyr
+    }
+  }
 
   return r;
 };
@@ -159,6 +203,7 @@ let GYSGLYToken;
 let AZGSGLYToken;
 let ZHYToken;
 let AZGToken;
+let API_DESC = {}; //存储调用API返回的参数
 
 let scriptArr;
 
@@ -244,12 +289,17 @@ describe('SPRT测试', () => {
     ZHYToken = await getToken('ZHY1', '123456');
     AZGToken = await getToken('AZG1', '123456');
   });
+
+  after(async () => {
+    await saveData(API_DESC);
+  });
+
   beforeEach(async () => {
     await initData();
   });
 
   describe('test', async () => {
-    it('small test', async () => {
+    it.skip('small test', async () => {
       assert.equal(1, 1);
     });
   });
@@ -322,7 +372,6 @@ describe('SPRT测试', () => {
           },
           adminToken,
         );
-        console.log('izzlog', response)
         assert.equal(response.data.code, 1);
         const user = await User.findOne({ where: { username } });
         assert.notEqual(user, null);
@@ -8387,7 +8436,7 @@ describe('SPRT测试', () => {
     });
   });
 
-  describe.only('标准restful', async () => {
+  describe('标准restful', async () => {
     // 新建AZG [AZGSGLY]
     describe('createAZG', async () => {
       describe('成功', async () => {
@@ -8854,11 +8903,15 @@ describe('SPRT测试', () => {
 
     describe('DPTable', async () => {
       it('KFJL修改DP', async () => {
+        const name = 'DP1';
+        const PPId = 1;
         const imageUrl = 'imageUrl_T';
 
         let response = await put(
           'DP/1',
           {
+            name,
+            PPId,
             imageUrl,
           },
           KFJLToken
@@ -8944,11 +8997,15 @@ describe('SPRT测试', () => {
 
       describe('失败', async () => {
         it('KFJL修改其他PP的DP', async () => {
+          const name = 'DP5';
+          const PPId = 1;
           const imageUrl = 'imageUrl_T';
 
           let response = await put(
             'DP/5',
             {
+              name,
+              PPId,
               imageUrl,
             },
             KFJLToken
@@ -9000,7 +9057,6 @@ describe('SPRT测试', () => {
           },
           adminToken
         );
-        console.log(response.data)
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
@@ -9179,7 +9235,6 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
-        console.log(response.data)
         assert.equal(response.data.code, 1);
 
         let wl = await WL.findOne({ where: { id: 1 } });
@@ -9407,6 +9462,7 @@ describe('SPRT测试', () => {
       });
 
       it('KFJL获取单个DD', async () => {
+        let KFJL2Token = await getToken('KFJL2', '123456');
         const curPage = 0;
 
         let response = await get(
@@ -9414,7 +9470,7 @@ describe('SPRT测试', () => {
           {
             curPage,
           },
-          KFJLToken
+          KFJL2Token
         );
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
@@ -9448,7 +9504,6 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
-        console.log('izzlog', response.data);
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
@@ -9625,7 +9680,6 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
-        console.log(response.data)
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
       });
@@ -9675,7 +9729,6 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
-        console.log(response.data);
         assert.equal(response.data.code, 1);
         assert.notEqual(response.data.data.length, 0);
       });
@@ -9722,7 +9775,7 @@ describe('SPRT测试', () => {
         assert.equal(response.data.data.id, 1);
       });
 
-      it.only('KFJL模糊搜索YJZH', async () => {
+      it('KFJL模糊搜索YJZH', async () => {
         const curPage = 0;
         const keyword = 'YJZH';
 
