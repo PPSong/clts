@@ -66,7 +66,7 @@ export default class BaseTable {
   }
 
   async getQueryResultOption(queryObj, transaction) {
-    let result = await this.getQueryOption(queryObj, transaction);
+    const result = await this.getQueryOption(queryObj, transaction);
     return result;
   }
 
@@ -101,18 +101,14 @@ export default class BaseTable {
 
   async delete(id, transaction) {
     this.checkDeleteRight();
-
     const record = await this.getTable().findOne({
       where: {
         id,
       },
       transaction,
     });
-
     await this.checkUserAccess(record, transaction);
-
     const r = await record.destroy({ transaction });
-
     if (!r) {
       return {
         code: 0,
@@ -236,7 +232,7 @@ export default class BaseTable {
     return {
       code: 1,
       data: {
-        disabledAt: now
+        disabledAt: now,
       },
     };
   }
