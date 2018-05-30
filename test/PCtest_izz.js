@@ -9793,5 +9793,359 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
     });
+    //获取某个灯片灯片关联的所有灯位及柜台信息
+    describe('getDPDWsInfo', async () => {
+      it('KFJL获取某个灯片关联的所有灯位及柜台信息', async () => {
+        const DPId = 4;
+        const trueList = [
+          {
+            DWId: 3,
+            DWName: 'DW3',
+            GTName: 'GT1',
+            GTId: 1,
+            PPId: 1,
+            PPName: 'PP1',
+          },
+        ];
+
+        const response = await post(
+          'getDPDWsInfo',
+          {
+            DPId,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        assert.sameDeepMembers(response.data.data, trueList)
+      });
+      it('PPJL获取某个灯片关联的所有灯位及柜台信息', async () => {
+        const DPId = 4;
+        const trueList = [
+          {
+            DWId: 3,
+            DWName: 'DW3',
+            GTName: 'GT1',
+            GTId: 1,
+            PPId: 1,
+            PPName: 'PP1',
+          },
+        ];
+
+        const response = await post(
+          'getDPDWsInfo',
+          {
+            DPId,
+          },
+          PPJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        assert.sameDeepMembers(response.data.data, trueList)
+      });
+      it('admin获取某个灯片关联的所有灯位及柜台信息', async () => {
+        const DPId = 4;
+        const trueList = [
+          {
+            DWId: 3,
+            DWName: 'DW3',
+            GTName: 'GT1',
+            GTId: 1,
+            PPId: 1,
+            PPName: 'PP1',
+          },
+        ];
+
+        const response = await post(
+          'getDPDWsInfo',
+          {
+            DPId,
+          },
+          adminToken,
+        );
+        assert.equal(response.data.code, 1);
+        assert.sameDeepMembers(response.data.data, trueList)
+      });
+    });
+    //获取二级组合的详细数据
+    describe('getEJZHInfo', async () => {
+      it('admin获取某个二级组合的详细数据', async () => {
+        const EJZHId = 2;
+        const trueList =
+          {
+            id: 2,
+            name: 'EJZH2',
+            imageUrl: 'imageUrlEJZH2',
+            disabledAt: null,
+            WLId: 3,
+            WLName: 'WL1_2_1',
+            PPId: 1,
+            PPName: 'PP1',
+            SJWLs: [],
+            FGTesters: [
+              {
+                id: 1,
+                name: 'FG1',
+                number: 2,
+                Code1: "1",
+                Code2: null,
+                Code3: null,
+                Code4: null,
+                Code5: null,
+                PPId: 1,
+                disabledAt: null
+              },
+            ],
+            XGTs: [
+              'imageUrlEJZH2',
+            ]
+          }
+
+        const response = await post(
+          'getEJZHInfo',
+          {
+            EJZHId,
+          },
+          adminToken,
+        );
+        assert.equal(response.data.code, 1);
+        console.log('izzlog', response.data);
+        assert.equal(JSON.stringify(response.data.data), JSON.stringify(trueList));
+      });
+      it('PPJL获取某个二级组合的详细数据', async () => {
+        const EJZHId = 2;
+        const trueList =
+          {
+            id: 2,
+            name: 'EJZH2',
+            imageUrl: 'imageUrlEJZH2',
+            disabledAt: null,
+            WLId: 3,
+            WLName: 'WL1_2_1',
+            PPId: 1,
+            PPName: 'PP1',
+            SJWLs: [],
+            FGTesters: [
+              {
+                id: 1,
+                name: 'FG1',
+                number: 2,
+                Code1: "1",
+                Code2: null,
+                Code3: null,
+                Code4: null,
+                Code5: null,
+                PPId: 1,
+                disabledAt: null
+              },
+            ],
+            XGTs: [
+              'imageUrlEJZH2',
+            ]
+          }
+
+        const response = await post(
+          'getEJZHInfo',
+          {
+            EJZHId,
+          },
+          PPJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        console.log('izzlog', response.data);
+        assert.equal(JSON.stringify(response.data.data), JSON.stringify(trueList));
+      });
+      it('KFJL获取某个二级组合的详细数据', async () => {
+        const EJZHId = 2;
+        const trueList =
+          {
+            id: 2,
+            name: 'EJZH2',
+            imageUrl: 'imageUrlEJZH2',
+            disabledAt: null,
+            WLId: 3,
+            WLName: 'WL1_2_1',
+            PPId: 1,
+            PPName: 'PP1',
+            SJWLs: [],
+            FGTesters: [
+              {
+                id: 1,
+                name: 'FG1',
+                number: 2,
+                Code1: "1",
+                Code2: null,
+                Code3: null,
+                Code4: null,
+                Code5: null,
+                PPId: 1,
+                disabledAt: null
+              },
+            ],
+            XGTs: [
+              'imageUrlEJZH2',
+            ]
+          }
+
+        const response = await post(
+          'getEJZHInfo',
+          {
+            EJZHId,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        console.log('izzlog', response.data);
+        assert.equal(JSON.stringify(response.data.data), JSON.stringify(trueList));
+      });
+    });
+    //获取一级组合详细数据
+    describe('getYJZHInfo', async () => {
+      it('admin获取某个一级组合的详细数据', async () => {
+        const YJZHId = 2;
+        const trueList = {
+          id: 2,
+          name: 'YJZH2',
+          imageUrl: 'imageUrlYJZH2',
+          disabledAt: null,
+          WLId: 5,
+          WLName: 'WL1_1_1',
+          PPId: 1,
+          PPName: 'PP1',
+          EJZHs: [
+            {
+              id: 1,
+              name: 'EJZH1',
+              number: 2,
+              PPId: 1,
+              disabledAt: null
+            },
+            { 
+              id: 2,
+              name: 'EJZH2',
+              number: 2,
+              PPId: 1,
+              disabledAt: null
+            },
+          ],
+          XGTs: [
+            'imageUrlYJZH2',
+          ]
+        };
+        const response = await post(
+          'getYJZHInfo',
+          {
+            YJZHId,
+          },
+          adminToken,
+        );
+        assert.equal(response.data.code, 1);
+        console.log('izzlog', response.data);
+        assert.equal(JSON.stringify(response.data.data), JSON.stringify(trueList));
+      });
+      it('PPJL获取某个一级组合的详细数据', async () => {
+        const YJZHId = 2;
+        const trueList = {
+          id: 2,
+          name: 'YJZH2',
+          imageUrl: 'imageUrlYJZH2',
+          disabledAt: null,
+          WLId: 5,
+          WLName: 'WL1_1_1',
+          PPId: 1,
+          PPName: 'PP1',
+          EJZHs: [
+            {
+              id: 1,
+              name: 'EJZH1',
+              number: 2,
+              PPId: 1,
+              disabledAt: null
+            },
+            {
+              id: 2,
+              name: 'EJZH2',
+              number: 2,
+              PPId: 1,
+              disabledAt: null
+            },
+          ],
+          XGTs: [
+            'imageUrlYJZH2',
+          ]
+        };
+        const response = await post(
+          'getYJZHInfo',
+          {
+            YJZHId,
+          },
+          PPJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        console.log('izzlog', response.data);
+        assert.equal(JSON.stringify(response.data.data), JSON.stringify(trueList));
+      });
+      it('KFJL获取某个一级组合的详细数据', async () => {
+        const YJZHId = 2;
+        const trueList = {
+          id: 2,
+          name: 'YJZH2',
+          imageUrl: 'imageUrlYJZH2',
+          disabledAt: null,
+          WLId: 5,
+          WLName: 'WL1_1_1',
+          PPId: 1,
+          PPName: 'PP1',
+          EJZHs: [
+            {
+              id: 1,
+              name: 'EJZH1',
+              number: 2,
+              PPId: 1,
+              disabledAt: null
+            },
+            {
+              id: 2,
+              name: 'EJZH2',
+              number: 2,
+              PPId: 1,
+              disabledAt: null
+            },
+          ],
+          XGTs: [
+            'imageUrlYJZH2',
+          ]
+        };
+        const response = await post(
+          'getYJZHInfo',
+          {
+            YJZHId,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        console.log('izzlog', response.data);
+        assert.equal(JSON.stringify(response.data.data), JSON.stringify(trueList));
+      });
+    });
+
+    //生成一批唯一物料接口
+    describe('GenerateUniqueWL', async () => {
+      it.only('KFJL生成某个物料的一批唯一物料接口', async () => {
+        const WLId = 1;
+        const number = 50;
+        const response = await post(
+          'GenerateUniqueWL',
+          {
+            WLId,
+            number,
+          },
+          KFJLToken,
+        );
+        assert.equal(response.data.code, 1);
+        console.log('izzlog', response.data);
+        assert.equal(response.data.typeid, WLId);
+        assert.equal(response.data.length, 50);
+      });
+    });
+    
   });
 });
