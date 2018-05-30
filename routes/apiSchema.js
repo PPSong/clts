@@ -2798,9 +2798,9 @@ export const apiSchema = {
       // 图片文件名
       imageUrl: {
         type: 'string',
-      }
+      },
     },
-    required: ['GTId','imageUrl'],
+    required: ['GTId', 'imageUrl'],
   },
   // 替换某一个灯位的灯片 [ADMIN, PPJL, KFJL]
   replaceDWDP: {
@@ -2813,7 +2813,7 @@ export const apiSchema = {
       // 灯片ID
       DPId: {
         type: 'number',
-      }
+      },
     },
     required: ['DWId', 'DPId'],
   },
@@ -2824,7 +2824,7 @@ export const apiSchema = {
       // 灯位ID
       DWId: {
         type: 'number',
-      }
+      },
     },
     required: ['DWId'],
   },
@@ -2835,7 +2835,7 @@ export const apiSchema = {
       // 柜台ID
       GTId: {
         type: 'number',
-      }
+      },
     },
     required: ['GTId'],
   },
@@ -2869,5 +2869,49 @@ export const apiSchema = {
     },
     required: ['WLId', 'number'],
   },
-
+  // 获取指定DD的WLs [ADMIN, PPJL, KFJL]
+  GetDD0WLs: {
+    type: 'object',
+    properties: {
+      // DDId
+      id: {
+        type: 'number',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['id', 'curPage'],
+  },
+  // 获取指定DD的DPs [ADMIN, PPJL, KFJL]
+  GetDD0DPs: {
+    type: 'object',
+    properties: {
+      // DDId
+      id: {
+        type: 'number',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['id', 'curPage'],
+  },
+  // 获取指定DD的Testers [ADMIN, PPJL, KFJL]
+  GetDD0Testers: {
+    type: 'object',
+    properties: {
+      // DDId
+      id: {
+        type: 'number',
+      },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+    },
+    required: ['id', 'curPage'],
+  },
 };
