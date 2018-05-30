@@ -3,7 +3,7 @@ import * as DBTables from '../../models/Model';
 
 export default class SetDPDWs extends BusinessApiBase {
   static getAllowAccessJSs() {
-    return [DBTables.JS.KFJL];
+    return [DBTables.JS.PPJL, DBTables.JS.KFJL];
   }
 
   static async mainProcess(req, res, next, user, transaction) {

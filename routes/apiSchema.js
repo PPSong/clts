@@ -2787,6 +2787,21 @@ export const apiSchema = {
     properties: {},
     required: [],
   },
+  // 替换某一柜台的底图 [ADMIN, PPJL, KFJL]
+  changeGTImage: {
+    type: 'object',
+    properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      },
+      // 图片文件名
+      imageUrl: {
+        type: 'string',
+      }
+    },
+    required: ['GTId','imageUrl'],
+  },
   // 替换某一个灯位的灯片 [ADMIN, PPJL, KFJL]
   replaceDWDP: {
     type: 'object',

@@ -7,7 +7,7 @@ export default class ReplaceDWDP extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { name, DWId, DPId } = req.body;
+    let { DWId, DPId } = req.body;
 
     let DW = await user.checkDWId(DWId, transaction);
     let DP = await user.checkDPId(DPId, transaction);
