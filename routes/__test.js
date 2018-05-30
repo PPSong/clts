@@ -6,6 +6,10 @@ const apiSchema = {
     ...require("../routes/apiSchema").apiSchema
 };
 
+const restfulAPISchema = {
+    ...require("../routes/apiSchema").normalApiSchema
+};
+
 var SERVICE_LIST = null;
 
 function renderAPIDoc(req, res, output) {
@@ -206,6 +210,25 @@ function renderRoot(req, res, complete) {
                         needLogin: true
                     }
                 };
+
+                let schema = restfulAPISchema[name + def.name.charAt(0).toUpperCase() + def.name.substr(1)];
+                if (schema) {
+                    schema.properties = schema.properties || {};
+
+                    let reuqires = {};
+                    (schema.required || []).forEach(key => {
+                        reuqires[key] = true;
+                    });
+
+                    _.map(schema.properties, (prop, propName) => {
+                        if (reuqires[propName]) {
+                            method.security.checkParams[propName] = prop.type;
+                        } else {
+                            method.security.optionalParams[propName] = prop.type;
+                        }
+                    });
+                }
+
                 group.methods.push(method);
             });
         }
