@@ -409,7 +409,8 @@
           "imageUrl": null,
           "GYSName": "GYS1",
           "disabledAt": null,
-          "PPName": "PP1"
+          "PPName": "PP1",
+          "createdAt": "2018-05-28T12:24:38.000Z"
         }
       ],
       "total": 4
@@ -445,7 +446,8 @@
           "CC": "100*100",
           "CZ": "铜板",
           "disabledAt": null,
-          "PPName": "PP1"
+          "PPName": "PP1",
+          "createdAt": "2018-05-28T12:24:38.000Z"
         }
       ],
       "total": 7
@@ -465,10 +467,6 @@
       "updatedAt": "2018-05-28T12:24:38.000Z",
       "version": 0
     }
-  },
-  "put_DW/4": {
-    "code": 1,
-    "data": "ok"
   },
   "get_PP": {
     "code": 1,
@@ -495,6 +493,10 @@
       "updatedAt": "2018-05-28T12:24:38.000Z",
       "version": 0
     }
+  },
+  "put_WL/1": {
+    "code": 1,
+    "data": "ok"
   },
   "get_WL": {
     "code": 1,
@@ -530,10 +532,6 @@
       "version": 0,
       "GYId": null
     }
-  },
-  "put_DW/7": {
-    "code": 1,
-    "data": "ok"
   },
   "get_FGTester": {
     "code": 1,
@@ -595,20 +593,6 @@
       "total": 4
     }
   },
-  "get_EJZH/1": {
-    "code": 1,
-    "data": {
-      "id": 1,
-      "name": "EJZH1",
-      "WLId": 3,
-      "PPId": 1,
-      "imageUrl": "imageUrlEJZH1",
-      "disabledAt": null,
-      "createdAt": "2018-05-28T12:24:38.000Z",
-      "updatedAt": "2018-05-28T12:24:38.000Z",
-      "version": 0
-    }
-  },
   "put_GT/1": {
     "code": 1,
     "data": "ok"
@@ -629,7 +613,11 @@
           "disabledAt": null,
           "PPName": "PP1",
           "createdAt": "2018-05-28T12:24:38.000Z",
-          "updatedAt": "2018-05-28T12:24:38.000Z"
+          "updatedAt": "2018-05-28T12:24:38.000Z",
+          "GZUser_name": null,
+          "GZUser_username": "GZ1",
+          "GZUser_phone": null,
+          "GZUser_mail": null
         }
       ],
       "total": 5
@@ -651,10 +639,15 @@
       "disabledAt": null,
       "createdAt": "2018-05-28T12:24:38.000Z",
       "updatedAt": "2018-05-28T12:24:38.000Z",
-      "version": 0
+      "version": 0,
+      "PPName": "PP1",
+      "GZUser_username": "GZ1",
+      "GZUser_name": "",
+      "GZUser_phone": "",
+      "GZUser_mail": ""
     }
   },
-  "put_GT/7": {
+  "put_GT/6": {
     "code": 1,
     "data": "ok"
   },
@@ -665,6 +658,7 @@
         {
           "id": 1,
           "name": "YJZH1",
+          "imageUrl": "imageUrlYJZH1",
           "WLCode": "1_1_1",
           "WLName": "WL1_1_1",
           "disabledAt": null,
@@ -674,18 +668,144 @@
       "total": 3
     }
   },
-  "get_YJZH/1": {
+  "post_getDPDWsInfo": {
+    "code": 1,
+    "data": [
+      {
+        "DWId": 3,
+        "DWName": "DW3",
+        "CC": "200*100",
+        "CZ": "铜板",
+        "GTId": 1,
+        "GTName": "GT1",
+        "code": "1",
+        "PPId": 1,
+        "PPName": "PP1"
+      }
+    ]
+  },
+  "post_getEJZHInfo": {
     "code": 1,
     "data": {
-      "id": 1,
-      "name": "YJZH1",
-      "WLId": 5,
-      "PPId": 1,
-      "imageUrl": "imageUrlYJZH1",
+      "id": 2,
+      "name": "EJZH2",
+      "imageUrl": "imageUrlEJZH2",
       "disabledAt": null,
-      "createdAt": "2018-05-28T12:24:38.000Z",
-      "updatedAt": "2018-05-28T12:24:38.000Z",
-      "version": 0
+      "WLId": 3,
+      "WLName": "WL1_2_1",
+      "PPId": 1,
+      "PPName": "PP1",
+      "SJWLs": [],
+      "FGTesters": [
+        {
+          "id": 1,
+          "name": "FG1",
+          "number": 2,
+          "Code1": "1",
+          "Code2": null,
+          "Code3": null,
+          "Code4": null,
+          "Code5": null,
+          "PPId": 1,
+          "disabledAt": null
+        }
+      ],
+      "XGTs": [
+        "imageUrlEJZH2"
+      ]
+    }
+  },
+  "post_getYJZHInfo": {
+    "code": 1,
+    "data": {
+      "id": 2,
+      "name": "YJZH2",
+      "imageUrl": "imageUrlYJZH2",
+      "disabledAt": null,
+      "WLId": 5,
+      "WLName": "WL1_1_1",
+      "PPId": 1,
+      "PPName": "PP1",
+      "EJZHs": [
+        {
+          "id": 1,
+          "name": "EJZH1",
+          "number": 2,
+          "PPId": 1,
+          "disabledAt": null
+        },
+        {
+          "id": 2,
+          "name": "EJZH2",
+          "number": 2,
+          "PPId": 1,
+          "disabledAt": null
+        }
+      ],
+      "XGTs": [
+        "imageUrlYJZH2"
+      ]
+    }
+  },
+  "post_GenerateUniqueWL": {
+    "code": 1,
+    "data": {
+      "info": {
+        "type": "WL",
+        "typeId": 1
+      },
+      "uuids": [
+        "WL45789A5C2438F24B",
+        "WL6454D5B936250D29",
+        "WL0762F12C43C22D19",
+        "WL455707BD8D16D4AD",
+        "WL4321BCE3ECD63E04",
+        "WL12482515B738776B",
+        "WL8000250409AB7AB0",
+        "WL51777D43804F72EB",
+        "WL0882B06B9FA4BE9E",
+        "WL58141AB355D2DDBE",
+        "WL8271C9A7B8C15992",
+        "WL81419307E7FC5ECB",
+        "WL453205DACB13221C",
+        "WL4363291A01189700",
+        "WL47361AB6B13E429E",
+        "WL0230033ED50A047A",
+        "WL40280894FA12AF3D",
+        "WL8776273C22C202D0",
+        "WL8118EF5ACFB4A619",
+        "WL806103919B6AD6C8",
+        "WL53852260A91C2D59",
+        "WL43655D8D7CB5A9B8",
+        "WL2421795E58D942AA",
+        "WL1000FF3622FBF073",
+        "WL0120E7FC905085D2",
+        "WL5866E2D8E2DE1055",
+        "WL62189B348649E436",
+        "WL5650361A30D25B22",
+        "WL3011FBAA519100BF",
+        "WL2341535871F43F4C",
+        "WL1240B733906A4A4F",
+        "WL4460274C77F6BE4A",
+        "WL066490A8125B4CF6",
+        "WL25704ACE1EEE4BA2",
+        "WL8110FF59E5DEBEAF",
+        "WL8181EAA1FEFB3369",
+        "WL4832EED9DD4207AA",
+        "WL81815E5C1DEA9B49",
+        "WL4787C23F1C89159D",
+        "WL40303B21ADA482E4",
+        "WL8202608145C4260F",
+        "WL026211F2E04C98A2",
+        "WL4832D73B8E80673C",
+        "WL1264B16F0DC71411",
+        "WL23148A97FC3C8108",
+        "WL17232DBB5DD6D8F5",
+        "WL1580281DF23D78C5",
+        "WL0284FECEDB702CD3",
+        "WL43853417CFC6CD6B",
+        "WL668557586A5B5FDB"
+      ]
     }
   }
 }

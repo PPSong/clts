@@ -113,7 +113,7 @@ const post = async (path, body, token) => {
     let deepCopyr = JSON.parse(JSON.stringify(r.data));
 
     if (deepCopyr.code !== 1) {
-      
+
     } else {
       if (deepCopyr.data.list === undefined) {
         API_DESC[`post_${path}`] = deepCopyr
@@ -139,7 +139,7 @@ const put = async (path, body, token) => {
   let deepCopyr = JSON.parse(JSON.stringify(r.data))
 
   if (deepCopyr.code !== 1) {
-   
+
   } else {
     if (deepCopyr.data.list === undefined) {
       API_DESC[`put_${path}`] = deepCopyr
@@ -163,7 +163,7 @@ const get = async (path, params, token) => {
   let deepCopyr = JSON.parse(JSON.stringify(r.data));
 
   if (deepCopyr.code !== 1) {
-    
+
   } else {
     if (deepCopyr.data.list === undefined) {
       API_DESC[`get_${path}`] = deepCopyr
@@ -2791,7 +2791,7 @@ describe('SPRT测试', () => {
         for (const item of DD_DW_DPIds) {
           const dddwdp = await DD_DW_DP.findOne({ where: { id: item } });
           assert.equal(dddwdp.dataValues.AZGUserId, AZGUserId);
-          assert.equal(ddgtwl.dataValues.YJAZDate, new Date(YJAZDate).getTime());
+          assert.equal(dddwdp.dataValues.YJAZDate, new Date(YJAZDate).getTime());
         }
       });
     });
@@ -4659,7 +4659,7 @@ describe('SPRT测试', () => {
               where: { EWM: JSON.stringify(item) },
             });
             assert.equal(kdx.dataValues.status, KDXStatus.FH);
-            assert.equal(kdx.dataValues.GYSId, 2);
+            assert.equal(kdx.dataValues.GYSId, 3);
 
             const wywl = await WYWL.findAll({
               where: { KDXId: kdx.dataValues.id },
@@ -4684,7 +4684,7 @@ describe('SPRT测试', () => {
               where: { EWM: JSON.stringify(item) },
             });
             assert.equal(kdx.dataValues.status, KDXStatus.FH);
-            assert.equal(kdx.dataValues.GYSId, 2);
+            assert.equal(kdx.dataValues.GYSId, 3);
 
             const wydp = await WYDP.findAll({
               where: { KDXId: kdx.dataValues.id },
@@ -7857,7 +7857,7 @@ describe('SPRT测试', () => {
         for (const item of WLBHIds) {
           const wlbh = await WLBH.findOne({ where: { id: item } });
           assert.equal(wlbh.dataValues.AZGUserId, AZGUserId);
-          assert.equal(ddgtwl.dataValues.YJAZDate, new Date(YJAZDate).getTime());
+          assert.equal(wlbh.dataValues.YJAZDate, new Date(YJAZDate).getTime());
         }
       });
 
@@ -7960,7 +7960,7 @@ describe('SPRT测试', () => {
         for (const item of DPBHIds) {
           const dpbh = await DPBH.findOne({ where: { id: item } });
           assert.equal(dpbh.dataValues.AZGUserId, AZGUserId);
-          assert.equal(ddgtwl.dataValues.YJAZDate, new Date(YJAZDate).getTime());
+          assert.equal(dpbh.dataValues.YJAZDate, new Date(YJAZDate).getTime());
         }
       });
 
@@ -9110,7 +9110,7 @@ describe('SPRT测试', () => {
           const CC = '10000';
 
           let response = await put(
-            'DW/4',
+            'DW/9',
             {
               CC,
             },
@@ -9229,7 +9229,7 @@ describe('SPRT测试', () => {
         const imageUrl = 'imageUrl10000';
 
         let response = await put(
-          'DW/1',
+          'WL/1',
           {
             imageUrl,
           },
@@ -9332,7 +9332,7 @@ describe('SPRT测试', () => {
           const imageUrl = 'imageUrl10000';
 
           let response = await put(
-            'DW/7',
+            'WL/7',
             {
               imageUrl,
             },
@@ -9546,6 +9546,7 @@ describe('SPRT测试', () => {
           },
           KFJLToken
         );
+        console.log('izzlog', response.data);
         assert.equal(response.data.code, 1);
         assert.equal(response.data.data.id, 1);
       });
@@ -9705,7 +9706,7 @@ describe('SPRT测试', () => {
           const tempQY = QY.EAST;
 
           let response = await put(
-            'GT/7',
+            'GT/6',
             {
               QY: tempQY,
             },
@@ -9792,76 +9793,52 @@ describe('SPRT测试', () => {
         assert.notEqual(response.data.data.length, 0);
       });
     });
-    //获取某个灯片灯片关联的所有灯位及柜台信息
+    //获取某个灯片关联的所有灯位及柜台信息
     describe('getDPDWsInfo', async () => {
       it('KFJL获取某个灯片关联的所有灯位及柜台信息', async () => {
         const DPId = 4;
-        const trueList = [
-          {
-            DWId: 3,
-            DWName: 'DW3',
-            GTName: 'GT1',
-            GTId: 1,
-            PPId: 1,
-            PPName: 'PP1',
-          },
-        ];
+        const curPage = 0;
 
         const response = await post(
           'getDPDWsInfo',
           {
             DPId,
+            curPage,
           },
           KFJLToken,
         );
         assert.equal(response.data.code, 1);
-        assert.sameDeepMembers(response.data.data, trueList)
+        assert.notEqual(response.data.data.length,0)
       });
       it('PPJL获取某个灯片关联的所有灯位及柜台信息', async () => {
         const DPId = 4;
-        const trueList = [
-          {
-            DWId: 3,
-            DWName: 'DW3',
-            GTName: 'GT1',
-            GTId: 1,
-            PPId: 1,
-            PPName: 'PP1',
-          },
-        ];
+        const curPage = 0;
 
         const response = await post(
           'getDPDWsInfo',
           {
             DPId,
+            curPage,
           },
           PPJLToken,
         );
         assert.equal(response.data.code, 1);
-        assert.sameDeepMembers(response.data.data, trueList)
+        assert.notEqual(response.data.data.length,0)
       });
       it('admin获取某个灯片关联的所有灯位及柜台信息', async () => {
         const DPId = 4;
-        const trueList = [
-          {
-            DWId: 3,
-            DWName: 'DW3',
-            GTName: 'GT1',
-            GTId: 1,
-            PPId: 1,
-            PPName: 'PP1',
-          },
-        ];
+        const curPage = 0;
 
         const response = await post(
           'getDPDWsInfo',
           {
             DPId,
+            curPage,
           },
           adminToken,
         );
         assert.equal(response.data.code, 1);
-        assert.sameDeepMembers(response.data.data, trueList)
+        assert.notEqual(response.data.data.length,0)
       });
     });
     //获取二级组合的详细数据
@@ -10017,7 +9994,7 @@ describe('SPRT测试', () => {
               PPId: 1,
               disabledAt: null
             },
-            { 
+            {
               id: 2,
               name: 'EJZH2',
               number: 2,
@@ -10128,7 +10105,7 @@ describe('SPRT测试', () => {
 
     //生成一批唯一物料接口
     describe('GenerateUniqueWL', async () => {
-      it.only('KFJL生成某个物料的一批唯一物料接口', async () => {
+      it('KFJL生成某个物料的一批唯一物料接口', async () => {
         const WLId = 1;
         const number = 50;
         const response = await post(
@@ -10141,10 +10118,10 @@ describe('SPRT测试', () => {
         );
         assert.equal(response.data.code, 1);
         console.log('izzlog', response.data);
-        assert.equal(response.data.typeid, WLId);
-        assert.equal(response.data.length, 50);
+
+        assert.equal(response.data.data.info.typeId, WLId);
+        assert.equal(response.data.data.uuids.length, 50);
       });
     });
-    
   });
 });
