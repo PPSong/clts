@@ -5,7 +5,7 @@ import * as DBTables from '../models/Model';
 
 const ppLog = debug('ppLog');
 
-export default class FGTesterTable extends BaseTable {
+export default class DDTable extends BaseTable {
   getTable() {
     return DBTables.DD;
   }
