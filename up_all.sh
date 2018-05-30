@@ -4,7 +4,7 @@ PROJ_NAME=SPRT
 
 ENV=test
 
-GIT_BRANCH=master
+GIT_BRANCH=test
 
 NAME=service
 
@@ -16,7 +16,7 @@ cd ${GIT_ROOT}
 
 git checkout ${GIT_BRANCH}
 git fetch --all  
-git reset --hard origin/master 
+git reset --hard origin/${GIT_BRANCH} 
 git pull
 
 cd /home/wwwroot/
