@@ -235,7 +235,7 @@ const createViewAndProcedure = async () => {
   const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
   const procedureSql1 = replaceAll(
     procedureSql,
-    '_DDStatus\\.DSP_',
+    '_DDStatus\\.CS_',
     DDStatus.DSP,
   );
   const procedureSql2 = replaceAll(

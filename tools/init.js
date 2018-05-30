@@ -39,8 +39,8 @@ exports.do = async () => {
             const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
             const procedureSql1 = replaceAll(
                 procedureSql,
-                '_DDStatus\\.DSP_',
-                DDStatus.DSP,
+                '_DDStatus\\.CS_',
+                DDStatus.CS,
             );
             const procedureSql2 = replaceAll(
                 procedureSql1,
