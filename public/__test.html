@@ -266,6 +266,8 @@
                 }
             }
             $('#url').html('请求地址: ' + ('[' + api.type + '] ') + url);
+
+            $('#response').val('返回示例数据:\r\n' + (api.response ? JSON.stringify(api.response, null, 2) : '暂无'));
         }
 
         function fire() {

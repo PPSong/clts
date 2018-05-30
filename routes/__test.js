@@ -31,6 +31,17 @@ function renderRoot(req, res, complete) {
     if (!SERVICE_LIST) {
         SERVICE_LIST = [];
 
+        //read response example
+        let response = JSON.parse(FS.readFileSync(PATH.join(__dirname, "../tools_izz/PCAPI.json"), {encoding:"utf8"}));
+        response = { ...response, ...JSON.parse(FS.readFileSync(PATH.join(__dirname, "../tools_izz/PCAPI.json"), {encoding:"utf8"})) };
+        let returnExamples = {};
+        for (let key in response) {
+            let method = key.split('_')[0].toUpperCase();
+            let name = key.replace(new RegExp(method + '_', 'i'), '').replace(/\/\d+/, '/:id');
+            let def = { type:method, name:name, example:response[key] };
+            returnExamples[method + '_' + name] = def;
+        }
+
         /*
         {
             index:0,
@@ -114,6 +125,8 @@ function renderRoot(req, res, complete) {
             ]
         });
 
+        console.log(returnExamples);
+
         let apiSchemaFile = FS.readFileSync(PATH.join(__dirname, "../routes/apiSchema.js"), {encoding:"utf8"});
 
         let group = { index:0, group:"POST类型API", methods:[] };
@@ -133,8 +146,14 @@ function renderRoot(req, res, complete) {
                     },
                     optionalParams: {},
                     needLogin: true
-                }
+                },
+                response: null
             };
+
+            let returnExample = returnExamples['POST_' + apiName];
+            if (returnExample && returnExample.example) {
+                method.response = returnExample.example;
+            }
 
             let tmp;
             let regexp = "//\\s?.*[\\r\\n]+\\s+" + apiName + "\\s?:\\s?\\{";
@@ -194,7 +213,7 @@ function renderRoot(req, res, complete) {
                     desc:(def.desc || "").replace("{name}", name),
                     index:1,
                     name:(def.prefix || '') + name + (def.args && def.args.id ? "/:id" : ""),
-                    type:def.type,
+                    type:def.type.toUpperCase(),
                     paramsDesc: {
                         id: "数据唯一id", curPage:"当前页码,0表示第一页", perPage:"每个个数,默认50"
                     },
@@ -204,8 +223,15 @@ function renderRoot(req, res, complete) {
                         },
                         optionalParams: {},
                         needLogin: true
-                    }
+                    },
+                    response: null
                 };
+
+                let returnExample = returnExamples[method.type + '_' + method.name];
+                if (returnExample && returnExample.example) {
+                    method.response = returnExample.example;
+                }
+
                 group.methods.push(method);
             });
         }

@@ -347,7 +347,7 @@ export const apiSchema = {
     required: ['name'],
   },
   // 检查Tester名称是否已经存在,在一个品牌内唯一
-  CheckFGTesterNameExists: {
+  checkFGTesterNameExists: {
     type: 'object',
     properties: {
       // Tester名称
@@ -362,7 +362,7 @@ export const apiSchema = {
     required: ['name'],
   },
   // 检查Tester的Code1是否已经存在,在一个品牌内唯一
-  CheckFGTesterCodeExists: {
+  checkFGTesterCodeExists: {
     type: 'object',
     properties: {
       // Tester的Code1
