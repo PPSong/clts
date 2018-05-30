@@ -232,28 +232,28 @@ const createViewAndProcedure = async () => {
   // end 创建View
 
   // 创建Procedure
-  const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
-  const procedureSql1 = replaceAll(
+  let procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
+  procedureSql = replaceAll(
     procedureSql,
     '_DDStatus\\.CS_',
     DDStatus.DSP,
   );
-  const procedureSql2 = replaceAll(
-    procedureSql1,
+  procedureSql = replaceAll(
+    procedureSql,
     '_DDStatus\\.YSP_',
     DDStatus.YSP,
   );
-  const procedureSql3 = replaceAll(
+  procedureSql = replaceAll(
     procedureSql,
     '_DD_GT_WLStatus\\.CS_',
     DD_GT_WLStatus.CS,
   );
-  const procedureSql4 = replaceAll(
-    procedureSql1,
+  procedureSql = replaceAll(
+    procedureSql,
     '_DD_DW_DPStatus\\.CS_',
     DD_DW_DPStatus.CS,
   );
-  await sequelize.query(procedureSql2, {
+  await sequelize.query(procedureSql, {
     type: sequelize.QueryTypes.SELECT,
   });
   // end 创建创建Procedure
@@ -298,7 +298,7 @@ describe('SPRT测试', () => {
     await initData();
   });
 
-  describe('test', async () => {
+  describe.only('test', async () => {
     it.skip('small test', async () => {
       assert.equal(1, 1);
     });

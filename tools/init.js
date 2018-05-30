@@ -36,28 +36,28 @@ exports.do = async () => {
             // end 创建View
 
             // 创建Procedure
-            const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
-            const procedureSql1 = replaceAll(
+            let procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
+            procedureSql = replaceAll(
                 procedureSql,
-                '_DDStatus\\.CS_',
+                '_DDStatus.CS_',
                 DDStatus.CS,
             );
-            const procedureSql2 = replaceAll(
-                procedureSql1,
-                '_DDStatus\\.YSP_',
+            procedureSql = replaceAll(
+                procedureSql,
+                '_DDStatus.YSP_',
                 DDStatus.YSP,
             );
-            const procedureSql3 = replaceAll(
+            procedureSql = replaceAll(
                 procedureSql,
-                '_DD_GT_WLStatus\\.CS_',
+                '_DD_GT_WLStatus.CS_',
                 DD_GT_WLStatus.CS,
             );
-            const procedureSql4 = replaceAll(
-                procedureSql1,
-                '_DD_DW_DPStatus\\.CS_',
+            procedureSql = replaceAll(
+                procedureSql,
+                '_DD_DW_DPStatus.CS_',
                 DD_DW_DPStatus.CS,
             );
-            await Model.sequelize.query(procedureSql2, {
+            await Model.sequelize.query(procedureSql, {
                 type: Model.sequelize.QueryTypes.SELECT,
             });
             // end 创建创建Procedure
@@ -68,7 +68,7 @@ exports.do = async () => {
         await Model.sequelize.query(`INSERT INTO User (username,password,JS, createdAt, updatedAt) VALUES ('admin','$2a$08$DZ4aJmJvcP7LpxIGJXN37O37A6JsF..LYumR1esoUjr1HuVUioW1C','系统管理员', '${moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}', '${moment(new Date()).format('YYYY-MM-DD hh:mm:ss')}')`);
 
     } catch (err) {
-        return process.done(err.message);
+        return process.done(err.stack || err.message);
     }
 
     process.done();
