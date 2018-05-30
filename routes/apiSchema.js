@@ -347,7 +347,7 @@ export const apiSchema = {
     required: ['name'],
   },
   // 检查Tester名称是否已经存在,在一个品牌内唯一
-  CheckFGTesterNameExists: {
+  checkFGTesterNameExists: {
     type: 'object',
     properties: {
       // Tester名称
@@ -362,7 +362,7 @@ export const apiSchema = {
     required: ['name'],
   },
   // 检查Tester的Code1是否已经存在,在一个品牌内唯一
-  CheckFGTesterCodeExists: {
+  checkFGTesterCodeExists: {
     type: 'object',
     properties: {
       // Tester的Code1
@@ -2786,6 +2786,58 @@ export const apiSchema = {
     type: 'object',
     properties: {},
     required: [],
+  },
+  // 替换某一柜台的底图 [ADMIN, PPJL, KFJL]
+  changeGTImage: {
+    type: 'object',
+    properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      },
+      // 图片文件名
+      imageUrl: {
+        type: 'string',
+      }
+    },
+    required: ['GTId','imageUrl'],
+  },
+  // 替换某一个灯位的灯片 [ADMIN, PPJL, KFJL]
+  replaceDWDP: {
+    type: 'object',
+    properties: {
+      // 灯位ID
+      DWId: {
+        type: 'number',
+      },
+      // 灯片ID
+      DPId: {
+        type: 'number',
+      }
+    },
+    required: ['DWId', 'DPId'],
+  },
+  // 删除某一个灯位的灯片 [ADMIN, PPJL, KFJL]
+  deleteDWDP: {
+    type: 'object',
+    properties: {
+      // 灯位ID
+      DWId: {
+        type: 'number',
+      }
+    },
+    required: ['DWId'],
+  },
+  // 获取某个柜台所关联的灯位数组 [ADMIN, PPJL, KFJL]
+  getGTDWList: {
+    type: 'object',
+    properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      }
+    },
+    required: ['GTId'],
   },
   // 灯片关联的灯位, 柜台信息 [ADMIN, PPJL, KFJL]
   getDPDWsInfo: {

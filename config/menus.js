@@ -14,6 +14,7 @@ export default {
     },
     { name: '供应商管理', icon:'SplitObject', key: '/gys' },
     { name: '安装公司管理', icon:'Repair', key: '/azgs' },
+    { name: '品牌管理', icon:'FavoriteStar', key: '/pp' },
     {
       name: '货品管理',
       key: '#items',
@@ -31,6 +32,18 @@ export default {
           contains:{
             '/yjzh_edit': { name: '一级组合详细', key: '/yjzh_edit' }
           }
+        }
+      ]
+    },
+    {
+      name: '制图管理',
+      key: '#show',
+      icon: 'Design',
+      links:[
+        { name: '柜台陈列', key: '/gt_show',
+          contains:{
+            '/gt_show_detail': { name: '柜台陈列详细', key: '/gt_show_detail' }
+          } 
         }
       ]
     },
@@ -84,6 +97,18 @@ export default {
       ]
     },
     {
+      name: '制图管理',
+      key: '#show',
+      icon: 'Design',
+      links:[
+        { name: '柜台陈列', key: '/gt_show',
+          contains:{
+            '/gt_show_detail': { name: '柜台陈列详细', key: '/gt_show_detail' }
+          } 
+        }
+      ]
+    },
+    {
       name: '打印标签',
       key: '#print',
       icon: 'Print',
@@ -130,6 +155,18 @@ export default {
           contains:{
             '/yjzh_edit': { name: '编辑一级组合', key: '/yjzh_edit' }
           }
+        }
+      ]
+    },
+    {
+      name: '制图管理',
+      key: '#show',
+      icon: 'Design',
+      links:[
+        { name: '柜台陈列', key: '/gt_show',
+          contains:{
+            '/gt_show_detail': { name: '柜台陈列详细', key: '/gt_show_detail' }
+          } 
         }
       ]
     },
