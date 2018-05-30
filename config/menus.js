@@ -9,11 +9,12 @@ export default {
       icon:'Archive', 
       key: '/gt',
       contains:{
-        '/gt_edit': { name: '编辑柜台', key: '/gt_edit' }
+        '/gt_edit': { name: '柜台详细', key: '/gt_edit' }
       } 
     },
     { name: '供应商管理', icon:'SplitObject', key: '/gys' },
     { name: '安装公司管理', icon:'Repair', key: '/azgs' },
+    { name: '品牌管理', icon:'FavoriteStar', key: '/pp' },
     {
       name: '货品管理',
       key: '#items',
@@ -21,7 +22,29 @@ export default {
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
         { name: '物料', key: '/wl' },
-        { name: '二级组合', key: '/ejzh' }
+        { name: 'Tester', key: '/tester' },
+        { name: '二级组合', key: '/ejzh',
+          contains:{
+            '/ejzh_edit': { name: '二级组合详细', key: '/ejzh_edit' }
+          }
+        },
+        { name: '一级组合', key: '/yjzh',
+          contains:{
+            '/yjzh_edit': { name: '一级组合详细', key: '/yjzh_edit' }
+          }
+        }
+      ]
+    },
+    {
+      name: '制图管理',
+      key: '#show',
+      icon: 'Design',
+      links:[
+        { name: '柜台陈列', key: '/gt_show',
+          contains:{
+            '/gt_show_detail': { name: '柜台陈列详细', key: '/gt_show_detail' }
+          } 
+        }
       ]
     },
     {
@@ -54,7 +77,35 @@ export default {
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
         { name: '物料', key: '/wl' },
-        { name: '二级组合', key: '/ejzh' }
+        { name: 'Tester', key: '/tester' },
+        { name: '二级组合', key: '/ejzh',
+          links:[
+            { name: '新建二级组合', key: '/ejzh_create' }
+          ],
+          contains:{
+            '/ejzh_edit': { name: '编辑二级组合', key: '/ejzh_edit' }
+          }
+        },
+        { name: '一级组合', key: '/yjzh',
+          links:[
+            { name: '新建一级组合', key: '/yjzh_create' }
+          ],
+          contains:{
+            '/yjzh_edit': { name: '编辑一级组合', key: '/yjzh_edit' }
+          }
+        }
+      ]
+    },
+    {
+      name: '制图管理',
+      key: '#show',
+      icon: 'Design',
+      links:[
+        { name: '柜台陈列', key: '/gt_show',
+          contains:{
+            '/gt_show_detail': { name: '柜台陈列详细', key: '/gt_show_detail' }
+          } 
+        }
       ]
     },
     {
@@ -88,6 +139,7 @@ export default {
         { name: '灯位', key: '/dw' },
         { name: '灯片库', key: '/dp' },
         { name: '物料', key: '/wl' },
+        { name: 'Tester', key: '/tester' },
         { name: '二级组合', key: '/ejzh',
           links:[
             { name: '新建二级组合', key: '/ejzh_create' }
@@ -103,6 +155,18 @@ export default {
           contains:{
             '/yjzh_edit': { name: '编辑一级组合', key: '/yjzh_edit' }
           }
+        }
+      ]
+    },
+    {
+      name: '制图管理',
+      key: '#show',
+      icon: 'Design',
+      links:[
+        { name: '柜台陈列', key: '/gt_show',
+          contains:{
+            '/gt_show_detail': { name: '柜台陈列详细', key: '/gt_show_detail' }
+          } 
         }
       ]
     },

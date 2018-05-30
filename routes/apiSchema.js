@@ -347,7 +347,7 @@ export const apiSchema = {
     required: ['name'],
   },
   // 检查Tester名称是否已经存在,在一个品牌内唯一
-  CheckFGTesterNameExists: {
+  checkFGTesterNameExists: {
     type: 'object',
     properties: {
       // Tester名称
@@ -360,6 +360,21 @@ export const apiSchema = {
       },
     },
     required: ['name'],
+  },
+  // 检查Tester的Code1是否已经存在,在一个品牌内唯一
+  checkFGTesterCodeExists: {
+    type: 'object',
+    properties: {
+      // Tester的Code1
+      Code1: {
+        type: 'string',
+      },
+      // 品牌id,客服经理可不传
+      PPId: {
+        type: 'number',
+      },
+    },
+    required: ['Code1'],
   },
   // 检查灯片名称是否已经存在
   checkDPExists: {
@@ -692,7 +707,9 @@ export const apiSchema = {
   // 获取自己品牌下的所有柜长列表 [KFJL]
   getGZList: {
     type: 'object',
-    properties: {},
+    properties: {
+
+    },
     required: [],
   },
   // 获取某一柜长的所有柜台列表 [ADMIN,PPJL,KFJL,GZ]
@@ -701,7 +718,7 @@ export const apiSchema = {
     properties: {
       // 柜长id,如果是柜长本人则不需要
       GZUserId: {
-        type: 'string',
+        type: 'number',
       },
       // 柜台属性,如"id,name,code",默认返回所有属性
       fields: {
@@ -825,6 +842,26 @@ export const apiSchema = {
       },
     },
     required: ['id', 'DWIds'],
+  },
+  // 设置DWs的DP [PPJL, KFJL]
+  setDWs0DP: {
+    type: 'object',
+    properties: {
+      // DPId
+      DPId: {
+        type: 'number',
+      },
+      // DWIds
+      DWIds: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'number',
+        },
+      },
+    },
+    required: ['DPId', 'DWIds'],
   },
   // 创建EJZH [KFJL]
   createEJZH: {
@@ -969,7 +1006,7 @@ export const apiSchema = {
       // 二级组合id
       EJZHId: {
         type: 'number',
-      }
+      },
     },
     required: ['EJZHId'],
   },
@@ -980,7 +1017,7 @@ export const apiSchema = {
       // 一级组合id
       YJZHId: {
         type: 'number',
-      }
+      },
     },
     required: ['YJZHId'],
   },
@@ -2750,6 +2787,58 @@ export const apiSchema = {
     properties: {},
     required: [],
   },
+  // 替换某一柜台的底图 [ADMIN, PPJL, KFJL]
+  changeGTImage: {
+    type: 'object',
+    properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      },
+      // 图片文件名
+      imageUrl: {
+        type: 'string',
+      }
+    },
+    required: ['GTId','imageUrl'],
+  },
+  // 替换某一个灯位的灯片 [ADMIN, PPJL, KFJL]
+  replaceDWDP: {
+    type: 'object',
+    properties: {
+      // 灯位ID
+      DWId: {
+        type: 'number',
+      },
+      // 灯片ID
+      DPId: {
+        type: 'number',
+      }
+    },
+    required: ['DWId', 'DPId'],
+  },
+  // 删除某一个灯位的灯片 [ADMIN, PPJL, KFJL]
+  deleteDWDP: {
+    type: 'object',
+    properties: {
+      // 灯位ID
+      DWId: {
+        type: 'number',
+      }
+    },
+    required: ['DWId'],
+  },
+  // 获取某个柜台所关联的灯位数组 [ADMIN, PPJL, KFJL]
+  getGTDWList: {
+    type: 'object',
+    properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      }
+    },
+    required: ['GTId'],
+  },
   // 灯片关联的灯位, 柜台信息 [ADMIN, PPJL, KFJL]
   getDPDWsInfo: {
     type: 'object',
@@ -2758,8 +2847,12 @@ export const apiSchema = {
       DPId: {
         type: 'number',
       },
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
     },
-    required: ['DPId'],
+    required: ['DPId', 'curPage'],
   },
   // 批量生成唯一物料uuid [ADMIN, PPJL, KFJL, GYSGLY]
   GenerateUniqueWL: {
@@ -2776,4 +2869,5 @@ export const apiSchema = {
     },
     required: ['WLId', 'number'],
   },
+
 };

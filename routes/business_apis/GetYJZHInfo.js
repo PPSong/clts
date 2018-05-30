@@ -24,21 +24,21 @@ export default class getYJZHInfo extends BusinessQueryApiBase {
         a.WLId,
         a.PPId
       from
-        yjzh as a
+        YJZH as a
       where a.id=${YJZHId}) as a
-      left join pp as b on a.PPId = b.id
-      left join wl as c on a.WLId = c.id
+      left join PP as b on a.PPId = b.id
+      left join WL as c on a.WLId = c.id
     `, { type: DBTables.sequelize.QueryTypes.SELECT });
     if (r && r[0]) {
       r = r[0];
 
       r.EJZHs = await DBTables.sequelize.query(`
         select b.id, b.name, a.number, b.PPId, b.disabledAt
-        from (select * from yjzh_ejzh where YJZHId=${YJZHId}) as a
-        left join ejzh as b on a.EJZHId = b.id`,
+        from (select * from YJZH_EJZH where YJZHId=${YJZHId}) as a
+        left join EJZH as b on a.EJZHId = b.id`,
         { type: DBTables.sequelize.QueryTypes.SELECT });
 
-      r.XGTs = await DBTables.sequelize.query(`select * from yjzhxgt where YJZHId=${YJZHId}`, { type: DBTables.sequelize.QueryTypes.SELECT });
+      r.XGTs = await DBTables.sequelize.query(`select * from YJZHXGT where YJZHId=${YJZHId}`, { type: DBTables.sequelize.QueryTypes.SELECT });
       r.XGTs = r.XGTs.map(xgt => {
         return xgt.imageUrl;
       });

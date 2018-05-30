@@ -3,27 +3,10 @@ import * as DBTables from '../../models/Model';
 
 export default class CreateEJZH extends BusinessApiBase {
   static getAllowAccessJSs() {
-    return [DBTables.JS.KFJL];
+    return [DBTables.JS.PPJL, DBTables.JS.KFJL];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    // XGTs: ['XGT_T1', 'XGT_T2'];
-    // FGTesters: [
-    //   {
-    //     id: 2,
-    //     number: 2,
-    //   },
-    //   {
-    //     id: 3,
-    //     number: 2,
-    //   },
-    // ];
-    // SJWLs: [
-    //   {
-    //     id: 1,
-    //     number: 2,
-    //   },
-    // ];
     let {
       PPId, name, WLId, imageUrl, XGTs, FGTesters, SJWLs,
     } = req.body;

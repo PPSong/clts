@@ -103,7 +103,6 @@ const getToken = async (username, password) => {
 
 const post = async (path, body, token) => {
   try {
-    API_DESC[path] = {};
     const r = await axios.post(`${api}/${path}`, body, {
       headers: {
         Authorization: `bearer ${token}`,
@@ -113,14 +112,14 @@ const post = async (path, body, token) => {
 
     let deepCopyr = JSON.parse(JSON.stringify(r.data));
 
-    if (deepCopyr.data === undefined) {
-      API_DESC[path] = deepCopyr
+    if (deepCopyr.code !== 1) {
+      
     } else {
       if (deepCopyr.data.list === undefined) {
-        API_DESC[path] = deepCopyr
+        API_DESC[`post_${path}`] = deepCopyr
       } else {
         deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
-        API_DESC[path] = deepCopyr
+        API_DESC[`post_${path}`] = deepCopyr
       }
     }
 
@@ -139,14 +138,14 @@ const put = async (path, body, token) => {
 
   let deepCopyr = JSON.parse(JSON.stringify(r.data))
 
-  if (deepCopyr.data === undefined) {
-    API_DESC[path] = deepCopyr
+  if (deepCopyr.code !== 1) {
+   
   } else {
     if (deepCopyr.data.list === undefined) {
-      API_DESC[path] = deepCopyr
+      API_DESC[`put_${path}`] = deepCopyr
     } else {
       deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
-      API_DESC[path] = deepCopyr
+      API_DESC[`put_${path}`] = deepCopyr
     }
   }
 
@@ -163,14 +162,14 @@ const get = async (path, params, token) => {
 
   let deepCopyr = JSON.parse(JSON.stringify(r.data));
 
-  if (deepCopyr.data === undefined) {
-    API_DESC[path] = deepCopyr
+  if (deepCopyr.code !== 1) {
+    
   } else {
     if (deepCopyr.data.list === undefined) {
-      API_DESC[path] = deepCopyr
+      API_DESC[`get_${path}`] = deepCopyr
     } else {
       deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
-      API_DESC[path] = deepCopyr
+      API_DESC[`get_${path}`] = deepCopyr
     }
   }
 
@@ -236,7 +235,7 @@ const createViewAndProcedure = async () => {
   const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
   const procedureSql1 = replaceAll(
     procedureSql,
-    '_DDStatus\\.DSP_',
+    '_DDStatus\\.CS_',
     DDStatus.DSP,
   );
   const procedureSql2 = replaceAll(

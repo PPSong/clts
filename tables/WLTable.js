@@ -56,7 +56,7 @@ export default class WLTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -66,6 +66,8 @@ export default class WLTable extends BaseTable {
       case JS.PPJL:
       case JS.KFJL:
         await this.user.checkPPId(record.PPId, transaction);
+        break;
+      case JS.ADMIN:
         break;
       default:
         throw new Error('无此权限!');

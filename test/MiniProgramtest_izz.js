@@ -109,17 +109,17 @@ const post = async (path, body, token) => {
         Authorization: `bearer ${token}`,
       },
     });
-    
+
     let deepCopyr = JSON.parse(JSON.stringify(r.data));
-    
-    if (deepCopyr.data === undefined) {
-      API_DESC[path] = deepCopyr
+
+    if (deepCopyr.code !== 1) {
+
     } else {
       if (deepCopyr.data.list === undefined) {
-        API_DESC[path] = deepCopyr
+        API_DESC[`post_${path}`] = deepCopyr
       } else {
         deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
-        API_DESC[path] = deepCopyr
+        API_DESC[`post_${path}`] = deepCopyr
       }
     }
 
@@ -138,16 +138,16 @@ const put = async (path, body, token) => {
 
   let deepCopyr = JSON.parse(JSON.stringify(r.data));
 
-    if (deepCopyr.data === undefined) {
-      API_DESC[path] = deepCopyr
+  if (deepCopyr.code !== 1) {
+
+  } else {
+    if (deepCopyr.data.list === undefined) {
+      API_DESC[`put_${path}`] = deepCopyr
     } else {
-      if (deepCopyr.data.list === undefined) {
-        API_DESC[path] = deepCopyr
-      } else {
-        deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
-        API_DESC[path] = deepCopyr
-      }
+      deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+      API_DESC[`put_${path}`] = deepCopyr
     }
+  }
 
   return r;
 };
@@ -162,16 +162,16 @@ const get = async (path, params, token) => {
 
   let deepCopyr = JSON.parse(JSON.stringify(r.data));
 
-    if (deepCopyr.data === undefined) {
-      API_DESC[path] = deepCopyr
+  if (deepCopyr.code !== 1) {
+
+  } else {
+    if (deepCopyr.data.list === undefined) {
+      API_DESC[`get_${path}`] = deepCopyr
     } else {
-      if (deepCopyr.data.list === undefined) {
-        API_DESC[path] = deepCopyr
-      } else {
-        deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
-        API_DESC[path] = deepCopyr
-      }
+      deepCopyr.data.list = deepCopyr.data.list.slice(0, 1);
+      API_DESC[`get_${path}`] = deepCopyr
     }
+  }
 
   return r;
 };
@@ -227,8 +227,8 @@ const createViewAndProcedure = async () => {
   const procedureSql = await readFile(`${__dirname}/../tools/dbProcedureScript.sql`);
   const procedureSql1 = replaceAll(
     procedureSql,
-    '_DDStatus\\.DSP_',
-    DDStatus.DSP,
+    '_DDStatus\\.CS_',
+    DDStatus.CS,
   );
   const procedureSql2 = replaceAll(
     procedureSql1,

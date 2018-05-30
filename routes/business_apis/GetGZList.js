@@ -3,7 +3,7 @@ import { sequelize, JS } from '../../models/Model';
 
 export default class GetGZList extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
-    return [JS.ADMIN, JS.KFJL];
+    return [JS.ADMIN, JS.PPJL, JS.KFJL];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
@@ -11,8 +11,13 @@ export default class GetGZList extends BusinessQueryApiBase {
 
     if (user.JS === JS.ADMIN) {
       //
-    } else {
+    } else if (user.JS === JS.KFJL) {
       let pps = await user.getKFJLPPs();
+      if (pps.length > 0) {
+        PPId = pps[0].id;
+      }
+    } else if (user.JS === JS.PPJL) {
+      let pps = await user.getPPJLPPs();
       if (pps.length > 0) {
         PPId = pps[0].id;
       }

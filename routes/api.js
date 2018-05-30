@@ -12,7 +12,7 @@ import * as businessApis from './business_apis';
 /* eslint-enable */
 import { sequelize } from '../models/Model';
 
-const router = express.Router();
+const router = express.Router(); 
 
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
@@ -86,7 +86,7 @@ router.get('/:table/:id', async (req, res, next) => {
   try {
     transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).findOne(req.params.id, transaction);
+    const r = await new Table(req.user).findOne(req.params.id, transaction, req.query);
     await transaction.commit();
     res.json(r);
   } catch (err) {
