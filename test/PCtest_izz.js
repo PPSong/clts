@@ -236,7 +236,7 @@ const createViewAndProcedure = async () => {
   procedureSql = replaceAll(
     procedureSql,
     '_DDStatus\\.CS_',
-    DDStatus.DSP,
+    DDStatus.CS,
   );
   procedureSql = replaceAll(
     procedureSql,
