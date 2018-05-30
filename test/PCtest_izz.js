@@ -298,7 +298,7 @@ describe('SPRT测试', () => {
     await initData();
   });
 
-  describe.only('test', async () => {
+  describe('test', async () => {
     it.skip('small test', async () => {
       assert.equal(1, 1);
     });
