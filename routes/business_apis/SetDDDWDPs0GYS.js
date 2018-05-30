@@ -8,7 +8,9 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { DD_DW_DPIds, GYSId } = req.body;
+    const {
+      DD_DW_DPIds, GYSId, YJRKDate, YJZXDate,
+    } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
@@ -68,7 +70,9 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
     // 检查DD_DW_DP状态是'初始'
     const notCSDD_DW_DPs = tmpDD_DW_DPs.filter(item => item.status !== DBTables.DD_DW_DPStatus.CS);
     if (notCSDD_DW_DPs.length > 0) {
-      throw new Error(`${notCSDD_DW_DPs}不在${DBTables.DD_DW_DPStatus.CS}状态, 不可指定发货供应商!`);
+      throw new Error(`${notCSDD_DW_DPs}不在${
+        DBTables.DD_DW_DPStatus.CS
+      }状态, 不可指定发货供应商!`);
     }
     // end 检查DD_DW_DP状态是'初始'
 
@@ -90,6 +94,8 @@ export default class SetDDDWDPs0GYS extends BusinessApiBase {
       {
         GYSId,
         status: DBTables.DD_DW_DPStatus.YFPFHGYS,
+        YJRKDate,
+        YJZXDate,
       },
       {
         where: {
