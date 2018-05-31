@@ -20,7 +20,11 @@ export default {
       key: '#items',
       links:[
         { name: '灯位', key: '/dw' },
-        { name: '灯片库', key: '/dp' },
+        { name: '灯片库', key: '/dp',
+          contains:{
+            '/dw_ygl': { name: '已关联灯位', key: '/dw_ygl' }
+          } 
+        },
         { name: '物料', key: '/wl' },
         { name: 'Tester', key: '/tester' },
         { name: '二级组合', key: '/ejzh',
@@ -75,7 +79,11 @@ export default {
       key: '#items',
       links:[
         { name: '灯位', key: '/dw' },
-        { name: '灯片库', key: '/dp' },
+        { name: '灯片库', key: '/dp',
+          contains:{
+            '/dw_ygl': { name: '已关联灯位', key: '/dw_ygl' }
+          } 
+        },
         { name: '物料', key: '/wl' },
         { name: 'Tester', key: '/tester' },
         { name: '二级组合', key: '/ejzh',
@@ -137,7 +145,11 @@ export default {
       key: '#items',
       links:[
         { name: '灯位', key: '/dw' },
-        { name: '灯片库', key: '/dp' },
+        { name: '灯片库', key: '/dp',
+          contains:{
+            '/dw_ygl': { name: '已关联灯位', key: '/dw_ygl' }
+          } 
+        },
         { name: '物料', key: '/wl' },
         { name: 'Tester', key: '/tester' },
         { name: '二级组合', key: '/ejzh',

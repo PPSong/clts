@@ -2836,8 +2836,12 @@ export const apiSchema = {
       curPage: {
         type: 'number',
       },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
     },
-    required: ['DPId', 'curPage'],
+    required: ['DPId'],
   },
   // 批量生成唯一物料uuid [ADMIN, PPJL, KFJL, GYSGLY]
   GenerateUniqueWL: {
