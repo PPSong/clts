@@ -12,11 +12,11 @@ import * as businessApis from './business_apis';
 /* eslint-enable */
 import { sequelize } from '../models/Model';
 
-const router = express.Router(); 
+const router = express.Router();
 
 // const ppLog = debug('ppLog');
 const ppLog = (obj) => {
-  console.log('ppLog', obj); 
+  console.log('ppLog', obj);
 };
 
 export const ajv = Ajv({ allErrors: true });
@@ -27,8 +27,8 @@ function validateParams(schema) {
       throw new Error(errorResponse(ajv.errors));
     }
 
-    next(); 
-  }; 
+    next();
+  };
 }
 
 function upperCaseHead(str) {
@@ -36,7 +36,7 @@ function upperCaseHead(str) {
 }
 
 for (const key in apiSchema) {
-  let name = upperCaseHead(key);
+  const name = upperCaseHead(key);
   // console.log('ppt', key, name);
   let def = businessApis[name];
   if (!def) throw new Error('undefined API ---> ' + name);
@@ -127,7 +127,7 @@ router.post('/disable/:table/:id', async (req, res, next) => {
     transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
     const r = await new Table(req.user).disable(
-      req.params.id, 
+      req.params.id,
       transaction,
     );
     await transaction.commit();
@@ -136,7 +136,7 @@ router.post('/disable/:table/:id', async (req, res, next) => {
     // Rollback
     ppLog(err);
     next(err);
-  } 
+  }
 });
 
 router.post('/enable/:table/:id', async (req, res, next) => {
@@ -167,7 +167,6 @@ router.delete('/:table/:id', async (req, res, next) => {
     const Table = tables[`${req.params.table}Table`];
     const r = await new Table(req.user).delete(
       req.params.id,
-      req.body,
       transaction,
     );
     await transaction.commit();
