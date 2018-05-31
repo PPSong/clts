@@ -84,6 +84,9 @@ export default class DWTable extends BaseTable {
       'a.CZ',
       'a.disabledAt',
       'c.name PPName',
+      'd.id DPId',
+      'd.name DPName',
+      'd.imageUrl DP_imageUrl',
       'a.createdAt',
     ];
   }
@@ -102,9 +105,10 @@ export default class DWTable extends BaseTable {
       .select()
       .from('DW', 'a')
       .join('GT', 'b', 'a.GTId = b.id')
-      .join('PP', 'c', 'b.PPId = c.id');
+      .join('PP', 'c', 'b.PPId = c.id')
+      .left_join('DP', 'd', 'd.id = a.DPId');
 
-    const likeFields = ['b.code', 'b.name', 'a.name', 'a.CC', 'A.CZ', 'c.name'];
+    const likeFields = ['b.code', 'b.name', 'a.name', 'a.CC', 'A.CZ', 'c.name', 'd.name'];
 
     // 根据用户操作记录范围加入where
     let PPIds;

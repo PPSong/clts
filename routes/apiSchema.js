@@ -450,6 +450,21 @@ export const apiSchema = {
     },
     required: ['name'],
   },
+  // 检查订单名称是否已经存在,在一个品牌内名称唯一
+  checkDDExists: {
+    type: 'object',
+    properties: {
+      // 柜台名称
+      name: {
+        type: 'string',
+      },
+      // 品牌ID,品牌经理/客服经理角色可不传
+      PPId: {
+        type: 'number',
+      },
+    },
+    required: ['name'],
+  },
   // 检查柜台名称是否已经存在,在一个品牌内名称唯一
   checkGTExists: {
     type: 'object',
@@ -2828,6 +2843,225 @@ export const apiSchema = {
     },
     required: ['DWId'],
   },
+  // 设置某个柜台所关联的一个一级组合配置,返回更改后的最新数据 [ADMIN, PPJL, KFJL]
+  setGTYJZH: {
+    type: 'object',
+    properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      },
+      // 一级组合ID
+      YJZHId: {
+        type: 'number',
+      },
+      // 一级组合数量,<1则表示删除关联
+      number: {
+        type: 'number',
+      }
+    },
+    required: ['GTId','YJZHId','number'],
+  },
+  // 设置某个柜台的一级组合配置,返回更改后的最新数据 [ADMIN, PPJL, KFJL]
+  setGTYJZHs: {
+    type: 'object',
+    properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      },
+      // 一级组合数组[{id,number},...]
+      YJZHs: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            // 一级组合ID
+            id: {
+              type: 'number',
+            },
+            // 数量
+            number: {
+              type: 'number',
+            },
+          },
+          required: ['id', 'number'],
+        },
+      },
+      // 二级组合数量,<1则表示删除关联
+      number: {
+        type: 'number',
+      }
+    },
+    required: ['YJZHs','GTId'],
+  },
+  // 设置某个一级组合所关联的一个二级组合配置 [ADMIN, PPJL, KFJL]
+  setYJZHEJZH: {
+    type: 'object',
+    properties: {
+      // 一级组合ID
+      YJZHId: {
+        type: 'number',
+      },
+      // 二级组合ID
+      EJZHId: {
+        type: 'number',
+      },
+      // 二级组合数量,<1则表示删除关联
+      number: {
+        type: 'number',
+      }
+    },
+    required: ['EJZHId','YJZHId','number'],
+  },
+  // 设置某个二级组合所关联的一个三级物料配置 [ADMIN, PPJL, KFJL]
+  setEJZHSJWL: {
+    type: 'object',
+    properties: {
+      // 二级组合ID
+      EJZHId: {
+        type: 'number',
+      },
+      // 物料ID
+      SJWLId: {
+        type: 'number',
+      },
+      // 二级组合数量,<1则表示删除关联
+      number: {
+        type: 'number',
+      }
+    },
+    required: ['EJZHId','SJWLId','number'],
+  },
+  // 设置某个二级组合所关联的一个Tester配置 [ADMIN, PPJL, KFJL]
+  setEJZHFGTester: {
+    type: 'object',
+    properties: {
+      // 二级组合ID
+      EJZHId: {
+        type: 'number',
+      },
+      // Tester ID
+      FGTesterId: {
+        type: 'number',
+      },
+      // 二级组合数量,<1则表示删除关联
+      number: {
+        type: 'number',
+      }
+    },
+    required: ['EJZHId','FGTesterId','number'],
+  },
+  // 设置某个一级组合的二级组合配置 [ADMIN, PPJL, KFJL]
+  setYJZHEJZHs: {
+    type: 'object',
+    properties: {
+      // 一级组合ID
+      YJZHId: {
+        type: 'number',
+      },
+      // 二级组合数组[{id,number},...]
+      EJZHs: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            // 二级组合ID
+            id: {
+              type: 'number',
+            },
+            // 数量
+            number: {
+              type: 'number',
+            },
+          },
+          required: ['id', 'number'],
+        },
+      },
+      // 二级组合数量,<1则表示删除关联
+      number: {
+        type: 'number',
+      }
+    },
+    required: ['EJZHs','YJZHId'],
+  },
+  // 设置某个二级组合的3级物料配置,返回更改后的最新数据 [ADMIN, PPJL, KFJL]
+  setEJZHSJWLs: {
+    type: 'object',
+    properties: {
+      // 二级组合ID
+      EJZHId: {
+        type: 'number',
+      },
+      // 3级物料数组[{id,number},...]
+      SJWLs: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            // 3级物料ID
+            id: {
+              type: 'number',
+            },
+            // 数量
+            number: {
+              type: 'number',
+            },
+          },
+          required: ['id', 'number'],
+        },
+      },
+      // 3级物料数量,<1则表示删除关联
+      number: {
+        type: 'number',
+      }
+    },
+    required: ['SJWLs','EJZHId'],
+  },
+  // 设置某个二级组合的Tester配置,返回更改后的最新数据 [ADMIN, PPJL, KFJL]
+  setEJZHFGTesters: {
+    type: 'object',
+    properties: {
+      // 二级组合ID
+      EJZHId: {
+        type: 'number',
+      },
+      // Tester数组[{id,number},...]
+      FGTesters: {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {
+            // Tester ID
+            id: {
+              type: 'number',
+            },
+            // 数量
+            number: {
+              type: 'number',
+            },
+          },
+          required: ['id', 'number'],
+        },
+      },
+      // Tester数量,<1则表示删除关联
+      number: {
+        type: 'number',
+      }
+    },
+    required: ['FGTesters','EJZHId'],
+  },
+  // 获取某个柜台所关联的一级组合数组 [ADMIN, PPJL, KFJL]
+  getGTYJZHList: {
+    type: 'object',
+    properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      }
+    },
+    required: ['GTId'],
+  },
   // 获取某个柜台所关联的灯位数组 [ADMIN, PPJL, KFJL]
   getGTDWList: {
     type: 'object',
@@ -2851,8 +3085,12 @@ export const apiSchema = {
       curPage: {
         type: 'number',
       },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
     },
-    required: ['DPId', 'curPage'],
+    required: ['DPId'],
   },
   // 批量生成唯一物料uuid [ADMIN, PPJL, KFJL, GYSGLY]
   GenerateUniqueWL: {
