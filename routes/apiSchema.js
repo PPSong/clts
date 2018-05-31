@@ -707,9 +707,7 @@ export const apiSchema = {
   // 获取自己品牌下的所有柜长列表 [KFJL]
   getGZList: {
     type: 'object',
-    properties: {
-
-    },
+    properties: {},
     required: [],
   },
   // 获取某一柜长的所有柜台列表 [ADMIN,PPJL,KFJL,GZ]
@@ -1264,8 +1262,16 @@ export const apiSchema = {
           type: 'number',
         },
       },
+      // YJRKDate
+      YJRKDate: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+      // YJZXDate
+      YJZXDate: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
     },
-    required: ['GYSId', 'DD_GT_WLIds'],
+    required: ['GYSId', 'DD_GT_WLIds', 'YJRKDate', 'YJZXDate'],
   },
   // 批量设置DD_DW_DP的发货GYS [GYSGLY]
   setDDDWDPs0GYS: {
@@ -1284,8 +1290,16 @@ export const apiSchema = {
           type: 'number',
         },
       },
+      // YJRKDate
+      YJRKDate: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+      // YJZXDate
+      YJZXDate: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
     },
-    required: ['GYSId', 'DD_DW_DPIds'],
+    required: ['GYSId', 'DD_DW_DPIds', 'YJRKDate', 'YJZXDate'],
   },
   // 批量设置DD_GT_WL的AZG [AZGSGLY]
   setDDGTWLs0AZG: {
@@ -2855,7 +2869,7 @@ export const apiSchema = {
     required: ['DPId', 'curPage'],
   },
   // 批量生成唯一物料uuid [ADMIN, PPJL, KFJL, GYSGLY]
-  GenerateUniqueWL: {
+  generateUniqueWL: {
     type: 'object',
     properties: {
       // WLId
@@ -2870,7 +2884,7 @@ export const apiSchema = {
     required: ['WLId', 'number'],
   },
   // 获取指定DD的WLs [ADMIN, PPJL, KFJL]
-  GetDD0WLs: {
+  getDD0WLs: {
     type: 'object',
     properties: {
       // DDId
@@ -2885,7 +2899,7 @@ export const apiSchema = {
     required: ['id', 'curPage'],
   },
   // 获取指定DD的DPs [ADMIN, PPJL, KFJL]
-  GetDD0DPs: {
+  getDD0DPs: {
     type: 'object',
     properties: {
       // DDId
@@ -2900,7 +2914,7 @@ export const apiSchema = {
     required: ['id', 'curPage'],
   },
   // 获取指定DD的Testers [ADMIN, PPJL, KFJL]
-  GetDD0Testers: {
+  getDD0Testers: {
     type: 'object',
     properties: {
       // DDId
@@ -2913,5 +2927,45 @@ export const apiSchema = {
       },
     },
     required: ['id', 'curPage'],
+  },
+  // 设置DD_GT_WLs的YJAZDate[AZGSGLY]
+  setDDGTWLs0YJAZDate: {
+    type: 'object',
+    properties: {
+      // DD_GT_WLIds
+      DD_GT_WLIds: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'number',
+        },
+      },
+      // YJAZDate
+      YJAZDate: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+    },
+    required: ['DD_GT_WLIds', 'YJAZDate'],
+  },
+  // 设置DD_DW_DPs的YJAZDate[AZGSGLY]
+  setDDDWDPs0YJAZDate: {
+    type: 'object',
+    properties: {
+      // DD_GT_WLIds
+      DD_DW_DPIds: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'number',
+        },
+      },
+      // YJAZDate
+      YJAZDate: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+    },
+    required: ['DD_DW_DPIds', 'YJAZDate'],
   },
 };

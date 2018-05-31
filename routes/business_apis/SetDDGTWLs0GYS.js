@@ -8,7 +8,9 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { DD_GT_WLIds, GYSId } = req.body;
+    const {
+      DD_GT_WLIds, GYSId, YJRKDate, YJZXDate,
+    } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
@@ -68,7 +70,9 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
     // 检查DD_GT_WL状态是'初始'
     const notCSDD_GT_WLs = tmpDD_GT_WLs.filter(item => item.status !== DBTables.DD_GT_WLStatus.CS);
     if (notCSDD_GT_WLs.length > 0) {
-      throw new Error(`${notCSDD_GT_WLs}不在${DBTables.DD_GT_WLStatus.CS}状态, 不可指定发货供应商!`);
+      throw new Error(`${notCSDD_GT_WLs}不在${
+        DBTables.DD_GT_WLStatus.CS
+      }状态, 不可指定发货供应商!`);
     }
     // end 检查DD_GT_WL状态是'初始'
 
@@ -90,6 +94,8 @@ export default class SetDDGTWLs0GYS extends BusinessApiBase {
       {
         GYSId,
         status: DBTables.DD_GT_WLStatus.YFPFHGYS,
+        YJRKDate,
+        YJZXDate,
       },
       {
         where: {
