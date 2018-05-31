@@ -37,7 +37,7 @@ function upperCaseHead(str) {
 
 for (const key in apiSchema) {
   const name = upperCaseHead(key);
-  console.log('ppt', key, name);
+  // console.log('ppt', key, name);
   router.post(
     `/${key}`,
     validateParams(apiSchema[key]),
