@@ -38,10 +38,12 @@ function upperCaseHead(str) {
 for (const key in apiSchema) {
   const name = upperCaseHead(key);
   // console.log('ppt', key, name);
+  let def = businessApis[name];
+  if (!def) throw new Error('undefined API ---> ' + name);
   router.post(
     `/${key}`,
     validateParams(apiSchema[key]),
-    businessApis[name].getApi(),
+    def.getApi()
   );
 }
 
@@ -140,7 +142,7 @@ router.post('/disable/:table/:id', async (req, res, next) => {
 router.post('/enable/:table/:id', async (req, res, next) => {
   let transaction;
 
-  try {
+  try { 
     transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
     const r = await new Table(req.user).enable(

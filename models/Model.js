@@ -2053,6 +2053,54 @@ EJZH.belongsTo(PP, {
   onUpdate: 'RESTRICT',
 });
 
+EJZH.findOneAsDetail = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let ejzh = await sequelize.query(`
+    select EJZH.id, EJZH.name, WL.id as WLId, WL.name as WL_name, WL.level as WL_level, WL.code as WL_code, WL.imageUrl as WL_imageUrl, EJZH.imageUrl, EJZH.disabledAt
+    from (
+      select *
+      from EJZH
+      where id = ${id}
+    ) as EJZH
+    left join WL on WL.id = EJZH.WLId;
+  `, { type: sequelize.QueryTypes.SELECT });
+  ejzh = ejzh[0];
+
+  if (!ejzh) {
+    throw new Error(`二级组合:${id}不存在!`);
+  }
+
+  ejzh.XGTs = await sequelize.query(`
+      select imageUrl
+      from EJZHXGT
+      where EJZHId = ${ejzh.id}
+  `, { type: sequelize.QueryTypes.SELECT });
+
+  ejzh.SJWLs = await sequelize.query(`
+    select WL.id, WL.name, WL.code, WL.level, WL.GYSId, WL.imageUrl, WL.PPId, EJZH_SJWL.EJZHId, EJZH_SJWL.number
+    from (
+      select *
+      from EJZH_SJWL
+      where EJZHId = ${ejzh.id}
+    ) as EJZH_SJWL
+    left join WL on WL.id = EJZH_SJWL.WLId
+  `, { type: sequelize.QueryTypes.SELECT });
+  ejzh.FGTesters = await sequelize.query(`
+    select FGTester.id, FGTester.name, FGTester.Code1, FGTester.Code2, FGTester.Code3, FGTester.Code4, FGTester.Code5, FGTester.PPId, EJZH_FGTester.EJZHId, EJZH_FGTester.number
+    from (
+      select *
+      from EJZH_FGTester
+      where EJZHId = ${ejzh.id}
+    ) as EJZH_FGTester
+    left join FGTester on FGTester.id = EJZH_FGTester.FGTesterId
+  `, { type: sequelize.QueryTypes.SELECT });
+
+  return ejzh;
+};
+
 // EJZH_FGTester
 export const EJZH_FGTester = sequelize.define(
   'EJZH_FGTester',
@@ -2177,6 +2225,47 @@ YJZH.belongsTo(PP, {
   onDelete: 'RESTRICT',
   onUpdate: 'RESTRICT',
 });
+
+YJZH.findOneAsDetail = async function (id, transaction) {
+  if (!transaction) {
+    throw new Error('transaction不能为空!');
+  }
+
+  let yjzh = await sequelize.query(`
+    select YJZH .id, YJZH .name, WL.id as WLId, WL.name as WL_name, WL.level as WL_level, WL.code as WL_code, WL.imageUrl as WL_imageUrl, YJZH.imageUrl, YJZH.disabledAt
+    from (
+      select *
+      from YJZH
+      where id = ${id}
+    ) as YJZH
+    left join WL on WL.id = YJZH.WLId;
+  `, { type:sequelize.QueryTypes.SELECT });
+  yjzh = yjzh[0];
+
+  if (!yjzh) {
+    throw new Error(`一级组合:${id}不存在!`);
+  }
+
+  yjzh.XGTs = await sequelize.query(`
+    select imageUrl
+    from YJZHXGT
+    where YJZHId = ${yjzh.id}
+  `, { type: sequelize.QueryTypes.SELECT });
+
+  yjzh.EJZHs = await sequelize.query(`
+    select EJZHId as id, number
+    from YJZH_EJZH
+    where YJZHId = ${yjzh.id}
+  `, { type: sequelize.QueryTypes.SELECT });
+
+  for (let j = 0; j < yjzh.EJZHs.length; j++) {
+    let tmp = yjzh.EJZHs[j];
+    yjzh.EJZHs[j] = await EJZH.findOneAsDetail(tmp.id, transaction);
+    yjzh.EJZHs[j].number = tmp.number;
+  }
+
+  return yjzh;
+};
 
 // YJZH_EJZH
 export const YJZH_EJZH = sequelize.define(
