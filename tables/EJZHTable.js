@@ -55,7 +55,7 @@ export default class FGTesterTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
+    if (![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -147,5 +147,36 @@ export default class FGTesterTable extends BaseTable {
     // end 把模糊搜索条件加入where
 
     return tmpSquel;
+  }
+
+  async findOne(id, transaction, queryObj) {
+    this.checkFindOneRight();
+
+    let findOneOption = {
+      where: { id },
+      transaction,
+    };
+    if (this.getFindOneOption) {
+      findOneOption = await this.getFindOneOption(id, transaction);
+    }
+    const record = await this.getTable().findOne(findOneOption);
+
+    if (!record) {
+      throw new Error('没有找到对应记录!');
+    }
+
+    // 查看否在用户权限范围
+    await this.checkUserAccess(record, transaction);
+
+    let r = record.toJSON();
+
+    if (Number(queryObj.detail) === 1) {
+      r = await DBTables.EJZH.findOneAsDetail(r.id, transaction);
+    }
+
+    return {
+      code: 1,
+      data: r,
+    };
   }
 }
