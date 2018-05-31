@@ -108,7 +108,7 @@ export default class DWTable extends BaseTable {
       .join('PP', 'c', 'b.PPId = c.id')
       .left_join('DP', 'd', 'd.id = a.DPId');
 
-    const likeFields = ['b.code', 'b.name', 'a.name', 'a.CC', 'A.CZ', 'c.name', 'd.name'];
+    const likeFields = ['b.code', 'b.name', 'a.name', 'a.CC', 'a.CZ', 'c.name', 'd.name'];
 
     // 根据用户操作记录范围加入where
     let PPIds;
