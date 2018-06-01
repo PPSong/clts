@@ -53,11 +53,15 @@ export default class GetDD0WLs extends BusinessQueryApiBase {
     // 查询记录
     sql = `
     SELECT
-      b.name GTName,
-      c.level,
-      b.code WLCode,
+      b.id GTId,
+      b.name GT_name,
+      b.code GT_code,
+      c.id WLId,
+      c.level WL_level,
+      c.code WL_code,
+      c.name WL_name,
+      c.imageUrl WL_imageUrl,
       a.number,
-      c.name WLName,
       IFNULL(d.name, 'BA') AZLX,
       e.name FHGYS,
       a.GYSId GYSId,
