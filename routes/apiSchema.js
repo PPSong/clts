@@ -3121,7 +3121,7 @@ export const apiSchema = {
     },
     required: ['WLId', 'number'],
   },
-  // 获取指定DD的WLs [ADMIN, PPJL, KFJL]
+  // 获取指定DD的WLs [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
   getDD0WLs: {
     type: 'object',
     properties: {
@@ -3140,7 +3140,7 @@ export const apiSchema = {
     },
     required: ['id', 'curPage'],
   },
-  // 获取指定DD的DPs [ADMIN, PPJL, KFJL]
+  // 获取指定DD的DPs [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
   getDD0DPs: {
     type: 'object',
     properties: {
@@ -3158,6 +3158,44 @@ export const apiSchema = {
       },
     },
     required: ['id', 'curPage'],
+  },
+  // 获取DD的DPs [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
+  searchDD0DPs: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+      // 订单状态过滤,如"初始,已审批"
+      DDStatus: {
+        type: 'string',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取DD的WLs [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
+  searchDD0WLs: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+      // 订单状态过滤,如"初始,已审批"
+      DDStatus: {
+        type: 'string',
+      },
+    },
+    required: ['curPage'],
   },
   // 获取指定DD的Testers [ADMIN, PPJL, KFJL]
   getDD0Testers: {
