@@ -146,7 +146,7 @@ router.post('/enable/:table/:id', async (req, res, next) => {
     transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
     const r = await new Table(req.user).enable(
-      req.params.id,
+      req.params.id, 
       transaction,
     );
     await transaction.commit();
