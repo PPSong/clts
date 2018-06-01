@@ -53,6 +53,7 @@ export default class GetDD0WLs extends BusinessQueryApiBase {
     // 查询记录
     sql = `
     SELECT
+      a.id id,
       b.id GTId,
       b.name GT_name,
       b.code GT_code,
