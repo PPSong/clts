@@ -104,7 +104,7 @@ export default class GetDD0DPs extends BusinessQueryApiBase {
     ON
       a.AZGSId = g.id
     WHERE
-      a.DDId ${id} ${moreWhere2}
+      a.DDId = ${id} ${moreWhere2}
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;

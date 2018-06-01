@@ -105,7 +105,7 @@ router.put('/:table/:id', async (req, res, next) => {
   try {
     transaction = await sequelize.transaction();
     const Table = tables[`${req.params.table}Table`];
-    const r = await new Table(req.user).edit(
+    const r = await new Table(req.user).edit( 
       req.params.id,
       req.body,
       transaction,

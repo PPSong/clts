@@ -59,6 +59,10 @@ BEGIN
 		v_DDId,
         a.DWId, 
         a.DPId,
+        a.DPName,
+        a.DPImageUrl,
+		d.id PPId,
+		d.name PPName,
 		b.CZ,
 		b.CC,
         v_now, 
@@ -73,6 +77,10 @@ BEGIN
 		GT c
 	ON
 		b.GTId = c.id
+	JOIN
+		PP d
+	ON
+		c.PPId = d.id
     WHERE
 		c.PPId = v_PPId
 	AND

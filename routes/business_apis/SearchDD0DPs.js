@@ -43,16 +43,13 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
         return `'${s}'`;
       });
       if (!join1) join1 = '';
-      join1 += ` LEFT JOIN DD ON a.DDId = DD.id`;
-
-      if (!join2) join2 = '';
-      join2 += ` LEFT JOIN DD ON a.DDId = DD.id`;
+      join1 += ` LEFT JOIN DD as h ON a.DDId = h.id`;
 
       if (!moreWhere1) moreWhere1 = '';
-      moreWhere1 += ` AND DD.status in (${DDStatus})`;
+      moreWhere1 += ` AND h.status in (${DDStatus})`;
 
       if (!moreWhere2) moreWhere2 = '';
-      moreWhere2 += ` AND DD.status in (${DDStatus})`;
+      moreWhere2 += ` AND h.status in (${DDStatus})`;
     }
 
     if (moreWhere1 && !where) {
@@ -95,9 +92,12 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
     SELECT
       a.id id,
       c.id GTId,
+      a.DDId DDId,
+      h.name DD_name,
       c.name GT_name,
       c.code GT_code,
       c.PPId PPId,
+      PP.name PP_name,
       b.name DWName,
       b.id DWId,
       f.id DPId,
@@ -131,6 +131,10 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
     ON
       b.GTId = c.id
     JOIN
+      PP
+    ON
+      c.PPId = PP.id
+    JOIN
       GYS d
     ON
       a.GYSId = d.id
@@ -146,6 +150,10 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
       AZGS g
     ON
       a.AZGSId = g.id
+    JOIN
+      DD h
+    ON
+      a.DDId = h.id
     ${join2}
     ${where} ${moreWhere2}
     LIMIT ${perPage}

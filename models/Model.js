@@ -2524,6 +2524,22 @@ export const DD_DW_DPSnapshot = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    DPName: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    DPImageUrl: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    PPId: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    PPName: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
   },
   {
     version: true,
