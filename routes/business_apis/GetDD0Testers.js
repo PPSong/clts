@@ -8,14 +8,27 @@ export default class GetDD0Testers extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { id, curPage } = req.body;
+    let { id, curPage, perPage } = req.body;
 
-    const perPage = 50;
+    perPage = perPage || 50;
 
     await user.checkDDId(id, transaction);
 
+    let sql = `
+      SELECT 
+        count(DD_GT_FGTester.id) as total
+      FROM 
+        DD_GT_FGTester
+      WHERE
+        DD_GT_FGTester.DDId = ${id}
+    `;
+    let total = await DBTables.sequelize.query(sql, {
+      type: DBTables.sequelize.QueryTypes.SELECT,
+    });
+    total = total[0].total || 0;
+
     // 查询记录
-    const sql = `
+    sql = `
     SELECT
       b.name GTName,
       b.code GTCode,
@@ -42,11 +55,13 @@ export default class GetDD0Testers extends BusinessQueryApiBase {
     OFFSET ${curPage * perPage}
     `;
 
-    const r = await DBTables.sequelize.query(sql, {
+    const list = await DBTables.sequelize.query(sql, {
       type: DBTables.sequelize.QueryTypes.SELECT,
     });
 
-    return r;
+    return {
+      list, total
+    };
     // end 查询记录
   }
 }

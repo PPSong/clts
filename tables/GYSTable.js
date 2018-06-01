@@ -101,7 +101,7 @@ export default class GYSTable extends BaseTable {
         gysIDs.push(`'${gys.id}'`);
       });
 
-      query = `a.id in (${gysIDs})`;
+      query = `a.id in (${gysIDs}) OR a.type = '中转'`;
     }
 
     // 把模糊搜索条件加入where

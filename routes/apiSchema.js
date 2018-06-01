@@ -3133,6 +3133,10 @@ export const apiSchema = {
       curPage: {
         type: 'number',
       },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
     },
     required: ['id', 'curPage'],
   },
@@ -3148,6 +3152,10 @@ export const apiSchema = {
       curPage: {
         type: 'number',
       },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
     },
     required: ['id', 'curPage'],
   },
@@ -3161,6 +3169,10 @@ export const apiSchema = {
       },
       // 当前页码
       curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
         type: 'number',
       },
     },
