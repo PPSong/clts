@@ -53,9 +53,13 @@ export default class GetDD0DPs extends BusinessQueryApiBase {
     // 查询记录
     sql = `
     SELECT
-      c.name GTName,
-      b.name DWName,
-      f.name DPName,
+      c.id GTId,
+      c.name GT_name,
+      c.code GT_code,
+      c.name DWName,
+      f.id DPId,
+      f.name DP_name,
+      f.imageUrl DP_imageUrl,
       b.CC,
       b.CZ,
       IFNULL(g.name, 'BA') AZLX,
