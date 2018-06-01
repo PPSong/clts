@@ -56,7 +56,8 @@ export default {
       key: '#print',
       icon: 'Print',
       links:[
-        { name: '道具打印', key: '/print_wl' }
+        { name: '道具打印', key: '/print_wl' },
+        { name: '灯片打印', key: '/print_dp' }
       ]
     },
   ],
@@ -121,7 +122,8 @@ export default {
       key: '#print',
       icon: 'Print',
       links:[
-        { name: '道具打印', key: '/print_wl' }
+        { name: '道具打印', key: '/print_wl' },
+        { name: '灯片打印', key: '/print_dp' }
       ]
     },
   ],
@@ -187,7 +189,8 @@ export default {
       key: '#print',
       icon: 'Print',
       links:[
-        { name: '道具打印', key: '/print_wl' }
+        { name: '道具打印', key: '/print_wl' },
+        { name: '灯片打印', key: '/print_dp' }
       ]
     },
   ],
@@ -200,7 +203,8 @@ export default {
       key: '#print',
       icon: 'Print',
       links:[
-        { name: '道具打印', key: '/print_wl' }
+        { name: '道具打印', key: '/print_wl' },
+        { name: '灯片打印', key: '/print_dp' }
       ]
     },
   ],
