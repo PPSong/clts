@@ -43,16 +43,13 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
         return `'${s}'`;
       });
       if (!join1) join1 = '';
-      join1 += ` LEFT JOIN DD ON a.DDId = DD.id`;
-
-      if (!join2) join2 = '';
-      join2 += ` LEFT JOIN DD ON a.DDId = DD.id`;
+      join1 += ` LEFT JOIN DD as g ON a.DDId = g.id`;
 
       if (!moreWhere1) moreWhere1 = '';
-      moreWhere1 += ` AND DD.status in (${DDStatus})`;
+      moreWhere1 += ` AND g.status in (${DDStatus})`;
 
       if (!moreWhere2) moreWhere2 = '';
-      moreWhere2 += ` AND DD.status in (${DDStatus})`;
+      moreWhere2 += ` AND g.status in (${DDStatus})`;
     }
 
     if (moreWhere1 && !where) {
@@ -92,6 +89,7 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
       a.id id,
       b.id GTId,
       a.DDId DDId,
+      g.name DD_name,
       b.name GT_name,
       b.code GT_code,
       c.id WLId,
@@ -136,6 +134,10 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
       User f
     ON
       a.AZGUserId = f.id
+    JOIN
+      DD g
+    ON
+      a.DDId = g.id
     ${join2}
     ${where} ${moreWhere2}
     LIMIT ${perPage}

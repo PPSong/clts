@@ -309,7 +309,9 @@ CREATE VIEW V_DW_DP
 AS
 SELECT
     a.id DWId,
-    b.id DPId
+    b.id DPId,
+    b.name DPName,
+    b.imageUrl DPImageUrl
 FROM
 	DW a
 LEFT JOIN

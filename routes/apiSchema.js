@@ -3121,6 +3121,21 @@ export const apiSchema = {
     },
     required: ['WLId', 'number'],
   },
+  // 批量生成唯一灯片uuid [ADMIN, PPJL, KFJL, GYSGLY]
+  generateUniqueDP: {
+    type: 'object',
+    properties: {
+      // DD_DW_DPId
+      DD_DW_DPId: {
+        type: 'number',
+      },
+      // 数量
+      number: {
+        type: 'number',
+      },
+    },
+    required: ['DD_DW_DPId', 'number'],
+  },
   // 获取指定DD的WLs [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
   getDD0WLs: {
     type: 'object',
@@ -3240,7 +3255,7 @@ export const apiSchema = {
   setDDDWDPs0YJAZDate: {
     type: 'object',
     properties: {
-      // DD_GT_WLIds
+      // DD_DW_DPIds
       DD_DW_DPIds: {
         type: 'array',
         minItems: 1,
