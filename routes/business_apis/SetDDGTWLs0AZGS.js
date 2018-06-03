@@ -54,7 +54,7 @@ export default class SetDDGTWLs0AZGS extends BusinessApiBase {
 
     await DBTables.DD_GT_WL.update(
       {
-        AZGSId,
+        AZGSId: AZGSId < 1 ? null : AZGSId,
       },
       {
         where: {
