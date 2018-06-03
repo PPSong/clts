@@ -8,7 +8,7 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { curPage, perPage, DDStatus } = req.body;
+    let { curPage, perPage, DDStatus, keyword } = req.body;
 
     perPage = perPage || 50;
 
@@ -52,6 +52,17 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
       moreWhere2 += ` AND g.status in (${DDStatus})`;
     }
 
+    if (keyword && keyword.trim()) {
+      if (!join1) join1 = '';
+      if (join1.indexOf('JOIN DD') < 0) join1 += ` LEFT JOIN DD as h ON a.DDId = h.id`;
+
+      if (!moreWhere1) moreWhere1 = '';
+      moreWhere1 += ` AND (PP.name LIKE '%${keyword}%' OR b.name LIKE '%${keyword}%' OR b.code LIKE '%${keyword}%'OR c.name LIKE '%${keyword}%' OR c.code LIKE '%${keyword}%'`;
+
+      if (!moreWhere2) moreWhere2 = '';
+      moreWhere2 += ` AND (PP.name LIKE '%${keyword}%' OR b.name LIKE '%${keyword}%' OR b.code LIKE '%${keyword}%'OR c.name LIKE '%${keyword}%' OR c.code LIKE '%${keyword}%'`;
+    }
+
     if (moreWhere1 && !where) {
       where = 'WHERE';
     }
@@ -68,6 +79,10 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
         GT b
       ON
         a.GTId = b.id
+      JOIN
+        PP
+      ON
+        b.PPId = PP.id
       ${join1}
       ${where} ${moreWhere1}
     `;

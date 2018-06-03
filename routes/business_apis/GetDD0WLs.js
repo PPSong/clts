@@ -8,7 +8,7 @@ export default class GetDD0WLs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { id, curPage, perPage } = req.body;
+    let { id, curPage, perPage, keyword } = req.body;
 
     perPage = perPage || 50;
 
@@ -34,6 +34,17 @@ export default class GetDD0WLs extends BusinessQueryApiBase {
       moreWhere1 = ` AND GYS.id ${tmp}`;
       moreWhere2 = ` AND e.id ${tmp}`;
       join = `LEFT JOIN GYS ON DD_GT_WL.GYSId = GYS.id`;
+    }
+
+    if (keyword && keyword.trim()) {
+      if (!join) join = '';
+      if (join.indexOf('JOIN DD') < 0) join += ` LEFT JOIN GT as b ON DD_GT_WL.GTId = b.id JOIN WL c ON DD_GT_WL.WLId = c.id`;
+
+      if (!moreWhere1) moreWhere1 = '';
+      moreWhere1 += ` AND (b.name LIKE '%${keyword}%' OR b.code LIKE '%${keyword}%' OR c.name LIKE '%${keyword}%' OR c.code LIKE '%${keyword}%')`;
+
+      if (!moreWhere2) moreWhere2 = '';
+      moreWhere2 += ` AND (b.name LIKE '%${keyword}%' OR b.code LIKE '%${keyword}%' OR c.name LIKE '%${keyword}%' OR c.code LIKE '%${keyword}%')`;
     }
 
     let sql = `
@@ -72,7 +83,7 @@ export default class GetDD0WLs extends BusinessQueryApiBase {
       a.AZGUserId,
       a.YJRKDate,
       a.YJZXDate,
-      IF(IFNULL(f.username,'') = '', 'BA', 'AZG') AZG_role,
+      IF(IFNULL(d.name,'') = '', 'BA', 'AZG') AZG_role,
       f.name AZGUser_name,
       f.username AZGUser_username,
       f.phone AZGUser_phone,

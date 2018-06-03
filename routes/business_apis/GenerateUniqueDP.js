@@ -16,8 +16,13 @@ export default class GenerateUniqueDP extends BusinessQueryApiBase {
     if (!DD_DW_DP) {
       throw new Error('无此数据!');
     }
+
+    let DD_DW_DPSnapshot = await DBTables.DD_DW_DPSnapshot.findOne({ where:{ DDId:DD_DW_DP.DDId, DWId:DD_DW_DP.DWId, DPId:DD_DW_DP.DPId }, transaction });
+    if (!DD_DW_DPSnapshot) {
+      throw new Error('无此数据!');
+    }
     if (user.JS === DBTables.JS.PPJL || user.JS === DBTables.JS.KFJL) {
-      let total = DBTables.sequelize.query(`
+      let sql = `
         SELECT COUNT(*) AS total
         FROM
           ${user.JS === DBTables.JS.PPJL ? 'PPJL_PP' : 'KFJL_PP'}
@@ -41,32 +46,43 @@ export default class GenerateUniqueDP extends BusinessQueryApiBase {
                   )
               )
           )
-      `, {
+      `;
+      let total = await DBTables.sequelize.query(sql, {
         type: DBTables.sequelize.QueryTypes.SELECT,
       });
-      total = total[0].total;
+      total = total[0] ? total[0].total : 0;
       if (!total) {
         throw new Error('无此权限!');
       }
     } else if (user.JS === DBTables.JS.GYSGLY) {
-      let total = DBTables.sequelize.query(`
+      let total = await DBTables.sequelize.query(`
         SELECT COUNT(*) AS total
         FROM GLY_GYS
         WHERE UserId = ${user.id} AND GYSId = ${DD_DW_DP.GYSId}
       `, {
         type: DBTables.sequelize.QueryTypes.SELECT,
       });
-      total = total[0].total;
+      total = total[0] ? total[0].total : 0;
       if (!total) {
         throw new Error('无此权限!');
       }
     }
 
-    let typeData = {};
+    let typeData = {
+      id: DD_DW_DPSnapshot.DPId,
+      name: DD_DW_DPSnapshot.DPName,
+      imageUrl: DD_DW_DPSnapshot.DPImageUrl,
+      PPId: DD_DW_DPSnapshot.PPiD,
+      PPName: DD_DW_DPSnapshot.PPName,
+      CC: DD_DW_DPSnapshot.CC,
+      CZ: DD_DW_DPSnapshot.CZ,
+      DWId: DD_DW_DPSnapshot.DWId,
+      DDId: DD_DW_DPSnapshot.DDId
+    };
 
     let result = { info:{type:"DP",typeId:DD_DW_DP.DPId,typeData:typeData}, uuids:[] };
     for (let i = 0; i < number; i++) {
-      let hex = Utils.md5(Date.now() + '-' + i + '-' + wl.id + '-' + Utils.randomString(8));
+      let hex = Utils.md5(Date.now() + '-' + i + '-' + DD_DW_DPId.id + '-' + Utils.randomString(8));
       hex = hex.substr(Math.round(Math.random() * 18), 12).toUpperCase();
       hex = 'DP' + Utils.randomNumber(4) + hex;
       result.uuids.push(hex);

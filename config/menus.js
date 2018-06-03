@@ -52,6 +52,18 @@ export default {
       ]
     },
     {
+      name: '订单管理',
+      key: '#order',
+      icon: 'Trackers',
+      links:[
+        { name: '订单查询', key: '/dd',
+          contains:{
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+          } 
+        }
+      ]
+    },
+    {
       name: '打印标签',
       key: '#print',
       icon: 'Print',
@@ -113,6 +125,18 @@ export default {
         { name: '柜台陈列', key: '/gt_show',
           contains:{
             '/gt_show_detail': { name: '柜台陈列详细', key: '/gt_show_detail' }
+          } 
+        }
+      ]
+    },
+    {
+      name: '订单管理',
+      key: '#order',
+      icon: 'Trackers',
+      links:[
+        { name: '订单查询', key: '/dd',
+          contains:{
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' }
           } 
         }
       ]
@@ -185,6 +209,18 @@ export default {
       ]
     },
     {
+      name: '订单管理',
+      key: '#order',
+      icon: 'Trackers',
+      links:[
+        { name: '订单查询', key: '/dd',
+          contains:{
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+          } 
+        }
+      ]
+    },
+    {
       name: '打印标签',
       key: '#print',
       icon: 'Print',
@@ -198,6 +234,7 @@ export default {
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
     { name: '账户管理', icon:'Family', key: '/user' },
+    { name: '订单管理', icon: 'Trackers', key: '/dd' },
     {
       name: '打印标签',
       key: '#print',
@@ -211,6 +248,7 @@ export default {
   "安装公司管理员":[
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
-    { name: '账户管理', icon:'Family', key: '/user' }
+    { name: '账户管理', icon:'Family', key: '/user' },
+    { name: '订单管理', icon: 'Trackers', key: '/dd' }
   ]
 };
