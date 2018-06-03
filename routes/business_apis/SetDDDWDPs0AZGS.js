@@ -54,7 +54,7 @@ export default class SetDDDWDPs0AZGS extends BusinessApiBase {
 
     await DBTables.DD_DW_DP.update(
       {
-        AZGSId,
+        AZGSId: AZGSId < 1 ? null : AZGSId,
       },
       {
         where: {

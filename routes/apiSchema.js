@@ -1213,7 +1213,7 @@ export const apiSchema = {
   setDDGTWLs0AZGS: {
     type: 'object',
     properties: {
-      // AZGSId
+      // AZGSId,-1表示BA安装
       AZGSId: {
         type: 'number',
       },
@@ -1233,7 +1233,7 @@ export const apiSchema = {
   setDDDWDPs0AZGS: {
     type: 'object',
     properties: {
-      // AZGSId
+      // AZGSId,-1表示BA安装
       AZGSId: {
         type: 'number',
       },
