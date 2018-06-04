@@ -38,7 +38,7 @@ export default class WLTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -56,7 +56,7 @@ export default class WLTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
@@ -66,6 +66,9 @@ export default class WLTable extends BaseTable {
       case JS.PPJL:
       case JS.KFJL:
         await this.user.checkPPId(record.PPId, transaction);
+        break;
+      case JS.GYSGLY:
+        await this.user.checkGYSId(record.GYSId, transaction);
         break;
       case JS.ADMIN:
         break;
@@ -101,31 +104,26 @@ export default class WLTable extends BaseTable {
     const likeFields = ['a.level', 'a.code', 'a.name', 'b.name', 'c.name'];
 
     // 根据用户操作记录范围加入where
-    let PPIds;
-    let PPId;
+    let PPIds, GYSIds;
+    let PPId, GYSId;
 
     switch (this.user.JS) {
       case JS.ADMIN:
         break;
       case JS.PPJL:
-        PPIds = await this.user
-          .getPPJLPPs({ transaction })
-          .map(item => item.id);
-        PPId = PPIds[0];
         tmpSquel.where(`
-          a.PPId = ${PPId}
+          a.PPId in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${this.user.id})
         `);
-
         break;
       case JS.KFJL:
-        PPIds = await this.user
-          .getKFJLPPs({ transaction })
-          .map(item => item.id);
-        PPId = PPIds[0];
         tmpSquel.where(`
-          a.PPId = ${PPId}
+          a.PPId in (SELECT PPId as id FROM KFJL_PP WHERE UserId = ${this.user.id})
         `);
-
+        break;
+      case JS.GYSGLY:
+        tmpSquel.where(`
+          a.GYSId in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${this.user.id})
+        `);
         break;
       default:
         break;

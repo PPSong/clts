@@ -8,7 +8,7 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { curPage, perPage, DDStatus, keyword } = req.body;
+    let { curPage, perPage, BHStatus, keyword } = req.body;
 
     perPage = perPage || 50;
 
@@ -38,18 +38,16 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
       join1 = `LEFT JOIN GYS ON a.GYSId = GYS.id`;
     }
 
-    if (DDStatus) {
-      DDStatus = DDStatus.split(',').map(s => {
+    if (BHStatus) {
+      BHStatus = BHStatus.split(',').map(s => {
         return `'${s}'`;
       });
-      if (!join1) join1 = '';
-      join1 += ` LEFT JOIN DD as h ON a.DDId = h.id`;
 
       if (!moreWhere1) moreWhere1 = '';
-      moreWhere1 += ` AND h.status in (${DDStatus})`;
+      moreWhere1 += ` AND a.status in (${BHStatus})`;
 
       if (!moreWhere2) moreWhere2 = '';
-      moreWhere2 += ` AND h.status in (${DDStatus})`;
+      moreWhere2 += ` AND a.status in (${BHStatus})`;
     }
 
     if (keyword && keyword.trim()) {
@@ -74,7 +72,7 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
       SELECT 
         count(a.id) as total
       FROM 
-        DD_DW_DP as a
+        DPBH as a
       JOIN
         DW b
       ON
@@ -128,19 +126,19 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
       b.CZ,
       IFNULL(g.name, 'BA') AZLX,
       d.name FHGYS,
+      a.ZXNumber,
       a.status,
       a.AZGSId,
       g.name AZGS_name,
       a.AZGUserId,
-      a.YJRKDate,
-      a.YJZXDate,
       IF(IFNULL(e.username,'') = '', 'BA', 'AZG') AZG_role,
       e.name AZGUser_name,
       e.username AZGUser_username,
       e.phone AZGUser_phone,
+      a.YJZXTime,
       a.YJAZDate
     FROM
-      DD_DW_DP a
+      DPBH a
     JOIN
       DW b
     ON

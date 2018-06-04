@@ -52,12 +52,25 @@ export default {
       ]
     },
     {
+      name: '订单管理',
+      key: '#order',
+      icon: 'Trackers',
+      links:[
+        { name: '订单查询', key: '/dd',
+          contains:{
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+          } 
+        }
+      ]
+    },
+    {
       name: '打印标签',
       key: '#print',
       icon: 'Print',
       links:[
         { name: '道具打印', key: '/print_wl' },
-        { name: '灯片打印', key: '/print_dp' }
+        { name: '灯片打印', key: '/print_dp' },
+        { name: '箱贴打印', key: '/print_kdx' }
       ]
     },
   ],
@@ -118,12 +131,25 @@ export default {
       ]
     },
     {
+      name: '订单管理',
+      key: '#order',
+      icon: 'Trackers',
+      links:[
+        { name: '订单查询', key: '/dd',
+          contains:{
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+          } 
+        }
+      ]
+    },
+    {
       name: '打印标签',
       key: '#print',
       icon: 'Print',
       links:[
         { name: '道具打印', key: '/print_wl' },
-        { name: '灯片打印', key: '/print_dp' }
+        { name: '灯片打印', key: '/print_dp' },
+        { name: '箱贴打印', key: '/print_kdx' }
       ]
     },
   ],
@@ -185,12 +211,25 @@ export default {
       ]
     },
     {
+      name: '订单管理',
+      key: '#order',
+      icon: 'Trackers',
+      links:[
+        { name: '订单查询', key: '/dd',
+          contains:{
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+          } 
+        }
+      ]
+    },
+    {
       name: '打印标签',
       key: '#print',
       icon: 'Print',
       links:[
         { name: '道具打印', key: '/print_wl' },
-        { name: '灯片打印', key: '/print_dp' }
+        { name: '灯片打印', key: '/print_dp' },
+        { name: '箱贴打印', key: '/print_kdx' }
       ]
     },
   ],
@@ -198,19 +237,22 @@ export default {
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
     { name: '账户管理', icon:'Family', key: '/user' },
+    { name: '订单管理', icon: 'Trackers', key: '/dd' },
     {
       name: '打印标签',
       key: '#print',
       icon: 'Print',
       links:[
         { name: '道具打印', key: '/print_wl' },
-        { name: '灯片打印', key: '/print_dp' }
+        { name: '灯片打印', key: '/print_dp' },
+        { name: '箱贴打印', key: '/print_kdx' }
       ]
     },
   ],
   "安装公司管理员":[
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
-    { name: '账户管理', icon:'Family', key: '/user' }
+    { name: '账户管理', icon:'Family', key: '/user' },
+    { name: '订单管理', icon: 'Trackers', key: '/dd' }
   ]
 };
