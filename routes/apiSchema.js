@@ -3201,6 +3201,33 @@ export const apiSchema = {
       DDStatus: {
         type: 'string',
       },
+      // 关键字过滤
+      keyword: {
+        type: 'string',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取补货的DPs [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
+  searchBH0DPs: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+      // 补货状态过滤,如"初始,已审批"
+      BHStatus: {
+        type: 'string',
+      },
+      // 关键字过滤
+      keyword: {
+        type: 'string',
+      },
     },
     required: ['curPage'],
   },
@@ -3218,6 +3245,33 @@ export const apiSchema = {
       },
       // 订单状态过滤,如"初始,已审批"
       DDStatus: {
+        type: 'string',
+      },
+      // 关键字过滤
+      keyword: {
+        type: 'string',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取补货的WLs [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
+  searchBH0WLs: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+      // 补货状态过滤,如"初始,已审批"
+      BHStatus: {
+        type: 'string',
+      },
+      // 关键字过滤
+      keyword: {
         type: 'string',
       },
     },

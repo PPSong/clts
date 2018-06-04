@@ -2,13 +2,13 @@ import bCrypt from 'bcryptjs';
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class SearchDD0WLs extends BusinessQueryApiBase {
+export default class SearchBH0WLs extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return '*';
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { curPage, perPage, DDStatus, keyword } = req.body;
+    let { curPage, perPage, BHStatus, keyword } = req.body;
 
     perPage = perPage || 50;
 
@@ -38,18 +38,16 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
       join1 = `LEFT JOIN GYS ON a.GYSId = GYS.id`;
     }
 
-    if (DDStatus) {
-      DDStatus = DDStatus.split(',').map(s => {
+    if (BHStatus) {
+      BHStatus = BHStatus.split(',').map(s => {
         return `'${s}'`;
       });
-      if (!join1) join1 = '';
-      join1 += ` LEFT JOIN DD as g ON a.DDId = g.id`;
 
       if (!moreWhere1) moreWhere1 = '';
-      moreWhere1 += ` AND g.status in (${DDStatus})`;
+      moreWhere1 += ` AND a.status in (${BHStatus})`;
 
       if (!moreWhere2) moreWhere2 = '';
-      moreWhere2 += ` AND g.status in (${DDStatus})`;
+      moreWhere2 += ` AND a.status in (${BHStatus})`;
     }
 
     if (keyword && keyword.trim()) {
@@ -75,7 +73,7 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
       SELECT 
         count(a.id) as total
       FROM
-        DD_GT_WL a
+        WLBH a
       JOIN
         GT b
       ON
@@ -113,23 +111,23 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
       c.code WL_code,
       c.name WL_name,
       c.imageUrl WL_imageUrl,
-      a.number,
       IFNULL(d.name, 'BA') AZLX,
       e.name FHGYS,
       a.GYSId GYSId,
       a.status,
+      a.ZXNumber,
       a.AZGSId,
       d.name AZGS_name,
       a.AZGUserId,
-      a.YJRKDate,
-      a.YJZXDate,
+      a.YJZXTime,
+      a.YJAZDate,
       IF(IFNULL(f.username,'') = '', 'BA', 'AZG') AZG_role,
       f.name AZGUser_name,
       f.username AZGUser_username,
       f.phone AZGUser_phone,
       a.YJAZDate
     FROM
-      DD_GT_WL a
+      WLBH a
     JOIN
       GT b
     ON
