@@ -3136,6 +3136,17 @@ export const apiSchema = {
     },
     required: ['DD_DW_DPId', 'number'],
   },
+  // 批量生成快递箱uuid [ADMIN, PPJL, KFJL, GYSGLY]
+  generateUniqueKDX: {
+    type: 'object',
+    properties: {
+      // 数量
+      number: {
+        type: 'number',
+      },
+    },
+    required: ['number'],
+  },
   // 获取指定DD的WLs [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
   getDD0WLs: {
     type: 'object',
