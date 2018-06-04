@@ -4,7 +4,7 @@ import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 import * as ppUtils from './ppUtils';
 
-export default class SetDPBHs0YJZXTime extends BusinessApiBase {
+export default class SetDPBHs0GYS extends BusinessApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.GYSGLY];
   }
@@ -20,9 +20,13 @@ export default class SetDPBHs0YJZXTime extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { ids, YJZXTime } = req.body;
+    const { ids, GYSId, YJZXTime } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
+
+    // 检查目标GYSId是用户所属GYS或中转GYS
+    await DBTables.GYS.checkIsZZGYSOrMe(GYSId, user, transaction);
+    // end 检查目标GYSId是用户所属GYS或中转GYS
 
     // 检查ids存在
     const tmpDPBHs = await DBTables.DPBH.findAll({
@@ -78,6 +82,8 @@ export default class SetDPBHs0YJZXTime extends BusinessApiBase {
     // 设置YJZXTime
     await DBTables.DPBH.update(
       {
+        GYSId,
+        status: DBTables.DPBHStatus.YFPFHGYS,
         YJZXTime,
       },
       {

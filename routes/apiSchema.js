@@ -1260,6 +1260,54 @@ export const apiSchema = {
     },
     required: ['id'],
   },
+  // 批量设置补货道具的发货GYS [GYSGLY]
+  setWLBHs0GYS: {
+    type: 'object',
+    properties: {
+      // GYSId
+      GYSId: {
+        type: 'number',
+      },
+      // YJZXTime
+      YJZXTime: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+      // ids
+      ids: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'number',
+        },
+      },
+    },
+    required: ['GYSId', 'ids', 'YJZXTime'],
+  },
+  // 批量设置补货灯片的发货GYS [GYSGLY]
+  setDPBHs0GYS: {
+    type: 'object',
+    properties: {
+      // GYSId
+      GYSId: {
+        type: 'number',
+      },
+      // YJZXTime
+      YJZXTime: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+      // ids
+      ids: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'number',
+        },
+      },
+    },
+    required: ['GYSId', 'ids', 'YJZXTime'],
+  },
   // 批量设置DD_GT_WL的发货GYS [GYSGLY]
   setDDGTWLs0GYS: {
     type: 'object',
@@ -3268,6 +3316,29 @@ export const apiSchema = {
       },
       // 补货状态过滤,如"初始,已审批"
       BHStatus: {
+        type: 'string',
+      },
+      // 关键字过滤
+      keyword: {
+        type: 'string',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取订单物流道具列表 [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
+  searchWYWLs: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+      // 物流状态过滤,如"入口,出库"
+      status: {
         type: 'string',
       },
       // 关键字过滤

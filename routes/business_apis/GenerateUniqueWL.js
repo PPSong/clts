@@ -17,7 +17,7 @@ export default class GenerateUniqueWL extends BusinessQueryApiBase {
       throw new Error('无此权限!');
     }
 
-    let result = { info:{type:"WL",typeId:wl.id}, uuids:[] };
+    let result = { info:{type:"WL",typeId:wl.id,PPId:wl.PPId}, uuids:[] };
     for (let i = 0; i < number; i++) {
       let hex = Utils.md5(Date.now() + '-' + i + '-' + wl.id + '-' + Utils.randomString(8));
       hex = hex.substr(Math.round(Math.random() * 18), 12).toUpperCase();
