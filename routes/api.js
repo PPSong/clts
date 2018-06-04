@@ -115,7 +115,7 @@ router.put('/:table/:id', async (req, res, next) => {
   } catch (err) {
     // Rollback
     await (transaction && transaction.rollback());
-    ppLog(err);
+    ppLog(err); 
     next(err);
   }
 });

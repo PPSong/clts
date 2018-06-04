@@ -58,7 +58,8 @@ export default {
       links:[
         { name: '订单查询', key: '/dd',
           contains:{
-            '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' },
+            '/express': { name: '订单物流', key: '/dd_detail' }
           } 
         }
       ]
@@ -137,7 +138,8 @@ export default {
       links:[
         { name: '订单查询', key: '/dd',
           contains:{
-            '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' },
+            '/express': { name: '订单物流', key: '/dd_detail' }
           } 
         }
       ]
@@ -217,7 +219,8 @@ export default {
       links:[
         { name: '订单查询', key: '/dd',
           contains:{
-            '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' },
+            '/express': { name: '订单物流', key: '/dd_detail' }
           } 
         }
       ]
