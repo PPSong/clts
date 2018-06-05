@@ -1284,6 +1284,46 @@ export const apiSchema = {
     },
     required: ['GYSId', 'ids', 'YJZXTime'],
   },
+  // 批量设置补货灯片的预计安装时间 [GYSGLY]
+  setDPBHs0YJAZDate: {
+    type: 'object',
+    properties: {
+      // YJAZDate
+      YJAZDate: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+      // ids
+      ids: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'number',
+        },
+      },
+    },
+    required: ['ids', 'YJAZDate'],
+  },
+  // 批量设置补货物料的预计安装时间 [GYSGLY]
+  setWLBHs0YJAZDate: {
+    type: 'object',
+    properties: {
+      // YJAZDate
+      YJAZDate: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
+      // ids
+      ids: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'number',
+        },
+      },
+    },
+    required: ['ids', 'YJAZDate'],
+  },
   // 批量设置补货灯片的发货GYS [GYSGLY]
   setDPBHs0GYS: {
     type: 'object',
@@ -2427,7 +2467,7 @@ export const apiSchema = {
         type: 'number',
       },
       // 物料补货Ids
-      WLBHIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -2436,7 +2476,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['AZGUserId', 'WLBHIds'],
+    required: ['AZGUserId', 'ids'],
   },
   // 分配DPBH的AZG [AZGSGLY]
   setDPBHs0AZG: {
@@ -2447,7 +2487,7 @@ export const apiSchema = {
         type: 'number',
       },
       // 灯片补货Ids
-      DPBHIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -2456,7 +2496,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['AZGUserId', 'DPBHIds'],
+    required: ['AZGUserId', 'ids'],
   },
   // 安装反馈补货物料状态 [AZG, GTBA]
   anZhuangFanKuiBHWLZhuangTai: {
