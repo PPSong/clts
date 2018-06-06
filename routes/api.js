@@ -108,7 +108,7 @@ router.put('/:table/:id', async (req, res, next) => {
     const r = await new Table(req.user).edit( 
       req.params.id,
       req.body,
-      transaction,
+      transaction, 
     );
     await transaction.commit();
     res.json(r);

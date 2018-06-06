@@ -9,18 +9,21 @@ export default class SetWLBHs0GYS extends BusinessApiBase {
   }
 
   static validateParamsFormat(req, res, next) {
-    const { YJZXTime } = req.body;
+    const { YJZXTime, YJRKDate } = req.body;
 
     // 检查时间格式
     if (!moment(YJZXTime, 'YYYY-MM-DD').isValid()) {
       throw new Error(`${YJZXTime}时间格式不正确!`);
+    }
+    if (!moment(YJRKDate, 'YYYY-MM-DD').isValid()) {
+      throw new Error(`${YJRKDate}时间格式不正确!`);
     }
     // end 检查时间格式
   }
 
   static async mainProcess(req, res, next, user, transaction) {
     const {
-      ids, GYSId, YJZXTime,
+      ids, GYSId, YJZXTime, YJRKDate
     } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
@@ -87,6 +90,7 @@ export default class SetWLBHs0GYS extends BusinessApiBase {
         GYSId,
         status: DBTables.WLBHStatus.YFPFHGYS,
         YJZXTime,
+        YJRKDate
       },
       {
         where: {

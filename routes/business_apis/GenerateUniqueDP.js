@@ -68,19 +68,13 @@ export default class GenerateUniqueDP extends BusinessQueryApiBase {
       }
     }
 
-    let typeData = {
-      id: DD_DW_DPSnapshot.DPId,
-      name: DD_DW_DPSnapshot.DPName,
-      imageUrl: DD_DW_DPSnapshot.DPImageUrl,
-      PPId: DD_DW_DPSnapshot.PPiD,
-      PPName: DD_DW_DPSnapshot.PPName,
-      CC: DD_DW_DPSnapshot.CC,
-      CZ: DD_DW_DPSnapshot.CZ,
-      DWId: DD_DW_DPSnapshot.DWId,
-      DDId: DD_DW_DPSnapshot.DDId
-    };
+    let typeData = DD_DW_DPSnapshot.toJSON();
+    delete typeData['id'];
+    delete typeData['createdAt'];
+    delete typeData['updatedAt'];
+    delete typeData['version'];
 
-    let result = { info:{type:"DP",typeId:DD_DW_DP.DPId,typeData:typeData}, uuids:[] };
+    let result = { info:{...typeData,type:"DP",typeId:DD_DW_DP.DPId}, uuids:[] };
     for (let i = 0; i < number; i++) {
       let hex = Utils.md5(Date.now() + '-' + i + '-' + DD_DW_DPId.id + '-' + Utils.randomString(8));
       hex = hex.substr(Math.round(Math.random() * 18), 12).toUpperCase();

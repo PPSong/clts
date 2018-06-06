@@ -2516,6 +2516,14 @@ export const DD_DW_DPSnapshot = sequelize.define(
       allowNull: false,
       unique: 'DDId_DWId_WLId',
     },
+    GTId: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    PPId: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     CC: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -2526,17 +2534,9 @@ export const DD_DW_DPSnapshot = sequelize.define(
     },
     DPName: {
       type: Sequelize.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     DPImageUrl: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
-    PPId: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
-    PPName: {
       type: Sequelize.STRING,
       allowNull: true,
     },
@@ -3152,6 +3152,9 @@ export const WLBH = sequelize.define(
     GYSId: {
       type: Sequelize.INTEGER,
     },
+    YJRKDate: {
+      type: Sequelize.DATE,
+    },
     YJZXTime: {
       type: Sequelize.DATE,
     },
@@ -3351,6 +3354,9 @@ export const DPBH = sequelize.define(
     GYSId: {
       type: Sequelize.INTEGER,
     },
+    YJRKDate: {
+      type: Sequelize.DATE,
+    },
     YJZXTime: {
       type: Sequelize.DATE,
     },
@@ -3505,6 +3511,11 @@ export const WYWL = sequelize.define(
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    uuid: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'uuid',
     },
     EWM: {
       type: Sequelize.STRING,
@@ -3685,6 +3696,11 @@ export const WYDP = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    uuid: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      unique: 'uuid',
+    },
     EWM: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -3702,6 +3718,18 @@ export const WYDP = sequelize.define(
       },
     },
     DPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    DWId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    PPId: {
       type: Sequelize.INTEGER,
       allowNull: false,
     },

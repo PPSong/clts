@@ -50,6 +50,7 @@ export async function createWYWLAndRuKu(EWM, user, GYSId, transaction) {
   const tmpWYWL = await DBTables.WYWL.create(
     {
       EWM: JSON.stringify(EWM),
+      uuid: EWM.uuid,
       status: DBTables.WYWLStatus.RK,
       WLId: EWM.typeId,
       GYSId,
@@ -108,8 +109,12 @@ export async function createWYDPAndRuKu(EWM, user, GYSId, transaction) {
   const tmpWYDP = await DBTables.WYDP.create(
     {
       EWM: JSON.stringify(EWM),
+      uuid: EWM.uuid,
       status: DBTables.WYDPStatus.RK,
       DPId: EWM.typeId,
+      PPId: EWM.PPId,
+      DWId: EWM.DWId,
+      GTId: EWM.GTId,
       GYSId,
     },
     { transaction },
