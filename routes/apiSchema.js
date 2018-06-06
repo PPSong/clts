@@ -1336,6 +1336,10 @@ export const apiSchema = {
       YJZXTime: {
         pattern: '\\d{4}-\\d{2}-\\d{2}',
       },
+      // YJRKDate
+      YJRKDate: {
+        pattern: '\\d{4}-\\d{2}-\\d{2}',
+      },
       // ids
       ids: {
         type: 'array',
@@ -1346,7 +1350,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['GYSId', 'ids', 'YJZXTime'],
+    required: ['GYSId', 'ids', 'YJZXTime', 'YJRKDate'],
   },
   // 批量设置DD_GT_WL的发货GYS [GYSGLY]
   setDDGTWLs0GYS: {
@@ -3316,8 +3320,23 @@ export const apiSchema = {
       keyword: {
         type: 'string',
       },
+      // 订单ID,仅查询某个订单相关的
+      DDId: {
+        type: 'string',
+      },
     },
     required: ['curPage'],
+  },
+  // 获取某个补货的DP [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
+  getDPBHInfo: {
+    type: 'object',
+    properties: {
+      // 补货灯片id
+      id: {
+        type: 'number',
+      }
+    },
+    required: ['id'],
   },
   // 获取DD的WLs [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
   searchDD0WLs: {
@@ -3362,8 +3381,23 @@ export const apiSchema = {
       keyword: {
         type: 'string',
       },
+      // 订单ID,仅查询某个订单相关的
+      DDId: {
+        type: 'string',
+      },
     },
     required: ['curPage'],
+  },
+  // 获取某个补货的WL [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
+  getWLBHInfo: {
+    type: 'object',
+    properties: {
+      // 补货物料id
+      id: {
+        type: 'number',
+      }
+    },
+    required: ['id'],
   },
   // 获取订单物流道具列表 [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
   searchWYWLs: {
@@ -3377,12 +3411,43 @@ export const apiSchema = {
       perPage: {
         type: 'number',
       },
-      // 物流状态过滤,如"入口,出库"
+      // 物流状态过滤,如"入库,出库"
       status: {
         type: 'string',
       },
       // 关键字过滤
       keyword: {
+        type: 'string',
+      },
+      // 订单id,仅查询和此订单中的数据
+      DDId: {
+        type: 'string',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取订单物流灯片列表 [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
+  searchWYDPs: {
+    type: 'object',
+    properties: {
+      // 当前页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+      // 物流状态过滤,如"入库,出库"
+      status: {
+        type: 'string',
+      },
+      // 关键字过滤
+      keyword: {
+        type: 'string',
+      },
+      // 订单id,仅查询和此订单中的数据
+      DDId: {
         type: 'string',
       },
     },
@@ -3446,5 +3511,27 @@ export const apiSchema = {
       },
     },
     required: ['DD_DW_DPIds', 'YJAZDate'],
+  },
+  // 获取订单的物料安装反馈图[ADMIN,KFJL,PPJL]
+  getWLAnZhuangFanKuiDetail: {
+    type: 'object',
+    properties: {
+      // 订单id
+      id: {
+        type: 'number',
+      },
+    },
+    required: ['id'],
+  },
+  // 获取订单的灯片安装反馈图[ADMIN,KFJL,PPJL]
+  getDPAnZhuangFanKuiDetail: {
+    type: 'object',
+    properties: {
+      // 订单id
+      id: {
+        type: 'number',
+      },
+    },
+    required: ['id'],
   },
 };

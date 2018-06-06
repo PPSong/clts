@@ -8,34 +8,28 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { curPage, perPage, BHStatus, keyword } = req.body;
+    let { curPage, perPage, BHStatus, keyword, DDId } = req.body;
 
     perPage = perPage || 50;
 
-    let join1 = '', join2 = '';
-    let tmp = '', where = '', moreWhere1 = '', moreWhere2 = '';
-
+    let join = '';
+    let where = '', moreWhere = '';
     if (user.JS === DBTables.JS.PPJL) {
-      where = `WHERE b.PPId in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${user.id})`;
+      where = `WHERE l.id in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.KFJL) {
-      where = `WHERE b.PPId in (SELECT PPId as id FROM KFJL_PP WHERE UserId = ${user.id})`;
+      where = `WHERE l.id in (SELECT PPId as id FROM KFJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZGSGLY) {
-      tmp = `in (SELECT AZGSId as id FROM GLY_AZGS WHERE UserId = ${user.id})`;
-      moreWhere1 = ` AND AZGSId ${tmp}`;
-      moreWhere2 = ` AND d.id ${tmp}`;
+      where = `WHERE n.id in (SELECT AZGSId as id FROM GLY_AZGS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZG) {
-      moreWhere1 = ` AND AZGUserId = ${user.id}`;
-      moreWhere2 = ` AND a.AZGUserId = ${user.id}`;
+      where = `WHERE m.id in (SELECT GYSId as id FROM AZG_AZGS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.GYSGLY) {
-      tmp = `in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})`;
-      moreWhere1 = ` AND GYS.id ${tmp}`;
-      moreWhere2 = ` AND e.id ${tmp}`;
-      join1 = `LEFT JOIN GYS ON a.GYSId = GYS.id`;
+      where = `WHERE c.id in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.ZHY) {
-      tmp = `in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})`;
-      moreWhere1 = ` AND GYS.id ${tmp}`;
-      moreWhere2 = ` AND e.id ${tmp}`;
-      join1 = `LEFT JOIN GYS ON a.GYSId = GYS.id`;
+      where = `WHERE c.id in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})`;
+    }
+
+    if (DDId) {
+      moreWhere += ` AND e.id = ${DDId}`;
     }
 
     if (BHStatus) {
@@ -43,126 +37,107 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
         return `'${s}'`;
       });
 
-      if (!moreWhere1) moreWhere1 = '';
-      moreWhere1 += ` AND a.status in (${BHStatus})`;
-
-      if (!moreWhere2) moreWhere2 = '';
-      moreWhere2 += ` AND a.status in (${BHStatus})`;
+      moreWhere += ` AND a.status in (${BHStatus})`;
     }
 
     if (keyword && keyword.trim()) {
-      if (!join1) join1 = '';
-      if (join1.indexOf('JOIN DD') < 0) join1 += ` LEFT JOIN DD as h ON a.DDId = h.id`;
-      if (join1.indexOf('JOIN WL') < 0) join1 += ` JOIN WL as c ON a.WLId = c.id`;
-
-      if (!moreWhere1) moreWhere1 = '';
-      moreWhere1 += ` AND (PP.name LIKE '%${keyword}%' OR b.name LIKE '%${keyword}%' OR b.code LIKE '%${keyword}%'OR c.name LIKE '%${keyword}%' OR c.code LIKE '%${keyword}%')`;
-
-      if (!moreWhere2) moreWhere2 = '';
-      moreWhere2 += ` AND (PP.name LIKE '%${keyword}%' OR b.name LIKE '%${keyword}%' OR b.code LIKE '%${keyword}%'OR c.name LIKE '%${keyword}%' OR c.code LIKE '%${keyword}%')`;
+      moreWhere += ` AND (e.name LIKE '%${keyword}%' OR b.name LIKE '%${keyword}%' OR b.code LIKE '%${keyword}%' OR g.name LIKE '%${keyword}%' OR g.code LIKE '%${keyword}%' OR l.name LIKE '%${keyword}%')`;
     }
 
-    if (moreWhere1 && !where) {
+    if (moreWhere && !where) {
       where = 'WHERE';
     }
     if (where.trim().toLocaleUpperCase() === 'WHERE') {
-      moreWhere1 = moreWhere1.replace('AND', '');
+      moreWhere = moreWhere.replace('AND', '');
     }
-
+    
     let sql = `
-      SELECT 
-        count(a.id) as total
-      FROM
-        WLBH a
-      JOIN
-        GT b
-      ON
-        a.GTId = b.id
-      JOIN
-        PP
-      ON
-        b.PPId = PP.id
-      ${join1}
-      ${where} ${moreWhere1}
+    SELECT
+      {SELECTOR}
+    FROM
+      WLBH a
+    JOIN
+      WL b
+    ON
+      a.WLId = b.id
+    LEFT JOIN
+      GYS c
+    ON
+      a.GYSId = c.id
+    LEFT JOIN
+      DD e
+    ON
+      a.DDId = e.id
+    JOIN
+      GT g
+    ON
+      a.GTId = g.id
+    JOIN
+      PP l
+    ON
+      g.PPId = l.id
+    LEFT JOIN
+      AZGS n
+    ON
+      a.AZGSId = n.id
+    LEFT JOIN
+      User m
+    ON
+      a.AZGUserId = m.id
+    ${where} ${moreWhere}
     `;
-    let total = await DBTables.sequelize.query(sql, {
+
+    let selector = `count(a.id) as total`;
+
+
+    let total = await DBTables.sequelize.query(sql.replace('{SELECTOR}', selector), {
       type: DBTables.sequelize.QueryTypes.SELECT,
     });
     total = total[0].total || 0;
 
-    if (moreWhere2 && !where) {
-      where = 'WHERE';
-    }
-    if (where.trim().toLocaleUpperCase() === 'WHERE') {
-      moreWhere2 = moreWhere2.replace('AND', '');
-    }
-
-    // 查询记录
-    sql = `
-    SELECT
+    selector = `
       a.id id,
-      b.id GTId,
-      a.DDId DDId,
-      g.name DD_name,
-      b.name GT_name,
-      b.code GT_code,
-      c.id WLId,
-      c.level WL_level,
-      c.code WL_code,
-      c.name WL_name,
-      c.imageUrl WL_imageUrl,
-      IFNULL(d.name, 'BA') AZLX,
-      e.name FHGYS,
-      a.GYSId GYSId,
       a.status,
+      a.imageUrl,
       a.ZXNumber,
-      a.AZGSId,
-      d.name AZGS_name,
-      a.AZGUserId,
-      a.YJZXTime,
+      a.YJRKDate,
       a.YJAZDate,
-      IF(IFNULL(f.username,'') = '', 'BA', 'AZG') AZG_role,
-      f.name AZGUser_name,
-      f.username AZGUser_username,
-      f.phone AZGUser_phone,
-      a.YJAZDate
-    FROM
-      WLBH a
-    JOIN
-      GT b
-    ON
-      a.GTId = b.id
-    JOIN
-      WL c
-    ON
-      a.WLId = c.id
-    LEFT JOIN
-      AZGS d
-    ON
-      a.AZGSId = d.id
-    JOIN
-      GYS e
-    ON
-      a.GYSId = e.id
-    LEFT JOIN
-      User f
-    ON
-      a.AZGUserId = f.id
-    JOIN
-      DD g
-    ON
-      a.DDId = g.id
-    JOIN
-      PP
-    ON
-      b.PPId = PP.id
-    ${join2}
-    ${where} ${moreWhere2}
+      a.YJZXTime,
+
+      b.id WLId,
+      b.name WL_name,
+      b.code WL_code,
+      b.level WL_level,
+
+      c.id GYSId,
+      c.name GYS_name,
+
+      e.id DDId,
+      e.name DD_name,
+
+      n.id AZGSId,
+      n.name AZGS_name,
+      m.id AZGUserId,
+      m.name AZGUser_name,
+      m.username AZGUser_username,
+      m.phone AZGUser_phone,
+      
+      g.id GTId,
+      g.name GT_name,
+      g.code GT_code,
+      e.id DDId,
+      IF(IFNULL(m.id,'') = '', 'BA', 'AZG') AZG_role,
+
+      l.id PPId,
+      l.name PP_name
+    `;
+
+    sql += `
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;
 
-    const list = await DBTables.sequelize.query(sql, {
+    const list = await DBTables.sequelize.query(sql.replace('{SELECTOR}', selector), {
       type: DBTables.sequelize.QueryTypes.SELECT,
     });
 

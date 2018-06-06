@@ -1,0 +1,70 @@
+import BusinessQueryApiBase from '../BusinessQueryApiBase';
+import * as DBTables from '../../models/Model';
+
+export default class GetWLAnZhuangFanKuiDetail extends BusinessQueryApiBase {
+  static getAllowAccessJSs() {
+    return [DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL];
+  }
+
+  static async mainProcess(req, res, next, user, transaction) {
+    const { id } = req.body;
+
+    await user.checkDDId(id, transaction);
+
+    const result = {};
+
+    // 查询记录
+    let sql = `
+    SELECT 
+      DDId, 
+      AZFKType, 
+      AZFKNote, 
+      imageUrl, 
+      AZGSId, 
+      c.name AZGS_name,
+      AZGUserId, 
+      d.username AZGUser_username,
+      d.name AZGUser_name,
+      d.phone AZGUser_phone,
+      d.mail AZGUser_mail,
+      a.WLId
+    FROM
+      WYWL a
+    LEFT JOIN
+      DD_GT_WL b
+    ON
+      a.DDGTWLId = b.id
+    LEFT JOIN
+      AZGS c
+    ON
+      b.AZGSId = c.id
+    LEFT JOIN
+      User d
+    ON
+      b.AZGUserId = d.id
+    WHERE DDId = ${id} AND a.status = '${DBTables.WYWLStatus.FK}'
+    `;
+
+    result.FKs = await DBTables.sequelize.query(sql, {
+      type: DBTables.sequelize.QueryTypes.SELECT,
+    });
+
+    sql = `
+    SELECT 
+      imageUrl
+    FROM
+      WLQJFKT
+    WHERE DDId = ${id}
+    `;
+
+    result.QJFKTs = await DBTables.sequelize.query(sql, {
+      type: DBTables.sequelize.QueryTypes.SELECT,
+    });
+    result.QJFKTs = result.QJFKTs.map(item => {
+      return item.imageUrl;
+    });
+
+    return result;
+    // end 查询记录
+  }
+}
