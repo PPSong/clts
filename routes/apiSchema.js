@@ -3421,7 +3421,7 @@ export const apiSchema = {
       },
       // 订单id,仅查询和此订单中的数据
       DDId: {
-        type: 'string',
+        type: 'number',
       },
     },
     required: ['curPage'],
@@ -3448,7 +3448,7 @@ export const apiSchema = {
       },
       // 订单id,仅查询和此订单中的数据
       DDId: {
-        type: 'string',
+        type: 'number',
       },
     },
     required: ['curPage'],
