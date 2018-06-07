@@ -44,6 +44,7 @@ export default class GetWLBHInfo extends BusinessQueryApiBase {
       a.YJRKDate,
       a.YJAZDate,
       a.YJZXTime,
+      a.reason,
       a.note,
       a.KFJLNote,
       a.PPJLNote,

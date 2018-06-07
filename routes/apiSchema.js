@@ -3168,6 +3168,17 @@ export const apiSchema = {
     },
     required: ['GTId'],
   },
+  // 获取某个一级组合所关联的柜台数组 [ADMIN, PPJL, KFJL]
+  getYJZHGTs: {
+    type: 'object',
+    properties: {
+      // 一级组合ID
+      YJZHId: {
+        type: 'number',
+      }
+    },
+    required: ['YJZHId'],
+  },
   // 获取某个柜台所关联的灯位数组 [ADMIN, PPJL, KFJL]
   getGTDWList: {
     type: 'object',

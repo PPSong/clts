@@ -45,6 +45,7 @@ export default class GetDPBHInfo extends BusinessQueryApiBase {
       a.YJZXTime,
       a.YJRKDate,
       a.YJAZDate,
+      a.reason,
       a.note,
       a.KFJLNote,
       a.PPJLNote,

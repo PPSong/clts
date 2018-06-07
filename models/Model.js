@@ -147,6 +147,13 @@ export const AZFKType = {
   QT: '其他',
 };
 
+export const BHReason = {
+  DS: '丢失',
+  CCBD: '尺寸不对',
+  PS: '破损',
+  QT: '其他',
+};
+
 export const EWMType = {
   WL: 'WL',
   DP: 'DP',
@@ -3134,6 +3141,17 @@ export const WLBH = sequelize.define(
       type: Sequelize.STRING,
       allowNull: false,
     },
+    reason: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(BHReason).includes(val)) {
+            throw new Error('非法补货原因!');
+          }
+        },
+      },
+    },
     note: {
       type: Sequelize.TEXT,
     },
@@ -3335,6 +3353,17 @@ export const DPBH = sequelize.define(
     imageUrl: {
       type: Sequelize.STRING,
       allowNull: false,
+    },
+    reason: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        enumCheck(val) {
+          if (!Object.values(BHReason).includes(val)) {
+            throw new Error('非法补货原因!');
+          }
+        },
+      },
     },
     note: {
       type: Sequelize.TEXT,
