@@ -8,9 +8,9 @@ export default class GetGTBADDTasks extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { keyword, curPage } = req.body;
+    let { keyword, curPage, perPage } = req.body;
 
-    const perPage = 50;
+    perPage = perPage || 50;
 
     const tmpGTId = await user.getGTId(transaction);
 

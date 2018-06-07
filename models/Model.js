@@ -2469,6 +2469,10 @@ export const DD_GT_WLSnapshot = sequelize.define(
       allowNull: false,
       unique: 'DDId_GTId_WLId',
     },
+    PPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     number: {
       type: Sequelize.INTEGER,
       allowNull: false,
@@ -3315,6 +3319,10 @@ export const DPBH = sequelize.define(
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
     },
     DWId: {
       type: Sequelize.INTEGER,

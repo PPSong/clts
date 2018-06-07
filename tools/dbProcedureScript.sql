@@ -111,11 +111,12 @@ BEGIN
     INSERT
     INTO
 		DD_GT_WLSnapshot
-        (DDId, GTId, WLId, number, createdAt, updatedAt)
+        (DDId, GTId, WLId, PPId, number, createdAt, updatedAt)
     SELECT
 		v_DDId,
         a.GTId, 
         a.WLId,
+		b.PPId PPId,
         a.WLTotal number,
         v_now, 
         v_now

@@ -566,7 +566,7 @@ export const apiSchema = {
     },
     required: ['username', 'password', 'PPId'],
   },
-  // 安装反馈DDDP状态 [GTBA, AZG]
+  // 安装反馈DDDP状态 [GTBA, AZG]
   anZhuangFanKuiDDDPZhuangTai: {
     type: 'object',
     properties: {
@@ -1448,7 +1448,7 @@ export const apiSchema = {
     },
     required: ['AZGUserId', 'DD_DW_DPIds'],
   },
-  // 批量入库WL [ZHY]
+  // 批量入库WL [ZHY]
   piLiangRuKuWL: {
     type: 'object',
     properties: {
@@ -1479,7 +1479,7 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 批量出库WL [ZHY]
+  // 批量出库WL [ZHY]
   piLiangChuKuWL: {
     type: 'object',
     properties: {
@@ -1510,7 +1510,7 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 批量消库WL [ZHY]
+  // 批量消库WL [ZHY]
   piLiangXiaoKuWL: {
     type: 'object',
     properties: {
@@ -1541,7 +1541,7 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 订单批量装箱DDWL [ZHY]
+  // 订单批量装箱DDWL [ZHY]
   piLiangZhuangXiangDDWL: {
     type: 'object',
     properties: {
@@ -1595,7 +1595,7 @@ export const apiSchema = {
     },
     required: ['DDId', 'GTId', 'WLEWMs', 'KDXEWM'],
   },
-  // 订单批量装箱DDDP [ZHY]
+  // 订单批量装箱DDDP [ZHY]
   piLiangZhuangXiangDDDP: {
     type: 'object',
     properties: {
@@ -1649,7 +1649,7 @@ export const apiSchema = {
     },
     required: ['DDId', 'GTId', 'DPEWMs', 'KDXEWM'],
   },
-  // 订单批量装箱BHWL [ZHY]
+  // 订单批量装箱BHWL [ZHY]
   piLiangZhuangXiangBuHuoWL: {
     type: 'object',
     properties: {
@@ -1703,7 +1703,7 @@ export const apiSchema = {
     },
     required: ['YJZXTime', 'GTId', 'WLEWMs', 'KDXEWM'],
   },
-  // 订单批量装箱BHDP [ZHY]
+  // 订单批量装箱BHDP [ZHY]
   piLiangZhuangXiangBuHuoDP: {
     type: 'object',
     properties: {
@@ -1757,7 +1757,7 @@ export const apiSchema = {
     },
     required: ['YJZXTime', 'GTId', 'DPEWMs', 'KDXEWM'],
   },
-  // 出箱WL [ZHY]
+  // 出箱WL [ZHY]
   chuXiangWL: {
     type: 'object',
     properties: {
@@ -1788,7 +1788,7 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 出箱DP [ZHY]
+  // 出箱DP [ZHY]
   chuXiangDP: {
     type: 'object',
     properties: {
@@ -1819,7 +1819,7 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 关联快递 [ZHY]
+  // 关联快递 [ZHY]
   guanLianKuaiDi: {
     type: 'object',
     properties: {
@@ -1850,7 +1850,7 @@ export const apiSchema = {
     },
     required: ['EWMs', 'KDDCode'],
   },
-  // 解除关联快递 [ZHY]
+  // 解除关联快递 [ZHY]
   jieChuGuanLianKuaiDi: {
     type: 'object',
     properties: {
@@ -1877,7 +1877,7 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 收箱 [GTBA]
+  // 收箱 [GTBA]
   shouXiang: {
     type: 'object',
     properties: {
@@ -1904,7 +1904,7 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 收货WL [GTBA, AZG]
+  // 收货WL [GTBA, AZG]
   shouHuoWL: {
     type: 'object',
     properties: {
@@ -1935,7 +1935,7 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 收货DP [GTBA, AZG]
+  // 收货DP [GTBA, AZG]
   shouHuoDP: {
     type: 'object',
     properties: {
@@ -1966,7 +1966,7 @@ export const apiSchema = {
     },
     required: ['EWMs'],
   },
-  // 安装反馈DDWL状态 [GTBA, AZG]
+  // 安装反馈DDWL状态 [GTBA, AZG]
   anZhuangFanKuiDDWLZhuangTai: {
     type: 'object',
     properties: {
@@ -2006,7 +2006,7 @@ export const apiSchema = {
     },
     required: ['DDId', 'GTId', 'WYWLPayloads'],
   },
-  // 安装反馈全景WL图片 [GTBA, AZG]
+  // 安装反馈全景WL图片 [GTBA, AZG]
   anZhuangFanKuiQuanJingWLTuPian: {
     type: 'object',
     properties: {
@@ -2030,7 +2030,7 @@ export const apiSchema = {
     },
     required: ['DDId', 'GTId', 'imageUrls'],
   },
-  // 安装反馈全景DP图片 [GTBA, AZG]
+  // 安装反馈全景DP图片 [GTBA, AZG]
   anZhuangFanKuiQuanJingDPTuPian: {
     type: 'object',
     properties: {
@@ -2054,7 +2054,7 @@ export const apiSchema = {
     },
     required: ['DDId', 'GTId', 'imageUrls'],
   },
-  // 申请上市WLBH [GZ, GTBA, AZG]
+  // 申请上市WLBH [GZ, GTBA, AZG]
   shenQingShangShiWLBH: {
     type: 'object',
     properties: {
@@ -2074,14 +2074,18 @@ export const apiSchema = {
       imageUrl: {
         type: 'string',
       },
-      // note
+      // 补货原因
+      reason: {
+        type: 'string',
+      },
+      // 备注
       note: {
         type: 'string',
       },
     },
-    required: ['DDId', 'GTId', 'WLId', 'imageUrl'],
+    required: ['DDId', 'GTId', 'WLId', 'imageUrl', 'reason'],
   },
-  // 申请上市DPBH [GZ, GTBA, AZG]
+  // 申请上市DPBH [GZ, GTBA, AZG]
   shenQingShangShiDPBH: {
     type: 'object',
     properties: {
@@ -2101,14 +2105,18 @@ export const apiSchema = {
       imageUrl: {
         type: 'string',
       },
-      // note
+      // 补货原因
+      reason: {
+        type: 'string',
+      },
+      // 备注
       note: {
         type: 'string',
       },
     },
-    required: ['DDId', 'DWId', 'DPId', 'imageUrl'],
+    required: ['DDId', 'DWId', 'DPId', 'imageUrl', 'reason'],
   },
-  // 申请日常WLBH [GZ, GTBA]
+  // 申请日常WLBH [GZ, GTBA]
   shenQingRiChangWLBH: {
     type: 'object',
     properties: {
@@ -2124,14 +2132,18 @@ export const apiSchema = {
       imageUrl: {
         type: 'string',
       },
-      // note
+      // 补货原因
+      reason: {
+        type: 'string',
+      },
+      // 备注
       note: {
         type: 'string',
       },
     },
-    required: ['GTId', 'WLId', 'imageUrl'],
+    required: ['GTId', 'WLId', 'imageUrl', 'reason'],
   },
-  // 申请日常DPBH [GZ, GTBA]
+  // 申请日常DPBH [GZ, GTBA]
   shenQingRiChangDPBH: {
     type: 'object',
     properties: {
@@ -2147,12 +2159,16 @@ export const apiSchema = {
       imageUrl: {
         type: 'string',
       },
-      // note
+      // 补货原因
+      reason: {
+        type: 'string',
+      },
+      // 备注
       note: {
         type: 'string',
       },
     },
-    required: ['DWId', 'DPId', 'imageUrl'],
+    required: ['DWId', 'DPId', 'imageUrl', 'reason'],
   },
   // 批量审批通过WLBHa [KFJL]
   piLiangShenPiTongGuoWLBHa: {
@@ -2771,6 +2787,10 @@ export const apiSchema = {
       curPage: {
         type: 'number',
       },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
     },
     required: ['curPage'],
   },
@@ -2786,6 +2806,10 @@ export const apiSchema = {
       curPage: {
         type: 'number',
       },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
     },
     required: ['curPage'],
   },
@@ -2793,6 +2817,14 @@ export const apiSchema = {
   getGTKDXs: {
     type: 'object',
     properties: {
+      // 柜台ID
+      GTId: {
+        type: 'number',
+      },
+      // 订单ID
+      DDId: {
+        type: 'number',
+      },
       // 关键字
       keyword: {
         type: 'string',
@@ -2801,8 +2833,12 @@ export const apiSchema = {
       curPage: {
         type: 'number',
       },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
     },
-    required: ['curPage'],
+    required: ['GTId', 'curPage'],
   },
   // 获取AZG的DD任务列表 [AZG]
   getAZGDDTasks: {
@@ -2814,6 +2850,10 @@ export const apiSchema = {
       },
       // 当前页码
       curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
         type: 'number',
       },
     },
@@ -2829,6 +2869,10 @@ export const apiSchema = {
       },
       // 当前页码
       curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
         type: 'number',
       },
     },
@@ -3544,5 +3588,24 @@ export const apiSchema = {
       },
     },
     required: ['id'],
+  },
+  // 获取柜台物流列表[ADMIN,KFJL,PPJL]
+  getGTWuLius: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
   },
 };

@@ -340,3 +340,121 @@ LEFT JOIN
 	DP c
 ON
 	a.DPId = c.id;
+
+DROP VIEW IF EXISTS V_DD_GT_WLGroupedList;
+CREATE VIEW V_DD_GT_WLGroupedList
+AS
+SELECT
+	DDId, DD_name, GTId, type, b.name GT_name, b.code GT_code, b.PPId, c.name PP_name, status
+FROM (
+	SELECT 
+		a.DDId,
+		a.GTId,
+		b.PPId,
+		'WL' type,
+		b.name DD_name,
+		b.status
+	FROM (
+		SELECT CONCAT(DDId, '-', GTId) as DDGT, max(DDId) DDId, max(GTId) GTId
+		FROM
+			DD_GT_WLSnapshot a
+		GROUP BY  CONCAT(DDId, '-', GTId)
+	) a
+	LEFT JOIN 
+		DD b
+	ON a.DDId = b.id
+) a
+JOIN 
+	GT b
+ON 
+	a.GTId = b.id	
+JOIN 
+	PP c
+ON 
+	b.PPId = c.id;
+
+DROP VIEW IF EXISTS V_DD_DW_DPGroupedList;
+CREATE VIEW V_DD_DW_DPGroupedList
+AS
+SELECT
+	DDId, DD_name, GTId, type, b.name GT_name, b.code GT_code, b.PPId, c.name PP_name, status
+FROM (
+	SELECT 
+		a.DDId,
+		a.GTId,
+		b.PPId,
+		'DP' type,
+		b.name DD_name,
+		b.status
+	FROM (
+		SELECT CONCAT(DDId, '-', GTId) as DDGT, max(DDId) DDId, max(GTId) GTId
+		FROM
+			DD_DW_DPSnapshot a
+		GROUP BY  CONCAT(DDId, '-', GTId)
+	) a
+	LEFT JOIN 
+		DD b
+	ON a.DDId = b.id
+) a
+JOIN 
+	GT b
+ON 
+	a.GTId = b.id	
+JOIN 
+	PP c
+ON 
+	b.PPId = c.id;
+
+DROP VIEW IF EXISTS V_WLBHGroupedList;
+CREATE VIEW V_WLBHGroupedList
+AS
+SELECT
+	YJZXTime, GTId, type, b.name GT_name, b.code GT_code, b.PPId, c.name PP_name
+FROM (
+	SELECT
+		concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+		max(YJZXTime) AS YJZXTime,
+		max(GTId) AS GTId,
+		'补货' AS type
+	FROM
+		WLBH a 
+	WHERE
+		YJZXTime IS NOT NULL
+	GROUP BY
+		concat(YJZXTime, '-', GTId)
+) a
+JOIN 
+	GT b
+ON 
+	a.GTId = b.id	
+JOIN 
+	PP c
+ON 
+	b.PPId = c.id;
+
+DROP VIEW IF EXISTS V_DPBHGroupedList;
+CREATE VIEW V_DPBHGroupedList
+AS
+SELECT
+	YJZXTime, GTId, type, b.name GT_name, b.code GT_code, b.PPId, c.name PP_name
+FROM (
+	SELECT
+		concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+		max(YJZXTime) AS YJZXTime,
+		max(GTId) AS GTId,
+		'补货' AS type
+	FROM
+		DPBH a 
+	WHERE
+		YJZXTime IS NOT NULL
+	GROUP BY
+		concat(YJZXTime, '-', GTId)
+) a
+JOIN 
+	GT b
+ON 
+	a.GTId = b.id	
+JOIN 
+	PP c
+ON 
+	b.PPId = c.id;

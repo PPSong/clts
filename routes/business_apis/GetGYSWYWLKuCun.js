@@ -8,9 +8,9 @@ export default class GetGYSWYWLKuCun extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { keyword, curPage } = req.body;
+    let { keyword, curPage, perPage } = req.body;
 
-    const perPage = 50;
+    perPage = perPage || 50;
 
     const tmpGYSId = await user.getGYSId(transaction);
 

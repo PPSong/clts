@@ -474,6 +474,7 @@ export async function createWLBH(
   GTId,
   WLId,
   imageUrl,
+  reason,
   note,
   user,
   transaction,
@@ -484,6 +485,7 @@ export async function createWLBH(
       GTId,
       WLId,
       imageUrl,
+      reason,
       note,
       DDId,
       status: DBTables.WLBHStatus.CS,
@@ -551,11 +553,13 @@ export async function changeWLBHsStatus(
 }
 
 export async function createDPBH(
+  GTId,
   DWId,
   DPId,
   CZ,
   CC,
   imageUrl,
+  reason,
   note,
   user,
   transaction,
@@ -563,11 +567,13 @@ export async function createDPBH(
 ) {
   const tmpDPBH = await DBTables.DPBH.create(
     {
+      GTId,
       DWId,
       DPId,
       CZ,
       CC,
       imageUrl,
+      reason,
       note,
       DDId,
       status: DBTables.DPBHStatus.CS,

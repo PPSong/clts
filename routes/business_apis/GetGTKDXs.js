@@ -4,18 +4,18 @@ import * as DBTables from '../../models/Model';
 
 export default class GetGTKDXs extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
-    return [DBTables.JS.GTBA];
+    return [DBTables.JS.ADMIN, DBTables.JS.KFJL, DBTables.JS.PPJL, DBTables.JS.GTBA, DBTables.JS.GZ];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { keyword, curPage } = req.body;
+    let { keyword, curPage, perPage, DDId, GTId } = req.body;
 
-    const perPage = 50;
+    perPage = perPage || 50;
 
-    const tmpGTId = await user.getGTId(transaction);
+    const tmpGTId = await user.getGTId(GTId, transaction);
 
-    const keywordWhere = keyword ? `
-      (
+    let moreWhere = keyword ? `
+      AND (
         b.name LIKE '%${keyword}%'
       OR
         CAST(a.YJZXTime as CHAR) LIKE '%${keyword}%'
@@ -24,7 +24,12 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
       OR
         a.EWM LIKE '%${keyword}%'
       )
-    ` : '1';
+    ` : '';
+    if (DDId) {
+      moreWhere += `
+        AND a.DDId = ${DDId} AND a.GTId = ${GTId}
+      `;
+    }
 
     // 查询记录
     const sql = `
@@ -46,8 +51,7 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
       a.KDDId = d.id
     WHERE
       a.GTId = ${tmpGTId}
-    AND
-      ${keywordWhere}
+      ${moreWhere}
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;

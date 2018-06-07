@@ -61,6 +61,11 @@ export default {
             '/dd_detail': { name: '订单详细', key: '/dd_detail' },
             '/express': { name: '订单物流', key: '/dd_detail' }
           } 
+        },
+        { name: '柜台物流', key: '/gt_express',
+          contains:{
+            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' }
+          } 
         }
       ]
     },
@@ -141,6 +146,11 @@ export default {
             '/dd_detail': { name: '订单详细', key: '/dd_detail' },
             '/express': { name: '订单物流', key: '/dd_detail' }
           } 
+        },
+        { name: '柜台物流', key: '/gt_express',
+          contains:{
+            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' }
+          } 
         }
       ]
     },
@@ -213,14 +223,19 @@ export default {
       ]
     },
     {
-      name: '订单管理',
+      name: '任务管理',
       key: '#order',
       icon: 'Trackers',
       links:[
-        { name: '订单查询', key: '/dd',
+        { name: '订单管理', key: '/dd',
           contains:{
             '/dd_detail': { name: '订单详细', key: '/dd_detail' },
             '/express': { name: '订单物流', key: '/dd_detail' }
+          } 
+        },
+        { name: '柜台物流', key: '/gt_express',
+          contains:{
+            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' }
           } 
         }
       ]

@@ -8,9 +8,9 @@ export default class GetGYSXiangGuanKDXs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { curPage } = req.body;
+    let { curPage, perPage } = req.body;
 
-    const perPage = 50;
+    perPage = perPage || 50;
 
     const tmpGYSId = await user.getGYSId(transaction);
 
