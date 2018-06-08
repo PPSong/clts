@@ -8,7 +8,7 @@ export default class SearchWYWLs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { curPage, perPage, status, keyword, DDId } = req.body;
+    let { curPage, perPage, status, keyword, DDId, KDXId, GTId } = req.body;
 
     perPage = perPage || 50;
 
@@ -31,6 +31,12 @@ export default class SearchWYWLs extends BusinessQueryApiBase {
     if (DDId) {
       moreWhere += ` AND e.id = ${DDId}`;
     }
+    if (KDXId) {
+      moreWhere += ` AND a.KDXId = ${KDXId}`;
+    }
+    if (GTId) {
+      moreWhere += ` AND g.id = ${GTId}`;
+    }
 
     if (status) {
       status = status.split(',').map(s => {
@@ -41,7 +47,7 @@ export default class SearchWYWLs extends BusinessQueryApiBase {
     }
 
     if (keyword && keyword.trim()) {
-      moreWhere += ` AND (b.name LIKE '%${keyword}%' OR b.code LIKE '%${keyword}%' OR g.name LIKE '%${keyword}%' OR g.code LIKE '%${keyword}%' OR l.name LIKE '%${keyword}%')`;
+      moreWhere += ` AND (a.EWM LIKE '%${keyword}%' OR b.name LIKE '%${keyword}%' OR b.code LIKE '%${keyword}%' OR g.name LIKE '%${keyword}%' OR g.code LIKE '%${keyword}%' OR l.name LIKE '%${keyword}%')`;
     }
 
     if (moreWhere && !where) {

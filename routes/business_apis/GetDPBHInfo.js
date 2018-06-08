@@ -55,6 +55,7 @@ export default class GetDPBHInfo extends BusinessQueryApiBase {
 
       b.id DPId,
       b.name DP_name,
+      b.imageUrl DP_imageUrl,
       a.CC,
       a.CZ,
 

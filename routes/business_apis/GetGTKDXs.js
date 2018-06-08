@@ -8,11 +8,11 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { keyword, curPage, perPage, DDId, GTId } = req.body;
+    let { keyword, curPage, perPage, DDId, YJZXTime, GTId } = req.body;
 
     perPage = perPage || 50;
 
-    const tmpGTId = await user.getGTId(GTId, transaction);
+    const tmpGTId = await user.checkGTId(GTId, transaction);
 
     let moreWhere = keyword ? `
       AND (
@@ -29,11 +29,37 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
       moreWhere += `
         AND a.DDId = ${DDId} AND a.GTId = ${GTId}
       `;
+    } else if (YJZXTime) {
+      moreWhere += `
+        AND a.YJZXTime = '${YJZXTime}' AND a.GTId = ${GTId}
+      `;
     }
 
-    // 查询记录
-    const sql = `
+    let total = await DBTables.sequelize.query(`
     SELECT
+      COUNT(*) total
+    FROM
+      KDX a
+    LEFT JOIN
+      DD b
+    ON
+      a.DDId = b.id
+    LEFT JOIN
+      KDD d
+    ON
+      a.KDDId = d.id
+    WHERE
+      a.GTId = ${GTId}
+      ${moreWhere}
+    `, {
+      type: DBTables.sequelize.QueryTypes.SELECT,
+    });
+    total = total[0].total || 0;
+
+    // 查询记录
+    let sql = `
+    SELECT
+      a.id,
       IFNULL(b.name, a.YJZXTime) taskName,
       d.id KDDId,
       d.code KDDCode,
@@ -50,17 +76,19 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
     ON
       a.KDDId = d.id
     WHERE
-      a.GTId = ${tmpGTId}
+      a.GTId = ${GTId}
       ${moreWhere}
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;
 
-    const r = await DBTables.sequelize.query(sql, {
+    const list = await DBTables.sequelize.query(sql, {
       type: DBTables.sequelize.QueryTypes.SELECT,
     });
 
-    return r;
+    return {
+      list, total
+    };
     // end 查询记录
   }
 }

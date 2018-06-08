@@ -30,7 +30,7 @@ export default class SetWLBHs0AZG extends BusinessApiBase {
     // end 检查WLBHIds存在
 
     // 检查WLBH是否属于同一个YJZXTime
-    const tmpWLBHYJZXTimes = tmpWLBHs.map(item => item.YJZXTime);
+    const tmpWLBHYJZXTimes = tmpWLBHs.map(item => item.YJZXTime.toISOString());
     const tmpUniqueWLBHYJZXTimes = [...new Set(tmpWLBHYJZXTimes)];
 
     if (tmpUniqueWLBHYJZXTimes.length !== 1) {

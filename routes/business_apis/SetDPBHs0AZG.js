@@ -30,7 +30,7 @@ export default class SetDPBHs0AZG extends BusinessApiBase {
     // end 检查DPBHIds存在
 
     // 检查DPBH是否属于同一个YJZXTime
-    const tmpDPBHYJZXTimes = tmpDPBHs.map(item => item.YJZXTime);
+    const tmpDPBHYJZXTimes = tmpDPBHs.map(item => item.YJZXTime.toISOString());
     const tmpUniqueDPBHYJZXTimes = [...new Set(tmpDPBHYJZXTimes)];
 
     if (tmpUniqueDPBHYJZXTimes.length !== 1) {

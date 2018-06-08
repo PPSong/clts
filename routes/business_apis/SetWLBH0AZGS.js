@@ -58,7 +58,7 @@ export default class SetWLBH0AZGS extends BusinessApiBase {
     // set AZGS
     await DBTables.WLBH.update(
       {
-        AZGSId,
+        AZGSId: AZGSId ? AZGSId : null,
       },
       {
         where: {

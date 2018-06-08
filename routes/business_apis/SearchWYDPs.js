@@ -8,7 +8,7 @@ export default class SearchWYDPs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { curPage, perPage, status, keyword, DDId } = req.body;
+    let { curPage, perPage, status, keyword, DDId, KDXId, GTId } = req.body;
 
     perPage = perPage || 50;
 
@@ -30,6 +30,12 @@ export default class SearchWYDPs extends BusinessQueryApiBase {
 
     if (DDId) {
       moreWhere += ` AND e.id = ${DDId}`;
+    }
+    if (KDXId) {
+      moreWhere += ` AND a.KDXId = ${KDXId}`;
+    }
+    if (GTId) {
+      moreWhere += ` AND g.id = ${GTId}`;
     }
 
     if (status) {

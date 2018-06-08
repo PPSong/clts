@@ -34,7 +34,8 @@ export default {
         },
         { name: '一级组合', key: '/yjzh',
           contains:{
-            '/yjzh_edit': { name: '一级组合详细', key: '/yjzh_edit' }
+            '/yjzh_edit': { name: '一级组合详细', key: '/yjzh_edit' },
+            '/yjzh_yygt': { name: '一级组合应用柜台', key: '/yjzh_yygt' }
           }
         }
       ]
@@ -52,19 +53,26 @@ export default {
       ]
     },
     {
-      name: '订单管理',
+      name: '任务管理',
       key: '#order',
       icon: 'Trackers',
       links:[
-        { name: '订单查询', key: '/dd',
+        { name: '订单管理', key: '/dd',
           contains:{
             '/dd_detail': { name: '订单详细', key: '/dd_detail' },
             '/express': { name: '订单物流', key: '/dd_detail' }
           } 
         },
+        { name: '补货管理', key: '/bh',
+          contains:{
+            // '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+          } 
+        },
         { name: '柜台物流', key: '/gt_express',
           contains:{
-            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' }
+            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' },
+            '/gt_express_detail_wl': { name: '柜台快递箱-道具', key: '/gt_express_detail_wl' },
+            '/gt_express_detail_dp': { name: '柜台快递箱-灯片', key: '/gt_express_detail_dp' }
           } 
         }
       ]
@@ -119,7 +127,8 @@ export default {
             { name: '新建一级组合', key: '/yjzh_create' }
           ],
           contains:{
-            '/yjzh_edit': { name: '编辑一级组合', key: '/yjzh_edit' }
+            '/yjzh_edit': { name: '编辑一级组合', key: '/yjzh_edit' },
+            '/yjzh_yygt': { name: '一级组合应用柜台', key: '/yjzh_yygt' }
           }
         }
       ]
@@ -137,19 +146,26 @@ export default {
       ]
     },
     {
-      name: '订单管理',
+      name: '任务管理',
       key: '#order',
       icon: 'Trackers',
       links:[
-        { name: '订单查询', key: '/dd',
+        { name: '订单管理', key: '/dd',
           contains:{
             '/dd_detail': { name: '订单详细', key: '/dd_detail' },
             '/express': { name: '订单物流', key: '/dd_detail' }
           } 
         },
+        { name: '补货管理', key: '/bh',
+          contains:{
+            // '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+          } 
+        },
         { name: '柜台物流', key: '/gt_express',
           contains:{
-            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' }
+            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' },
+            '/gt_express_detail_wl': { name: '柜台快递箱-道具', key: '/gt_express_detail_wl' },
+            '/gt_express_detail_dp': { name: '柜台快递箱-灯片', key: '/gt_express_detail_dp' }
           } 
         }
       ]
@@ -205,7 +221,8 @@ export default {
             { name: '新建一级组合', key: '/yjzh_create' }
           ],
           contains:{
-            '/yjzh_edit': { name: '编辑一级组合', key: '/yjzh_edit' }
+            '/yjzh_edit': { name: '编辑一级组合', key: '/yjzh_edit' },
+            '/yjzh_yygt': { name: '一级组合应用柜台', key: '/yjzh_yygt' }
           }
         }
       ]
@@ -233,9 +250,16 @@ export default {
             '/express': { name: '订单物流', key: '/dd_detail' }
           } 
         },
+        { name: '补货管理', key: '/bh',
+          contains:{
+            // '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+          } 
+        },
         { name: '柜台物流', key: '/gt_express',
           contains:{
-            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' }
+            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' },
+            '/gt_express_detail_wl': { name: '柜台快递箱-道具', key: '/gt_express_detail_wl' },
+            '/gt_express_detail_dp': { name: '柜台快递箱-灯片', key: '/gt_express_detail_dp' }
           } 
         }
       ]
@@ -255,7 +279,15 @@ export default {
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
     { name: '账户管理', icon:'Family', key: '/user' },
-    { name: '订单管理', icon: 'Trackers', key: '/dd' },
+    {
+      name: '任务管理',
+      key: '#task',
+      icon: 'Trackers',
+      links:[
+        { name: '订单管理', key: '/dd' },
+        { name: '补货管理', key: '/bh' }
+      ]
+    },
     {
       name: '打印标签',
       key: '#print',
@@ -271,6 +303,14 @@ export default {
     { name: '首页', icon:'Home', key: '/dashboard' },
     { name: '我的账户', icon:'PlayerSettings', key: '/me' },
     { name: '账户管理', icon:'Family', key: '/user' },
-    { name: '订单管理', icon: 'Trackers', key: '/dd' }
+    {
+      name: '任务管理',
+      key: '#task',
+      icon: 'Trackers',
+      links:[
+        { name: '订单管理', key: '/dd' },
+        { name: '补货管理', key: '/bh' }
+      ]
+    }
   ]
 };

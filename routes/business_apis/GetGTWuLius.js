@@ -42,7 +42,7 @@ export default class GetGTWuLius extends BusinessQueryApiBase {
     UNION
 
     SELECT 
-      c.GTId, c.GT_name, c.GT_code, c.PPId, c.PP_name, c.YJZXTime name, c.YJZXTime DDorBHKey, type, '日常补货' task
+      c.GTId, c.GT_name, c.GT_code, c.PPId, c.PP_name, c.YJZXTime name, c.YJZXTime DDorBHKey, type, '补货' task
     FROM
       V_WLBHGroupedList c
     WHERE 
@@ -51,7 +51,7 @@ export default class GetGTWuLius extends BusinessQueryApiBase {
     UNION
 
     SELECT 
-      d.GTId, d.GT_name, d.GT_code, d.PPId, d.PP_name, d.YJZXTime name, d.YJZXTime DDorBHKey, type, '日常补货' task
+      d.GTId, d.GT_name, d.GT_code, d.PPId, d.PP_name, d.YJZXTime name, d.YJZXTime DDorBHKey, type, '补货' task
     FROM
       V_DPBHGroupedList d
     WHERE 

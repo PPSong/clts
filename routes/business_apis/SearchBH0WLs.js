@@ -12,6 +12,12 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
 
     perPage = perPage || 50;
 
+    let status = [
+      `'${DBTables.WLBHStatus.CS}'`,
+      `'${DBTables.WLBHStatus.KFJLSPTG}'`,
+      `'${DBTables.WLBHStatus.BH}'`
+    ];
+
     let join = '';
     let where = '', moreWhere = '';
     if (user.JS === DBTables.JS.PPJL) {
@@ -19,13 +25,13 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
     } else if (user.JS === DBTables.JS.KFJL) {
       where = `WHERE l.id in (SELECT PPId as id FROM KFJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZGSGLY) {
-      where = `WHERE n.id in (SELECT AZGSId as id FROM GLY_AZGS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT IN (${status.join(',')}) AND n.id in (SELECT AZGSId as id FROM GLY_AZGS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZG) {
-      where = `WHERE m.id in (SELECT GYSId as id FROM AZG_AZGS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT IN (${status.join(',')}) AND m.id in (SELECT AZGSId as id FROM AZG_AZGS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.GYSGLY) {
-      where = `WHERE c.id in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT IN (${status.join(',')}) AND ((c.id in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})) OR (c.id IS NULL AND b1.id in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})))`;
     } else if (user.JS === DBTables.JS.ZHY) {
-      where = `WHERE c.id in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT IN (${status.join(',')}) AND ((c.id in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})) OR (c.id IS NULL AND b1.id in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})))`;
     }
 
     if (DDId) {
@@ -60,6 +66,10 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
       WL b
     ON
       a.WLId = b.id
+    JOIN
+      GYS b1
+    ON
+      b.GYSId = b1.id
     LEFT JOIN
       GYS c
     ON
@@ -126,7 +136,7 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
       g.name GT_name,
       g.code GT_code,
       e.id DDId,
-      IF(IFNULL(m.id,'') = '', 'BA', 'AZG') AZG_role,
+      IF(IFNULL(n.id,'') = '', 'BA', 'AZG') AZG_role,
 
       l.id PPId,
       l.name PP_name

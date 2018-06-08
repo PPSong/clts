@@ -2825,6 +2825,10 @@ export const apiSchema = {
       DDId: {
         type: 'number',
       },
+      // 预计装箱时间
+      YJZXTime: {
+        type: 'string',
+      },
       // 关键字
       keyword: {
         type: 'string',
@@ -3478,6 +3482,14 @@ export const apiSchema = {
       DDId: {
         type: 'number',
       },
+      // 快递箱id,仅查询和此快递箱有关的数据
+      KDXId: {
+        type: 'number',
+      },
+      // 柜台id,仅查询和此柜台有关的数据
+      GTId: {
+        type: 'number',
+      },
     },
     required: ['curPage'],
   },
@@ -3503,6 +3515,14 @@ export const apiSchema = {
       },
       // 订单id,仅查询和此订单中的数据
       DDId: {
+        type: 'number',
+      },
+      // 快递箱id,仅查询和此快递箱有关的数据
+      KDXId: {
+        type: 'number',
+      },
+      // 柜台id,仅查询和此柜台有关的数据
+      GTId: {
         type: 'number',
       },
     },
