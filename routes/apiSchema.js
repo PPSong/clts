@@ -3552,7 +3552,7 @@ export const apiSchema = {
     type: 'object',
     properties: {
       // DD_GT_WLIds
-      DD_GT_WLIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -3565,14 +3565,14 @@ export const apiSchema = {
         pattern: '\\d{4}-\\d{2}-\\d{2}',
       },
     },
-    required: ['DD_GT_WLIds', 'YJAZDate'],
+    required: ['ids', 'YJAZDate'],
   },
   // 设置DD_DW_DPs的YJAZDate[AZGSGLY]
   setDDDWDPs0YJAZDate: {
     type: 'object',
     properties: {
       // DD_DW_DPIds
-      DD_DW_DPIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -3585,7 +3585,7 @@ export const apiSchema = {
         pattern: '\\d{4}-\\d{2}-\\d{2}',
       },
     },
-    required: ['DD_DW_DPIds', 'YJAZDate'],
+    required: ['ids', 'YJAZDate'],
   },
   // 获取订单的物料安装反馈图[ADMIN,KFJL,PPJL]
   getWLAnZhuangFanKuiDetail: {
