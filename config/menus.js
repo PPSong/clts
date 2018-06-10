@@ -86,6 +86,7 @@ export default {
       links:[
         { name: '道具打印', key: '/print_wl' },
         { name: '灯片打印', key: '/print_dp' },
+        { name: '灯片订单打印', key: '/print_dd_dp' },
         { name: '箱贴打印', key: '/print_kdx' }
       ]
     },
@@ -181,6 +182,7 @@ export default {
       links:[
         { name: '道具打印', key: '/print_wl' },
         { name: '灯片打印', key: '/print_dp' },
+        { name: '灯片订单打印', key: '/print_dd_dp' },
         { name: '箱贴打印', key: '/print_kdx' }
       ]
     },
@@ -276,6 +278,7 @@ export default {
       icon: 'Print',
       links:[
         { name: '道具打印', key: '/print_wl' },
+        { name: '灯片订单打印', key: '/print_dd_dp' },
         { name: '灯片打印', key: '/print_dp' },
         { name: '箱贴打印', key: '/print_kdx' }
       ]
@@ -320,6 +323,7 @@ export default {
       links:[
         { name: '道具打印', key: '/print_wl' },
         { name: '灯片打印', key: '/print_dp' },
+        { name: '灯片订单打印', key: '/print_dd_dp' },
         { name: '箱贴打印', key: '/print_kdx' }
       ]
     },

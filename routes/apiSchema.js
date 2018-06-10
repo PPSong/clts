@@ -3287,6 +3287,33 @@ export const apiSchema = {
     },
     required: ['DD_DW_DPId', 'number'],
   },
+  // 批量生成唯一灯片uuid [ADMIN, PPJL, KFJL, GYSGLY]
+  generateUniqueDDGTDPs: {
+    type: 'object',
+    properties: {
+      // DDGTs
+      DDGTs: {
+        type: 'array',
+        minItems: 1,
+        uniqueItems: true,
+        items: {
+          type: 'object',
+          properties: {
+            // DDId
+            DDId: {
+              type: 'number',
+            },
+            // GTId
+            GTId: {
+              type: 'number',
+            },
+          },
+          required: ['DDId', 'GTId'],
+        },
+      },
+    },
+    required: ['DDGTs'],
+  },
   // 批量生成快递箱uuid [ADMIN, PPJL, KFJL, GYSGLY]
   generateUniqueKDX: {
     type: 'object',
@@ -3617,7 +3644,7 @@ export const apiSchema = {
     },
     required: ['id'],
   },
-  // 获取柜台物流列表[ADMIN,KFJL,PPJL]
+  // 获取柜台物流列表[ADMIN,KFJL,PPJL,GYSGLY,ZHY]
   getGTWuLius: {
     type: 'object',
     properties: {
@@ -3632,6 +3659,29 @@ export const apiSchema = {
       // 分页个数
       perPage: {
         type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 获取订单柜台列表[ADMIN,KFJL,PPJL,GYSGLY,ZHY]
+  getDDGTs: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+      // 类型,DP或WL或 WL|DP
+      type: {
+        type: 'string',
       },
     },
     required: ['curPage'],

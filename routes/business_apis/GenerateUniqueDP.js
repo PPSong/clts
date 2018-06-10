@@ -76,7 +76,7 @@ export default class GenerateUniqueDP extends BusinessQueryApiBase {
 
     let result = { info:{...typeData,type:"DP",typeId:DD_DW_DP.DPId}, uuids:[] };
     for (let i = 0; i < number; i++) {
-      let hex = Utils.md5(Date.now() + '-' + i + '-' + DD_DW_DPId.id + '-' + Utils.randomString(8));
+      let hex = Utils.md5(Date.now() + '-' + i + '-' + DD_DW_DPSnapshot.id + '-' + Utils.randomString(8));
       hex = hex.substr(Math.round(Math.random() * 18), 12).toUpperCase();
       hex = 'DP' + Utils.randomNumber(4) + hex;
       result.uuids.push(hex);
