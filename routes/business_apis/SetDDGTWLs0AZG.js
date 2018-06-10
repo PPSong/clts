@@ -8,7 +8,7 @@ export default class SetDDGTWLs0AZG extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { DD_GT_WLIds, AZGUserId } = req.body;
+    const { ids, AZGUserId } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
@@ -16,14 +16,14 @@ export default class SetDDGTWLs0AZG extends BusinessApiBase {
     const tmpDD_GT_WLs = await DBTables.DD_GT_WL.findAll({
       where: {
         id: {
-          $in: DD_GT_WLIds,
+          $in: ids,
         },
       },
       transaction,
     });
 
     const tmpDD_GT_WLIds = tmpDD_GT_WLs.map(item => item.id);
-    const diffIds = _.difference(DD_GT_WLIds, tmpDD_GT_WLIds);
+    const diffIds = _.difference(ids, tmpDD_GT_WLIds);
     if (diffIds.length > 0) {
       throw new Error(`订单_柜台_物料记录id:${diffIds}不存在!`);
     }
@@ -94,7 +94,7 @@ export default class SetDDGTWLs0AZG extends BusinessApiBase {
       {
         where: {
           id: {
-            $in: DD_GT_WLIds,
+            $in: ids,
           },
         },
         transaction,

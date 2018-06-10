@@ -8,7 +8,7 @@ export default class SearchWYWLs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { curPage, perPage, status, keyword, DDId, KDXId, GTId } = req.body;
+    let { curPage, perPage, status, keyword, DDId, KDXId, GTId, BH } = req.body;
 
     perPage = perPage || 50;
 
@@ -30,6 +30,8 @@ export default class SearchWYWLs extends BusinessQueryApiBase {
 
     if (DDId) {
       moreWhere += ` AND e.id = ${DDId}`;
+    } else if (BH === 1) {
+      moreWhere += ` AND f.id IS NOT NULL`;
     }
     if (KDXId) {
       moreWhere += ` AND a.KDXId = ${KDXId}`;

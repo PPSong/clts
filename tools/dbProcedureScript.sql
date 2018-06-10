@@ -54,14 +54,15 @@ BEGIN
 	INSERT
     INTO
 		DD_DW_DPSnapshot
-        (DDId, DWId, DPId, CZ, CC, createdAt, updatedAt)
+        (DDId, DWId, DPId, GTId, PPId, DPName, DPImageUrl, CZ, CC, createdAt, updatedAt)
     SELECT
 		v_DDId,
         a.DWId, 
         a.DPId,
+        c.id GTId,
+		d.id PPId,
         a.DPName,
         a.DPImageUrl,
-		d.id PPId,
 		d.name PPName,
 		b.CZ,
 		b.CC,
@@ -89,10 +90,11 @@ BEGIN
 	INSERT
     INTO
 		DD_GT_FGTesterSnapshot
-        (DDId, GTId, FGTesterId, number, createdAt, updatedAt)
+        (DDId, GTId, PPId, FGTesterId, number, createdAt, updatedAt)
     SELECT
 		v_DDId,
         a.GTId, 
+        b.PPId, 
         a.FGTesterId,
         a.FGTesterTotal number,
         v_now, 
@@ -424,5 +426,2116 @@ BEGIN
 		'ok' msg;	
         
     COMMIT;
+    
+END; 
+
+DROP PROCEDURE IF EXISTS queryGTWuLiusByGYS; 
+CREATE PROCEDURE queryGTWuLiusByGYS(IN v_GYSId INT, IN v_curPage INT, IN v_perPage INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	declare v_offset int default 0;
+
+	SET v_offset = v_curPage * v_perPage;
+
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				JOIN
+					DD_DW_DP b
+				ON 
+					a.DDId = b.DDId AND a.DWId = b.DWId AND a.DPId = b.DPId
+				WHERE 
+					b.GYSId = v_GYSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '_DDStatus.YSP_'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				JOIN
+					DD_GT_WL b
+				ON 
+					a.DDId = b.DDId AND a.GTId = b.GTId AND a.WLId = b.WLId
+				WHERE 
+					b.GYSId = v_GYSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '_DDStatus.YSP_'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'WL' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND ((a.GYSId IS NULL AND b.GYSId = v_GYSId) OR a.GYSId = v_GYSId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'DP' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND ((a.GYSId IS NULL AND b.GYSId = v_GYSId) OR a.GYSId = v_GYSId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	LIMIT v_perPage
+	OFFSET v_offset;
+    
+END; 
+
+DROP PROCEDURE IF EXISTS queryGTWuLiusByKFJL; 
+CREATE PROCEDURE queryGTWuLiusByKFJL(IN v_UserId INT, IN v_curPage INT, IN v_perPage INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	declare v_offset int default 0;
+
+	SET v_offset = v_curPage * v_perPage;
+
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				WHERE 
+					a.PPId in (SELECT PPId id FROM KFJL_PP WHERE UserId = v_UserId)
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				WHERE 
+					a.PPId in (SELECT PPId id FROM KFJL_PP WHERE UserId = v_UserId)
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'WL' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND b.PPId in (SELECT PPId id FROM KFJL_PP WHERE UserId = v_UserId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'DP' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND b.PPId in (SELECT PPId id FROM KFJL_PP WHERE UserId = v_UserId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	LIMIT v_perPage
+	OFFSET v_offset;
+    
+END; 
+
+
+DROP PROCEDURE IF EXISTS queryGTWuLiusByPPJL; 
+CREATE PROCEDURE queryGTWuLiusByPPJL(IN v_UserId INT, IN v_curPage INT, IN v_perPage INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	declare v_offset int default 0;
+
+	SET v_offset = v_curPage * v_perPage;
+
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				WHERE 
+					a.PPId in (SELECT PPId id FROM PPJL_PP WHERE UserId = v_UserId)
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				WHERE 
+					a.PPId in (SELECT PPId id FROM PPJL_PP WHERE UserId = v_UserId)
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'WL' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND b.PPId in (SELECT PPId id FROM PPJL_PP WHERE UserId = v_UserId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'DP' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND b.PPId in (SELECT PPId id FROM PPJL_PP WHERE UserId = v_UserId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	LIMIT v_perPage
+	OFFSET v_offset;
+    
+END; 
+
+DROP PROCEDURE IF EXISTS queryGTWuLiusByAZGS; 
+CREATE PROCEDURE queryGTWuLiusByAZGS(IN v_AZGSId INT, IN v_curPage INT, IN v_perPage INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	declare v_offset int default 0;
+
+	SET v_offset = v_curPage * v_perPage;
+
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				JOIN
+					DD_DW_DP b
+				ON 
+					a.DDId = b.DDId AND a.DWId = b.DWId AND a.DPId = b.DPId
+				WHERE 
+					b.AZGSId = v_AZGSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				JOIN
+					DD_GT_WL b
+				ON 
+					a.DDId = b.DDId AND a.GTId = b.GTId AND a.WLId = b.WLId
+				WHERE 
+					b.AZGSId = v_AZGSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'WL' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND a.AZGSId = v_AZGSId
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'DP' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND a.AZGSId = v_AZGSId
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	LIMIT v_perPage
+	OFFSET v_offset;
+    
+END; 
+
+DROP PROCEDURE IF EXISTS queryGTWuLiusByGYS; 
+CREATE PROCEDURE queryGTWuLiusByGYS(IN v_GYSId INT, IN v_curPage INT, IN v_perPage INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	declare v_offset int default 0;
+
+	SET v_offset = v_curPage * v_perPage;
+
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				JOIN
+					DD_DW_DP b
+				ON 
+					a.DDId = b.DDId AND a.DWId = b.DWId AND a.DPId = b.DPId
+				WHERE 
+					b.GYSId = v_GYSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				JOIN
+					DD_GT_WL b
+				ON 
+					a.DDId = b.DDId AND a.GTId = b.GTId AND a.WLId = b.WLId
+				WHERE 
+					b.GYSId = v_GYSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'WL' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND ((a.GYSId IS NULL AND b.GYSId = v_GYSId) OR a.GYSId = v_GYSId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'DP' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND ((a.GYSId IS NULL AND b.GYSId = v_GYSId) OR a.GYSId = v_GYSId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	LIMIT v_perPage
+	OFFSET v_offset;
+    
+END; 
+
+
+DROP PROCEDURE IF EXISTS queryGTWuLius; 
+CREATE PROCEDURE queryGTWuLius(IN v_curPage INT, IN v_perPage INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	declare v_offset int default 0;
+
+	SET v_offset = v_curPage * v_perPage;
+
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, type, task
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, max(type) type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				'WL' type,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'WL' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	UNION
+	
+	SELECT
+		DDorBHKey, name, GTId, GT_name, GT_code, PPId, PP_name, 'DP' as type, '补货' as task
+	FROM (
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE 
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword
+		
+	LIMIT v_perPage
+	OFFSET v_offset;
+    
+END; 
+
+DROP PROCEDURE IF EXISTS countGTWuLius; 
+CREATE PROCEDURE countGTWuLius(IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	SELECT
+		count(*) total
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '补货' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword;
+    
+END; 
+
+DROP PROCEDURE IF EXISTS countGTWuLiusByPPJL; 
+CREATE PROCEDURE countGTWuLiusByPPJL(IN v_UserId INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	SELECT
+		count(*) total
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				WHERE 
+					a.PPId in (SELECT PPId id FROM PPJL_PP WHERE UserId = v_UserId)
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				WHERE 
+					a.PPId in (SELECT PPId id FROM PPJL_PP WHERE UserId = v_UserId)
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '补货' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND b.PPId in (SELECT PPId id FROM PPJL_PP WHERE UserId = v_UserId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND b.PPId in (SELECT PPId id FROM PPJL_PP WHERE UserId = v_UserId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword;
+    
+END; 
+
+
+DROP PROCEDURE IF EXISTS countGTWuLiusByKFJL; 
+CREATE PROCEDURE countGTWuLiusByKFJL(IN v_UserId INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	SELECT
+		count(*) total
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				WHERE 
+					a.PPId in (SELECT PPId id FROM KFJL_PP WHERE UserId = v_UserId)
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				WHERE 
+					a.PPId in (SELECT PPId id FROM KFJL_PP WHERE UserId = v_UserId)
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '补货' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND b.PPId in (SELECT PPId id FROM KFJL_PP WHERE UserId = v_UserId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND b.PPId in (SELECT PPId id FROM KFJL_PP WHERE UserId = v_UserId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword;
+    
+END; 
+
+DROP PROCEDURE IF EXISTS countGTWuLiusByGYS; 
+CREATE PROCEDURE countGTWuLiusByGYS(IN v_GYSId INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	SELECT
+		count(*) total
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				JOIN
+					DD_DW_DP b
+				ON 
+					a.DDId = b.DDId AND a.DWId = b.DWId AND a.DPId = b.DPId
+				WHERE 
+					b.GYSId = v_GYSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				JOIN
+					DD_GT_WL b
+				ON 
+					a.DDId = b.DDId AND a.GTId = b.GTId AND a.WLId = b.WLId
+				WHERE 
+					b.GYSId = v_GYSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '补货' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND ((a.GYSId IS NULL AND b.GYSId = v_GYSId) OR a.GYSId = v_GYSId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND ((a.GYSId IS NULL AND b.GYSId = v_GYSId) OR a.GYSId = v_GYSId)
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword;
+    
+END; 
+
+DROP PROCEDURE IF EXISTS countGTWuLiusByAZGS; 
+CREATE PROCEDURE countGTWuLiusByAZGS(IN v_AZGSId INT, IN v_keyword CHAR(255) CHARACTER SET utf8)
+BEGIN
+
+	SELECT
+		count(*) total
+	FROM (
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_DW_DPSnapshot a
+				JOIN
+					DD_DW_DP b
+				ON 
+					a.DDId = b.DDId AND a.DWId = b.DWId AND a.DPId = b.DPId
+				WHERE 
+					b.AZGSId = v_AZGSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.DDid) DDorBHKey, max(a.DD_name) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT 
+				a.DDId,
+				a.GTId,
+				b.PPId,
+				b.name DD_name,
+				b.status
+			FROM (
+				SELECT CONCAT(a.DDId, '-', a.GTId) as DDGT, max(a.DDId) DDId, max(a.GTId) GTId
+				FROM
+					DD_GT_WLSnapshot a
+				JOIN
+					DD_GT_WL b
+				ON 
+					a.DDId = b.DDId AND a.GTId = b.GTId AND a.WLId = b.WLId
+				WHERE 
+					b.AZGSId = v_AZGSId
+				GROUP BY  CONCAT(a.DDId, '-', a.GTId)
+			) a
+			LEFT JOIN 
+				DD b
+			ON a.DDId = b.id
+			WHERE b.status = '已审批'
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.DDId = d.DDId
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.DDid, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'WL' type, '补货' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				WLBH a 
+			JOIN
+				WL b
+			ON
+				a.WLId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND a.AZGSId = v_AZGSId
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+		
+		UNION
+		
+		SELECT
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
+		FROM (
+			SELECT
+				concat(YJZXTime, '-', GTId) AS YJZXTimeGT,
+				max(YJZXTime) AS YJZXTime,
+				max(GTId) AS GTId
+			FROM
+				DPBH a 
+			JOIN
+				DP b
+			ON
+				a.DPId = b.id
+			WHERE
+				YJZXTime IS NOT NULL AND a.AZGSId = v_AZGSId
+			GROUP BY
+				concat(YJZXTime, '-', GTId)
+		) a
+		JOIN 
+			GT b
+		ON 
+			a.GTId = b.id	
+		JOIN 
+			PP c
+		ON 
+			b.PPId = c.id
+		JOIN
+			KDX d
+		ON 
+			a.YJZXTime = d.YJZXTime
+		LEFT JOIN
+			KDD e
+		ON 
+			d.KDDId = e.id
+		GROUP BY concat(a.YJZXTime, '-', a.GTId)
+	) a
+	WHERE
+		name LIKE v_keyword OR GT_name LIKE v_keyword OR GT_code LIKE v_keyword OR PP_name LIKE v_keyword OR EWM LIKE v_keyword OR KDDCode LIKE v_keyword;
     
 END; 

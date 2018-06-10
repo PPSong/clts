@@ -1218,7 +1218,7 @@ export const apiSchema = {
         type: 'number',
       },
       // DD_GT_WLIds
-      DD_GT_WLIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -1227,7 +1227,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['AZGSId', 'DD_GT_WLIds'],
+    required: ['AZGSId', 'ids'],
   },
   // 批量设置DD_DW_DP的AZGS [PPJL]
   setDDDWDPs0AZGS: {
@@ -1238,7 +1238,7 @@ export const apiSchema = {
         type: 'number',
       },
       // DD_DW_DPIds
-      DD_DW_DPIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -1247,7 +1247,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['AZGSId', 'DD_DW_DPIds'],
+    required: ['AZGSId', 'ids'],
   },
   // 审批通过DD [PPJL]
   approveDD: {
@@ -1361,7 +1361,7 @@ export const apiSchema = {
         type: 'number',
       },
       // DD_GT_WLIds
-      DD_GT_WLIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -1378,7 +1378,7 @@ export const apiSchema = {
         pattern: '\\d{4}-\\d{2}-\\d{2}',
       },
     },
-    required: ['GYSId', 'DD_GT_WLIds', 'YJRKDate', 'YJZXDate'],
+    required: ['GYSId', 'ids', 'YJRKDate', 'YJZXDate'],
   },
   // 批量设置DD_DW_DP的发货GYS [GYSGLY]
   setDDDWDPs0GYS: {
@@ -1389,7 +1389,7 @@ export const apiSchema = {
         type: 'number',
       },
       // DD_DW_DPIds
-      DD_DW_DPIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -1406,7 +1406,7 @@ export const apiSchema = {
         pattern: '\\d{4}-\\d{2}-\\d{2}',
       },
     },
-    required: ['GYSId', 'DD_DW_DPIds', 'YJRKDate', 'YJZXDate'],
+    required: ['GYSId', 'ids', 'YJRKDate', 'YJZXDate'],
   },
   // 批量设置DD_GT_WL的AZG [AZGSGLY]
   setDDGTWLs0AZG: {
@@ -1417,7 +1417,7 @@ export const apiSchema = {
         type: 'number',
       },
       // DD_GT_WLIds
-      DD_GT_WLIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -1426,7 +1426,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['AZGUserId', 'DD_GT_WLIds'],
+    required: ['AZGUserId', 'ids'],
   },
   // 批量设置DD_DW_DP的AZG [AZGSGLY]
   setDDDWDPs0AZG: {
@@ -1437,7 +1437,7 @@ export const apiSchema = {
         type: 'number',
       },
       // DD_DW_DPIds
-      DD_DW_DPIds: {
+      ids: {
         type: 'array',
         minItems: 1,
         uniqueItems: true,
@@ -1446,7 +1446,7 @@ export const apiSchema = {
         },
       },
     },
-    required: ['AZGUserId', 'DD_DW_DPIds'],
+    required: ['AZGUserId', 'ids'],
   },
   // 批量入库WL [ZHY]
   piLiangRuKuWL: {
@@ -3482,6 +3482,10 @@ export const apiSchema = {
       DDId: {
         type: 'number',
       },
+      // 是否只查询补货相关的数据
+      BH: {
+        type: 'number',
+      },
       // 快递箱id,仅查询和此快递箱有关的数据
       KDXId: {
         type: 'number',
@@ -3512,6 +3516,10 @@ export const apiSchema = {
       // 关键字过滤
       keyword: {
         type: 'string',
+      },
+      // 是否只查询补货相关的数据
+      BH: {
+        type: 'number',
       },
       // 订单id,仅查询和此订单中的数据
       DDId: {

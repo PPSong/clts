@@ -2596,6 +2596,10 @@ export const DD_GT_FGTesterSnapshot = sequelize.define(
       allowNull: false,
       unique: 'DDId_GTId_FGTesterId',
     },
+    PPId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     FGTesterId: {
       type: Sequelize.INTEGER,
       allowNull: false,

@@ -65,7 +65,9 @@ export default {
         },
         { name: '补货管理', key: '/bh',
           contains:{
-            // '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+            // '/dd_detail': { name: '订单详细', key: '/dd_detail' },
+            '/bhexpress_wl': { name: '补货道具物流', key: '/bhexpress_wl' },
+            '/bhexpress_dp': { name: '补货灯片物流', key: '/bhexpress_dp' }
           } 
         },
         { name: '柜台物流', key: '/gt_express',
@@ -159,6 +161,8 @@ export default {
         { name: '补货管理', key: '/bh',
           contains:{
             // '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+            '/bhexpress_wl': { name: '补货道具物流', key: '/bhexpress_wl' },
+            '/bhexpress_dp': { name: '补货灯片物流', key: '/bhexpress_dp' }
           } 
         },
         { name: '柜台物流', key: '/gt_express',
@@ -253,6 +257,8 @@ export default {
         { name: '补货管理', key: '/bh',
           contains:{
             // '/dd_detail': { name: '订单详细', key: '/dd_detail' }
+            '/bhexpress_wl': { name: '补货道具物流', key: '/bhexpress_wl' },
+            '/bhexpress_dp': { name: '补货灯片物流', key: '/bhexpress_dp' }
           } 
         },
         { name: '柜台物流', key: '/gt_express',
@@ -284,8 +290,27 @@ export default {
       key: '#task',
       icon: 'Trackers',
       links:[
-        { name: '订单管理', key: '/dd' },
-        { name: '补货管理', key: '/bh' }
+        { name: '订单管理', key: '/dd',
+          contains:{
+            '/express': { name: '订单物流', key: '/express' },
+            '/express_wl': { name: '订单道具物流', key: '/express_wl' },
+            '/express_dp': { name: '订单灯片物流', key: '/express_dp' }
+          }  
+        },
+        { name: '补货管理', key: '/bh',
+          contains:{
+            '/bhexpress': { name: '补货物流', key: '/bhexpress' },
+            '/bhexpress_wl': { name: '补货道具物流', key: '/bhexpress_wl' },
+            '/bhexpress_dp': { name: '补货灯片物流', key: '/bhexpress_dp' }
+          }   
+        },
+        { name: '柜台物流', key: '/gt_express',
+          contains:{
+            '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' },
+            '/gt_express_detail_wl': { name: '柜台快递箱-道具', key: '/gt_express_detail_wl' },
+            '/gt_express_detail_dp': { name: '柜台快递箱-灯片', key: '/gt_express_detail_dp' }
+          } 
+        }
       ]
     },
     {
@@ -308,8 +333,20 @@ export default {
       key: '#task',
       icon: 'Trackers',
       links:[
-        { name: '订单管理', key: '/dd' },
-        { name: '补货管理', key: '/bh' }
+        { name: '订单管理', key: '/dd',
+          contains:{
+            '/express': { name: '订单物流', key: '/express' },
+            '/express_wl': { name: '订单道具物流', key: '/express_wl' },
+            '/express_dp': { name: '订单灯片物流', key: '/express_dp' }
+          }  
+        },
+        { name: '补货管理', key: '/bh',
+          contains:{
+            '/bhexpress': { name: '补货物流', key: '/bhexpress' },
+            '/bhexpress_wl': { name: '补货道具物流', key: '/bhexpress_wl' },
+            '/bhexpress_dp': { name: '补货灯片物流', key: '/bhexpress_dp' }
+          }   
+        }
       ]
     }
   ]
