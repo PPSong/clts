@@ -76,6 +76,11 @@ export default {
             '/gt_express_detail_wl': { name: '柜台快递箱-道具', key: '/gt_express_detail_wl' },
             '/gt_express_detail_dp': { name: '柜台快递箱-灯片', key: '/gt_express_detail_dp' }
           } 
+        },
+        { name: '安装反馈图', key: '/azfkt',
+          contains:{
+            '/azfkt_detail': { name: '安装反馈图详细', key: '/azfkt_detail' }
+          } 
         }
       ]
     },
@@ -171,6 +176,11 @@ export default {
             '/gt_express_detail': { name: '柜台快递详细', key: '/gt_express_detail' },
             '/gt_express_detail_wl': { name: '柜台快递箱-道具', key: '/gt_express_detail_wl' },
             '/gt_express_detail_dp': { name: '柜台快递箱-灯片', key: '/gt_express_detail_dp' }
+          } 
+        },
+        { name: '安装反馈图', key: '/azfkt',
+          contains:{
+            '/azfkt_detail': { name: '安装反馈图详细', key: '/azfkt_detail' }
           } 
         }
       ]
@@ -269,6 +279,11 @@ export default {
             '/gt_express_detail_wl': { name: '柜台快递箱-道具', key: '/gt_express_detail_wl' },
             '/gt_express_detail_dp': { name: '柜台快递箱-灯片', key: '/gt_express_detail_dp' }
           } 
+        },
+        { name: '安装反馈图', key: '/azfkt',
+          contains:{
+            '/azfkt_detail': { name: '安装反馈图详细', key: '/azfkt_detail' }
+          } 
         }
       ]
     },
@@ -350,6 +365,11 @@ export default {
             '/bhexpress_wl': { name: '补货道具物流', key: '/bhexpress_wl' },
             '/bhexpress_dp': { name: '补货灯片物流', key: '/bhexpress_dp' }
           }   
+        },
+        { name: '安装反馈图', key: '/azfkt',
+          contains:{
+            '/azfkt_detail': { name: '安装反馈图详细', key: '/azfkt_detail' }
+          } 
         }
       ]
     }

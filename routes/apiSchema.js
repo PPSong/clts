@@ -3686,4 +3686,35 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
+  // 获取订单柜台列表(用于安装反馈,以安装公司聚合)[ADMIN,KFJL,PPJL,AZGSGLY,AZG]
+  getDDGTAZGSs: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+      // GTId
+      GTId: {
+        type: 'number',
+      },
+      // AZGSId
+      AZGSId: {
+        type: 'number',
+      },
+      // PPId
+      PPId: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
 };

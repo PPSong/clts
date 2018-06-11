@@ -63,7 +63,6 @@ BEGIN
 		d.id PPId,
         a.DPName,
         a.DPImageUrl,
-		d.name PPName,
 		b.CZ,
 		b.CC,
         v_now, 

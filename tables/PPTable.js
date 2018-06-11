@@ -37,9 +37,9 @@ export default class PPTable extends BaseTable {
   }
 
   checkListRight() {
-    if (![JS.ADMIN, JS.KFJL, JS.PPJL, JS.GZ, JS.GTBA].includes(this.user.JS)) {
-      throw new Error('无此权限!');
-    }
+    // if (![JS.ADMIN, JS.KFJL, JS.PPJL, JS.GZ, JS.GTBA, JS.GYSGLY, JS.ZHY, JS.AZGSGLY, JS.AZG].includes(this.user.JS)) {
+    //   throw new Error('无此权限!');
+    // }
   }
 
   checkDisableRight() {
@@ -85,7 +85,10 @@ export default class PPTable extends BaseTable {
 
     let query = '';
 
-    if (this.user.JS !== JS.ADMIN) {
+    if (this.user.JS === JS.PPJL || 
+        this.user.JS === JS.KFJL || 
+        this.user.JS === JS.GZ || 
+        this.user.JS === JS.GTBA) {
       //只能获取和自己绑定的GYS
       let ppIDs = [];
       if (this.user.JS === JS.GTBA) {
