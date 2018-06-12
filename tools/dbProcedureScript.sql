@@ -287,6 +287,74 @@ BEGIN
 		aaa.WLId = bbb.id
 	WHERE
 		aaa.number > 0;
+
+	-- 创建和订单相关的FGTester
+    INSERT
+    INTO
+		DD_GT_FGTester
+        (DDId, GTId, FGTesterId, number, createdAt, updatedAt)
+	SELECT
+		aaa.DDId,
+		aaa.GTId,
+		aaa.FGTesterId,
+		aaa.number,
+		v_now, 
+        v_now
+	FROM
+		(
+		SELECT
+			aa.DDId,
+			aa.GTId,
+			aa.FGTesterId,
+			(aa.number - IF(bb.number IS NULL, 0, bb.number)) number
+		FROM
+			(
+			-- 当次订单状态
+			SELECT
+				a.DDId,
+				a.GTId,
+				a.FGTesterId,
+				a.number
+			FROM
+				DD_GT_FGTesterSnapshot a
+			WHERE 
+				-- 当次订单Id
+				a.DDId = v_DDId
+			) AS aa
+		LEFT JOIN
+			(
+			-- 上次订单状态结合当次翻新柜台修正状态
+			SELECT
+				a.DDId,
+				a.GTId,
+				a.FGTesterId,
+				a.number
+			FROM
+				DD_GT_FGTesterSnapshot a
+			LEFT JOIN
+				PP_GTFX b
+			ON
+				a.GTId = b.GTId
+			AND 
+				-- 当次订单PPId
+				b.PPId = v_PPId
+			WHERE 
+				-- 上次订单Id
+				a.DDId = v_lastDDId
+			AND
+				b.GTId IS NULL
+			) AS bb
+		ON
+			aa.GTId = bb.GTId
+		AND
+			aa.FGTesterId = bb.FGTesterId
+		) AS aaa
+	LEFT JOIN
+		FGTester bbb
+	ON
+		aaa.FGTesterId = bbb.id
+	WHERE
+		aaa.number > 0;
 END; 
 
 DROP PROCEDURE IF EXISTS genDD; 
