@@ -45,6 +45,13 @@ BEGIN
 		DD_GT_WL
 	WHERE
 		DDId = v_DDId;
+        
+	-- 清空和订单相关的DD_GT_FGTester
+    DELETE 
+    FROM 
+		DD_GT_FGTester
+	WHERE
+		DDId = v_DDId;
 END; 
 
 DROP PROCEDURE IF EXISTS genDDRelatedData; 
