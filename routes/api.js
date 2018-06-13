@@ -78,9 +78,9 @@ router.get('/:table', async (req, res, next) => {
     // Rollback
     await (transaction && transaction.rollback());
     ppLog(err);
-    next(err);
+    next(err); 
   }
-});
+}); 
 
 router.get('/:table/:id', async (req, res, next) => {
   let transaction;

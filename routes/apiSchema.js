@@ -3379,6 +3379,10 @@ export const apiSchema = {
       DDStatus: {
         type: 'string',
       },
+      // 订单ID过滤
+      DDId: {
+        type: 'number',
+      },
       // 关键字过滤
       keyword: {
         type: 'string',
@@ -3440,6 +3444,10 @@ export const apiSchema = {
       DDStatus: {
         type: 'string',
       },
+      // 订单ID过滤
+      DDId: {
+        type: 'number',
+      },
       // 关键字过滤
       keyword: {
         type: 'string',
@@ -3469,7 +3477,7 @@ export const apiSchema = {
       },
       // 订单ID,仅查询某个订单相关的
       DDId: {
-        type: 'string',
+        type: 'number',
       },
     },
     required: ['curPage'],
@@ -3712,6 +3720,44 @@ export const apiSchema = {
       },
       // PPId
       PPId: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 安装公司的角色获取订单列表[AZGSGLY,AZG]
+  searchDDByAZGS: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
+        type: 'number',
+      },
+    },
+    required: ['curPage'],
+  },
+  // 供应商的角色获取订单列表[GYSGLY,ZHY]
+  searchDDByGYS: {
+    type: 'object',
+    properties: {
+      // 关键字
+      keyword: {
+        type: 'string',
+      },
+      // 页码
+      curPage: {
+        type: 'number',
+      },
+      // 分页个数
+      perPage: {
         type: 'number',
       },
     },

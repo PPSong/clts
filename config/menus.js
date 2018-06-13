@@ -60,7 +60,9 @@ export default {
         { name: '订单管理', key: '/dd',
           contains:{
             '/dd_detail': { name: '订单详细', key: '/dd_detail' },
-            '/express': { name: '订单物流', key: '/dd_detail' }
+            '/express': { name: '订单物流', key: '/dd_detail' },
+            '/express_wl': { name: '订单道具物流', key: '/express_wl' },
+            '/express_dp': { name: '订单灯片物流', key: '/express_dp' }
           } 
         },
         { name: '补货管理', key: '/bh',
@@ -161,7 +163,9 @@ export default {
         { name: '订单管理', key: '/dd',
           contains:{
             '/dd_detail': { name: '订单详细', key: '/dd_detail' },
-            '/express': { name: '订单物流', key: '/dd_detail' }
+            '/express': { name: '订单物流', key: '/dd_detail' },
+            '/express_wl': { name: '订单道具物流', key: '/express_wl' },
+            '/express_dp': { name: '订单灯片物流', key: '/express_dp' }
           } 
         },
         { name: '补货管理', key: '/bh',
@@ -263,7 +267,9 @@ export default {
         { name: '订单管理', key: '/dd',
           contains:{
             '/dd_detail': { name: '订单详细', key: '/dd_detail' },
-            '/express': { name: '订单物流', key: '/dd_detail' }
+            '/express': { name: '订单物流', key: '/dd_detail' },
+            '/express_wl': { name: '订单道具物流', key: '/express_wl' },
+            '/express_dp': { name: '订单灯片物流', key: '/express_dp' }
           } 
         },
         { name: '补货管理', key: '/bh',
@@ -310,6 +316,7 @@ export default {
       links:[
         { name: '订单管理', key: '/dd',
           contains:{
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' },
             '/express': { name: '订单物流', key: '/express' },
             '/express_wl': { name: '订单道具物流', key: '/express_wl' },
             '/express_dp': { name: '订单灯片物流', key: '/express_dp' }
@@ -354,6 +361,7 @@ export default {
       links:[
         { name: '订单管理', key: '/dd',
           contains:{
+            '/dd_detail': { name: '订单详细', key: '/dd_detail' },
             '/express': { name: '订单物流', key: '/express' },
             '/express_wl': { name: '订单道具物流', key: '/express_wl' },
             '/express_dp': { name: '订单灯片物流', key: '/express_dp' }

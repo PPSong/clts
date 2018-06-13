@@ -8,12 +8,16 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { curPage, perPage, DDStatus, keyword } = req.body;
+    let { curPage, perPage, DDStatus, keyword, DDId } = req.body;
 
     perPage = perPage || 50;
 
     let join1 = '', join2 = '';
-    let tmp = '', where ='', moreWhere1 = '', moreWhere2 = '';
+    let tmp = '', where = '', moreWhere1 = '', moreWhere2 = '';
+
+    if (DDId) {
+      moreWhere1 = moreWhere2 = ` AND a.DDId = ${DDId}`;
+    }
 
     if (user.JS === DBTables.JS.PPJL) {
       where = `WHERE c.PPId in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${user.id})`;
@@ -21,20 +25,20 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
       where = `WHERE c.PPId in (SELECT PPId as id FROM KFJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZGSGLY) {
       tmp = `in (SELECT AZGSId as id FROM GLY_AZGS WHERE UserId = ${user.id})`;
-      moreWhere1 = ` AND a.AZGSId ${tmp}`;
-      moreWhere2 = ` AND g.id ${tmp}`;
+      moreWhere1 += ` AND a.AZGSId ${tmp}`;
+      moreWhere2 += ` AND g.id ${tmp}`;
     } else if (user.JS === DBTables.JS.AZG) {
-      moreWhere1 = ` AND a.AZGUserId = ${user.id}`;
-      moreWhere2 = ` AND a.AZGUserId = ${user.id}`;
+      moreWhere1 += ` AND a.AZGUserId = ${user.id}`;
+      moreWhere2 += ` AND a.AZGUserId = ${user.id}`;
     } else if (user.JS === DBTables.JS.GYSGLY) {
       tmp = `in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})`;
-      moreWhere1 = ` AND GYS.id ${tmp}`;
-      moreWhere2 = ` AND d.id ${tmp}`;
+      moreWhere1 += ` AND GYS.id ${tmp}`;
+      moreWhere2 += ` AND d.id ${tmp}`;
       join1 = `LEFT JOIN GYS ON a.GYSId = GYS.id`;
     } else if (user.JS === DBTables.JS.ZHY) {
       tmp = `in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})`;
-      moreWhere1 = ` AND GYS.id ${tmp}`;
-      moreWhere2 = ` AND d.id ${tmp}`;
+      moreWhere1 += ` AND GYS.id ${tmp}`;
+      moreWhere2 += ` AND d.id ${tmp}`;
       join1 = `LEFT JOIN GYS ON a.GYSId = GYS.id`;
     }
 
