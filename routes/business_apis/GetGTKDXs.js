@@ -74,6 +74,12 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
       d.id KDDId,
       d.code KDDCode,
       a.EWM KDXEWM,
+      e.UserId PHYUserId,
+      f.username PHY_username,
+      f.name PHY_name,
+      e.createdAt PHTime,
+      c.id PPId,
+      c.name PP_name,
       a.status
     FROM
       KDX a
@@ -81,10 +87,26 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
       DD b
     ON
       a.DDId = b.id
+    JOIN
+      GT c0
+    ON
+      a.GTId = c0.id
+    LEFT JOIN
+      PP c
+    ON
+      c0.PPId = c.id
     LEFT JOIN
       KDD d
     ON
       a.KDDId = d.id
+    LEFT JOIN
+      KDXCZ e
+    ON
+      a.id = e.KDXId AND e.status = '${DBTables.KDXStatus.ZX}'
+    LEFT JOIN
+      User f
+    ON
+      e.UserId = f.id
     WHERE
       a.GTId = ${GTId}
       ${moreWhere}

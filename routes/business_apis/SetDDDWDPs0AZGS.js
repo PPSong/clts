@@ -8,7 +8,7 @@ export default class SetDDDWDPs0AZGS extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { DD_DW_DPIds, AZGSId } = req.body;
+    const { ids, AZGSId } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
@@ -16,14 +16,14 @@ export default class SetDDDWDPs0AZGS extends BusinessApiBase {
     const tmpDD_DW_DPs = await DBTables.DD_DW_DP.findAll({
       where: {
         id: {
-          $in: DD_DW_DPIds,
+          $in: ids,
         },
       },
       transaction,
     });
 
     const tmpDD_DW_DPIds = tmpDD_DW_DPs.map(item => item.id);
-    const diffIds = _.difference(DD_DW_DPIds, tmpDD_DW_DPIds);
+    const diffIds = _.difference(ids, tmpDD_DW_DPIds);
     if (diffIds.length > 0) {
       throw new Error(`订单_灯位_灯片记录id:${diffIds}不存在!`);
     }
@@ -59,7 +59,7 @@ export default class SetDDDWDPs0AZGS extends BusinessApiBase {
       {
         where: {
           id: {
-            $in: DD_DW_DPIds,
+            $in: ids,
           },
         },
         transaction,

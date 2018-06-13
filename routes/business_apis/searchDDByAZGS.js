@@ -11,7 +11,7 @@ export default class searchDDByAZGS extends BusinessQueryApiBase {
 
     perPage = perPage || 50;
 
-    let where = '', where1 = '', where2 = '';
+    let where = '', where1 = `WHERE c.status = '${DBTables.DDStatus.YSP}'`, where2 = `WHERE c.status = '${DBTables.DDStatus.YSP}'`;
 
     if (keyword) {
       where += ` AND (

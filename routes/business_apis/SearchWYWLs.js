@@ -137,6 +137,8 @@ export default class SearchWYWLs extends BusinessQueryApiBase {
       m.name AZGUser_name,
       m.username AZGUser_username,
       m.phone AZGUser_phone,
+
+      c.name GYS_name,
       
       g.id GTId,
       g.name GT_name,
