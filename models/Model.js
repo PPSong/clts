@@ -1914,7 +1914,6 @@ export const FGTester = sequelize.define(
     },
     Code1: {
       type: Sequelize.STRING,
-      unique: 'Code1',
     },
     Code2: {
       type: Sequelize.STRING,

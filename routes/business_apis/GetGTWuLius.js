@@ -12,7 +12,7 @@ export default class GetGTWuLius extends BusinessQueryApiBase {
 
     perPage = perPage || 50;
 
-    let produce1 = 'countGTWuLius', produce2 = 'queryGTWuLius';
+    let produce1 = 'countGTWuLius(:keyword)', produce2 = 'queryGTWuLius(:curPage, :perPage, :keyword)';
     let args1 = { keyword:`%${keyword || ''}%` }, args2 = { keyword: `%${keyword || ''}%`, curPage, perPage };
 
     if (user.JS === DBTables.JS.ADMIN) {
