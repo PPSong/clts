@@ -27,7 +27,7 @@ export default class GetWLAnZhuangFanKuiDetail extends BusinessQueryApiBase {
       DDId, 
       AZFKType, 
       AZFKNote, 
-      imageUrl, 
+      a.imageUrl, 
       AZGSId, 
       c.name AZGS_name,
       AZGUserId, 
@@ -35,7 +35,9 @@ export default class GetWLAnZhuangFanKuiDetail extends BusinessQueryApiBase {
       d.name AZGUser_name,
       d.phone AZGUser_phone,
       d.mail AZGUser_mail,
-      a.WLId
+      a.WLId,
+      e.name WL_name,
+      e.code WL_code
     FROM
       WYWL a
     LEFT JOIN
@@ -50,6 +52,10 @@ export default class GetWLAnZhuangFanKuiDetail extends BusinessQueryApiBase {
       User d
     ON
       b.AZGUserId = d.id
+    JOIN
+      WL e
+    ON
+      a.WLId = e.id
     WHERE DDId = ${id} AND a.status = '${DBTables.WYWLStatus.FK} ${moreWhere}'
     `;
 

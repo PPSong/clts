@@ -35,7 +35,8 @@ export default class GetDPAnZhuangFanKuiDetail extends BusinessQueryApiBase {
       d.name AZGUser_name,
       d.phone AZGUser_phone,
       d.mail AZGUser_mail,
-      a.DPId
+      a.DPId,
+      a.EWM
     FROM
       WYDP a
     LEFT JOIN
