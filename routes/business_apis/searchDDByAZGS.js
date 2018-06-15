@@ -53,12 +53,13 @@ export default class searchDDByAZGS extends BusinessQueryApiBase {
 
     let sql = `
     SELECT
-      max(DDId) DDId, max(DD_name) DD_name, max(PPId) PPId, max(PP_name) PP_name, max(AZGSId) AZGSId
+      max(DDId) DDId, max(DD_name) DD_name, max(PPId) PPId, max(PP_name) PP_name, max(AZGSId) AZGSId, max(DD_status) DD_status
     FROM (
       SELECT 
         a.DDId,
         a.PPId,
         c.name DD_name,
+        c.status DD_status,
         d.name PP_name,
         a0.AZGSId,
         a0.AZGUserId
@@ -88,6 +89,7 @@ export default class searchDDByAZGS extends BusinessQueryApiBase {
         a.DDId,
         b.PPId,
         c.name DD_name,
+        c.status DD_status,
         d.name PP_name,
         a0.AZGSId,
         a0.AZGUserId
