@@ -1175,11 +1175,6 @@ VALUES
 ('138','85','反馈','26', '2018-06-07 12:57:51.013', '2018-06-07 12:57:51.013'),
 ('139','86','反馈','26', '2018-06-07 12:57:51.013', '2018-06-07 12:57:51.013');
 
-INSERT INTO PP_GTFX
-(PPId,GTId, createdAt, updatedAt)
-VALUES
-('2','6', '2018-06-07 12:57:51.013', '2018-06-07 12:57:51.013');
-
 INSERT INTO WLBH
 (id,GTId,WLId,status,GYSId,ZXNumber,imageUrl,reason, createdAt, updatedAt)
 VALUES
