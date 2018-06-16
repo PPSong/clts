@@ -15,7 +15,7 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
     let join = '';
     let where = '', moreWhere = '';
     if (user.JS === DBTables.JS.PPJL) {
-      where = `WHERE g.PPId in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${user.id})`;
+      where = `WHERE a.status != '初始' AND g.PPId in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.KFJL) {
       where = `WHERE g.PPId in (SELECT PPId as id FROM KFJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZGSGLY) {
@@ -127,7 +127,7 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
       g.name GT_name,
       g.code GT_code,
       e.id DDId,
-      IF(IFNULL(m.id,'') = '', 'BA', 'AZG') AZG_role,
+      IF(IFNULL(n.id,'') = '', 'BA', 'AZG') AZG_role,
 
       l.id PPId,
       l.name PP_name

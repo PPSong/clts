@@ -21,7 +21,7 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
     let join = '';
     let where = '', moreWhere = '';
     if (user.JS === DBTables.JS.PPJL) {
-      where = `WHERE l.id in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${user.id})`;
+      where = `WHERE a.status != '初始' AND l.id in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.KFJL) {
       where = `WHERE l.id in (SELECT PPId as id FROM KFJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZGSGLY) {

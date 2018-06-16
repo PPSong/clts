@@ -56,7 +56,7 @@ export default class SetDPBHs0GYS extends BusinessApiBase {
     // 检查生产供应商同一, 都是当前用户所属GYS
     const tmpGYSIds = tmpDPBHs.map(item => item.DP.GYSId);
     const tmpUniqueGYSId = [...new Set(tmpGYSIds)];
-    if (tmpUniqueGYSId > 1) {
+    if (tmpUniqueGYSId.length > 1) {
       throw new Error('记录必须属于同一生产供应商!');
     }
     const tmpGYSId = tmpUniqueGYSId[0];

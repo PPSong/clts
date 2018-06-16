@@ -64,7 +64,7 @@ export default class SetDPBH0AZGS extends BusinessApiBase {
     // set AZGS
     await DBTables.DPBH.update(
       {
-        AZGSId,
+        AZGSId: AZGSId ? AZGSId : null,
       },
       {
         where: {
