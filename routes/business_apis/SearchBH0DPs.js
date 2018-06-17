@@ -12,20 +12,26 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
 
     perPage = perPage || 50;
 
+    let status = [
+      `'${DBTables.DPBHStatus.CS}'`,
+      `'${DBTables.DPBHStatus.KFJLSPTG}'`,
+      `'${DBTables.DPBHStatus.BH}'`
+    ];
+
     let join = '';
     let where = '', moreWhere = '';
     if (user.JS === DBTables.JS.PPJL) {
-      where = `WHERE a.status != '初始' AND g.PPId in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${user.id})`;
+      where = `WHERE a.status != '${DBTables.DPBHStatus.CS}' AND g.PPId in (SELECT PPId as id FROM PPJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.KFJL) {
       where = `WHERE g.PPId in (SELECT PPId as id FROM KFJL_PP WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZGSGLY) {
-      where = `WHERE n.id in (SELECT AZGSId as id FROM GLY_AZGS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT in (${status.join(',')}) AND n.id in (SELECT AZGSId as id FROM GLY_AZGS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZG) {
-      where = `WHERE m.id in (SELECT GYSId as id FROM AZG_AZGS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT in (${status.join(',')}) AND m.id in (SELECT GYSId as id FROM AZG_AZGS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.GYSGLY) {
-      where = `WHERE a.GYSId in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT in (${status.join(',')}) AND a.GYSId in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.ZHY) {
-      where = `WHERE a.GYSId in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT in (${status.join(',')}) AND a.GYSId in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})`;
     }
 
     if (DDId) {

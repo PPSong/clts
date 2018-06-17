@@ -8,7 +8,7 @@ export default class PiLiangShenPiTongGuoWLBHb extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { ids } = req.body;
+    const { ids, note } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
@@ -41,6 +41,6 @@ export default class PiLiangShenPiTongGuoWLBHb extends BusinessApiBase {
 
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
-    await ppUtils.changeWLBHsStatus(ids, DBTables.WLBHStatus.TG, user, transaction);
+    await ppUtils.changeWLBHsStatus(ids, DBTables.WLBHStatus.TG, user, transaction, null, note || '');
   }
 }

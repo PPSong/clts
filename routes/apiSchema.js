@@ -2184,6 +2184,10 @@ export const apiSchema = {
           type: 'number',
         },
       },
+      // 备注
+      note: {
+        type: 'string'
+      }
     },
     required: ['ids'],
   },
@@ -2201,6 +2205,10 @@ export const apiSchema = {
           type: 'number',
         },
       },
+      // 备注
+      note: {
+        type: 'string'
+      }
     },
     required: ['ids'],
   },
@@ -2319,6 +2327,10 @@ export const apiSchema = {
           type: 'number',
         },
       },
+      // 备注
+      note: {
+        type: 'string'
+      }
     },
     required: ['ids'],
   },
@@ -2335,6 +2347,10 @@ export const apiSchema = {
           type: 'number',
         },
       },
+      // 备注
+      note: {
+        type: 'string'
+      }
     },
     required: ['ids'],
   },
