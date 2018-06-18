@@ -193,6 +193,8 @@ export const DPBHStatusMap = new Map(Object.entries(DPBHStatus).map((item, index
 
 export const CS = ['北京', '上海', '广州', '深圳'];
 
+export const PASSWORD_SALT = '$2a$10$Z/xrAJb2z5DUlDz3sPY7UO';
+
 const getBasicTable = str =>
   sequelize.define(
     str,
@@ -2040,6 +2042,9 @@ export const EJZH = sequelize.define(
     imageUrl: {
       type: Sequelize.STRING,
     },
+    XGTNote: {
+      type: Sequelize.STRING,
+    },
     disabledAt: {
       type: Sequelize.DATE,
     },
@@ -2211,6 +2216,9 @@ export const YJZH = sequelize.define(
       unique: 'name_PPId',
     },
     imageUrl: {
+      type: Sequelize.STRING,
+    },
+    XGTNote: {
       type: Sequelize.STRING,
     },
     disabledAt: {

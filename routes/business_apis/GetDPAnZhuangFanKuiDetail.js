@@ -52,7 +52,7 @@ export default class GetDPAnZhuangFanKuiDetail extends BusinessQueryApiBase {
     ON
       b.AZGUserId = d.id
     WHERE 
-      DDId = ${id} AND a.status = '${DBTables.WYWLStatus.FK} ${moreWhere}'
+      DDId = ${id} AND a.status = '${DBTables.WYWLStatus.FK}' ${moreWhere}
     `;
 
     result.FKs = await DBTables.sequelize.query(sql, {

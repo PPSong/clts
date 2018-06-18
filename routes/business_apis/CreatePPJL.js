@@ -22,7 +22,7 @@ export default class CreatePPJL extends BusinessApiBase {
     const tmpUser = await DBTables.User.create(
       {
         username,
-        password: bCrypt.hashSync(password, 8),
+        password: bCrypt.hashSync(password, DBTables.PASSWORD_SALT),
         JS: DBTables.JS.PPJL,
         name: name || '',
         mail: mail || '',

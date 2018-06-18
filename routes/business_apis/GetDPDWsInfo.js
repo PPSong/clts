@@ -1,18 +1,24 @@
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class getDPDWsInfo extends BusinessQueryApiBase {
+export default class GetDPDWsInfo extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { DPId, curPage, perPage } = req.body;
+    let { DPId, keyword, curPage, perPage } = req.body;
 
     curPage = curPage || 0;
     perPage = perPage || 50;
 
     await user.checkDPId(DPId, transaction);
+
+    let moreWhere = '';
+
+    if (keyword) {
+      moreWhere = ` AND (a.name LIKE '%${keyword}%' OR b.name LIKE '%${keyword}%' OR c.name LIKE '%${keyword}%')`;
+    }
 
     let sql = `
     SELECT
@@ -23,8 +29,12 @@ export default class getDPDWsInfo extends BusinessQueryApiBase {
       DP b
     ON
       a.DPId = b.id
+    JOIN
+      GT c
+    ON
+      a.GTId = c.id
     WHERE
-      b.id = ${DPId}
+      b.id = ${DPId} ${moreWhere}
     `;
 
     let total = await DBTables.sequelize.query(sql, {
@@ -59,7 +69,7 @@ export default class getDPDWsInfo extends BusinessQueryApiBase {
       ON
         b.PPId = d.id
       WHERE
-        b.id = ${DPId}
+        b.id = ${DPId} ${moreWhere}
       LIMIT ${perPage}
       OFFSET ${curPage * perPage}
     `;

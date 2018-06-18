@@ -235,7 +235,7 @@ export default class UserTable extends BaseTable {
     };
     // 防止指定id
     delete filteredFields.id;
-    filteredFields.password = bCrypt.hashSync(filteredFields.password, 8);
+    filteredFields.password = bCrypt.hashSync(filteredFields.password, DBTables.PASSWORD_SALT);
     return filteredFields;
   }
 }

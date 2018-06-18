@@ -19,7 +19,7 @@ export default class EditYJZH extends BusinessApiBase {
     //   },
     // ];
     const {
-      id, WLId, imageUrl, XGTs, EJZHs,
+      id, WLId, imageUrl, XGTs, EJZHs, XGTNote
     } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
@@ -49,6 +49,7 @@ export default class EditYJZH extends BusinessApiBase {
       {
         WLId,
         imageUrl,
+        XGTNote
       },
       { transaction },
     );

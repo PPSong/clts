@@ -26,7 +26,7 @@ export default class createGTWithGTBA extends BusinessQueryApiBase {
     const tmpGTBAUser = await DBTables.User.create(
       {
         username,
-        password: bCrypt.hashSync(password, 8),
+        password: bCrypt.hashSync(password, DBTables.PASSWORD_SALT),
         JS: DBTables.JS.GTBA,
       },
       { transaction },

@@ -896,6 +896,10 @@ export const apiSchema = {
       imageUrl: {
         type: 'string',
       },
+      // 相关图备注
+      XGTNote: {
+        type: 'string',
+      },
       // 相关图XGTs
       XGTs: {
         type: 'array',
@@ -960,6 +964,10 @@ export const apiSchema = {
       },
       // 二级组合imageUrl
       imageUrl: {
+        type: 'string',
+      },
+      // 相关图备注
+      XGTNote: {
         type: 'string',
       },
       // 相关图XGTs
@@ -1054,6 +1062,10 @@ export const apiSchema = {
       imageUrl: {
         type: 'string',
       },
+      // 相关图备注
+      XGTNote: {
+        type: 'string',
+      },
       // 相关图XGTs
       XGTs: {
         type: 'array',
@@ -1099,6 +1111,10 @@ export const apiSchema = {
       },
       // 一级组合imageUrl
       imageUrl: {
+        type: 'string',
+      },
+      // 相关图备注
+      XGTNote: {
         type: 'string',
       },
       // 相关图XGTs
@@ -3261,6 +3277,10 @@ export const apiSchema = {
       // DPId
       DPId: {
         type: 'number',
+      },
+      // 关键字
+      keyword: {
+        type: 'string',
       },
       // 当前页码
       curPage: {

@@ -25,7 +25,7 @@ export default class CreateZHY extends BusinessApiBase {
       {
         name,
         username,
-        password: bCrypt.hashSync(password, 8),
+        password: bCrypt.hashSync(password, DBTables.PASSWORD_SALT),
         JS: DBTables.JS.ZHY,
         mail: mail || '',
         phone: phone || '',

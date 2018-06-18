@@ -19,7 +19,7 @@ export default class CreateGZ extends BusinessApiBase {
     const tmpGZUser = await DBTables.User.create(
       {
         username,
-        password: bCrypt.hashSync(password, 8),
+        password: bCrypt.hashSync(password, DBTables.PASSWORD_SALT),
         JS: DBTables.JS.GZ,
       },
       { transaction },

@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import bCrypt from 'bcryptjs';
 import debug from 'debug';
 
-import { User, JS } from './models/Model';
+import { User, JS, PASSWORD_SALT } from './models/Model';
 
 const ppLog = debug('ppLog');
 const jwtSecret = 'jwtSecret';
@@ -46,7 +46,7 @@ passport.use(
 
         user = await User.create({
           username,
-          password: bCrypt.hashSync(password, 8),
+          password: bCrypt.hashSync(password, PASSWORD_SALT),
         });
 
         if (user) {

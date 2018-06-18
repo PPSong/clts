@@ -8,7 +8,7 @@ export default class CreateEJZH extends BusinessApiBase {
 
   static async mainProcess(req, res, next, user, transaction) {
     let {
-      PPId, name, WLId, imageUrl, XGTs, FGTesters, SJWLs,
+      PPId, name, WLId, imageUrl, XGTs, FGTesters, SJWLs, XGTNote
     } = req.body;
     if (name) name = name.trim();
 
@@ -52,6 +52,7 @@ export default class CreateEJZH extends BusinessApiBase {
         WLId,
         PPId,
         imageUrl,
+        XGTNote,
       },
       { transaction },
     );

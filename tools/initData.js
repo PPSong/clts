@@ -1,6 +1,8 @@
 import bCrypt from 'bcryptjs';
 import moment from 'moment';
 
+const salt = '$2a$10$Z/xrAJb2z5DUlDz3sPY7UO';
+
 const fs = require('fs');
 
 const lineReader = require('readline').createInterface({
@@ -81,7 +83,7 @@ lineReader.on('line', (sourceline) => {
       const tmpR = value.match(/^password\((.+)\)$/);
       console.log('izzlog-tepR', tmpR);
       if (tmpR) {
-        return `'${bCrypt.hashSync(tmpR[1], 8)}'`;
+        return `'${bCrypt.hashSync(tmpR[1], salt)}'`;
       }
       if (value === 'TRUE' || value === 'FALSE') {
         return `${item.trim()}`;

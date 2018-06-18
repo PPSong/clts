@@ -13,14 +13,14 @@ export default class getEJZHInfo extends BusinessQueryApiBase {
 
     let r = await DBTables.sequelize.query(`
       select
-        a.id, a.name, a.imageUrl, a.disabledAt, 
+        a.id, a.name, a.imageUrl, a.XGTNote, a.disabledAt, 
         a.WLId,
         c.name as WLName,
         a.PPId,
         b.name as PPName
       from
       (select 
-        a.id, a.name, a.imageUrl, a.disabledAt, 
+        a.id, a.name, a.imageUrl, a.XGTNote, a.disabledAt, 
         a.WLId,
         a.PPId
       from
