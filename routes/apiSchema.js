@@ -3799,4 +3799,15 @@ export const apiSchema = {
     },
     required: ['curPage'],
   },
+  // 检查某品牌是否还允许创建客服经理[ADMIN,PPJL]
+  checkAllowCreateKFJL: {
+    type: 'object',
+    properties: {
+      // PPId
+      PPId: {
+        type: 'number',
+      }
+    },
+    required: ['PPId'],
+  },
 };

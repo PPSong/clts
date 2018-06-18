@@ -18,8 +18,20 @@ export default class CreateKFJL extends BusinessApiBase {
     const tmpPP = await user.checkPPId(PPId, transaction);
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
+    // 重置PP的KFJL
+    const KFJLs = await DBTables.sequelize.query(`
+      SELECT 
+        *
+      FROM
+        User
+      WHERE 
+        id in (SELECT UserId as id FROM KFJL_PP WHERE PPId = ${PPId})
+    `, {
+      type: DBTables.sequelize.QueryTypes.SELECT,
+    });
+
     // 新建用户
-    const tmpUser = await DBTables.User.create(
+    let tmpUser = await DBTables.User.create(
       {
         username,
         password: bCrypt.hashSync(password, DBTables.PASSWORD_SALT),
@@ -30,10 +42,15 @@ export default class CreateKFJL extends BusinessApiBase {
       },
       { transaction },
     );
-    // end 新建用户
 
-    // 重置PP的KFJL
-    await tmpPP.setKFJLs([tmpUser], { transaction });
+    tmpUser = tmpUser.toJSON();
+
+    KFJLs.push(tmpUser);
+
+    await DBTables.KFJL_PP.create({ UserId:tmpUser.id, PPId }, { transaction });
+
+    // end 新建用户
+    // await tmpPP.setKFJLs(KFJLs, { transaction });
     // end 重置PP的KFJL
   }
 }
