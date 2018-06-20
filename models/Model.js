@@ -72,6 +72,12 @@ export const JS = {
 };
 
 export const QY = {
+  HD: '华东',
+  DB: '东北',
+  XN: '西南',
+  HZ: '华中',
+  DN: '东南',
+
   EAST: '东区',
   SOUTH: '南区',
   WEST: '西区',
@@ -191,7 +197,7 @@ export const DPBHStatus = {
 
 export const DPBHStatusMap = new Map(Object.entries(DPBHStatus).map((item, index) => [item[1], index]));
 
-export const CS = ['北京', '上海', '广州', '深圳'];
+export const CS = ['北京', '上海', '广州', '深圳', '黑龙江', '广西', '山东', '江苏'];
 
 export const PASSWORD_SALT = '$2a$10$Z/xrAJb2z5DUlDz3sPY7UO';
 
