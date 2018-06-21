@@ -1396,8 +1396,8 @@ VALUES
 INSERT INTO DPBH
 (id,GTId,DWId,DPId,DDId,status,GYSId,ZXNumber,imageUrl,AZGSId,CC,CZ,reason, createdAt, updatedAt)
 VALUES
-('31','','11','8','2','客服经理审批通过','1','0','imagUrl','1','100*100','铜板','破损', '2018-06-21 19:58:01.785', '2018-06-21 19:58:01.785'),
-('32','','17','14','3','通过','2','0','imagUrl','1','100*100','铜板','破损', '2018-06-21 19:58:01.785', '2018-06-21 19:58:01.785');
+('31','7','11','8','2','客服经理审批通过','1','0','imagUrl','1','100*100','铜板','破损', '2018-06-21 19:58:01.785', '2018-06-21 19:58:01.785'),
+('32','8','17','14','3','通过','2','0','imagUrl','1','100*100','铜板','破损', '2018-06-21 19:58:01.785', '2018-06-21 19:58:01.785');
 
 INSERT INTO DPBH
 (id,GTId,DWId,DPId,DDId,status,GYSId,ZXNumber,imageUrl,AZGSId,AZGUserId,note,KFJLNote,PPJLNote,YJZXTime,CC,CZ,reason, createdAt, updatedAt)
