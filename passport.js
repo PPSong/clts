@@ -129,7 +129,7 @@ passport.use(new JWTStrategy(
 ));
 
 const getTokenFromCookiesOrQuerystring = (req) => {
-  const token = req.cookies.jwt_token || req.query.jwt_token;
+  const token = req.query.jwt_token || req.cookies.jwt_token;
   return token;
 }
 
