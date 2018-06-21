@@ -188,7 +188,7 @@ export default class BaseTable {
     );
 
     if (this.wrapperGetListResult) {
-      r = await this.wrapperGetListResult(r, queryObj);
+      r = await this.wrapperGetListResult(r, queryObj, transaction);
     }
 
     return {

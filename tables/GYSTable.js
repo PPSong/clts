@@ -1,7 +1,7 @@
 import debug from 'debug';
 import squel from 'squel';
 import BaseTable from './BaseTable';
-import { GYS, JS } from '../models/Model';
+import { GYS, JS, sequelize, WYWLStatus } from '../models/Model';
 
 const ppLog = debug('ppLog');
 
@@ -132,5 +132,64 @@ export default class GYSTable extends BaseTable {
     tmpSquel.left_join(squel.select().field('phone', 'user_phone').field('username', 'user_username').field('id', 'user_id').field('name', 'user_name').from('User'), 'c', 'b.UserId = c.user_id');
 
     return tmpSquel;
+  }
+
+  async wrapperGetListResult(GYSs, queryObj, transaction) {
+    if (!queryObj.checkWLsKuCun) return GYSs;
+
+    const checkWLsKuCun = queryObj.checkWLsKuCun.split(',');
+    let requiredWLIds = [];
+
+    for (let i = 0; i < checkWLsKuCun.length; i++) {
+      let WLIdAndNum = checkWLsKuCun[i];
+      let tmp = WLIdAndNum.split('*');
+      let WLId = Number(tmp[0]);
+      let num = Number(tmp[1]);
+      requiredWLIds.push(WLId);
+      checkWLsKuCun[i] = {
+        WLId, num
+      };
+    }
+    requiredWLIds = requiredWLIds.join(',');
+
+    const list = [];
+    for (let GYS of GYSs) {
+      if (GYS.type === '中转') {
+        let WLs = await sequelize.query(`
+        SELECT 
+          WLId, COUNT(*) as num
+        FROM
+          WYWL 
+        WHERE 
+          WLId in (${requiredWLIds}) AND 
+          GYSId = ${GYS.id} AND 
+          status = '${WYWLStatus.RK}'
+        GROUP BY 
+          WLId
+        `, {
+          type: sequelize.QueryTypes.SELECT,
+          transaction
+        });
+        GYS.WLsKuCun = WLs;
+
+        const hash = {};
+        for (let WL of WLs) {
+          WL.WLId = Number(WL.WLId);
+          hash[WL.WLId] = WL;
+        }
+
+        for (let WL of checkWLsKuCun) {
+          WL.WLId = Number(WL.WLId);
+          let item = hash[WL.WLId] || { WLId:WL.WLId, num:0 };
+          console.log(item.num, WL.num);
+          if (item.num < WL.num) {
+            if (!GYS.QSKC) GYS.QSKC = [];
+            GYS.QSKC.push(WL.WLId);
+          }
+        }
+      }
+      list.push(GYS);
+    }
+    return list;
   }
 }
