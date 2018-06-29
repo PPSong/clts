@@ -3996,6 +3996,40 @@ export const DPQJFKT = sequelize.define(
   },
 );
 
+// DDGTCL
+export const DDGTCL = sequelize.define(
+  'DDGTCL',
+  {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    DDId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId',
+    },
+    GTId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      unique: 'DDId_GTId',
+    },
+    DWCL: {
+      type: Sequelize.TEXT('long'),
+      allowNull: false,
+    },
+    WLCL: {
+      type: Sequelize.TEXT('long'),
+      allowNull: false,
+    },
+  },
+  {
+    version: true,
+    freezeTableName: true,
+  },
+);
+
 User.likeSearch = () => ['JS', 'PPId', 'QY', 'username', 'GYSId', 'AZGSId'];
 
 export const init = async () => {

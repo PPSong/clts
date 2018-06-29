@@ -1,5 +1,7 @@
 import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
+import * as ppUtils from './ppUtils';
+import moment from 'moment';
 
 export const PP_DDOperationLock = {};
 
@@ -37,6 +39,28 @@ export default class CreateDD extends BusinessApiBase {
     if (result.code <= 0) {
       throw Error(result.msg);
     }
+
+    const DDId = result.DDId;
+
+    // 获取和此订单有关的柜台id数组
+    const GTIds = await ppUtils.getGTListInDD(DDId, transaction);
+
+    for (let GTId of GTIds) {
+      // 创建柜台陈列快照数据
+      let CL = await ppUtils.getGTCL(GTId, transaction);
+
+      const now = moment(Date.now()).format('YYYY-MM-DD hh:mm:ss');
+      await DBTables.sequelize.query(`
+        INSERT INTO DDGTCL
+        (DDId, GTId, DWCL, WLCL, createdAt, updatedAt)
+        VALUES
+        (${DDId}, ${GTId}, '${JSON.stringify(CL.DWCLs)}', '${JSON.stringify(CL.WLCLs)}', '${now}', '${now}')
+      `, { 
+        type: DBTables.sequelize.QueryTypes.INSERT,
+        transaction 
+      });
+    }
+
     // end 创建DD和相关Snapshot
 
     // 清除PP_DDOperationLock

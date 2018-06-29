@@ -429,6 +429,7 @@ BEGIN
     
     SELECT 
 		1 code,
+		v_DDId DDId, 
 		'ok' msg;	
     
     COMMIT;

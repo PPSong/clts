@@ -640,6 +640,124 @@ export async function changeDPBHsStatus(
   // end 新建相关DPBHCZ
 }
 
+export async function getGTListInDD(DDId, transaction) {
+  const r = await DBTables.sequelize.query(`
+  select 
+    GTId
+  from (
+    select 
+      GTId
+    from
+      (
+        select 
+          *
+        from
+          DD_DW_DP
+        where
+          DDId = ${DDId}
+        
+      ) as DD_DW_DP
+    left join DW on DW.id = DD_DW_DP.DWId
+    group by GTId
+  
+    UNION ALL
+  
+    select 
+      GTId
+    from
+      DD_GT_WL
+    where
+      DDId = ${DDId}
+    group by GTId
+  ) as a
+  group by GTId
+  `, {
+    type: DBTables.sequelize.QueryTypes.SELECT,
+    transaction
+  });
+  return r.map(obj => {
+    return obj.GTId;
+  });
+}
+
+export async function getGTCL(GTId, transaction) {
+  let DWCLs = await DBTables.sequelize.query(`
+    select DW.id, DW.name, DW.CC, DW.CZ, DW.DPId, DP.name as DP_name, DP.imageUrl as DP_imageUrl
+    from (
+      select * 
+      from DW
+      where DW.GTId = ${GTId}
+    ) as DW
+    left join DP on DW.DPId = DP.id
+  `, {
+    type: DBTables.sequelize.QueryTypes.SELECT,
+    transaction
+  });
+  DWCLs = DWCLs || [];
+
+  let WLCLs = await DBTables.sequelize.query(`
+    select YJZHId as id, number 
+    from GT_YJZH
+    where GTId = ${GTId}
+  `, { type: DBTables.sequelize.QueryTypes.SELECT });
+
+  for (let i = 0; i < WLCLs.length; i++) {
+    let yjzh = await DBTables.YJZH.findOneAsDetail(WLCLs[i].id, transaction);
+    yjzh.number = WLCLs[i].number;
+    WLCLs[i] = yjzh;
+  }
+
+  WLCLs = WLCLs || [];
+
+  return { DWCLs, WLCLs };
+}
+
+export async function checkAZGcanViewDDGT(AZGUserId, DDId, GTId, transaction) {
+  let num = await DBTables.sequelize.query(`
+  select
+    count(*) as num
+  from (
+    select 
+      AZGUserId, DDId, DW.GTId
+    from
+      (
+        select 
+          *
+        from 
+          DD_DW_DP
+        where
+          AZGUserId = ${AZGUserId} AND DDId = ${DDId}
+      ) as DD_DW_DP
+    join
+      (
+        select *
+        from
+        DW
+        where
+          GTId = ${GTId}
+      ) as DW
+    on DD_DW_DP.DWId = DW.id
+
+    UNION ALL
+
+    select 
+      AZGUserId, DDId, GTId
+    from 
+      DD_GT_WL
+    where
+      AZGUserId = ${AZGUserId} AND DDId = ${DDId} AND GTId = ${GTId}
+  ) as a
+  `, {
+    type: DBTables.sequelize.QueryTypes.SELECT,
+    transaction
+  });
+  num = num[0] ? num[0].num : 0;
+  
+  num = num || 0;
+
+  return num > 0;
+}
+
 export function errorResponse(schemaErrors) {
   localize.zh(schemaErrors);
   const errors = schemaErrors.map(error => ({

@@ -3810,4 +3810,19 @@ export const apiSchema = {
     },
     required: ['PPId'],
   },
+  // 获取订单柜台陈列 [ADMIN,PPJL,KFJL,GTBA,GZ,AZG]
+  getDDGTCL: {
+    type: 'object',
+    properties: {
+      // DDId
+      DDId: {
+        type: 'number',
+      },
+      // GTId
+      GTId: {
+        type: 'number',
+      },
+    },
+    required: ['DDId', 'GTId'],
+  },
 };
