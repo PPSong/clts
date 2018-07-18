@@ -127,7 +127,7 @@ export default class SearchDD0WLs extends BusinessQueryApiBase {
       a.AZGUserId,
       a.YJRKDate,
       a.YJZXDate,
-      IF(IFNULL(f.username,'') = '', 'BA', 'AZG') AZG_role,
+      IF(IFNULL(d.name,'') = '', 'BA', 'AZG') AZG_role,
       f.name AZGUser_name,
       f.username AZGUser_username,
       f.phone AZGUser_phone,

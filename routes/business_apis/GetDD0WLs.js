@@ -83,7 +83,7 @@ export default class GetDD0WLs extends BusinessQueryApiBase {
       a.AZGUserId,
       a.YJRKDate,
       a.YJZXDate,
-      IF(IFNULL(d.name,'') = '', 'BA', 'AZG') AZG_role,
+      IF(IFNULL(f.username,'') = '', 'BA', 'AZG') AZG_role,
       f.name AZGUser_name,
       f.username AZGUser_username,
       f.phone AZGUser_phone,
