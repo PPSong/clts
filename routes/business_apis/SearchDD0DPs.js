@@ -138,7 +138,7 @@ export default class SearchDD0DPs extends BusinessQueryApiBase {
       a.AZGUserId,
       a.YJRKDate,
       a.YJZXDate,
-      IF(IFNULL(e.username,'') = '', 'BA', 'AZG') AZG_role,
+      IF(IFNULL(g.name,'') = '', 'BA', 'AZG') AZG_role,
       e.name AZGUser_name,
       e.username AZGUser_username,
       e.phone AZGUser_phone,
