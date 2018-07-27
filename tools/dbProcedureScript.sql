@@ -523,7 +523,7 @@ BEGIN
 				a.DDId,
 				a.GTId,
 				b.PPId,
-				'WL' type,
+				'DP' type,
 				b.name DD_name,
 				b.status
 			FROM (
@@ -732,7 +732,7 @@ BEGIN
 				a.DDId,
 				a.GTId,
 				b.PPId,
-				'WL' type,
+				'DP' type,
 				b.name DD_name,
 				b.status
 			FROM (
@@ -934,7 +934,7 @@ BEGIN
 				a.DDId,
 				a.GTId,
 				b.PPId,
-				'WL' type,
+				'DP' type,
 				b.name DD_name,
 				b.status
 			FROM (
@@ -1135,7 +1135,7 @@ BEGIN
 				a.DDId,
 				a.GTId,
 				b.PPId,
-				'WL' type,
+				'DP' type,
 				b.name DD_name,
 				b.status
 			FROM (
@@ -1344,7 +1344,7 @@ BEGIN
 				a.DDId,
 				a.GTId,
 				b.PPId,
-				'WL' type,
+				'DP' type,
 				b.name DD_name,
 				b.status
 			FROM (
@@ -1554,7 +1554,7 @@ BEGIN
 				a.DDId,
 				a.GTId,
 				b.PPId,
-				'WL' type,
+				'DP' type,
 				b.name DD_name,
 				b.status
 			FROM (
@@ -1861,7 +1861,7 @@ BEGIN
 		UNION
 		
 		SELECT
-			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '补货' as task,
 			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
 		FROM (
 			SELECT
@@ -2035,7 +2035,7 @@ BEGIN
 		UNION
 		
 		SELECT
-			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '补货' as task,
 			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
 		FROM (
 			SELECT
@@ -2210,7 +2210,7 @@ BEGIN
 		UNION
 		
 		SELECT
-			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '补货' as task,
 			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
 		FROM (
 			SELECT
@@ -2392,7 +2392,7 @@ BEGIN
 		UNION
 		
 		SELECT
-			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '补货' as task,
 			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
 		FROM (
 			SELECT
@@ -2574,7 +2574,7 @@ BEGIN
 		UNION
 		
 		SELECT
-			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '上市' as task,
+			max(a.YJZXTime) DDorBHKey, max(a.YJZXTime) name, max(a.GTId) GTId, max(b.name) GT_name, max(b.code) GT_code, max(b.PPId) PPId, max(c.name) PP_name, 'DP' type, '补货' as task,
 			GROUP_CONCAT(d.EWM) EWM, GROUP_CONCAT(e.code) KDDCode
 		FROM (
 			SELECT
