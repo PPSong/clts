@@ -1,7 +1,6 @@
 import BusinessApiBase from '../BusinessApiBase';
 import * as DBTables from '../../models/Model';
 import * as ppUtils from './ppUtils';
-import { DH_UNABLE_TO_CHECK_GENERATOR } from 'constants';
 
 export default class ShenQingShangShiDPBH extends BusinessApiBase {
   static getAllowAccessJSs() {

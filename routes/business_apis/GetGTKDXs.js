@@ -8,7 +8,7 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    let { keyword, curPage, perPage, DDId, YJZXTime, GTId } = req.body;
+    let { keyword, curPage, perPage, DDId, YJZXTime, GTId, type } = req.body;
 
     perPage = perPage || 50;
 
@@ -30,6 +30,12 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
     } else if (YJZXTime) {
       moreWhere += `
         AND a.YJZXTime = '${YJZXTime}' AND a.GTId = ${GTId}
+      `;
+    }
+
+    if (type) {
+      moreWhere += `
+        AND a.HWType = '${type}'
       `;
     }
 

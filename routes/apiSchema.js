@@ -2873,6 +2873,10 @@ export const apiSchema = {
       perPage: {
         type: 'number',
       },
+      // 货物类型
+      type: {
+        type: 'string',
+      },
     },
     required: ['GTId', 'curPage'],
   },
