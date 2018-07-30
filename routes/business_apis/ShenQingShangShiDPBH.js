@@ -31,8 +31,9 @@ export default class ShenQingShangShiDPBH extends BusinessApiBase {
     }
     // end 检查DD_DW_DP记录是否存在
 
+    let tmpGT;
     if (user.JS !== DBTables.JS.AZG) {
-      const tmpGT = await user.checkDD_DW_DPId(tmpDDDWDP.id, transaction);
+      tmpGT = await user.checkDD_DW_DPId(tmpDDDWDP.id, transaction);
     } else if (tmpDDDWDP.AZGUserId !== user.id) {
       // 检查AZG权限
       throw new Error('没有权限!');

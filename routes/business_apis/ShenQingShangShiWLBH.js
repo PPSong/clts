@@ -30,8 +30,9 @@ export default class ShenQingShangShiWLBH extends BusinessApiBase {
     }
     // end 检查DD_GT_WL记录是否存在
 
+    let tmpGT;
     if (user.JS !== DBTables.JS.AZG) {
-      const tmpGT = await user.checkDD_GT_WLId(tmpDDGTWL.id, transaction);
+      tmpGT = await user.checkDD_GT_WLId(tmpDDGTWL.id, transaction);
     } else if (tmpDDGTWL.AZGUserId !== user.id) {
       // 检查AZG权限
       throw new Error('没有权限!');
