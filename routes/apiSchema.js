@@ -3675,22 +3675,30 @@ export const apiSchema = {
     type: 'object',
     properties: {
       // 订单id
-      id: {
+      DDId: {
+        type: 'number',
+      },
+      // 柜台id
+      GTId: {
         type: 'number',
       },
     },
-    required: ['id'],
+    required: ['DDId','GTId'],
   },
   // 获取订单的灯片安装反馈图[ADMIN,KFJL,PPJL]
   getDPAnZhuangFanKuiDetail: {
     type: 'object',
     properties: {
       // 订单id
-      id: {
+      DDId: {
+        type: 'number',
+      },
+      // 柜台id
+      GTId: {
         type: 'number',
       },
     },
-    required: ['id'],
+    required: ['DDId','GTId'],
   },
   // 获取柜台物流列表[ADMIN,KFJL,PPJL,GYSGLY,ZHY]
   getGTWuLius: {

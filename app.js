@@ -66,7 +66,10 @@ app.use('/api', passport.authenticate('jwt', { session: false }), api);
 app.get('/oss/private/:file', passport.authenticate('cookiesOrQuerystring', { session: false }), async (req, res, next) => {
   const { user } = req;
   if (user && user.JS) {
-    let url = await Uploader.generateDownloadUrl({ file:req.params.file });
+    let { attach } = req.query;
+    if (attach) attach = "?" + attach;
+    else attach = "";
+    let url = await Uploader.generateDownloadUrl({ file:req.params.file + attach });
     res.redirect(303, url);
   } else {
     res.writeHead(404);

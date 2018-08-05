@@ -7,12 +7,13 @@ export default class GetDPAnZhuangFanKuiDetail extends BusinessQueryApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    const { id } = req.body;
+    const { DDId, GTId } = req.body;
 
     let moreWhere = ``;
 
     if ([DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL].indexOf(user.JS) >= 0) {
-      await user.checkDDId(id, transaction);
+      await user.checkDDId(DDId, transaction);
+      await user.checkGTId(GTId, transaction);
     } else if (user.JS === DBTables.JS.AZG) {
       moreWhere = ` AND d.id = ${user.id}`;
     } else if (user.JS === DBTables.JS.AZGSGLY) {
@@ -28,6 +29,7 @@ export default class GetDPAnZhuangFanKuiDetail extends BusinessQueryApiBase {
       AZFKType, 
       AZFKNote, 
       imageUrl, 
+      a.GTId GTId,
       AZGSId, 
       c.name AZGS_name,
       AZGUserId, 
@@ -52,7 +54,7 @@ export default class GetDPAnZhuangFanKuiDetail extends BusinessQueryApiBase {
     ON
       b.AZGUserId = d.id
     WHERE 
-      DDId = ${id} AND a.status = '${DBTables.WYWLStatus.FK}' ${moreWhere}
+      DDId = ${DDId} AND GTId = ${GTId} AND a.status = '${DBTables.WYWLStatus.FK}' ${moreWhere}
     `;
 
     result.FKs = await DBTables.sequelize.query(sql, {
@@ -65,7 +67,7 @@ export default class GetDPAnZhuangFanKuiDetail extends BusinessQueryApiBase {
     FROM
       DPQJFKT
     WHERE 
-      DDId = ${id}
+      DDId = ${DDId} AND GTId = ${GTId}
     `;
 
     result.QJFKTs = await DBTables.sequelize.query(sql, {

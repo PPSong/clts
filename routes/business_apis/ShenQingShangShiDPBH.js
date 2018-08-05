@@ -30,12 +30,22 @@ export default class ShenQingShangShiDPBH extends BusinessApiBase {
     }
     // end 检查DD_DW_DP记录是否存在
 
-    let tmpGT;
     if (user.JS !== DBTables.JS.AZG) {
-      tmpGT = await user.checkDD_DW_DPId(tmpDDDWDP.id, transaction);
+      await user.checkDD_DW_DPId(tmpDDDWDP.id, transaction);
     } else if (tmpDDDWDP.AZGUserId !== user.id) {
       // 检查AZG权限
       throw new Error('没有权限!');
+    }
+    const tmpDDDWDPSnapshot = await DBTables.DD_DW_DPSnapshot.findOne({
+      where: {
+        DDId,
+        DWId,
+        DPId,
+      },
+      transaction,
+    });
+    if (!tmpDD) {
+      throw new Error('[2]订单灯位灯片类型组合不存在, 不能补货!');
     }
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
@@ -50,7 +60,7 @@ export default class ShenQingShangShiDPBH extends BusinessApiBase {
 
     // 新建灯片补货
     await ppUtils.createDPBH(
-      tmpGT.id,
+      tmpDDDWDPSnapshot.GTId,
       DWId,
       DPId,
       tmpDW.CZ,
