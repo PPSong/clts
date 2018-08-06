@@ -42,7 +42,7 @@ export default class GenerateUniqueDP extends BusinessQueryApiBase {
                     FROM
                       DD_DW_DP
                     WHERE
-                      id = 1
+                      id = ${DD_DW_DPId}
                   )
               )
           )
