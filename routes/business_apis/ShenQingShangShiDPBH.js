@@ -44,7 +44,7 @@ export default class ShenQingShangShiDPBH extends BusinessApiBase {
       },
       transaction,
     });
-    if (!tmpDD) {
+    if (!tmpDDDWDPSnapshot) {
       throw new Error('[2]订单灯位灯片类型组合不存在, 不能补货!');
     }
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
