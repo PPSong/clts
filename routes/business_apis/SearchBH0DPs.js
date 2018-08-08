@@ -35,7 +35,7 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
       });
       GYSId = GYSId[0].id;
 
-      where = `WHERE a.status NOT in (${status.join(',')}) AND (c.id = ${GYSId} OR a.GYSId = ${GYSId})`;
+      where = `WHERE a.status NOT in (${status.join(',')}) AND (c.id = ${GYSId} OR b1.id = ${GYSId})`;
     } else if (user.JS === DBTables.JS.ZHY) {
 
       let GYSId = await DBTables.sequelize.query(`SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id}`, {
@@ -43,7 +43,7 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
       });
       GYSId = GYSId[0].id;
 
-      where = `WHERE a.status NOT in (${status.join(',')}) AND (c.id = ${GYSId} OR a.GYSId = ${GYSId})`;
+      where = `WHERE a.status NOT in (${status.join(',')}) AND (c.id = ${GYSId} OR b1.id = ${GYSId})`;
     }
 
     if (DDId) {
@@ -83,9 +83,13 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
     ON
       a.DWId = d.id
     LEFT JOIN
+      GYS b1
+    ON
+      b.GYSId = b1.id
+    LEFT JOIN
       GYS c
     ON
-      b.GYSId = c.id
+      a.GYSId = c.id
     LEFT JOIN
       DD e
     ON
@@ -118,7 +122,8 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
 
     selector = `
       a.id id,
-      a.GYSId GYSId,
+      b1.id ProduceGYSId,
+      b1.name ProduceGYS_name,
       a.status,
       a.ZXNumber,
       a.imageUrl,
@@ -126,7 +131,8 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
       a.YJRKDate,
       a.YJAZDate,
 
-      c.id ProduceGYSId,
+      c.id GYSId,
+      c.name GYS_name,
 
       d.id DWId,
       d.name DW_name,
