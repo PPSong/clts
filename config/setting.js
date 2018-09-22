@@ -50,7 +50,7 @@ module.exports = {
         download_bucket:"",
         private_download_live_time: 3600,   //sec
         public_domain: "",
-        private_domain: "http://p92ba6upj.bkt.clouddn.com",
+        private_domain: "http://sprt-oss-private.ugeez.cn.qiniudns.com",
         download_domain: ""
     },
     
