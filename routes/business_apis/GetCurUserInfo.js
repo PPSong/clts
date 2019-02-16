@@ -243,6 +243,52 @@ export default class GetCurUserInfo extends BusinessQueryApiBase {
             aa.GYSId = bb.id
         `;
         break;
+      case DBTables.JS.GTBA:
+        sql = `
+          SELECT
+            aa.id,
+            aa.username,
+            aa.phone,
+            aa.mail,
+            aa.name,
+            aa.JS,
+            aa.GTId,
+            aa.GTName,
+            aa.GTCode,
+            aa.GTQY,
+            aa.GTCS,
+            aa.PPId,
+            bb.name PPName
+          FROM
+            (
+            SELECT
+              a.id,
+              a.username,
+              a.phone,
+              a.mail,
+              a.name,
+              a.JS,
+              b.id GTId,
+              b.name GTName,
+              b.code GTCode,
+              b.QY GTQY,
+              b.CS GTCS,
+              b.PPId PPId
+            FROM
+              User a
+            LEFT JOIN
+              GT b
+            ON
+              a.id = b.GTBAUserId
+            WHERE
+              a.id = ${user.id}
+            ) aa
+          JOIN
+            PP bb
+          ON
+            aa.PPId = bb.id
+        `;
+        break;
     }
 
     const r = await DBTables.sequelize.query(sql, {

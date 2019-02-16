@@ -27,7 +27,7 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
     } else if (user.JS === DBTables.JS.AZGSGLY) {
       where = `WHERE a.status NOT in (${status.join(',')}) AND n.id in (SELECT AZGSId as id FROM GLY_AZGS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZG) {
-      where = `WHERE a.status NOT in (${status.join(',')}) AND m.id in (SELECT GYSId as id FROM AZG_AZGS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT in (${status.join(',')}) AND AZGUserId = ${user.id}`;
     } else if (user.JS === DBTables.JS.GYSGLY) {
 
       let GYSId = await DBTables.sequelize.query(`SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id}`, {
@@ -44,6 +44,8 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
       GYSId = GYSId[0].id;
 
       where = `WHERE a.status NOT in (${status.join(',')}) AND (c.id = ${GYSId} OR b1.id = ${GYSId})`;
+    } else if (user.JS === DBTables.JS.GTBA) {
+      where = `WHERE a.status NOT IN (${status.join(',')}) AND g.id in (SELECT id FROM GT WHERE GTBAUserId = ${user.id})`;
     }
 
     if (DDId) {

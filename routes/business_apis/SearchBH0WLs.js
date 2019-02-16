@@ -27,11 +27,13 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
     } else if (user.JS === DBTables.JS.AZGSGLY) {
       where = `WHERE a.status NOT IN (${status.join(',')}) AND n.id in (SELECT AZGSId as id FROM GLY_AZGS WHERE UserId = ${user.id})`;
     } else if (user.JS === DBTables.JS.AZG) {
-      where = `WHERE a.status NOT IN (${status.join(',')}) AND m.id in (SELECT AZGSId as id FROM AZG_AZGS WHERE UserId = ${user.id})`;
+      where = `WHERE a.status NOT IN (${status.join(',')}) AND AZGUserId = ${user.id}`;
     } else if (user.JS === DBTables.JS.GYSGLY) {
       where = `WHERE a.status NOT IN (${status.join(',')}) AND ((c.id in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})) OR (c.id IS NULL AND b1.id in (SELECT GYSId as id FROM GLY_GYS WHERE UserId = ${user.id})))`;
     } else if (user.JS === DBTables.JS.ZHY) {
       where = `WHERE a.status NOT IN (${status.join(',')}) AND ((c.id in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})) OR (c.id IS NULL AND b1.id in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})))`;
+    } else if (user.JS === DBTables.JS.GTBA) {
+      where = `WHERE a.status NOT IN (${status.join(',')}) AND g.id in (SELECT id FROM GT WHERE GTBAUserId = ${user.id})`;
     }
 
     if (DDId) {
@@ -146,6 +148,8 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;
+
+    console.log(sql.replace('{SELECTOR}', selector));
 
     const list = await DBTables.sequelize.query(sql.replace('{SELECTOR}', selector), {
       type: DBTables.sequelize.QueryTypes.SELECT,

@@ -56,7 +56,7 @@ export default class WLTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY].includes(this.user.JS)) {
+    if (![JS.ADMIN, JS.PPJL, JS.KFJL, JS.GYSGLY, JS.GZ, JS.GTBA].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }

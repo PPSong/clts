@@ -3452,10 +3452,17 @@ export const apiSchema = {
       },
       // 订单ID,仅查询某个订单相关的
       DDId: {
-        type: 'string',
+        type: 'number',
       },
     },
     required: ['curPage'],
+  },
+  // 柜台BA获取自己所在柜台所关联的补货的物料清单 [GTBA]
+  getGT0BHWLs: {
+    type: 'object',
+    properties: {
+    },
+    required: [],
   },
   // 获取某个补货的DP [ADMIN, PPJL, KFJL, AZGSGLY, AZG, GYSGLY, ZHY]
   getDPBHInfo: {
