@@ -116,20 +116,29 @@ BEGIN
 	AND
 		a.FGTesterId IS NOT NULL;
     
-    INSERT
-    INTO
-		DD_GT_WLSnapshot
-        (DDId, GTId, WLId, PPId, number, createdAt, updatedAt)
-    SELECT
-		v_DDId,
-        a.GTId, 
-        a.WLId,
-		b.PPId PPId,
-        a.WLTotal number,
-        v_now, 
-        v_now
+	INSERT
+	INTO
+	DD_GT_WLSnapshot
+			(DDId, GTId, WLId, name, code, level, imageUrl, GYSId, PPId, number, createdAt, updatedAt)
+	SELECT
+			v_DDId,
+			a.GTId, 
+			a.WLId,
+			a.name, 
+			a.code,
+			a.level,
+			a.imageUrl,
+			a.GYSId,
+			b.PPId PPId,
+			a.WLTotal number,
+			v_now, 
+			v_now
 	FROM 
-		V_GT_WL a
+		(
+			SELECT GTId, WLId, WLTotal, name, code, level, GYSId, imageUrl FROM V_GT_WL
+			LEFT JOIN WL
+			ON WLId = WL.id
+		) a
 	JOIN
 		GT b
 	ON

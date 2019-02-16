@@ -1,16 +1,12 @@
 import BusinessQueryApiBase from '../BusinessQueryApiBase';
 import * as DBTables from '../../models/Model';
 
-export default class GetGT0BHWLs extends BusinessQueryApiBase {
+export default class GetGT0BHDPs extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
     return [DBTables.JS.GTBA];
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    // let { GTId } = req.body;
-
-    // let GT = await user.checkGTId(GTId, transaction);
-
     let list = await DBTables.sequelize.query(`
       SELECT * FROM dd_gt_wlsnapshot
       WHERE GTId in (SELECT id FROM gt WHERE GTBAUserId = ${user.id})
@@ -31,35 +27,3 @@ export default class GetGT0BHWLs extends BusinessQueryApiBase {
     return list;
   }
 }
-
-// setTimeout(async () => {
-//   let list = await DBTables.sequelize.query(`
-//     select 
-//       *
-//     from 
-//       dd_gt_wlsnapshot
-//   `, { type: DBTables.sequelize.QueryTypes.SELECT });
-//   list = list || [];
-
-//   for (let row of list) {
-//     // if (row.name) continue;
-
-//     let wl = await DBTables.WL.findOne({ where: {
-//       id: row.id
-//     } });
-//     wl = wl.toJSON();
-
-//     await DBTables.DD_GT_WLSnapshot.update({
-//       name: wl.name,
-//       code: wl.code,
-//       level: wl.level,
-//       imageUrl: wl.imageUrl || '',
-//       GYSId: wl.GYSId,
-//     },{
-//       where:{
-//         id: row.id
-//       }
-//     });
-//   }
-
-// }, 3000);

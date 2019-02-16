@@ -2482,6 +2482,25 @@ export const DD_GT_WLSnapshot = sequelize.define(
       allowNull: false,
       unique: 'DDId_GTId_WLId',
     },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    code: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
+    level: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
+    imageUrl: {
+      type: Sequelize.STRING,
+    },
+    GYSId: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+    },
     PPId: {
       type: Sequelize.INTEGER,
       allowNull: false,
