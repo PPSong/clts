@@ -423,8 +423,21 @@ User.prototype.checkGTId = async function (id, transaction) {
       }
       break;
     case JS.AZG:
-      const relatedGTs = await sequelize.query(`select GTId
-        from dd_gt_wl 
+      const relatedGTs = await sequelize.query(`
+        select GTId
+        from (
+          select *
+          from DD_DW_DP
+          where AZGUserId = ${this.id}
+        ) a
+        left join DW b
+        on a.DWId = b.id
+        GROUP BY GTId
+        
+        UNION
+        
+        select GTId id
+        from DD_GT_WL 
         where AZGUserId = ${this.id}
         GROUP BY GTId`, { type: sequelize.QueryTypes.SELECT });
       for (let gt of relatedGTs) {

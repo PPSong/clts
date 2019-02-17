@@ -12,8 +12,8 @@ export default class GetGT0BHDPs extends BusinessQueryApiBase {
     // let GT = await user.checkGTId(GTId, transaction);
 
     let list = await DBTables.sequelize.query(`
-      SELECT * FROM dd_dw_dpsnapshot
-      WHERE GTId in (SELECT id FROM gt WHERE GTBAUserId = ${user.id})
+      SELECT * FROM DD_DW_DPSnapshot
+      WHERE GTId in (SELECT id FROM GT WHERE GTBAUserId = ${user.id})
       ORDER BY createdAt DESC
       LIMIT 1
     `, { type: DBTables.sequelize.QueryTypes.SELECT });
@@ -23,8 +23,8 @@ export default class GetGT0BHDPs extends BusinessQueryApiBase {
 
     // 再查询
     list = await DBTables.sequelize.query(`
-      SELECT * FROM dd_dw_dpsnapshot
-      WHERE GTId in (SELECT id FROM gt WHERE GTBAUserId = ${user.id}) and DDId = ${lastlyRow.DDId}
+      SELECT * FROM DD_DW_DPSnapshot
+      WHERE GTId in (SELECT id FROM GT WHERE GTBAUserId = ${user.id}) and DDId = ${lastlyRow.DDId}
     `, { type: DBTables.sequelize.QueryTypes.SELECT });
     list = list || [];
 

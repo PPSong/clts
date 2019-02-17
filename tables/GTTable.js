@@ -178,10 +178,24 @@ export default class GTTable extends BaseTable {
 
       query = `a.PPId in (${ppIDs})`;
     } else if (this.user.JS === DBTables.JS.AZG) {
-      query = `a.id in (select GTId id
-        from dd_gt_wl 
-        where AZGUserId = ${this.user.id}
-        GROUP BY GTId)`;
+      query = `a.id in (
+          select GTId
+          from (
+            select *
+            from DD_DW_DP
+            where AZGUserId = ${this.user.id}
+          ) a
+          left join DW b
+          on a.DWId = b.id
+          GROUP BY GTId
+          
+          UNION
+          
+          select GTId id
+          from DD_GT_WL 
+          where AZGUserId = ${this.user.id}
+          GROUP BY GTId
+        )`;
     } 
 
     // 把模糊搜索条件加入where
