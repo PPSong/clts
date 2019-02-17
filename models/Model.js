@@ -422,6 +422,15 @@ User.prototype.checkGTId = async function (id, transaction) {
         throw new Error('没有权限!');
       }
       break;
+    case JS.AZG:
+      const relatedGTs = await sequelize.query(`select GTId
+        from dd_gt_wl 
+        where AZGUserId = ${this.id}
+        GROUP BY GTId`, { type: sequelize.QueryTypes.SELECT });
+      for (let gt of relatedGTs) {
+        if (gt.GTId == id) return tmpGT;
+      }
+      throw new Error('没有权限!');
     case JS.GTBA:
       if (tmpGT.GTBAUserId !== this.id) {
         throw new Error('没有权限!');

@@ -38,7 +38,7 @@ export default class GTTable extends BaseTable {
 
   checkListRight() {
     if (
-      ![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.GZ, DBTables.JS.GTBA].includes(this.user.JS)
+      ![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.GZ, DBTables.JS.GTBA, DBTables.JS.AZG].includes(this.user.JS)
     ) {
       throw new Error('无此权限!');
     }
@@ -57,19 +57,23 @@ export default class GTTable extends BaseTable {
   }
 
   checkFindOneRight() {
-    if (![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.GZ, DBTables.JS.GTBA].includes(this.user.JS)) {
+    if (![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.GZ, DBTables.JS.GTBA, DBTables.JS.AZG].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async checkUserAccess(redord, transaction) {
-    if (![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.GZ, DBTables.JS.GTBA].includes(this.user.JS)) {
+    if (![DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.GZ, DBTables.JS.GTBA, DBTables.JS.AZG].includes(this.user.JS)) {
       throw new Error('无此权限!');
     }
   }
 
   async findOne(id, transaction) {
     this.checkFindOneRight();
+
+    if (this.user.JS === DBTables.JS.AZG) {
+      await this.user.checkGTId(id, transaction);
+    }
 
     let findOneOption = {
       where: { id },
@@ -173,7 +177,12 @@ export default class GTTable extends BaseTable {
       let ppIDs = _.map(pps, (pp) => { return `'${pp.id}'` });
 
       query = `a.PPId in (${ppIDs})`;
-    }
+    } else if (this.user.JS === DBTables.JS.AZG) {
+      query = `a.id in (select GTId id
+        from dd_gt_wl 
+        where AZGUserId = ${this.user.id}
+        GROUP BY GTId)`;
+    } 
 
     // 把模糊搜索条件加入where
     if (keyword) {

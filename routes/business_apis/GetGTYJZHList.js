@@ -3,7 +3,7 @@ import * as DBTables from '../../models/Model';
 
 export default class GetGTYJZHList extends BusinessQueryApiBase {
   static getAllowAccessJSs() {
-    return [DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL];
+    return [DBTables.JS.ADMIN, DBTables.JS.PPJL, DBTables.JS.KFJL, DBTables.JS.AZG, DBTables.JS.GTBA];
   }
 
   static async mainProcess(req, res, next, user, transaction) {

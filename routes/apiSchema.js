@@ -3241,7 +3241,7 @@ export const apiSchema = {
     },
     required: ['FGTesters','EJZHId'],
   },
-  // 获取某个柜台所关联的一级组合数组 [ADMIN, PPJL, KFJL]
+  // 获取某个柜台所关联的一级组合数组 [ADMIN, PPJL, KFJL, GTBA, AZG]
   getGTYJZHList: {
     type: 'object',
     properties: {
@@ -3263,7 +3263,7 @@ export const apiSchema = {
     },
     required: ['YJZHId'],
   },
-  // 获取某个柜台所关联的灯位数组 [ADMIN, PPJL, KFJL]
+  // 获取某个柜台所关联的灯位数组 [ADMIN, PPJL, KFJL, GTBA, AZG]
   getGTDWList: {
     type: 'object',
     properties: {
@@ -3459,6 +3459,13 @@ export const apiSchema = {
   },
   // 柜台BA获取自己所在柜台所关联的补货的物料清单 [GTBA]
   getGT0BHWLs: {
+    type: 'object',
+    properties: {
+    },
+    required: [],
+  },
+  // 柜台BA获取自己所在柜台所关联的补货的灯位灯片清单 [GTBA]
+  getGT0BHDPs: {
     type: 'object',
     properties: {
     },

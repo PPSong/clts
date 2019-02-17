@@ -47,6 +47,7 @@ export default class GetGT0BHWLs extends BusinessQueryApiBase {
 //     let wl = await DBTables.WL.findOne({ where: {
 //       id: row.id
 //     } });
+//     if (!wl) continue;
 //     wl = wl.toJSON();
 
 //     await DBTables.DD_GT_WLSnapshot.update({
