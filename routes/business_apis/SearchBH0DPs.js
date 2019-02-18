@@ -45,7 +45,7 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
 
       where = `WHERE a.status NOT in (${status.join(',')}) AND (c.id = ${GYSId} OR b1.id = ${GYSId})`;
     } else if (user.JS === DBTables.JS.GTBA) {
-      where = `WHERE a.status NOT IN (${status.join(',')}) AND g.id in (SELECT id FROM GT WHERE GTBAUserId = ${user.id})`;
+      where = `WHERE g.id in (SELECT id FROM GT WHERE GTBAUserId = ${user.id})`;
     }
 
     if (DDId) {

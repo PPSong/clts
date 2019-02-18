@@ -33,7 +33,7 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
     } else if (user.JS === DBTables.JS.ZHY) {
       where = `WHERE a.status NOT IN (${status.join(',')}) AND ((c.id in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})) OR (c.id IS NULL AND b1.id in (SELECT GYSId as id FROM ZHY_GYS WHERE UserId = ${user.id})))`;
     } else if (user.JS === DBTables.JS.GTBA) {
-      where = `WHERE a.status NOT IN (${status.join(',')}) AND g.id in (SELECT id FROM GT WHERE GTBAUserId = ${user.id})`;
+      where = `WHERE g.id in (SELECT id FROM GT WHERE GTBAUserId = ${user.id})`;
     }
 
     if (DDId) {
