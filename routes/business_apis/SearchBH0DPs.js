@@ -162,6 +162,7 @@ export default class SearchBH0DPs extends BusinessQueryApiBase {
     `;
 
     sql += `
+    ORDER BY a.createdAt DESC
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;

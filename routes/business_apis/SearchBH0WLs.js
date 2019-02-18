@@ -99,10 +99,10 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
     ${where} ${moreWhere}
     `;
 
-    let selector = `count(a.id) as total`;
-
-
-    let total = await DBTables.sequelize.query(sql.replace('{SELECTOR}', selector), {
+    let selector, total;
+    selector = `count(a.id) as total`;
+  
+    total = await DBTables.sequelize.query(sql.replace('{SELECTOR}', selector), {
       type: DBTables.sequelize.QueryTypes.SELECT,
     });
     total = total[0].total || 0;
@@ -115,6 +115,7 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
       a.YJRKDate,
       a.YJAZDate,
       a.YJZXTime,
+      a.createdAt,
 
       b.id WLId,
       b.name WL_name,
@@ -145,11 +146,10 @@ export default class SearchBH0WLs extends BusinessQueryApiBase {
     `;
 
     sql += `
+    ORDER BY a.createdAt DESC
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;
-
-    console.log(sql.replace('{SELECTOR}', selector));
 
     const list = await DBTables.sequelize.query(sql.replace('{SELECTOR}', selector), {
       type: DBTables.sequelize.QueryTypes.SELECT,
