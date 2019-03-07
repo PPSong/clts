@@ -19,7 +19,7 @@ export default class PiLiangRuKuDP extends BusinessApiBase {
   }
 
   static async mainProcess(req, res, next, user, transaction) {
-    // [{ type: 'DP'. typeId: 15, uuid: '123456'}]
+    // [{"type":"DP","typeId":14,"uuid":"14_1","DWId":17,"DWname":"DW3","CZ":"200*100","CC":"铜板","GTId":8,"PPId":4,"DPName":"DP14","DPImageUrl":""}]
     const { EWMs } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态

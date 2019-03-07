@@ -121,6 +121,8 @@ export default class SearchWYDPs extends BusinessQueryApiBase {
       a.AZFKNote,
       a.imageUrl,
 
+      d.DPId,
+
       n.id AZGSId,
       n.name AZGS_name,
       m.id AZGUserId,
