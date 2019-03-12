@@ -3461,6 +3461,10 @@ export const apiSchema = {
   getGT0BHWLs: {
     type: 'object',
     properties: {
+      // 是否是上市补货, 1表示是, 0表示日常补货
+      isSSBH: {
+        type: 'number',
+      },
     },
     required: [],
   },
@@ -3468,6 +3472,10 @@ export const apiSchema = {
   getGT0BHDPs: {
     type: 'object',
     properties: {
+      // 是否是上市补货, 1表示是, 0表示日常补货
+      isSSBH: {
+        type: 'number',
+      },
     },
     required: [],
   },
