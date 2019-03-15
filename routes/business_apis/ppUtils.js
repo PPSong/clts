@@ -315,22 +315,45 @@ export async function checkEWMsExistanceAndGetRecords(
   EWMs,
   transaction,
 ) {
-  const EWMStrings = EWMs.map(item => JSON.stringify(item));
-  const tmpRecords = await DBTables[tableName].findAll({
-    where: {
-      EWM: {
-        $in: EWMStrings,
+  if (String(tableName).toUpperCase() === 'KDX') {
+    // {"type":"KDX","uuid":"XZ2746C505CEB614C2"}
+    EWMs = EWMs.map(item => JSON.stringify(item));
+    const tmpRecords = await DBTables[tableName].findAll({
+      where: {
+        EWM: {
+          $in: EWMs,
+        },
       },
-    },
-    transaction,
-  });
-  const tmpEWMStrings = tmpRecords.map(item => item.EWM);
-  const diffEWMs = _.difference(EWMStrings, tmpEWMStrings);
-  if (diffEWMs.length > 0) {
-    throw new Error(`${diffEWMs}不存在!`);
-  }
+      transaction,
+    });
+    tmpRecords.forEach(element => {
+      console.log(element.toJSON());
+    });
+    const tmpEWMs = tmpRecords.map(item => item.EWM);
+    const diffEWMs = _.difference(EWMs, tmpEWMs);
+    if (diffEWMs.length > 0) {
+      throw new Error(`${diffEWMs.join(', ')}不存在!`);
+    }
 
-  return tmpRecords;
+    return tmpRecords;
+  } else {
+    const uuids = EWMs.map(item => item.uuid);
+    const tmpRecords = await DBTables[tableName].findAll({
+      where: {
+        uuid: {
+          $in: uuids,
+        },
+      },
+      transaction,
+    });
+    const tmpUUIDs = tmpRecords.map(item => item.uuid);
+    const diffUUIDs = _.difference(uuids, tmpUUIDs);
+    if (diffUUIDs.length > 0) {
+      throw new Error(`[${tableName}] ${diffUUIDs} 不存在!`);
+    }
+  
+    return tmpRecords;
+  }
 }
 
 export async function checkIdsExistanceAndGetRecords(
