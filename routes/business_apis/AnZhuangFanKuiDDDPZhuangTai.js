@@ -11,7 +11,7 @@ export default class AnZhuangFanKuiDDDPZhuangTai extends BusinessApiBase {
   static validateParamsFormat(req, res, next) {
     // WYDPPayloads:
     // [{
-    // id: 1,
+    // uuid: 1,
     // AZFKType: '安装成功',
     // imageUrl: 'xxxx'
     // }]
@@ -37,10 +37,10 @@ export default class AnZhuangFanKuiDDDPZhuangTai extends BusinessApiBase {
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 检查ids的存在
-    const ids = WYDPPayloads.map(item => item.id);
-    const tmpWYDPs = await ppUtils.checkIdsExistanceAndGetRecords(
+    const uuids = WYDPPayloads.map(item => item.uuid);
+    const tmpWYDPs = await ppUtils.checkUUIDsExistanceAndGetRecords(
       'WYDP',
-      ids,
+      uuids,
       transaction,
     );
     // end 检查ids的存在
@@ -56,14 +56,14 @@ export default class AnZhuangFanKuiDDDPZhuangTai extends BusinessApiBase {
 
     // 反馈
     for (const item of WYDPPayloads) {
-      const tmpWYDP = tmpWYDPs.find(WYDP => WYDP.id === item.id);
+      const tmpWYDP = tmpWYDPs.find(WYDP => WYDP.uuid === item.uuid);
       if (item.AZFKType === DBTables.AZFKType.AZCG) {
         // 成功反馈
         if (tmpWYDP.status !== DBTables.WYDPStatus.SH) {
           throw new Error(`${tmpWYDP}状态不是${DBTables.WYDPStatus.SH}, 不能递交成功反馈`);
         }
         await ppUtils.changeWYDPsStatus({
-          ids: [item.id],
+          ids: [tmpWYDP.id],
           status: DBTables.WYDPStatus.FK,
           user,
           transaction,
@@ -73,7 +73,7 @@ export default class AnZhuangFanKuiDDDPZhuangTai extends BusinessApiBase {
       } else {
         // 失败反馈
         await ppUtils.changeWYDPsStatus({
-          ids: [item.id],
+          ids: [tmpWYDP.id],
           status: DBTables.WYDPStatus.FK,
           user,
           transaction,

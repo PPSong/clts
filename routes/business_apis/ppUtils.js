@@ -356,6 +356,28 @@ export async function checkEWMsExistanceAndGetRecords(
   }
 }
 
+export async function checkUUIDsExistanceAndGetRecords(
+  tableName,
+  uuids,
+  transaction,
+) {
+  const tmpRecords = await DBTables[tableName].findAll({
+    where: {
+      uuid: {
+        $in: uuids,
+      },
+    },
+    transaction,
+  });
+  const tmpUUIDs = tmpRecords.map(item => item.uuid);
+  const diffUUIDs = _.difference(uuids, tmpUUIDs);
+  if (diffUUIDs.length > 0) {
+    throw new Error(`${diffUUIDs}不存在!`);
+  }
+
+  return tmpRecords;
+}
+
 export async function checkIdsExistanceAndGetRecords(
   tableName,
   ids,

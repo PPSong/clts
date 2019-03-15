@@ -587,8 +587,8 @@ export const apiSchema = {
           type: 'object',
           properties: {
             // WYDPId
-            id: {
-              type: 'number',
+            uuid: {
+              type: 'string',
             },
             // 反馈类型
             AZFKType: {
@@ -600,7 +600,7 @@ export const apiSchema = {
               type: 'string',
             },
           },
-          required: ['id', 'AZFKType', 'imageUrl'],
+          required: ['uuid', 'AZFKType', 'imageUrl'],
         },
       },
     },
@@ -1981,7 +1981,8 @@ export const apiSchema = {
       },
     },
     required: ['EWMs'],
-  },
+  }, 
+
   // 安装反馈DDWL状态 [GTBA, AZG]
   anZhuangFanKuiDDWLZhuangTai: {
     type: 'object',
@@ -2003,8 +2004,8 @@ export const apiSchema = {
           type: 'object',
           properties: {
             // WYWLId
-            id: {
-              type: 'number',
+            uuid: {
+              type: 'string',
             },
             // 反馈类型
             AZFKType: {
@@ -2016,7 +2017,7 @@ export const apiSchema = {
               type: 'string',
             },
           },
-          required: ['id', 'AZFKType', 'imageUrl'],
+          required: ['uuid', 'AZFKType', 'imageUrl'],
         },
       },
     },
@@ -2563,8 +2564,8 @@ export const apiSchema = {
           type: 'object',
           properties: {
             // WYWLId
-            id: {
-              type: 'number',
+            uuid: {
+              type: 'string',
             },
             // 反馈类型
             AZFKType: {
@@ -2576,7 +2577,7 @@ export const apiSchema = {
               type: 'string',
             },
           },
-          required: ['id', 'AZFKType', 'imageUrl'],
+          required: ['uuid', 'AZFKType', 'imageUrl'],
         },
       },
     },
@@ -2595,8 +2596,8 @@ export const apiSchema = {
           type: 'object',
           properties: {
             // DPWLId
-            id: {
-              type: 'number',
+            uuid: {
+              type: 'string',
             },
             // 反馈类型
             AZFKType: {
@@ -2608,7 +2609,7 @@ export const apiSchema = {
               type: 'string',
             },
           },
-          required: ['id', 'AZFKType', 'imageUrl'],
+          required: ['uuid', 'AZFKType', 'imageUrl'],
         },
       },
     },

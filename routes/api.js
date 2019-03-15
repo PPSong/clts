@@ -63,7 +63,7 @@ router.post('/:table', async (req, res, next) => {
     ppLog(err);
     next(err);
   }
-});
+}); 
 
 router.get('/:table', async (req, res, next) => {
   let transaction;

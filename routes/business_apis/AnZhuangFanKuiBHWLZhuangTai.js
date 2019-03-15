@@ -11,7 +11,7 @@ export default class AnZhuangFanKuiBHWLZhuangTai extends BusinessApiBase {
   static validateParamsFormat(req, res, next) {
     // WYWLPayloads:
     // [{
-    // id: 1,
+    // uuid: 1,
     // AZFKType: '安装成功',
     // imageUrl: 'xxxx'
     // }]
@@ -28,7 +28,7 @@ export default class AnZhuangFanKuiBHWLZhuangTai extends BusinessApiBase {
   static async mainProcess(req, res, next, user, transaction) {
     // WYWLPayloads:
     // [{
-    // id: 1,
+    // uuid: 1,
     // AZFKType: '安装成功',
     // imageUrl: 'xxxx'
     // }]
@@ -37,10 +37,10 @@ export default class AnZhuangFanKuiBHWLZhuangTai extends BusinessApiBase {
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 检查ids的存在
-    const ids = WYWLPayloads.map(item => item.id);
-    const tmpWYWLs = await ppUtils.checkIdsExistanceAndGetRecords(
+    const uuids = WYWLPayloads.map(item => item.uuid);
+    const tmpWYWLs = await ppUtils.checkUUIDsExistanceAndGetRecords(
       'WYWL',
-      ids,
+      uuids,
       transaction,
     );
     // end 检查ids的存在
@@ -59,14 +59,14 @@ export default class AnZhuangFanKuiBHWLZhuangTai extends BusinessApiBase {
 
     // 反馈
     for (const item of WYWLPayloads) {
-      const tmpWYWL = tmpWYWLs.find(WYWL => WYWL.id === item.id);
+      const tmpWYWL = tmpWYWLs.find(WYWL => WYWL.uuid === item.uuid);
       if (item.AZFKType === DBTables.AZFKType.AZCG) {
         // 成功反馈
         if (tmpWYWL.status !== DBTables.WYWLStatus.SH) {
           throw new Error(`${tmpWYWL}状态不是${DBTables.WYWLStatus.SH}, 不能递交成功反馈`);
         }
         await ppUtils.changeWYWLsStatus({
-          ids: [item.id],
+          ids: [tmpWYWL.id],
           status: DBTables.WYWLStatus.FK,
           user,
           transaction,
@@ -76,7 +76,7 @@ export default class AnZhuangFanKuiBHWLZhuangTai extends BusinessApiBase {
       } else {
         // 失败反馈
         await ppUtils.changeWYWLsStatus({
-          ids: [item.id],
+          ids: [tmpWYWL.id],
           status: DBTables.WYWLStatus.FK,
           user,
           transaction,
