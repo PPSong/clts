@@ -76,7 +76,7 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
       // 确认WYDP不存在
       let tmpWYDP = await DBTables.WYDP.findOne({
         where: {
-          EWM: JSON.stringify(item),
+          uuid: item.uuid,
         },
         transaction,
       });
@@ -87,7 +87,7 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
       // end 确认WYDP不存在
 
       // 确认有这个订单需求
-      const tmpDWId = item.DWId;
+      const tmpDWId = tmpWYDP.DWId;
       const tmpDPId = item.typeId;
       const tmpDD_DW_DP = await DBTables.DD_DW_DP.findOne({
         where: {
