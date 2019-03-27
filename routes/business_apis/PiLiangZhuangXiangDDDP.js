@@ -87,7 +87,7 @@ export default class PiLiangZhuangXiangDDDP extends BusinessApiBase {
       // end 确认WYDP不存在
 
       // 确认有这个订单需求
-      const tmpDWId = tmpWYDP.DWId;
+      const tmpDWId = item.DWId;
       const tmpDPId = item.typeId;
       const tmpDD_DW_DP = await DBTables.DD_DW_DP.findOne({
         where: {
