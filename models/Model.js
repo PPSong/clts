@@ -564,9 +564,6 @@ User.prototype.checkDD_DW_DPId = async function (id, transaction) {
       }
       break;
     case JS.GTBA:
-      if (tmpDD_DW_DP.AZGUserId !== null) {
-        throw new Error('没有权限!');
-      }
       await this.checkGTId(tmpDD_DW_DP.DW.GTId, transaction);
       break;
     default:
