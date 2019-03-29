@@ -3610,7 +3610,7 @@ export const WYWL = sequelize.define(
       unique: 'uuid',
     },
     EWM: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(512),
       allowNull: false,
       unique: 'EWM',
     },
@@ -3794,7 +3794,7 @@ export const WYDP = sequelize.define(
       unique: 'uuid',
     },
     EWM: {
-      type: Sequelize.STRING,
+      type: Sequelize.STRING(512),
       allowNull: false,
       unique: 'EWM',
     },
