@@ -79,7 +79,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
       // 确认WYDP不存在
       let tmpWYDP = await DBTables.WYDP.findOne({
         where: {
-          EWM: JSON.stringify(item),
+          uuid: item.uuid,
         },
         transaction,
       });
@@ -182,3 +182,23 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
   }
 }
+
+
+setTimeout(async () => {
+  let data = [{"DDId":14,"DWId":169,"DPId":49,"GTId":"51","PPId":"3","CC":"数码全透哑膜","CZ":"378*593","DPName":"3月底妆产品","DPImageUrl":"2sftaruS0KGD.jpg","ProduceGYSId":2,"DWName":"C彩妆背柜3-3","GYSName":"博域","PPName":"GAC","GTName":"上海梅陇镇","type":"DP","typeId":49,"uuid":"DP2338EE55F6F36352"}]
+  let item = data[0];
+  await DBTables.WYDP.create(
+    {
+      uuid: item.uuid,
+      EWM: JSON.stringify(item),
+      status: DBTables.WYDPStatus.ZX,
+      DPId: item.DPId,
+      DWId: item.DWId,
+      GTId: item.GTId,
+      PPId: item.PPId,
+      GYSId: item.ProduceGYSId,
+      DPBHId: 1,
+      KDXId: 1,
+    }
+  )
+}, 1200);

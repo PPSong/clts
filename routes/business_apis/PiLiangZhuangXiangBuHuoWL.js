@@ -79,7 +79,7 @@ export default class PiLiangZhuangXiangBuHuoWL extends BusinessApiBase {
     for (const item of WLEWMs) {
       const tmpWYWL = await DBTables.WYWL.findOne({
         where: {
-          EWM: JSON.stringify(item),
+          uuid: item.uuid,
         },
         transaction,
       });
