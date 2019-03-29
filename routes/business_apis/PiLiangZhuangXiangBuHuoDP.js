@@ -150,6 +150,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
       // 创建WYDP并绑定DPBH, 状态为'装箱'
       tmpWYDP = await DBTables.WYDP.create(
         {
+          uuid: item.uuid,
           EWM: JSON.stringify(item),
           status: DBTables.WYDPStatus.ZX,
           DPId: tmpDPId,
