@@ -85,7 +85,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
       });
 
       if (tmpWYDP) {
-        throw new Error(`${tmpWYDP}不属于可装箱状态!`);
+        throw new Error(`${tmpWYDP.uuid}不属于可装箱状态!`);
       }
       // end 确认WYDP不存在
 
@@ -108,7 +108,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
 
       // 发货供应商是当前用户所属GYS
       if (tmpDPBH.GYSId !== tmpGYSId) {
-        throw new Error(`${tmpWYDP}的发货供应商不匹配!`);
+        throw new Error(`${tmpWYDP.uuid}的发货供应商不匹配!`);
       }
       // end 发货供应商是当前用户所属GYS
 
@@ -121,7 +121,7 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
       });
 
       if (tmpDW.GTId !== GTId) {
-        throw new Error(`${tmpWYDP}不属于这个柜台id:${GTId}!`);
+        throw new Error(`${tmpWYDP.uuid}不属于这个柜台id:${GTId}!`);
       }
       // end 发往的柜台的id是GTId
 
@@ -182,23 +182,3 @@ export default class PiLiangZhuangXiangBuHuoDP extends BusinessApiBase {
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
   }
 }
-
-
-setTimeout(async () => {
-  let data = [{"DDId":14,"DWId":169,"DPId":49,"GTId":"51","PPId":"3","CC":"数码全透哑膜","CZ":"378*593","DPName":"3月底妆产品","DPImageUrl":"2sftaruS0KGD.jpg","ProduceGYSId":2,"DWName":"C彩妆背柜3-3","GYSName":"博域","PPName":"GAC","GTName":"上海梅陇镇","type":"DP","typeId":49,"uuid":"DP2338EE55F6F36352"}]
-  let item = data[0];
-  await DBTables.WYDP.create(
-    {
-      uuid: item.uuid,
-      EWM: JSON.stringify(item),
-      status: DBTables.WYDPStatus.ZX,
-      DPId: item.DPId,
-      DWId: item.DWId,
-      GTId: item.GTId,
-      PPId: item.PPId,
-      GYSId: item.ProduceGYSId,
-      DPBHId: 1,
-      KDXId: 1,
-    }
-  )
-}, 1200);
