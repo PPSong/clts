@@ -534,24 +534,25 @@ export async function createWLBH(
       reason,
       note,
       DDId,
-      uuid,
       status: DBTables.WLBHStatus.CS,
       ZXNumber: 0,
     },
     { transaction },
   );
 
-  //设置WYWL的isApply状态
-  await DBTables.WYWL.update({
-      isApplyBH: 1,
-    },
-    {
-      where: {
-        uuid: uuid,
+  if (uuid) {
+    //设置WYWL的isApply状态
+    await DBTables.WYWL.update({
+        isApplyBH: 1,
       },
-      transaction,
-    },
-  );
+      {
+        where: {
+          uuid: uuid,
+        },
+        transaction,
+      },
+    );
+  }
 
   // 新建相关WLBHCZ
   await DBTables.WLBHCZ.create(
@@ -642,17 +643,19 @@ export async function createDPBH(
     { transaction },
   );
 
-  //设置WYWL的isApply状态
-  await DBTables.WYDP.update({
-      isApplyBH: 1,
-    },
-    {
-      where: {
-        uuid: uuid,
+  if (uuid) {
+    //设置WYDP的isApply状态
+    await DBTables.WYDP.update({
+        isApplyBH: 1,
       },
-      transaction,
-    },
-  );
+      {
+        where: {
+          uuid: uuid,
+        },
+        transaction,
+      },
+    );
+  }
 
   // 新建相关DPBHCZ
   await DBTables.DPBHCZ.create(
