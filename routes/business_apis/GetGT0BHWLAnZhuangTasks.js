@@ -35,6 +35,7 @@ export default class GetGT0BHWLAnZhuangTasks extends BusinessQueryApiBase {
     // 查询记录
     const sql = `
     SELECT
+      d.id GTId,
       d.name GTName,
       a.YJAZDate,
       c.name WLName,

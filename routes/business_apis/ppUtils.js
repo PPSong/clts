@@ -351,7 +351,7 @@ export async function checkEWMsExistanceAndGetRecords(
     if (diffUUIDs.length > 0) {
       throw new Error(`[${tableName}] ${diffUUIDs} 不存在!`);
     }
-  
+
     return tmpRecords;
   }
 }
@@ -521,6 +521,7 @@ export async function createWLBH(
   imageUrl,
   reason,
   note,
+  uuid,
   user,
   transaction,
   DDId = null,
@@ -533,10 +534,23 @@ export async function createWLBH(
       reason,
       note,
       DDId,
+      uuid,
       status: DBTables.WLBHStatus.CS,
       ZXNumber: 0,
     },
     { transaction },
+  );
+
+  //设置WYWL的isApply状态
+  await DBTables.WYWL.update({
+      isApplyBH: 1,
+    },
+    {
+      where: {
+        uuid: uuid,
+      },
+      transaction,
+    },
   );
 
   // 新建相关WLBHCZ
@@ -606,6 +620,7 @@ export async function createDPBH(
   imageUrl,
   reason,
   note,
+  uuid,
   user,
   transaction,
   DDId = null,
@@ -625,6 +640,18 @@ export async function createDPBH(
       ZXNumber: 0,
     },
     { transaction },
+  );
+
+  //设置WYWL的isApply状态
+  await DBTables.WYDP.update({
+      isApplyBH: 1,
+    },
+    {
+      where: {
+        uuid: uuid,
+      },
+      transaction,
+    },
   );
 
   // 新建相关DPBHCZ
@@ -717,9 +744,9 @@ export async function getGTListInDD(DDId, transaction) {
   ) as a
   group by GTId
   `, {
-    type: DBTables.sequelize.QueryTypes.SELECT,
-    transaction
-  });
+      type: DBTables.sequelize.QueryTypes.SELECT,
+      transaction
+    });
   return r.map(obj => {
     return obj.GTId;
   });
@@ -735,9 +762,9 @@ export async function getGTCL(GTId, transaction) {
     ) as DW
     left join DP on DW.DPId = DP.id
   `, {
-    type: DBTables.sequelize.QueryTypes.SELECT,
-    transaction
-  });
+      type: DBTables.sequelize.QueryTypes.SELECT,
+      transaction
+    });
   DWCLs = DWCLs || [];
 
   let WLCLs = await DBTables.sequelize.query(`
@@ -793,11 +820,11 @@ export async function checkAZGcanViewDDGT(AZGUserId, DDId, GTId, transaction) {
       AZGUserId = ${AZGUserId} AND DDId = ${DDId} AND GTId = ${GTId}
   ) as a
   `, {
-    type: DBTables.sequelize.QueryTypes.SELECT,
-    transaction
-  });
+      type: DBTables.sequelize.QueryTypes.SELECT,
+      transaction
+    });
   num = num[0] ? num[0].num : 0;
-  
+
   num = num || 0;
 
   return num > 0;

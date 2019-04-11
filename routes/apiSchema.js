@@ -2099,8 +2099,12 @@ export const apiSchema = {
       note: {
         type: 'string',
       },
+      // 唯一UUID
+      uuid: {
+        type: 'string',
+      },
     },
-    required: ['DDId', 'GTId', 'WLId', 'imageUrl', 'reason'],
+    required: ['DDId', 'GTId', 'WLId', 'imageUrl', 'reason', 'uuid'],
   },
   // 申请上市DPBH [GZ, GTBA, AZG]
   shenQingShangShiDPBH: {
@@ -2130,8 +2134,12 @@ export const apiSchema = {
       note: {
         type: 'string',
       },
+      // 唯一UUID
+      uuid: {
+        type: 'string',
+      },
     },
-    required: ['DDId', 'DWId', 'DPId', 'imageUrl', 'reason'],
+    required: ['DDId', 'DWId', 'DPId', 'imageUrl', 'reason', 'uuid'],
   },
   // 申请日常WLBH [GZ, GTBA]
   shenQingRiChangWLBH: {
@@ -2157,8 +2165,12 @@ export const apiSchema = {
       note: {
         type: 'string',
       },
+      // 唯一UUID
+      uuid: {
+        type: 'string',
+      },
     },
-    required: ['GTId', 'WLId', 'imageUrl', 'reason'],
+    required: ['GTId', 'WLId', 'imageUrl', 'reason', 'uuid'],
   },
   // 申请日常DPBH [GZ, GTBA]
   shenQingRiChangDPBH: {
@@ -2184,8 +2196,12 @@ export const apiSchema = {
       note: {
         type: 'string',
       },
+      // 唯一UUID
+      uuid: {
+        type: 'string',
+      },
     },
-    required: ['DWId', 'DPId', 'imageUrl', 'reason'],
+    required: ['DWId', 'DPId', 'imageUrl', 'reason', 'uuid'],
   },
   // 批量审批通过WLBHa [KFJL]
   piLiangShenPiTongGuoWLBHa: {

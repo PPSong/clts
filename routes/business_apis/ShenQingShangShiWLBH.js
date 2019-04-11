@@ -10,7 +10,7 @@ export default class ShenQingShangShiWLBH extends BusinessApiBase {
   static async mainProcess(req, res, next, user, transaction) {
     // note: 非必填
     const {
-      DDId, GTId, WLId, imageUrl, note, reason
+      DDId, GTId, WLId, imageUrl, note, reason, uuid
     } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
@@ -39,7 +39,7 @@ export default class ShenQingShangShiWLBH extends BusinessApiBase {
     // end 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
 
     // 新建物料补货
-    await ppUtils.createWLBH(GTId, WLId, imageUrl, reason, note, user, transaction, DDId);
+    await ppUtils.createWLBH(GTId, WLId, imageUrl, reason, note, uuid, user, transaction, DDId);
     // end新建物料补货
   }
 }

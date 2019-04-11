@@ -10,7 +10,7 @@ export default class ShenQingShangShiDPBH extends BusinessApiBase {
   static async mainProcess(req, res, next, user, transaction) {
     // note: 非必填
     const {
-      DDId, DWId, DPId, imageUrl, note, reason
+      DDId, DWId, DPId, imageUrl, note, reason, uuid
     } = req.body;
 
     // 检查相关记录是否属于用户操作范围, 记录状态是否是可操作状态
@@ -75,6 +75,7 @@ export default class ShenQingShangShiDPBH extends BusinessApiBase {
       imageUrl,
       reason,
       note,
+      uuid,
       user,
       transaction,
       DDId,
