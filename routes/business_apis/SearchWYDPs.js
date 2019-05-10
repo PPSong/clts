@@ -143,6 +143,7 @@ export default class SearchWYDPs extends BusinessQueryApiBase {
     `;
 
     sql += `
+    ORDER BY a.updatedAt DESC
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;
