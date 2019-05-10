@@ -151,6 +151,7 @@ export default class SearchWYWLs extends BusinessQueryApiBase {
     `;
 
     sql += `
+    ORDER BY a.updatedAt DESC
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;

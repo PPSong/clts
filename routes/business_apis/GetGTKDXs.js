@@ -86,7 +86,8 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
       e.createdAt PHTime,
       c.id PPId,
       c.name PP_name,
-      a.status
+      a.status,
+      a.updatedAt
     FROM
       KDX a
     LEFT JOIN
@@ -116,6 +117,7 @@ export default class GetGTKDXs extends BusinessQueryApiBase {
     WHERE
       a.GTId = ${GTId}
       ${moreWhere}
+    ORDER BY a.updatedAt DESC
     LIMIT ${perPage}
     OFFSET ${curPage * perPage}
     `;
